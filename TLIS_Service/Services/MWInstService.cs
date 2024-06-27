@@ -222,7 +222,7 @@ namespace TLIS_Service.Services
                             null;
                     }
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwDishLibrary.ToString(), mwODULibrary.Id).ToList());
+                        .GetLogisticals(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwODULibrary.ToString(), mwODULibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 
@@ -4485,7 +4485,7 @@ namespace TLIS_Service.Services
                                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
                                                             if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + " " + mwDish.Azimuth;
+                                                                mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase+"HE" + " " + mwDish.Azimuth+"AZ";
 
                                                             }
 
@@ -4668,7 +4668,7 @@ namespace TLIS_Service.Services
                                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
                                                             if (legname != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
 
                                                             }
                                                             var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
@@ -4927,7 +4927,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                                 {
-                                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                                 }
                                                             }
 
@@ -4970,7 +4970,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                                 {
-                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                                 }
                                                             }
 
@@ -5160,7 +5160,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                                 {
-                                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                                 }
                                                             }
                                                         }
@@ -5202,7 +5202,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                                 {
-                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                                 }
                                                             }
                                                         }
@@ -5417,7 +5417,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                             if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                             }
                                                         }
                                                     }
@@ -5460,7 +5460,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                             if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                             }
                                                         }
                                                     }
@@ -5643,7 +5643,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                             if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                             }
                                                         }
                                                     }
@@ -5687,7 +5687,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                             if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                             }
                                                         }
                                                     }
@@ -5896,7 +5896,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                         if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                         {
-                                                            mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                            mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                         }
                                                     }
                                                 }
@@ -5939,7 +5939,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                         if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                         {
-                                                            mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                            mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                         }
                                                     }
                                                 }
@@ -6338,7 +6338,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWDishInst.legId);
                                                 if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
@@ -6518,7 +6518,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWDishInst.legId);
                                                 if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
@@ -6692,7 +6692,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWDishInst.legId);
                                                 if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
@@ -6870,7 +6870,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWDishInst.legId);
                                                 if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
@@ -7125,7 +7125,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                     }
                                                 }
                                             }
@@ -7167,7 +7167,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                     }
                                                 }
                                             }
@@ -7351,7 +7351,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                     }
                                                 }
                                             }
@@ -7393,7 +7393,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                     }
                                                 }
                                             }
@@ -7570,7 +7570,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                     }
                                                 }
                                             }
@@ -7612,7 +7612,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                     }
                                                 }
                                             }
@@ -7798,7 +7798,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                     }
                                                 }
                                             }
@@ -7840,7 +7840,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                     }
                                                 }
                                             }
@@ -8059,7 +8059,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                 }
                                             }
                                         }
@@ -8101,7 +8101,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                 }
                                             }
                                         }
@@ -8286,7 +8286,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                 }
                                             }
                                         }
@@ -8328,7 +8328,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                 }
                                             }
                                         }
@@ -8512,7 +8512,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                 }
                                             }
                                         }
@@ -8554,7 +8554,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                 }
                                             }
                                         }
@@ -8739,7 +8739,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                 }
                                             }
                                         }
@@ -8781,7 +8781,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                                 }
                                             }
                                         }
@@ -8992,7 +8992,7 @@ namespace TLIS_Service.Services
                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                             if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                             {
-                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                             }
                                         }
                                     }
@@ -9035,7 +9035,7 @@ namespace TLIS_Service.Services
                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                             if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                             {
-                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.Azimuth + " " + mwDish.HeightBase;
+                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
                                             }
                                         }
                                     }

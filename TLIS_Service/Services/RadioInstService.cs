@@ -5798,10 +5798,10 @@ namespace TLIS_Service.Services
                                                 RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
                                                 _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
                                                 _unitOfWork.SaveChanges();
-                                                if(EditRadioRRU.installationConfig.radioAntennaId != null)
+                                                if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                    && x.radioAntennaId != null).ToList();
+                                                    RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                   && x.radioAntennaId != null).ToList();
                                                     foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
@@ -6169,8 +6169,8 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                    && x.radioAntennaId != null).ToList();
+                                                    RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                   && x.radioAntennaId != null).ToList();
                                                     foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
