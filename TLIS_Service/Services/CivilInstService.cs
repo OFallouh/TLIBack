@@ -10797,17 +10797,18 @@ namespace TLIS_Service.Services
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                 {
+
+                 
+                  
                     var RadioRRuLoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
-                            x.allLoadInst.radioAntennaId == LoadId &&
-                            x.allLoadInst.radioRRUId != null &&
-                            !x.Dismantle &&
-                            x.SiteCode.ToLower() == sitecode.ToLower() &&
-                            _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(y =>
-                                y.allLoadInst.radioRRUId == x.allLoadInst.radioRRUId &&
-                                !y.Dismantle &&
-                                y.SiteCode.ToLower() == sitecode.ToLower()
-                             , y => y.allLoadInst).Any(), x => x.allLoadInst
-                           ).ToList();
+                        x.allLoadInst.radioAntennaId == LoadId &&
+                       x.allLoadInst.radioRRUId !=null &&
+                        !x.Dismantle &&
+                        x.SiteCode.ToLower() == sitecode.ToLower()
+                    , x => x.allLoadInst,x=>x.allLoadInst.radioRRU).Select(x=>x.allLoadInst.radioRRU)
+                    .ToList();
+
+
 
                     OutPut.RadioRRUs = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRRuLoad);
                 }
@@ -10815,8 +10816,7 @@ namespace TLIS_Service.Services
                 {
                     var RadioAntenna = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.radioRRUId
                     == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower() && x.allLoadInst.radioAntennaId != null
-                    && _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(y => y.allLoadInst.radioAntennaId == x.allLoadInst.radioAntennaId
-                    && !y.Dismantle && y.SiteCode.ToLower() == sitecode.ToLower(), y => y.allLoadInst).Any(), x => x.allLoadInst).ToList();
+                    ,x => x.allLoadInst,x=>x.allLoadInst.radioAntenna).Select(x=>x.allLoadInst.radioAntenna).ToList();
 
                     OutPut.RadioAntennas = _mapper.Map<List<LoadandsidearmViewDto>>(RadioAntenna);
                 }
