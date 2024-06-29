@@ -19252,115 +19252,115 @@ namespace TLIS_Service.Services
 
                                     List<TLIdynamicAttInstValue> PowerDynamicValues = new List<TLIdynamicAttInstValue>();
 
-                                    foreach (TLIdynamicAtt MissedAttribute in PowerMissedAttributes)
-                                    {
-                                        if (!string.IsNullOrEmpty(PowerDataTable.Rows[j][MissedAttribute.Key].ToString()))
-                                        {
-                                            TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
-                                            {
-                                                tablesNamesId = PowerTableNameId,
-                                                disable = false,
-                                                DynamicAttId = MissedAttribute.Id,
-                                                InventoryId = NewPowerEntity.Id
-                                            };
+                                    //foreach (TLIdynamicAtt MissedAttribute in PowerMissedAttributes)
+                                    //{
+                                    //    if (!string.IsNullOrEmpty(PowerDataTable.Rows[j][MissedAttribute.Key].ToString()))
+                                    //    {
+                                    //        TLIdynamicAttInstValue MissedAttributeValue = new TLIdynamicAttInstValue()
+                                    //        {
+                                    //            tablesNamesId = PowerTableNameId,
+                                    //            disable = false,
+                                    //            DynamicAttId = MissedAttribute.Id,
+                                    //            InventoryId = NewPowerEntity.Id
+                                    //        };
 
-                                            if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
-                                                MissedAttributeValue.ValueString = PowerDataTable.Rows[j][MissedAttribute.Key].ToString();
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
-                                                MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
-                                            {
-                                                double DoubleParser = 0;
+                                    //        if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
+                                    //            MissedAttributeValue.ValueString = PowerDataTable.Rows[j][MissedAttribute.Key].ToString();
+                                    //        else if (MissedAttribute.DataType.Name.ToLower() == "int".ToLower() ||
+                                    //            MissedAttribute.DataType.Name.ToLower() == "double".ToLower())
+                                    //        {
+                                    //            double DoubleParser = 0;
 
-                                                CheckParser = double.TryParse(PowerDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
+                                    //            CheckParser = double.TryParse(PowerDataTable.Rows[j][MissedAttribute.Key].ToString(), out DoubleParser);
 
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueDouble = DoubleParser;
+                                    //            if (CheckParser)
+                                    //                MissedAttributeValue.ValueDouble = DoubleParser;
 
-                                                else
-                                                {
-                                                    PowerTransaction.Dispose();
+                                    //            else
+                                    //            {
+                                    //                PowerTransaction.Dispose();
 
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({PowerDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLIpower.ToString(),
-                                                        SheetName = "Wind info",
-                                                        UniqueName = $"(Wind Name) : {PowerDataTable.Rows[j]["Wind Name"]}"
-                                                    };
+                                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    //                {
+                                    //                    CreatedAt = DateTime.Now,
+                                    //                    ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({PowerDataTable.Rows[j][MissedAttribute.Key]}) must be a number",
+                                    //                    IsDeleted = false,
+                                    //                    IsLib = false,
+                                    //                    RefTable = Helpers.Constants.TablesNames.TLIpower.ToString(),
+                                    //                    SheetName = "Wind info",
+                                    //                    UniqueName = $"(Wind Name) : {PowerDataTable.Rows[j]["Wind Name"]}"
+                                    //                };
 
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
+                                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    //                _unitOfWork.SaveChanges();
 
-                                                    continue;
-                                                }
-                                            }
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
-                                            {
-                                                bool BooleanParser = false;
+                                    //                continue;
+                                    //            }
+                                    //        }
+                                    //        else if (MissedAttribute.DataType.Name.ToLower() == "boolean".ToLower())
+                                    //        {
+                                    //            bool BooleanParser = false;
 
-                                                CheckParser = bool.TryParse(PowerDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
+                                    //            CheckParser = bool.TryParse(PowerDataTable.Rows[j][MissedAttribute.Key].ToString(), out BooleanParser);
 
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueBoolean = BooleanParser;
+                                    //            if (CheckParser)
+                                    //                MissedAttributeValue.ValueBoolean = BooleanParser;
 
-                                                else
-                                                {
-                                                    PowerTransaction.Dispose();
+                                    //            else
+                                    //            {
+                                    //                PowerTransaction.Dispose();
 
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({PowerDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLIpower.ToString(),
-                                                        SheetName = "Wind info",
-                                                        UniqueName = $"(Wind Name) : {PowerDataTable.Rows[j]["Wind Name"]}"
-                                                    };
+                                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    //                {
+                                    //                    CreatedAt = DateTime.Now,
+                                    //                    ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({PowerDataTable.Rows[j][MissedAttribute.Key]}) must be boolean (Yes/No)",
+                                    //                    IsDeleted = false,
+                                    //                    IsLib = false,
+                                    //                    RefTable = Helpers.Constants.TablesNames.TLIpower.ToString(),
+                                    //                    SheetName = "Wind info",
+                                    //                    UniqueName = $"(Wind Name) : {PowerDataTable.Rows[j]["Wind Name"]}"
+                                    //                };
 
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
+                                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    //                _unitOfWork.SaveChanges();
 
-                                                    continue;
-                                                }
-                                            }
-                                            else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
-                                            {
-                                                DateTime DateTimeParser = DateTime.Now;
+                                    //                continue;
+                                    //            }
+                                    //        }
+                                    //        else if (MissedAttribute.DataType.Name.ToLower() == "datetime".ToLower())
+                                    //        {
+                                    //            DateTime DateTimeParser = DateTime.Now;
 
-                                                CheckParser = DateTime.TryParse(PowerDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
+                                    //            CheckParser = DateTime.TryParse(PowerDataTable.Rows[j][MissedAttribute.Key].ToString(), out DateTimeParser);
 
-                                                if (CheckParser)
-                                                    MissedAttributeValue.ValueDateTime = DateTimeParser;
+                                    //            if (CheckParser)
+                                    //                MissedAttributeValue.ValueDateTime = DateTimeParser;
 
-                                                else
-                                                {
-                                                    PowerTransaction.Dispose();
+                                    //            else
+                                    //            {
+                                    //                PowerTransaction.Dispose();
 
-                                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
-                                                    {
-                                                        CreatedAt = DateTime.Now,
-                                                        ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({PowerDataTable.Rows[j][MissedAttribute.Key]}) must be date",
-                                                        IsDeleted = false,
-                                                        IsLib = false,
-                                                        RefTable = Helpers.Constants.TablesNames.TLIpower.ToString(),
-                                                        SheetName = "Wind info",
-                                                        UniqueName = $"(Wind Name) : {PowerDataTable.Rows[j]["Wind Name"]}"
-                                                    };
+                                    //                TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    //                {
+                                    //                    CreatedAt = DateTime.Now,
+                                    //                    ErrMsg = $"({MissedAttribute.Key}) coulumn's value: ({PowerDataTable.Rows[j][MissedAttribute.Key]}) must be date",
+                                    //                    IsDeleted = false,
+                                    //                    IsLib = false,
+                                    //                    RefTable = Helpers.Constants.TablesNames.TLIpower.ToString(),
+                                    //                    SheetName = "Wind info",
+                                    //                    UniqueName = $"(Wind Name) : {PowerDataTable.Rows[j]["Wind Name"]}"
+                                    //                };
 
-                                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
-                                                    _unitOfWork.SaveChanges();
+                                    //                _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    //                _unitOfWork.SaveChanges();
 
-                                                    continue;
-                                                }
-                                            }
+                                    //                continue;
+                                    //            }
+                                    //        }
 
-                                            PowerDynamicValues.Add(MissedAttributeValue);
-                                        }
-                                    }
+                                    //        PowerDynamicValues.Add(MissedAttributeValue);
+                                    //    }
+                                    //}
                                     if (PowerDynamicValues.Count() > 0)
                                     {
                                         _unitOfWork.DynamicAttInstValueRepository.AddRange(PowerDynamicValues);

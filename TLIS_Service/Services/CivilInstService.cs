@@ -112,34 +112,34 @@ namespace TLIS_Service.Services
                     x => x.allLoadInst.mwBU, x => x.allLoadInst.loadOther, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
                     x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU).ToList();
 
-                OutPut.MW_ODUs = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwODUId != null)
+                OutPut.TLImwODU = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwODUId != null)
                     .Select(x => x.allLoadInst.mwODU).Distinct().ToList());
 
-                OutPut.MW_Dishes = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwDishId != null)
+                OutPut.TLImwDish = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwDishId != null)
                     .Select(x => x.allLoadInst.mwDish).Distinct().ToList());
 
-                OutPut.MW_RFUs = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwRFUId != null)
+                OutPut.TLImwRFU = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwRFUId != null)
                     .Select(x => x.allLoadInst.mwRFU).Distinct().ToList());
 
-                OutPut.MW_BUs = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwBUId != null)
+                OutPut.TLImwBU = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwBUId != null)
                     .Select(x => x.allLoadInst.mwBU).Distinct().ToList());
 
-                OutPut.MW_Others = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwOtherId != null)
+                OutPut.TLImwOther = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwOtherId != null)
                     .Select(x => x.allLoadInst.mwOther).Distinct().ToList());
 
-                OutPut.RadioAntennas = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioAntennaId != null)
+                OutPut.TLIradioAntenna = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioAntennaId != null)
                     .Select(x => x.allLoadInst.radioAntenna).Distinct().ToList());
 
-                OutPut.RadioRRUs = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioRRUId != null)
+                OutPut.TLIRadioRRU = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioRRUId != null)
                     .Select(x => x.allLoadInst.radioRRU).Distinct().ToList());
 
-                OutPut.RadioOthers = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioOtherId != null)
+                OutPut.TLIradioOther = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.radioOtherId != null)
                     .Select(x => x.allLoadInst.radioOther).Distinct().ToList());
 
-                OutPut.Powers = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.powerId != null)
+                OutPut.TLIpower = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.powerId != null)
                     .Select(x => x.allLoadInst.power).Distinct().ToList());
 
-                OutPut.LoadOthers = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.loadOtherId != null)
+                OutPut.TLIloadOther = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.loadOtherId != null)
                     .Select(x => x.allLoadInst.loadOther).Distinct().ToList());
 
                 return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -181,17 +181,17 @@ namespace TLIS_Service.Services
                             x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther,
                             x => x.allLoadInst.radioRRU, x => x.allLoadInst.loadOther).ToList();
 
-                    OutPut.SideArms = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.sideArmId != null && x.allLoadInstId == null, x => x.sideArm);
-                    OutPut.MW_ODUs = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwODUId != null, x => x.allLoadInst.mwODU);
-                    OutPut.MW_Dishes = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwDishId != null, x => x.allLoadInst.mwDish);
-                    OutPut.MW_RFUs = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwRFUId != null, x => x.allLoadInst.mwRFU);
-                    OutPut.MW_BUs = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwBUId != null, x => x.allLoadInst.mwBU);
-                    OutPut.MW_Others = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwOtherId != null, x => x.allLoadInst.mwOther);
-                    OutPut.RadioAntennas = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioAntennaId != null, x => x.allLoadInst.radioAntenna);
-                    OutPut.RadioRRUs = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioRRUId != null, x => x.allLoadInst.radioRRU);
-                    OutPut.RadioOthers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioOtherId != null, x => x.allLoadInst.radioOther);
-                    OutPut.Powers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.powerId != null, x => x.allLoadInst.power);
-                    OutPut.LoadOthers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.loadOtherId != null, x => x.allLoadInst.loadOther);
+                    OutPut.TLIsideArm = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.sideArmId != null && x.allLoadInstId == null, x => x.sideArm);
+                    OutPut.TLImwODU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwODUId != null, x => x.allLoadInst.mwODU);
+                    OutPut.TLImwDish = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwDishId != null, x => x.allLoadInst.mwDish);
+                    OutPut.TLImwRFU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwRFUId != null, x => x.allLoadInst.mwRFU);
+                    OutPut.TLImwBU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwBUId != null, x => x.allLoadInst.mwBU);
+                    OutPut.TLImwOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwOtherId != null, x => x.allLoadInst.mwOther);
+                    OutPut.TLIradioAntenna = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioAntennaId != null, x => x.allLoadInst.radioAntenna);
+                    OutPut.TLIRadioRRU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioRRUId != null, x => x.allLoadInst.radioRRU);
+                    OutPut.TLIradioOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioOtherId != null, x => x.allLoadInst.radioOther);
+                    OutPut.TLIpower = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.powerId != null, x => x.allLoadInst.power);
+                    OutPut.TLIloadOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.loadOtherId != null, x => x.allLoadInst.loadOther);
                     Response.Loads = OutPut;
                 }
               
@@ -10349,52 +10349,52 @@ namespace TLIS_Service.Services
                         if (keyName == "mwBUId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwBU.Where(x => x.Id == resultLoad.mwBUId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.MW_BUs.Add(loadOnCivil);
+                            civilLoad.TLImwBU.Add(loadOnCivil);
                         }
                         else if (keyName == "mwDishId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwDish.Where(x => x.Id == resultLoad.mwDishId).Select(x => x.DishName).FirstOrDefault());
-                            civilLoad.MW_Dishes.Add(loadOnCivil);
+                            civilLoad.TLImwDish.Add(loadOnCivil);
                         }
                         else if (keyName == "mwODUId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwODU.Where(x => x.Id == resultLoad.mwODUId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.MW_ODUs.Add(loadOnCivil);
+                            civilLoad.TLImwODU.Add(loadOnCivil);
                         }
                         else if (keyName == "mwRFUId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwRFU.Where(x => x.Id == resultLoad.mwRFUId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.MW_RFUs.Add(loadOnCivil);
+                            civilLoad.TLImwRFU.Add(loadOnCivil);
                         }
                         else if (keyName == "mwOtherId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLImwOther.Where(x => x.Id == resultLoad.mwOtherId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.MW_Others.Add(loadOnCivil);
+                            civilLoad.TLImwOther.Add(loadOnCivil);
                         }
                         else if (keyName == "radioAntennaId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIradioAntenna.Where(x => x.Id == resultLoad.radioAntennaId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.RadioAntennas.Add(loadOnCivil);
+                            civilLoad.TLIradioAntenna.Add(loadOnCivil);
                         }
                         else if (keyName == "radioRRUId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIRadioRRU.Where(x => x.Id == resultLoad.radioRRUId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.RadioRRUs.Add(loadOnCivil);
+                            civilLoad.TLIRadioRRU.Add(loadOnCivil);
                         }
                         else if (keyName == "radioOtherId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIradioOther.Where(x => x.Id == resultLoad.radioOtherId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.RadioOthers.Add(loadOnCivil);
+                            civilLoad.TLIradioOther.Add(loadOnCivil);
                         }
                         else if (keyName == "powerId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIpower.Where(x => x.Id == resultLoad.powerId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.Powers.Add(loadOnCivil);
+                            civilLoad.TLIpower.Add(loadOnCivil);
                         }
                         else if (keyName == "loadOtherId")
                         {
                             loadOnCivil = _mapper.Map<LoadandsidearmViewDto>(_dbContext.TLIloadOther.Where(x => x.Id == resultLoad.loadOtherId).Select(x => x.Name).FirstOrDefault());
-                            civilLoad.LoadOthers.Add(loadOnCivil);
+                            civilLoad.TLIloadOther.Add(loadOnCivil);
                         }
 
                         ListcivilLoad.Add(civilLoad);
@@ -10853,7 +10853,7 @@ namespace TLIS_Service.Services
                      x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwRFU)
                      .Select(x=>x.allLoadInst.mwRFU);
 
-                    OutPut.MW_RFUs = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRFULoad);
+                    OutPut.TLImwRFU = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRFULoad);
 
                     var CascudedMWBU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.PortCascadeId == LoadId
                     && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwBU)
@@ -10863,7 +10863,7 @@ namespace TLIS_Service.Services
                         .Select(x => x.allLoadInst.mwBU).ToList();
 
                     var combinedMWBU = CascudedMWBU.Union(BaseMWBU).ToList();
-                    OutPut.MW_BUs = _mapper.Map<List<LoadandsidearmViewDto>>(combinedMWBU);
+                    OutPut.TLImwBU = _mapper.Map<List<LoadandsidearmViewDto>>(combinedMWBU);
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLImwDish.ToString())
                 {
@@ -10872,7 +10872,7 @@ namespace TLIS_Service.Services
                     LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower()
                     , x => x.allLoadInst,x=>x.allLoadInst.mwODU).Select(x=>x.allLoadInst.mwODU).ToList();
 
-                    OutPut.MW_ODUs = _mapper.Map<List<LoadandsidearmViewDto>>(ODULoad);
+                    OutPut.TLImwODU = _mapper.Map<List<LoadandsidearmViewDto>>(ODULoad);
 
 
 
@@ -10887,7 +10887,7 @@ namespace TLIS_Service.Services
                         .Select(x => x.allLoadInst.mwBU).ToList();
 
                     var combinedMWBU = MWBULoadSdDish.Union(MWBULoadMainDish).ToList();
-                    OutPut.MW_BUs = _mapper.Map<List<LoadandsidearmViewDto>>(combinedMWBU);
+                    OutPut.TLImwBU = _mapper.Map<List<LoadandsidearmViewDto>>(combinedMWBU);
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                 {
@@ -10900,7 +10900,7 @@ namespace TLIS_Service.Services
                     , x => x.allLoadInst,x=>x.allLoadInst.radioRRU).Select(x=>x.allLoadInst.radioRRU)
                     .ToList();
 
-                    OutPut.RadioRRUs = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRRuLoad);
+                    OutPut.TLIRadioRRU = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRRuLoad);
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
                 {
@@ -10908,7 +10908,7 @@ namespace TLIS_Service.Services
                     == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower() && x.allLoadInst.radioAntennaId != null
                     ,x => x.allLoadInst,x=>x.allLoadInst.radioAntenna).Select(x=>x.allLoadInst.radioAntenna).ToList();
 
-                    OutPut.RadioAntennas = _mapper.Map<List<LoadandsidearmViewDto>>(RadioAntenna);
+                    OutPut.TLIradioAntenna = _mapper.Map<List<LoadandsidearmViewDto>>(RadioAntenna);
                 }
                 return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }

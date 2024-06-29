@@ -20,29 +20,29 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
     {
         public CivilLoads()
         {
-            SideArms = new List<LoadandsidearmViewDto>();
-            MW_ODUs = new List<LoadandsidearmViewDto>();
-            MW_Dishes = new List<LoadandsidearmViewDto>();
-            MW_RFUs = new List<LoadandsidearmViewDto>();
-            MW_BUs = new List<LoadandsidearmViewDto>();
-            MW_Others = new List<LoadandsidearmViewDto>();
-            RadioAntennas = new List<LoadandsidearmViewDto>();
-            RadioRRUs = new List<LoadandsidearmViewDto>();
-            RadioOthers = new List<LoadandsidearmViewDto>();
-            Powers = new List<LoadandsidearmViewDto>();
-            LoadOthers = new List<LoadandsidearmViewDto>();
+            TLIsideArm = new List<LoadandsidearmViewDto>();
+            TLImwODU = new List<LoadandsidearmViewDto>();
+            TLImwDish = new List<LoadandsidearmViewDto>();
+            TLImwRFU = new List<LoadandsidearmViewDto>();
+            TLImwBU = new List<LoadandsidearmViewDto>();
+            TLImwOther = new List<LoadandsidearmViewDto>();
+            TLIradioAntenna = new List<LoadandsidearmViewDto>();
+            TLIRadioRRU = new List<LoadandsidearmViewDto>();
+            TLIradioOther = new List<LoadandsidearmViewDto>();
+            TLIpower = new List<LoadandsidearmViewDto>();
+            TLIloadOther = new List<LoadandsidearmViewDto>();
         }
-        public List<LoadandsidearmViewDto> SideArms { get; set; }
-        public List<LoadandsidearmViewDto> MW_ODUs { get; set; }
-        public List<LoadandsidearmViewDto> MW_Dishes { get; set; }
-        public List<LoadandsidearmViewDto> MW_RFUs { get; set; }
-        public List<LoadandsidearmViewDto> MW_BUs { get; set; }
-        public List<LoadandsidearmViewDto> MW_Others { get; set; }
-        public List<LoadandsidearmViewDto> RadioAntennas { get; set; }
-        public List<LoadandsidearmViewDto> RadioRRUs { get; set; }
-        public List<LoadandsidearmViewDto> RadioOthers { get; set; }
-        public List<LoadandsidearmViewDto> Powers { get; set; }
-        public List<LoadandsidearmViewDto> LoadOthers { get; set; }
+        public List<LoadandsidearmViewDto> TLIsideArm { get; set; }
+        public List<LoadandsidearmViewDto> TLImwODU { get; set; }
+        public List<LoadandsidearmViewDto> TLImwDish { get; set; }
+        public List<LoadandsidearmViewDto> TLImwRFU { get; set; }
+        public List<LoadandsidearmViewDto> TLImwBU { get; set; }
+        public List<LoadandsidearmViewDto> TLImwOther { get; set; }
+        public List<LoadandsidearmViewDto> TLIradioAntenna { get; set; }
+        public List<LoadandsidearmViewDto> TLIRadioRRU { get; set; }
+        public List<LoadandsidearmViewDto> TLIradioOther { get; set; }
+        public List<LoadandsidearmViewDto> TLIpower { get; set; }
+        public List<LoadandsidearmViewDto> TLIloadOther { get; set; }
         public class LoadandsidearmViewDto
         {
             public int  Id { get; set; }
