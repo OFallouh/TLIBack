@@ -27,8 +27,7 @@ using TLIS_DAL.ViewModels.SiteStatusDTOs;
 namespace TLIS_Service.IService
 {
     public interface ISiteService
-    {
-        Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination(ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null);
+    {        
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
         List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString);
@@ -79,5 +78,6 @@ namespace TLIS_Service.IService
         List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow();
         Response<UsedSitesViewModel> GetUsedSitesCount();
         Response<ItemsOnSite> GetItemsOnSite(string SiteCode);
+        Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination( bool? GetItemsCountOnEachSite);
     }
 }

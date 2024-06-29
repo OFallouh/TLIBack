@@ -732,10 +732,10 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
-        public Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination(ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
+        public Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination (bool? GetItemsCountOnEachSite)
         {
             string[] ErrorMessagesWhenReturning = null;
-
+           bool isRefresh = true;
         StartAgainWithRefresh:
             try
             {
@@ -759,11 +759,11 @@ namespace TLIS_Service.Services
 
                 List<string> AllUsedSites = UsedSitesInOtherInventories.Distinct().ToList();
 
-                if (filters != null ? filters.Count() > 0 : false)
-                {
+
+               
                     IEnumerable<SiteDTO> SitesViewModels;
 
-                    if (isRefresh != null ? isRefresh.Value : false)
+                    if (isRefresh != null ? isRefresh : false)
                     {
                         _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
                                 .Include(x => x.siteStatus).ToList();
@@ -775,117 +775,7 @@ namespace TLIS_Service.Services
                         _MySites.Count();
                         SitesViewModels = _mapper.Map<IEnumerable<SiteDTO>>(_MySites);
                     }
-
-                    foreach (FilterObjectList filter in filters)
-                    {
-                        if (filter.key != "isUsed")
-                        {
-                            PropertyInfo Property = typeof(SiteDTO).GetProperties().FirstOrDefault(x => x.Name.ToLower() == filter.key.ToLower());
-
-                            if (Property.PropertyType == typeof(string))
-                            {
-                                if (Property.Name.ToLower() == "LocationType".ToLower())
-                                {
-                                    SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                        (Locations.Select(z => z.Id.ToString()).FirstOrDefault(y => y == Property.GetValue(x).ToString()) != null ?
-                                            filter.value.Select(z => z.ToString().ToLower()).Any(z => Locations.FirstOrDefault(y => y.Id.ToString() == Property.GetValue(x).ToString()).Name.ToLower()
-                                                .StartsWith(z)) : false) : false);
-                                }
-                                else
-                                {
-                                    SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                        filter.value.Select(z => z.ToString().ToLower()).Any(z => Property.GetValue(x).ToString().ToLower().StartsWith(z)) : false).ToList();
-                                }
-                            }
-                            else
-                            {
-                                SitesViewModels = SitesViewModels.Where(x => Property.GetValue(x) != null ?
-                                    filter.value.Select(z => z.ToString().ToLower()).Any(z => z == Property.GetValue(x).ToString().ToLower()) : false).ToList();
-                            }
-                        }
-
-                    }
-
-                    var UsedFilter = filters.FirstOrDefault(x => x.key == "isUsed");
-                    int Count = 0;
-                    if (UsedFilter != null)
-                    {
-                        SitesViewModels = SitesViewModels.Where(x => AllUsedSites.Any(y => y.ToLower() == x.SiteCode.ToLower()).ToString().ToLower() == UsedFilter.ToString().ToLower());
-                        Count = SitesViewModels.Count();
-                        SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                        .Take(parameterPagination.PageSize);
-                    }
-                    else
-                    {
-                        SitesViewModels = SitesViewModels.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                                                .Take(parameterPagination.PageSize);
-                        Count = SitesViewModels.Count();
-                    }
-
-                    List<SiteDTO> ListForOutPutOnly = new List<SiteDTO>();
-
-                    foreach (SiteDTO SitesViewModel in SitesViewModels)
-                    {
-                        string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
-                            .LocationType;
-
-                        if (!string.IsNullOrEmpty(LocationTypeInModel))
-                        {
-                            TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
-
-                            ListForOutPutOnly.Add(new SiteDTO()
-                            {
-                                SiteCode = SitesViewModel.SiteCode,
-                           
-                                SiteName = SitesViewModel.SiteName,
-                               
-                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower())
-                               
-                            });
-                        }
-                        else
-                        {
-                            ListForOutPutOnly.Add(new SiteDTO()
-                            {
-                                SiteCode = SitesViewModel.SiteCode,
-                             
-                                SiteName = SitesViewModel.SiteName,
-                               
-                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower())
-                                
-                            });
-                        }
-                    }
-
-                    return new Response<IEnumerable<SiteDTO>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
-                }
-                else
-                {
-                    IEnumerable<SiteDTO> SitesViewModels;
-
-                    if (isRefresh != null ? isRefresh.Value : false)
-                    {
-                        _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
-                                .Include(x => x.siteStatus).ToList();
-
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteDTO>>(_MySites);
-                    }
-                    else
-                    {
-                        _MySites.Count();
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteDTO>>(_MySites);
-                    }
-
-
-
-                    int Count = SitesViewModels.Count();
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteDTO>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                                                .Take(parameterPagination.PageSize));
-
-
-
-
-
+         
                     List<SiteDTO> ListForOutPutOnly = new List<SiteDTO>();
 
                     foreach (SiteDTO SitesViewModel in SitesViewModels)
@@ -921,9 +811,9 @@ namespace TLIS_Service.Services
                         }
                     }
 
-                    return new Response<IEnumerable<SiteDTO>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                    return new Response<IEnumerable<SiteDTO>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
-            }
+            
             catch (Exception)
             {
                 isRefresh = true;

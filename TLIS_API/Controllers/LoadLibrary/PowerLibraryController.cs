@@ -149,14 +149,52 @@ namespace TLIS_API.Controllers.Load
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisablePowerLibrary(int Id)
         {
-            var response = await _unitOfWorkService.PowerLibraryService.DisablePowerLibrary(Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), Id);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.PowerLibraryService.DisablePowerLibrary(userId, Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), Id);
             return Ok(response);
         }
         [HttpPost("DeletePowerLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DeletePowerLibrary(int Id)
         {
-            var response = await _unitOfWorkService.PowerLibraryService.DeletePowerLibrary(Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), Id);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.PowerLibraryService.DeletePowerLibrary(userId, Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), Id);
             return Ok(response);
         }
     }

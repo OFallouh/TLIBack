@@ -2347,16 +2347,21 @@ namespace TLIS_Service.Services
         //get record by Id
         //disable or enable record depened on record status
         //Update Entity
-        public async Task<Response<AllItemAttributes>> DisablePowerLibrary(string TableName, int Id)
+        public async Task<Response<AllItemAttributes>> DisablePowerLibrary(int UserId,string TableName, int Id)
         {
             try
             {
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
+                var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
+                      x.allLoadInst.power.powerLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.power).ToList();
+       
+                if (CivilLoad != null && CivilLoad.Count > 0)
+                    return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                 var PowerEntity = _unitOfWork.PowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                 TLIpowerLibrary NewPowerLibrary = _unitOfWork.PowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                 NewPowerLibrary.Active = !(NewPowerLibrary.Active);
-                _unitOfWork.PowerLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, PowerEntity, NewPowerLibrary);
-                //DisableDynamicAttLibValues(LoadType.Id, Id);
+                _unitOfWork.PowerLibraryRepository.UpdateWithHistory(UserId, PowerEntity, NewPowerLibrary);
                 await _unitOfWork.SaveChangesAsync();
                 return new Response<AllItemAttributes>();
             }
@@ -2428,19 +2433,25 @@ namespace TLIS_Service.Services
         //set Deleted is true
         //Update record 
         //disable dynamic attributes related to that record
-        public async Task<Response<AllItemAttributes>> DeletePowerLibrary(string TableName, int Id)
+        public async Task<Response<AllItemAttributes>> DeletePowerLibrary(int UserId,string TableName, int Id)
         {
             try
             {
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
+                var CivilLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null && !x.Dismantle &&
+                       x.allLoadInst.power.powerLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.power).ToList();
+
+                if (CivilLoad != null && CivilLoad.Count > 0)
+                    return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                 var PowerEntity = _unitOfWork.PowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                 TLIpowerLibrary NewPowerLibrary = _unitOfWork.PowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                 NewPowerLibrary.Deleted = true;
                 NewPowerLibrary.Model = NewPowerLibrary.Model + "_" + DateTime.Now.ToString();
-                _unitOfWork.PowerLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, PowerEntity, NewPowerLibrary);
+                _unitOfWork.PowerLibraryRepository.UpdateWithHistory(UserId, PowerEntity, NewPowerLibrary);
                 _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                 await _unitOfWork.SaveChangesAsync();
-                //_unitOfWork.TablesHistoryRepository.AddHistory(PowerEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIpowerLibrary.ToString());
+               
                 return new Response<AllItemAttributes>();
             }
             catch (Exception err)
