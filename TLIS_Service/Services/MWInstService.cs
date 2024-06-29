@@ -16234,14 +16234,15 @@ namespace TLIS_Service.Services
                     if (LoadName == Helpers.Constants.TablesNames.TLImwDish.ToString())
                     {
                         var DishLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.mwDishId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(),x=>x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        ,x=>x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (DishLoad != null)
                         {
                             var ODULoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId ==
                             DishLoad.allLoadInst.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower()
                             && x.allCivilInstId == DishLoad.allCivilInstId, x => x.allLoadInst).ToList();
 
-                           if(ODULoad !=null && ODULoad.Count >0)
+                            if (ODULoad != null && ODULoad.Count > 0)
                                 return new Response<bool>(true, false, null, "can not dismantle this dish because found loaed on it", (int)ApiReturnCode.fail);
 
                             var MWBULoadSdDish = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwBU.SdDishId ==
@@ -16296,7 +16297,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLImwODU.ToString())
                     {
                         var ODULoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.mwODUId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (ODULoad != null)
                         {
                             ODULoad.Dismantle = true;
@@ -16336,7 +16338,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
                     {
                         var RadioRRULoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.radioRRUId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (RadioRRULoad != null)
                         {
                             var RadioAntenna = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.radioRRUId
@@ -16388,7 +16391,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLIpower.ToString())
                     {
                         var PowerLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.powerId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (PowerLoad != null)
                         {
                             PowerLoad.Dismantle = true;
@@ -16428,7 +16432,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLIloadOther.ToString())
                     {
                         var OtherLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.loadOtherId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (OtherLoad != null)
                         {
                             OtherLoad.Dismantle = true;
@@ -16468,7 +16473,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                     {
                         var RadioAntennaLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (RadioAntennaLoad != null)
                         {
                             var RadioRRuLoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
@@ -16523,7 +16529,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLImwBU.ToString())
                     {
                         var MWBULoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.mwBUId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (MWBULoad != null)
                         {
                             var RadioRFULoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
@@ -16583,7 +16590,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLImwRFU.ToString())
                     {
                         var MWRFULoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.mwRFUId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (MWRFULoad != null)
                         {
                             MWRFULoad.Dismantle = true;
@@ -16623,7 +16631,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLImwOther.ToString())
                     {
                         var MWOtherLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.mwOtherId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (MWOtherLoad != null)
                         {
                             MWOtherLoad.Dismantle = true;
@@ -16663,7 +16672,8 @@ namespace TLIS_Service.Services
                     else if (LoadName == Helpers.Constants.TablesNames.TLIradioOther.ToString())
                     {
                         var RdioOtherLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.radioOtherId
-                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
+                        == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (RdioOtherLoad != null)
                         {
                             RdioOtherLoad.Dismantle = true;
@@ -16720,49 +16730,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
-                    if (LoadName == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
-                    //else if (addDependencyViewModel.TableName == "TLIradioOther")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    else if (LoadName == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
 
-                    //else if (addDependencyViewModel.TableName == "TLImwBU")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    //else if (addDependencyViewModel.TableName == "TLImwRFU")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-                    else if (LoadName == Helpers.Constants.TablesNames.TLImwDish.ToString())
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
-                    else if (LoadName == Helpers.Constants.TablesNames.TLImwODU.ToString())
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
-                    //else if (addDependencyViewModel.TableName == "TLImwOther")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
 
-                    //else if (addDependencyViewModel.TableName == "TLIpower")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}
-
-                    //else if (addDependencyViewModel.TableName == "TLIloadOther")
-                    //{
-                    //    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
-                    //}                   
 
                     return new Response<bool>(true, true, null, null, (int)ApiReturnCode.success);
                 }

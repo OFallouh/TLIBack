@@ -16,6 +16,9 @@ using TLIS_DAL.ViewModels.SideArmDTOs;
 
 namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
 {
+    using System.Collections.Generic;
+    using System.Text.Json.Serialization;
+
     public class CivilLoads
     {
         public CivilLoads()
@@ -32,21 +35,35 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
             TLIpower = new List<LoadandsidearmViewDto>();
             TLIloadOther = new List<LoadandsidearmViewDto>();
         }
+
+        [JsonPropertyName("TLIsideArm")]
         public List<LoadandsidearmViewDto> TLIsideArm { get; set; }
+        [JsonPropertyName("TLImwODU")]
         public List<LoadandsidearmViewDto> TLImwODU { get; set; }
+        [JsonPropertyName("TLImwDish")]
         public List<LoadandsidearmViewDto> TLImwDish { get; set; }
+        [JsonPropertyName("TLImwRFU")]
         public List<LoadandsidearmViewDto> TLImwRFU { get; set; }
+        [JsonPropertyName("TLImwBU")]
         public List<LoadandsidearmViewDto> TLImwBU { get; set; }
+        [JsonPropertyName("TLImwOther")]
         public List<LoadandsidearmViewDto> TLImwOther { get; set; }
+        [JsonPropertyName("TLIradioAntenna")]
         public List<LoadandsidearmViewDto> TLIradioAntenna { get; set; }
+        [JsonPropertyName("TLIRadioRRU")]
         public List<LoadandsidearmViewDto> TLIRadioRRU { get; set; }
+        [JsonPropertyName("TLIradioOther")]
         public List<LoadandsidearmViewDto> TLIradioOther { get; set; }
+        [JsonPropertyName("TLIpower")]
         public List<LoadandsidearmViewDto> TLIpower { get; set; }
+        [JsonPropertyName("TLIloadOther")]
         public List<LoadandsidearmViewDto> TLIloadOther { get; set; }
+
         public class LoadandsidearmViewDto
         {
-            public int  Id { get; set; }
+            public int Id { get; set; }
             public string Name { get; set; }
         }
     }
+
 }
