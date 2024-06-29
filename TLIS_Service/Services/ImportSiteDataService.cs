@@ -19232,19 +19232,19 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                    TLIpower NewPowerEntity = new TLIpower()
-                                    {
-                                        Name = PowerName,
-                                        Notes = PowerDataTable.Rows[j]["Notes"].ToString(),
-                                        ownerId = PowerOwnerId,
-                                        installationPlaceId = PowerInstallationPlaceId,
-                                        Azimuth = PowerAzimuth,
-                                        HeightBase = PowerHeight,
-                                        powerLibraryId = PowerLibraryId
-                                    };
+                                    ////TLIpower NewPowerEntity = new TLIpower()
+                                    ////{
+                                    ////    Name = PowerName,
+                                    ////    Notes = PowerDataTable.Rows[j]["Notes"].ToString(),
+                                    ////    ownerId = PowerOwnerId,
+                                    ////    installationPlaceId = PowerInstallationPlaceId,
+                                    ////    Azimuth = PowerAzimuth,
+                                    ////    HeightBase = PowerHeight,
+                                    ////    powerLibraryId = PowerLibraryId
+                                    ////};
 
-                                    _unitOfWork.PowerRepository.Add(NewPowerEntity);
-                                    _unitOfWork.SaveChanges();
+                                    //_unitOfWork.PowerRepository.Add(NewPowerEntity);
+                                    //_unitOfWork.SaveChanges();
 
                                     //
                                     // Dynamic Attributes..
@@ -19371,33 +19371,33 @@ namespace TLIS_Service.Services
                                     // All Load Installation Information..
                                     //
 
-                                    TLIallLoadInst NewPowerAllLoadInstEntity = new TLIallLoadInst()
-                                    {
-                                        powerId = NewPowerEntity.Id,
-                                        Draft = false,
-                                        Active = true
-                                    };
+                                    //TLIallLoadInst NewPowerAllLoadInstEntity = new TLIallLoadInst()
+                                    //{
+                                    //    powerId = NewPowerEntity.Id,
+                                    //    Draft = false,
+                                    //    Active = true
+                                    //};
 
-                                    _unitOfWork.AllLoadInstRepository.Add(NewPowerAllLoadInstEntity);
-                                    _unitOfWork.SaveChanges();
+                                    //_unitOfWork.AllLoadInstRepository.Add(NewPowerAllLoadInstEntity);
+                                    //_unitOfWork.SaveChanges();
 
                                     //
                                     // Civil Loads Information..
                                     //
 
-                                    TLIcivilLoads NewPowerCivilLoadsEntity = new TLIcivilLoads()
-                                    {
-                                        allLoadInstId = NewPowerAllLoadInstEntity.Id,
-                                        SiteCode = Power_SiteCodeAfterCheck,
-                                        civilSteelSupportCategoryId = PowerCivilSupportCategoryId,
-                                        allCivilInstId = PowerAllCivilInstId,
-                                        Dismantle = false,
-                                        InstallationDate = DateTime.Now,
-                                        sideArmId = PowerSideArmId,
-                                        legId = PowerLegId
-                                    };
-                                    _unitOfWork.CivilLoadsRepository.Add(NewPowerCivilLoadsEntity);
-                                    _unitOfWork.SaveChanges();
+                                    //TLIcivilLoads NewPowerCivilLoadsEntity = new TLIcivilLoads()
+                                    //{
+                                    //    allLoadInstId = NewPowerAllLoadInstEntity.Id,
+                                    //    SiteCode = Power_SiteCodeAfterCheck,
+                                    //    civilSteelSupportCategoryId = PowerCivilSupportCategoryId,
+                                    //    allCivilInstId = PowerAllCivilInstId,
+                                    //    Dismantle = false,
+                                    //    InstallationDate = DateTime.Now,
+                                    //    sideArmId = PowerSideArmId,
+                                    //    legId = PowerLegId
+                                    //};
+                                    //_unitOfWork.CivilLoadsRepository.Add(NewPowerCivilLoadsEntity);
+                                    //_unitOfWork.SaveChanges();
                                     PowerTransaction.Complete();
                                 }
                                 catch (Exception err)
