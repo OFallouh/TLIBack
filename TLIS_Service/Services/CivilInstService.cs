@@ -149,12 +149,15 @@ namespace TLIS_Service.Services
                 return new Response<CivilLoads>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<CivilLoads> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType)
+        public Response<CheckLoadAndSideArmOnCivil> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType)
         {
             try
             {
+                CheckLoadAndSideArmOnCivil Response = new CheckLoadAndSideArmOnCivil();
                 CivilLoads OutPut = new CivilLoads();
+                SideArmAndLoadsOnCivil sideArmAndLoadsOnCivil = new SideArmAndLoadsOnCivil();
                 int? civilInstId = null;
+                double Availablespace = 0;
 
                 if (CivilType.ToLower() == Helpers.Constants.TablesNames.TLIcivilWithLegs.ToString().ToLower())
                 {
@@ -189,13 +192,104 @@ namespace TLIS_Service.Services
                     OutPut.RadioOthers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioOtherId != null, x => x.allLoadInst.radioOther);
                     OutPut.Powers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.powerId != null, x => x.allLoadInst.power);
                     OutPut.LoadOthers = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.loadOtherId != null, x => x.allLoadInst.loadOther);
+                    Response.Loads = OutPut;
+                }
+              
+                if (CivilType == "TLIcivilWithLegs")
+                {
+                    var CivilWithLeg = _unitOfWork.CivilWithLegsRepository.GetIncludeWhereFirst(x => x.Id == CivilId, x => x.CivilWithLegsLib);
+                    if (CivilWithLeg != null)
+                    {
+
+                        if (CivilWithLeg.IsEnforeced == true)
+                        {
+                            if (CivilWithLeg.SupportMaxLoadAfterInforcement != 0 && CivilWithLeg.CurrentLoads != 0)
+                            {
+                                Availablespace = CivilWithLeg.SupportMaxLoadAfterInforcement - CivilWithLeg.CurrentLoads;
+
+                            }
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithLeg.SupportMaxLoadAfterInforcement;
+                        }
+
+                        else if (CivilWithLeg.Support_Limited_Load != 0)
+                        {
+                            if (CivilWithLeg.CurrentLoads != 0)
+                            {
+                                Availablespace = CivilWithLeg.Support_Limited_Load - CivilWithLeg.CurrentLoads;
+                            }
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithLeg.Support_Limited_Load;
+                        }
+                        else
+                        {
+                            if (CivilWithLeg.CurrentLoads != 0)
+                            {
+                                Availablespace = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load - CivilWithLeg.CurrentLoads;
+                            }
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load;
+                        }
+                    }
+                    sideArmAndLoadsOnCivil.CurrentLoads = CivilWithLeg.CurrentLoads;
+                    sideArmAndLoadsOnCivil.Availablespace = Availablespace;
+                    Response.Info = sideArmAndLoadsOnCivil;
+                }
+                else if (CivilType == "TLIcivilWithoutLeg")
+                {
+                    var CivilWithout = _unitOfWork.CivilWithoutLegRepository.GetIncludeWhereFirst(x => x.Id == CivilId, x => x.CivilWithoutlegsLib);
+                    if (CivilWithout != null)
+                    {
+                        if (CivilWithout.Support_Limited_Load != 0)
+                        {
+                            if (CivilWithout.CurrentLoads != 0)
+                            {
+                                Availablespace = CivilWithout.Support_Limited_Load - CivilWithout.CurrentLoads;
+                            }
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithout.Support_Limited_Load;
+                        }
+                        else
+                        {
+                            if (CivilWithout.CurrentLoads != 0)
+                            {
+                                Availablespace = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load - CivilWithout.CurrentLoads;
+                            }
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load;
+                        }
+                    }
+                    sideArmAndLoadsOnCivil.CurrentLoads = CivilWithout.CurrentLoads;
+                    sideArmAndLoadsOnCivil.Availablespace = Availablespace;
+                    Response.Info = sideArmAndLoadsOnCivil;
+                }
+                else if (CivilType == "TLIcivilNonSteel")
+                {
+                    var CivilNonSteel = _unitOfWork.CivilNonSteelRepository.GetIncludeWhereFirst(x => x.Id == CivilId, x => x.CivilNonsteelLibrary);
+                    if (CivilNonSteel != null)
+                    {
+                        if (CivilNonSteel.Support_Limited_Load != 0)
+                        {
+                            if (CivilNonSteel.CurrentLoads != 0)
+                            {
+                                Availablespace = CivilNonSteel.Support_Limited_Load - CivilNonSteel.CurrentLoads;
+                            }
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = CivilNonSteel.Support_Limited_Load;
+                        }
+                        else
+                        {
+                            if (CivilNonSteel.CurrentLoads != 0)
+                            {
+                                Availablespace = CivilNonSteel.CivilNonsteelLibrary.Manufactured_Max_Load - CivilNonSteel.CurrentLoads;
+                            }
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = CivilNonSteel.CivilNonsteelLibrary.Manufactured_Max_Load;
+                        }
+                    }
+                    sideArmAndLoadsOnCivil.CurrentLoads = CivilNonSteel.CurrentLoads;
+                    sideArmAndLoadsOnCivil.Availablespace = Availablespace;
+                    Response.Info = sideArmAndLoadsOnCivil;
                 }
 
-                return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<CheckLoadAndSideArmOnCivil>(true, Response, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                return new Response<CivilLoads>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<CheckLoadAndSideArmOnCivil>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
 
