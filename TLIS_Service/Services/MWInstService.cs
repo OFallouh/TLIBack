@@ -9178,7 +9178,7 @@ namespace TLIS_Service.Services
                     TLIcivilLoads CivilFound = null;
                     TLIcivilLoads tLImwDish = null;
                     TLIcivilLoads SideArm = null;
-                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
+                    TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwODU.ToString().ToLower()).Id;
                     TLIcivilLoads TLIMWODU = _dbContext.TLIcivilLoads.AsNoTracking()
                     .Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.MwODULibrary)
                     .FirstOrDefault(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODUId
