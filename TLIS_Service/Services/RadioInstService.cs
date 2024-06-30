@@ -1731,7 +1731,7 @@ namespace TLIS_Service.Services
                                                         if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationss(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
 
                                                         }
                                                     }
@@ -1841,7 +1841,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
                                                             {
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
                                                             }
                                                         }
 
@@ -2040,7 +2040,7 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
                                                                         {
-                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
                                                                         }
                                                                     }
                                                                 }
@@ -2151,7 +2151,7 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
                                                                         {
-                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
                                                                         }
                                                                     }
 
@@ -2348,7 +2348,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
                                                                 {
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
                                                                 }
                                                             }
                                                         }
@@ -2461,7 +2461,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
                                                                 {
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
                                                                 }
                                                             }
 
@@ -2630,7 +2630,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             foreach (var DynamicAttInstValue in AddRadioAntenna.dynamicAttribute)
                                                             {
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
                                                             }
                                                         }
 
@@ -2851,7 +2851,7 @@ namespace TLIS_Service.Services
                                                         if (AddRadioRRU.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationss(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
 
                                                         }
                                                     }
@@ -2966,7 +2966,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
                                                             {
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
                                                             }
                                                         }
 
@@ -3183,7 +3183,7 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
                                                                         {
-                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
                                                                         }
                                                                     }
                                                                 }
@@ -3303,7 +3303,7 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
                                                                         {
-                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
                                                                         }
                                                                     }
 
@@ -3510,7 +3510,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
                                                                 {
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
                                                                 }
                                                             }
                                                         }
@@ -3627,7 +3627,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
                                                                 {
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
                                                                 }
                                                             }
 
@@ -3808,7 +3808,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             foreach (var DynamicAttInstValue in AddRadioRRU.dynamicAttribute)
                                                             {
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
                                                             }
                                                         }
 

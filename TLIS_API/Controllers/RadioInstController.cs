@@ -168,7 +168,7 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetRadioRRUInstallationById(int RadioId)
         {
-            var response = _unitOfWorkService.RadioInstService.GetRadioRRUInstallationById(RadioId, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString());
+            var response = _unitOfWorkService.RadioInstService.GetRadioRRUInstallationById(RadioId, Helpers.Constants.LoadSubType.TLIradioRRU.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

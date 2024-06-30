@@ -3175,7 +3175,7 @@ namespace TLIS_Service.Services
                                                     if (AddPower.dynamicAttribute.Count > 0)
                                                     {
 
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationss(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
 
                                                     }
                                                 }
@@ -3285,7 +3285,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
                                                         {
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
                                                         }
                                                     }
 
@@ -3484,7 +3484,7 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
                                                                     {
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
                                                                     }
                                                                 }
                                                             }
@@ -3595,7 +3595,7 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
                                                                     {
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
                                                                     }
                                                                 }
 
@@ -3792,7 +3792,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
                                                             {
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
                                                             }
                                                         }
                                                     }
@@ -3905,7 +3905,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
                                                             {
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
                                                             }
                                                         }
 
@@ -4073,7 +4073,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
                                                         {
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallation(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
                                                         }
                                                     }
 
