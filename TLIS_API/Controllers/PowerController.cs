@@ -31,25 +31,42 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAdd")]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAttForAddPowerInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(int LibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.PowerService.GetAttForAdd(LibraryId, SiteCode);
+            var response = _unitOfWorkService.PowerService.GetAttForAddPowerInstallation(LibraryId, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddPower")]
+        [HttpPost("AddPowerInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult AddPower([FromBody] AddPowerViewModel Power, string SiteCode, int TaskId)
+        public IActionResult AddPower([FromBody] AddPowerInstallationObject Power, string SiteCode, int? TaskId)
         {
-            if (Power.TLIcivilLoads.sideArmId == 0)
-                Power.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(Power, nameof(AddPowerViewModel)))
+         
+            if (TryValidateModel(Power, nameof(AddPowerInstallationObject)))
             {
-                var response = _unitOfWorkService.PowerService.AddPower(Power, SiteCode, ConnectionString, TaskId);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.PowerService.AddPowerInstallation(Power, SiteCode, ConnectionString, TaskId, userId);
                 return Ok(response);
             }
             else
@@ -63,7 +80,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantlePower")]
 
-        public IActionResult DismantlePower(string sitecode, int Id , int TaskId)
+        public IActionResult DismantlePower(string sitecode, int Id , int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -89,13 +106,32 @@ namespace TLIS_API.Controllers
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditPower")]
-        [ProducesResponseType(200, Type = typeof(EditPowerViewModel))]
-        public async Task<IActionResult> EditPower([FromBody] EditPowerViewModel Power,int TaskId)
+        [HttpPost("EditPowerInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditPowerInstallationOject))]
+        public async Task<IActionResult> EditPowerInstallation([FromBody] EditPowerInstallationOject Power,int? TaskId)
         {
-            if (TryValidateModel(Power, nameof(EditPowerViewModel)))
+            if (TryValidateModel(Power, nameof(EditPowerInstallationOject)))
             {
-                var response = await _unitOfWorkService.PowerService.EditPower(Power, TaskId);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.PowerService.EditPowerInstallation(Power, TaskId, userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -106,12 +142,12 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditPowerViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetById/{Id}")]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetPowerInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
-        public IActionResult GetById(int Id)
+        public IActionResult GetPowerInstallationById(int Id)
         {
-            var response = _unitOfWorkService.PowerService.GetById(Id);
+            var response = _unitOfWorkService.PowerService.GetPowerInstallationById(Id);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -128,6 +164,15 @@ namespace TLIS_API.Controllers
         public IActionResult GetPowerTypes()
         {
             var response = _unitOfWorkService.PowerService.GetPowerTypes();
+            return Ok(response);
+        }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetPowerInstallationWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetPowerInstallationWithEnableAtt([FromQuery] string SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.PowerService.GetPowerInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

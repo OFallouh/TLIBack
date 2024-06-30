@@ -63,6 +63,8 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
         {
             public int Id { get; set; }
             public string Name { get; set; }
+            public float EquivalentSpace { get; set; }
+            public bool ReservedSpace { get; set; }
         }
     }
 

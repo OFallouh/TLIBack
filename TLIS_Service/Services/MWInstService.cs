@@ -6538,8 +6538,8 @@ namespace TLIS_Service.Services
 
                                                 AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - MWDishInst.allLoadInst.mwDish.EquivalentSpace;
                                                 _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-
                                                 _unitOfWork.SaveChanges();
+                                                mwDish.EquivalentSpace = 0;
 
                                             }
 
@@ -7412,6 +7412,7 @@ namespace TLIS_Service.Services
                                                 AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - MWDishInst.allLoadInst.mwDish.EquivalentSpace;
                                                 _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
                                                 _unitOfWork.SaveChanges();
+                                                mwDish.EquivalentSpace = 0;
                                             }
 
                                             if (mwDish?.ItemConnectToId != null)
@@ -8353,6 +8354,7 @@ namespace TLIS_Service.Services
                                             AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads - MWDishInst.allLoadInst.mwDish.EquivalentSpace;
                                             _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
                                             _unitOfWork.SaveChanges();
+                                            mwDish.EquivalentSpace = 0;
 
                                         }
                                         if (mwDish?.ItemConnectToId != null)
@@ -9876,6 +9878,7 @@ namespace TLIS_Service.Services
                                                         CivilFound.allCivilInst.civilWithLegs.CurrentLoads = CivilFound.allCivilInst.civilWithLegs.CurrentLoads - TLIMWODU.allLoadInst.mwODU.EquivalentSpace;
                                                         _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithLegs);
                                                         _unitOfWork.SaveChanges();
+                                                        mwODU.EquivalentSpace = 0;
 
                                                     }
                                                     mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
@@ -10396,7 +10399,7 @@ namespace TLIS_Service.Services
                                                 CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads = CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads - TLIMWODU.allLoadInst.mwODU.EquivalentSpace;
                                                 _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithoutLeg);
                                                 _unitOfWork.SaveChanges();
-
+                                                mwODU.EquivalentSpace = 0;
                                             }
                                             mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                             mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;

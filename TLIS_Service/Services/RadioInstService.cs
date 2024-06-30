@@ -3861,14 +3861,9 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
-                            if (LoadSubType.TLIradioAntenna.ToString() == TableName)
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
-                            }
-                            if (LoadSubType.TLIradioRRU.ToString() == TableName)
-                            {
-                                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
-                            }
+                           
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
+                            
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
                         catch (Exception err)
@@ -4138,6 +4133,7 @@ namespace TLIS_Service.Services
                                                     AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - RadioAntennaInst.allLoadInst.radioAntenna.EquivalentSpace;
                                                     _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
                                                     _unitOfWork.SaveChanges();
+                                                    RadioAntenna.EquivalentSpace = 0;
                                                 }
                                                 RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                 RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
@@ -4678,6 +4674,7 @@ namespace TLIS_Service.Services
                                                             AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - RadioAntennaInst.allLoadInst.radioAntenna.EquivalentSpace;
                                                             _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
                                                             _unitOfWork.SaveChanges();
+                                                            RadioAntenna.EquivalentSpace = 0;
                                                         }
                                                         RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                         RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
@@ -5208,6 +5205,7 @@ namespace TLIS_Service.Services
                                                         AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads - RadioAntennaInst.allLoadInst.radioAntenna.EquivalentSpace;
                                                         _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
                                                         _unitOfWork.SaveChanges();
+                                                        RadioAntenna.EquivalentSpace = 0;
                                                     }
                                                     RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                     RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
@@ -5916,6 +5914,7 @@ namespace TLIS_Service.Services
                                                     AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -  RadioRRUInst.allLoadInst.radioRRU.EquivalentSpace;
                                                     _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
                                                     _unitOfWork.SaveChanges();
+                                                    RadioRRU.EquivalentSpace = 0;
                                                 }
                                                 RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                 RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
@@ -6504,6 +6503,7 @@ namespace TLIS_Service.Services
                                                             AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - RadioRRUInst.allLoadInst.radioRRU.EquivalentSpace;
                                                             _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
                                                             _unitOfWork.SaveChanges();
+                                                            RadioRRU.EquivalentSpace = 0;
                                                         }
                                                         RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                         RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
@@ -6817,8 +6817,6 @@ namespace TLIS_Service.Services
                                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                                     }
 
-
-
                                                 }
 
                                                 else
@@ -7092,6 +7090,7 @@ namespace TLIS_Service.Services
                                                         AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -  RadioRRUInst.allLoadInst.radioRRU.EquivalentSpace;
                                                         _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
                                                         _unitOfWork.SaveChanges();
+                                                        RadioRRU.EquivalentSpace = 0;
                                                     }
                                                     RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                     RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
@@ -7612,14 +7611,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
-                    if (LoadSubType.TLIradioAntenna.ToString() == TableName)
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
-                    }
-                    if (LoadSubType.TLIradioRRU.ToString() == TableName)
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
-                    }
+                   
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
+                 
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)
@@ -8975,7 +8969,7 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-              public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId, string connectionString)
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId, string connectionString)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {

@@ -1,42 +1,40 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TLIS_DAL.Models;
 
-namespace TLIS_DAL.ViewModels.RadioAntennaDTOs
+namespace TLIS_DAL.ViewModels.PowerDTOs
 {
-    public class MV_RADIO_ANTENNA_VIEW
+    public class MV_POWER_VIEW
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Name { get; set; }
         public string SiteCode { get; set; }
         public string? Key { get; set; }
         public string? INPUTVALUE { get; set; }
-        public float Azimuth { get; set; }
-        public float MechanicalTilt { get; set; }
-        public float ElectricalTilt { get; set; }
         public string SerialNumber { get; set; }
-        public float HBASurface { get; set; }
-        public string? Notes { get; set; }
+        public string Name { get; set; }
         public float HeightBase { get; set; }
         public float HeightLand { get; set; }
         public float SpaceInstallation { get; set; }
+        public float Azimuth { get; set; }
+        public float Height { get; set; }
+        public string? Notes { get; set; }
+        public string? OWNER { get; set; }
+        public string INSTALLATIONPLACE { get; set; }
+        public string POWERLIBRARY { get; set; }
+        public string? POWERTYPE { get; set; }
         public string? VisibleStatus { get; set; }
         public float CenterHigh { get; set; }
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
-        public string INSTALLATIONPLACE { get; set; }
-        public string RADIOANTENNALIBRARY { get; set; }
-        public string? LEGNAME { get; set; }
-        public string? OWNER { get; set; }
         public int? LEGID { get; set; }
         public string CIVILNAME { get; set; }
+        public string LEGNAME { get; set; }
         public int CIVIL_ID { get; set; }
         public string? SIDEARMNAME { get; set; }
         public int? SIDEARM_ID { get; set; }
@@ -58,19 +56,18 @@ namespace TLIS_DAL.ViewModels.RadioAntennaDTOs
             outputData.Add("Azimuth", Azimuth);
             outputData.Add("Notes", Notes);
             outputData.Add("Name", Name);
-            outputData.Add("MechanicalTilt", MechanicalTilt);
-            outputData.Add("ElectricalTilt", ElectricalTilt);
+            outputData.Add("POWERTYPE", POWERTYPE);
             outputData.Add("SerialNumber", SerialNumber);
-            outputData.Add("HBASurface", HBASurface);
-            outputData.Add("HeightBase", HeightBase);
+            outputData.Add("HBA", HBA);
             outputData.Add("SpaceInstallation", SpaceInstallation);
+            outputData.Add("HeightBase", HeightBase);
             outputData.Add("HeightLand", HeightLand);
             outputData.Add("VisibleStatus", VisibleStatus);
             outputData.Add("CenterHigh", CenterHigh);
             outputData.Add("HBA", HBA);
             outputData.Add("HieghFromLand", HieghFromLand);
             outputData.Add("EquivalentSpace", EquivalentSpace);
-            outputData.Add("RADIOANTENNALIBRARY", RADIOANTENNALIBRARY);
+            outputData.Add("POWERLIBRARY", POWERLIBRARY);
             outputData.Add("INSTALLATIONPLACE", INSTALLATIONPLACE);
             outputData.Add("LEGNAME", LEGNAME);
             outputData.Add("CIVILNAME", CIVILNAME);
@@ -90,5 +87,4 @@ namespace TLIS_DAL.ViewModels.RadioAntennaDTOs
         }
     }
 }
-
 
