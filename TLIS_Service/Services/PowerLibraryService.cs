@@ -2363,6 +2363,7 @@ namespace TLIS_Service.Services
                 NewPowerLibrary.Active = !(NewPowerLibrary.Active);
                 _unitOfWork.PowerLibraryRepository.UpdateWithHistory(UserId, PowerEntity, NewPowerLibrary);
                 await _unitOfWork.SaveChangesAsync();
+                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                 return new Response<AllItemAttributes>();
             }
             catch (Exception err)
@@ -2451,7 +2452,7 @@ namespace TLIS_Service.Services
                 _unitOfWork.PowerLibraryRepository.UpdateWithHistory(UserId, PowerEntity, NewPowerLibrary);
                 _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
                 await _unitOfWork.SaveChangesAsync();
-               
+                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                 return new Response<AllItemAttributes>();
             }
             catch (Exception err)

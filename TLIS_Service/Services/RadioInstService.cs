@@ -1669,7 +1669,7 @@ namespace TLIS_Service.Services
                                                         TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddRadioAntenna.installationConfig.legId);
                                                         if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
-                                                            RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                            RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
 
                                                         }
 
@@ -1797,7 +1797,7 @@ namespace TLIS_Service.Services
                                                         TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddRadioAntenna.installationConfig.legId);
                                                         if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
-                                                            RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                            RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
 
                                                         }
 
@@ -1979,7 +1979,7 @@ namespace TLIS_Service.Services
                                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                                     if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                                     {
-                                                                        RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
+                                                                        RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                                     }
 
 
@@ -2108,7 +2108,7 @@ namespace TLIS_Service.Services
                                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                                     if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                                     {
-                                                                        RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
+                                                                        RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                                     }
 
 
@@ -2286,7 +2286,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                             if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                             {
-                                                                RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
+                                                                RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                             }
 
 
@@ -2417,7 +2417,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                             if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                             {
-                                                                RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
+                                                                RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                             }
 
 
@@ -2586,7 +2586,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
-                                                            RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.Azimuth + " " + RadioAntenna.HeightBase;
+                                                            RadioAntenna.Name = SideArmName1?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                         }
 
 
@@ -3992,7 +3992,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == EditRadioAntenna.installationConfig.legId);
                                                 if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                 {
-                                                    RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                    RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
 
                                                 }
                                                 var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
@@ -4115,7 +4115,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == EditRadioAntenna.installationConfig.legId);
                                                 if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                 {
-                                                    RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                    RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
 
                                                 }
 
@@ -4233,7 +4233,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == EditRadioAntenna.installationConfig.legId);
                                                 if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                 {
-                                                    RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                    RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
 
                                                 }
 
@@ -4359,7 +4359,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == EditRadioAntenna.installationConfig.legId);
                                                 if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                 {
-                                                    RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                    RadioAntenna.Name = legname?.CiviLegName + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
 
                                                 }
 
@@ -4657,7 +4657,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
-                                                            RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                            RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                         }
 
                                                         var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
@@ -4772,7 +4772,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
-                                                            RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                            RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                         }
 
 
@@ -4895,7 +4895,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
-                                                            RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                            RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                         }
 
                                                         var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
@@ -5066,7 +5066,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                     if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                     {
-                                                        RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                        RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                     }
                                                     var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
                                                                !x.Dismantle && x.Id != RadioAntenna.Id &&
@@ -5188,7 +5188,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                     if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                     {
-                                                        RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                        RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                     }
 
                                                     var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
@@ -5303,7 +5303,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                     if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                     {
-                                                        RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                        RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                     }
 
                                                     var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
@@ -5427,7 +5427,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                     if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                     {
-                                                        RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                        RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                     }
 
                                                     var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>
@@ -5589,7 +5589,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                 if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                 {
-                                                    RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase + " " + RadioAntenna.Azimuth;
+                                                    RadioAntenna.Name = SideArmName?.Name + " " + RadioAntenna.HeightBase+"HE" + " " + RadioAntenna.Azimuth+"AZ";
                                                 }
 
                                                 var CheckName = _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(x =>

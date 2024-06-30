@@ -3113,7 +3113,7 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddPower.installationConfig.legId);
                                                     if (legname != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                     {
-                                                        Power.Name = legname?.CiviLegName + " " + Power.HeightBase + " " + Power.Azimuth;
+                                                        Power.Name = legname?.CiviLegName + " " + Power.HeightBase+"HE";
 
                                                     }
 
@@ -3241,7 +3241,7 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddPower.installationConfig.legId);
                                                     if (legname != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                     {
-                                                        Power.Name = legname?.CiviLegName + " " + Power.HeightBase + " " + Power.Azimuth;
+                                                        Power.Name = legname?.CiviLegName + " " + Power.HeightBase + "HE";
 
                                                     }
 
@@ -3423,7 +3423,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                                 if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                                 {
-                                                                    Power.Name = SideArmName1?.Name + " " + Power.Azimuth + " " + Power.HeightBase;
+                                                                    Power.Name = SideArmName1?.Name + " " + Power.HeightBase+"HE";
                                                                 }
 
 
@@ -3552,7 +3552,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                                 if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                                 {
-                                                                    Power.Name = SideArmName1?.Name + " " + Power.Azimuth + " " + Power.HeightBase;
+                                                                    Power.Name = SideArmName1?.Name + " "+ Power.HeightBase+"HE";
                                                                 }
 
 
@@ -3730,7 +3730,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                         if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                         {
-                                                            Power.Name = SideArmName1?.Name + " " + Power.Azimuth + " " + Power.HeightBase;
+                                                            Power.Name = SideArmName1?.Name + " " + Power.HeightBase+"HE";
                                                         }
 
 
@@ -3861,7 +3861,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                         if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                         {
-                                                            Power.Name = SideArmName1?.Name + " " + Power.Azimuth + " " + Power.HeightBase;
+                                                            Power.Name = SideArmName1?.Name + " "+ Power.HeightBase+"HE";
                                                         }
 
 
@@ -4030,9 +4030,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                     if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                     {
-                                                        Power.Name = SideArmName1?.Name + " " + Power.Azimuth + " " + Power.HeightBase;
+                                                        Power.Name = SideArmName1?.Name + " " + Power.HeightBase+"HE";
                                                     }
-
 
 
                                                     var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -4252,7 +4251,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
                                                 if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                    power.Name = legname?.CiviLegName + " " + power.HeightBase + " " + power.Azimuth;
+                                                power.Name = legname?.CiviLegName + " " + power.HeightBase+"HE";
 
                                                 }
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -4375,7 +4374,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
                                                 if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                    power.Name = legname?.CiviLegName + " " + power.HeightBase + " " + power.Azimuth;
+                                                    power.Name = legname?.CiviLegName + " " + power.HeightBase+"HE";
 
                                                 }
 
@@ -4493,8 +4492,8 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
                                                 if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                    power.Name = legname?.CiviLegName + " " + power.HeightBase + " " + power.Azimuth;
-
+                                                   power.Name = legname?.CiviLegName + " " + power.HeightBase+"HE";
+  
                                                 }
 
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -4619,7 +4618,7 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
                                                 if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                    power.Name = legname?.CiviLegName + " " + power.HeightBase + " " + power.Azimuth;
+                                                   power.Name = legname?.CiviLegName + " " + power.HeightBase+"HE";
 
                                                 }
 
@@ -4795,7 +4794,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                         if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                         {
-                                                            power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
+                                                            power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
                                                         }
 
                                                         var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -4917,8 +4916,8 @@ namespace TLIS_Service.Services
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                         if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                         {
-                                                            power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
-                                                        }
+                                                            power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
+                                                    }
 
                                                         var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != power.Id &&
@@ -5032,8 +5031,8 @@ namespace TLIS_Service.Services
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                         if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                         {
-                                                            power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
-                                                        }
+                                                            power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
+                                                    }
 
 
                                                         var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -5155,8 +5154,8 @@ namespace TLIS_Service.Services
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                         if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                         {
-                                                            power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
-                                                        }
+                                                            power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
+                                                    }
 
                                                         var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle && x.Id != power.Id &&
@@ -5326,8 +5325,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                     if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                     {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
-                                                    }
+                                                        power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
+                                                }
                                                     var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                                !x.Dismantle && x.Id != power.Id &&
                                                                x.Name.ToLower() == power.Name.ToLower() &&
@@ -5448,8 +5447,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                     if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                     {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
-                                                    }
+                                                        power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
+                                                }
 
                                                     var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle && x.Id != power.Id &&
@@ -5563,8 +5562,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                     if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                     {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
-                                                    }
+                                                        power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
+                                                }
 
                                                     var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != power.Id &&
@@ -5687,8 +5686,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                     if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                     {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
-                                                    }
+                                                        power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
+                                                }
 
                                                     var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle && x.Id != power.Id &&
@@ -5849,8 +5848,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
                                                 if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + " " + power.Azimuth;
-                                                }
+                                                    power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
+                                            }
 
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != power.Id &&
