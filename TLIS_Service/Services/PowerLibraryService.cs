@@ -643,7 +643,7 @@ namespace TLIS_Service.Services
                 if (PowerLibrary != null)
                 {
                     List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, PowerLibrary, null).ToList();
-                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
+                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.Power.ToString(), TableName, Id);
                     attributes.AttributesActivatedLibrary = listofAttributesActivated;
                     attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
                     List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();

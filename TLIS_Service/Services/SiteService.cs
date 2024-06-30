@@ -7857,15 +7857,9 @@ namespace TLIS_Service.Services
             using (var connection = new OracleConnection(ConnectionString))
             {
                 connection.Open();
-                // Execute Stored Procedure
-                using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                {
-                    procedureCommand.CommandType = CommandType.StoredProcedure;
-                    procedureCommand.ExecuteNonQuery();
-                }
 
                 // Query Dynamic View
-                string sqlQuery = $"SELECT * FROM {dynamicViewName}";
+                string sqlQuery = $"{dynamicViewName}";
                 using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
                 {
                     using (OracleDataReader reader = queryCommand.ExecuteReader())

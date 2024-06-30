@@ -2129,6 +2129,7 @@ namespace TLIS_Service.Services
                         Length = x.Length,
                         Type = x.Type,
                         Band = x.Band,
+                        SpaceLibrary=x.SpaceLibrary,
                         ChannelBandwidth = x.ChannelBandwidth,
                         L_W_H_cm3 = x.L_W_H_cm3,
 
