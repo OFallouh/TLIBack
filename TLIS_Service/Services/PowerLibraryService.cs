@@ -2347,7 +2347,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //disable or enable record depened on record status
         //Update Entity
-        public async Task<Response<AllItemAttributes>> DisablePowerLibrary(int UserId,string TableName, int Id)
+        public async Task<Response<AllItemAttributes>> DisablePowerLibrary(int UserId,string TableName, int Id,string connectionString)
         {
             try
             {
@@ -2434,7 +2434,7 @@ namespace TLIS_Service.Services
         //set Deleted is true
         //Update record 
         //disable dynamic attributes related to that record
-        public async Task<Response<AllItemAttributes>> DeletePowerLibrary(int UserId,string TableName, int Id)
+        public async Task<Response<AllItemAttributes>> DeletePowerLibrary(int UserId,string TableName, int Id, string connectionString)
         {
             try
             {

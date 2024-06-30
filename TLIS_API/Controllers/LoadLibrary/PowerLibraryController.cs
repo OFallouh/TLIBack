@@ -168,7 +168,7 @@ namespace TLIS_API.Controllers.Load
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.PowerLibraryService.DisablePowerLibrary(userId, Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), Id);
+            var response = await _unitOfWorkService.PowerLibraryService.DisablePowerLibrary(userId, Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), Id, ConnectionString);
             return Ok(response);
         }
         [HttpPost("DeletePowerLibrary")]
@@ -194,7 +194,7 @@ namespace TLIS_API.Controllers.Load
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.PowerLibraryService.DeletePowerLibrary(userId, Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), Id);
+            var response = await _unitOfWorkService.PowerLibraryService.DeletePowerLibrary(userId, Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString(), Id, ConnectionString);
             return Ok(response);
         }
     }
