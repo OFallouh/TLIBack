@@ -3010,7 +3010,7 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == "TLIpower");
                             AddPowerInstallationObject AddPower= _mapper.Map<AddPowerInstallationObject>(PowerInstallationViewModel);
                             TLIpower Power = _mapper.Map<TLIpower>(AddPower.installationAttributes);
-                            var PowerLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.powerLibraryId
+                            var PowerLibrary = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.powerLibraryId
                             && !x.Deleted && x.Active);
                             if (PowerLibrary == null)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "PowerLibrary is not found", (int)ApiReturnCode.fail);
@@ -3074,13 +3074,13 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            if (PowerLibrary.Width == 0)
+                                                            if (PowerLibrary.width == 0)
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else
                                                             {
-                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.Width;
+                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
                                                             }
                                                         }
                                                         else
@@ -3204,13 +3204,13 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            if (PowerLibrary.Width == 0)
+                                                            if (PowerLibrary.width == 0)
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else
                                                             {
-                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.Width;
+                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
                                                             }
                                                         }
                                                         else
@@ -3384,13 +3384,13 @@ namespace TLIS_Service.Services
                                                                         {
                                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
-                                                                        if (PowerLibrary.Width == 0)
+                                                                        if (PowerLibrary.width == 0)
                                                                         {
                                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
                                                                         else
                                                                         {
-                                                                            Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.Width;
+                                                                            Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
                                                                         }
                                                                     }
                                                                     else
@@ -3513,13 +3513,13 @@ namespace TLIS_Service.Services
                                                                         {
                                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
-                                                                        if (PowerLibrary.Width == 0)
+                                                                        if (PowerLibrary.width == 0)
                                                                         {
                                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
                                                                         else
                                                                         {
-                                                                            Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.Width;
+                                                                            Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
                                                                         }
                                                                     }
                                                                     else
@@ -3690,13 +3690,13 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
-                                                                if (PowerLibrary.Width == 0)
+                                                                if (PowerLibrary.width == 0)
                                                                 {
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
                                                                 else
                                                                 {
-                                                                    Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.Width;
+                                                                    Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
                                                                 }
                                                             }
                                                             else
@@ -3821,13 +3821,13 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
-                                                                if (PowerLibrary.Width == 0)
+                                                                if (PowerLibrary.width == 0)
                                                                 {
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
                                                                 else
                                                                 {
-                                                                    Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.Width;
+                                                                    Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
                                                                 }
                                                             }
                                                             else
@@ -3990,13 +3990,13 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            if (PowerLibrary.Width == 0)
+                                                            if (PowerLibrary.width == 0)
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else
                                                             {
-                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.Width;
+                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
                                                             }
                                                         }
                                                         else
@@ -4053,7 +4053,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             InstallationDate = AddPower.civilLoads.InstallationDate,
                                                             allLoadInstId = Id,
-                                                            legId = AddPower.installationConfig?.legId,
+                                                            legId = null,
                                                             allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                             sideArmId = AddPower.installationConfig?.sideArmId,
                                                             ItemOnCivilStatus = AddPower.civilLoads.ItemOnCivilStatus,
@@ -5881,7 +5881,7 @@ namespace TLIS_Service.Services
                                                     NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
                                                     NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
                                                     NewpowerInst.sideArm2Id = null;
-                                                    NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                    NewpowerInst.legId = null;
                                                     NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                     NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                     NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;

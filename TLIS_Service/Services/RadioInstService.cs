@@ -2610,7 +2610,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 InstallationDate = AddRadioAntenna.civilLoads.InstallationDate,
                                                                 allLoadInstId = Id,
-                                                                legId = AddRadioAntenna.installationConfig?.legId,
+                                                                legId = null,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddRadioAntenna.installationConfig?.sideArmId,
                                                                 ItemOnCivilStatus = AddRadioAntenna.civilLoads.ItemOnCivilStatus,
@@ -3788,7 +3788,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 InstallationDate = AddRadioRRU.civilLoads.InstallationDate,
                                                                 allLoadInstId = Id,
-                                                                legId = AddRadioRRU.installationConfig?.legId,
+                                                                legId = null,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddRadioRRU.installationConfig?.sideArmId,
                                                                 ItemOnCivilStatus = AddRadioRRU.civilLoads.ItemOnCivilStatus,
@@ -5622,7 +5622,7 @@ namespace TLIS_Service.Services
                                                     NewRadioAntennaInst.InstallationDate = EditRadioAntenna.civilLoads.InstallationDate;
                                                     NewRadioAntennaInst.sideArmId = EditRadioAntenna.installationConfig?.sideArmId ?? null;
                                                     NewRadioAntennaInst.sideArm2Id = null;
-                                                    NewRadioAntennaInst.legId = EditRadioAntenna.installationConfig?.legId ?? null;
+                                                    NewRadioAntennaInst.legId =null;
                                                     NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                     NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                     NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
@@ -7551,7 +7551,7 @@ namespace TLIS_Service.Services
                                                     NewRadioRRUInst.InstallationDate = EditRadioRRU.civilLoads.InstallationDate;
                                                     NewRadioRRUInst.sideArmId = EditRadioRRU.installationConfig?.sideArmId ?? null;
                                                     NewRadioRRUInst.sideArm2Id = null;
-                                                    NewRadioRRUInst.legId = EditRadioRRU.installationConfig?.legId ?? null;
+                                                    NewRadioRRUInst.legId = null;
                                                     NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                     NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                     NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;

@@ -24,7 +24,8 @@ namespace TLIS_DAL.ViewModels.PowerDTOs
         public class EditInstallationPowerAttributeObject
         {
             public int Id { get; set; }
-            public string Name { get; set; } = "";
+            public string Name { get; set; }
+            public string SerialNumber { get; set; }
             public float HeightBase { get; set; } = 0;
             public float HeightLand { get; set; } = 0;
             public float SpaceInstallation { get; set; } = 0;
