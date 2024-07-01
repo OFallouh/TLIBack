@@ -120,7 +120,7 @@ namespace TLIS_Repository.Repositories
                 AddWithHistorys(UserId,dynamicAttInstValue);
                 _context.SaveChanges();
             }
-            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
+ 
         }
         private void RefreshView(string connectionString, string viewName)
         {

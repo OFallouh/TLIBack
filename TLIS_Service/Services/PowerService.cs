@@ -3175,7 +3175,7 @@ namespace TLIS_Service.Services
                                                     if (AddPower.dynamicAttribute.Count > 0)
                                                     {
 
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationss(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
 
                                                     }
                                                 }
@@ -3283,10 +3283,9 @@ namespace TLIS_Service.Services
 
                                                     if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                     {
-                                                        foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
-                                                        {
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                        }
+                                                        
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                        
                                                     }
 
                                                 }
@@ -3482,10 +3481,9 @@ namespace TLIS_Service.Services
 
                                                                 if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                                 {
-                                                                    foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
-                                                                    {
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                                    }
+                                                                   
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                                    
                                                                 }
                                                             }
                                                             else
@@ -3593,10 +3591,9 @@ namespace TLIS_Service.Services
 
                                                                 if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                                 {
-                                                                    foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
-                                                                    {
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                                    }
+                                                                    
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                                    
                                                                 }
 
                                                             }
@@ -3790,10 +3787,9 @@ namespace TLIS_Service.Services
 
                                                         if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                         {
-                                                            foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
-                                                            {
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                            }
+                                                           
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                            
                                                         }
                                                     }
                                                     else
@@ -3903,10 +3899,9 @@ namespace TLIS_Service.Services
 
                                                         if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                         {
-                                                            foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
-                                                            {
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                            }
+                                                            
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                            
                                                         }
 
                                                     }
@@ -4071,10 +4066,9 @@ namespace TLIS_Service.Services
 
                                                     if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                     {
-                                                        foreach (var DynamicAttInstValue in AddPower.dynamicAttribute)
-                                                        {
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, DynamicAttInstValue, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                        }
+                                                       
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                        
                                                     }
 
                                                 }
