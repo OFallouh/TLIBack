@@ -44,7 +44,7 @@ namespace TLIS_DAL.ViewModels.PowerDTOs
             public int? civilNonSteelId { get; set; }
             public int? sideArmId { get; set; }
             public int? legId { get; set; }
-            public int powerLibraryId { get; set; }
+            public int powerLoadLibraryId { get; set; }
         }
 
     }

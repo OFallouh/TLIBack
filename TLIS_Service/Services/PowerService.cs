@@ -804,7 +804,7 @@ namespace TLIS_Service.Services
                                 }
                             }
                             var powerLibrary = _dbContext.TLIpowerLibrary.Where(x => x.Id == PowerViewModel.powerLibraryId).FirstOrDefault();
-                            if (PowerEntity.CenterHigh == 0 )
+                            if (PowerEntity.CenterHigh == 0)
                             {
                                 PowerEntity.CenterHigh = PowerEntity.HBA + powerLibrary.Length / 2;
                             }
@@ -817,7 +817,7 @@ namespace TLIS_Service.Services
 
                             if (!string.IsNullOrEmpty(CheckDependencyValidation))
                                 return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-                           
+
                             var CheckSerialNumber = _unitOfWork.PowerRepository.GetWhereFirst(x => x.SerialNumber == PowerEntity.SerialNumber);
                             if (CheckSerialNumber != null)
                             {
@@ -944,7 +944,7 @@ namespace TLIS_Service.Services
                 objectInst.LibraryActivatedAttributes = LibraryAttributeActivated;
 
                 List<BaseInstAttView> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                    .GetInstAttributeActivated(TableName, null, "Name","powerLibraryId", "installationPlaceId"/*, "EquivalentSpace"*/).ToList();
+                    .GetInstAttributeActivated(TableName, null, "Name", "powerLibraryId", "installationPlaceId"/*, "EquivalentSpace"*/).ToList();
 
                 BaseInstAttView NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                 if (NameAttribute != null)
@@ -1552,7 +1552,7 @@ namespace TLIS_Service.Services
                         x.SiteCode.ToLower() == SiteCode.ToLower(),
                             x => x.allLoadInst, x => x.allLoadInst.power);
 
-                   
+
                     string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(PowerViewModel.DynamicInstAttsValue, TablesNames.TLIpower.ToString());
 
                     if (!string.IsNullOrEmpty(CheckGeneralValidation))
@@ -3008,9 +3008,9 @@ namespace TLIS_Service.Services
                             TLIcivilSiteDate AllcivilinstId = null;
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == "TLIpower");
-                            AddPowerInstallationObject AddPower= _mapper.Map<AddPowerInstallationObject>(PowerInstallationViewModel);
+                            AddPowerInstallationObject AddPower = _mapper.Map<AddPowerInstallationObject>(PowerInstallationViewModel);
                             TLIpower Power = _mapper.Map<TLIpower>(AddPower.installationAttributes);
-                            var PowerLibrary = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.powerLibraryId
+                            var PowerLibrary = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.powerLoadLibraryId
                             && !x.Deleted && x.Active);
                             if (PowerLibrary == null)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "PowerLibrary is not found", (int)ApiReturnCode.fail);
@@ -3068,25 +3068,9 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (Power.SpaceInstallation == 0)
                                                     {
-                                                        if (PowerLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (PowerLibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (PowerLibrary.width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            Power.SpaceInstallation = PowerLibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
 
                                                     if (AddPower.installationAttributes.Azimuth <= 0)
@@ -3113,7 +3097,7 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddPower.installationConfig.legId);
                                                     if (legname != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                     {
-                                                        Power.Name = legname?.CiviLegName + " " + Power.HeightBase+"HE";
+                                                        Power.Name = legname?.CiviLegName + " " + Power.HeightBase + "HE";
 
                                                     }
 
@@ -3145,7 +3129,7 @@ namespace TLIS_Service.Services
                                                         }
                                                     }
 
-                                                    Power.powerLibraryId = AddPower.installationConfig.powerLibraryId;
+                                                    Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
                                                     _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
                                                     _unitOfWork.SaveChanges();
@@ -3198,25 +3182,9 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (Power.SpaceInstallation == 0)
                                                     {
-                                                        if (PowerLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (PowerLibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (PowerLibrary.width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            Power.SpaceInstallation = PowerLibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
                                                     if (AddPower.installationAttributes.Azimuth <= 0)
                                                     {
@@ -3253,7 +3221,7 @@ namespace TLIS_Service.Services
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {Power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                                    Power.powerLibraryId = AddPower.installationConfig.powerLibraryId;
+                                                    Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
                                                     _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
                                                     _unitOfWork.SaveChanges();
@@ -3283,9 +3251,9 @@ namespace TLIS_Service.Services
 
                                                     if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                     {
-                                                        
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                        
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+
                                                     }
 
                                                 }
@@ -3377,25 +3345,9 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 if (Power.SpaceInstallation == 0)
                                                                 {
-                                                                    if (PowerLibrary.SpaceLibrary == 0)
-                                                                    {
-                                                                        if (PowerLibrary.Length == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        if (PowerLibrary.width == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        Power.SpaceInstallation = PowerLibrary.SpaceLibrary;
-                                                                    }
+
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                                 }
 
                                                                 if (AddPower.installationAttributes.Azimuth <= 0)
@@ -3422,7 +3374,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                                 if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                                 {
-                                                                    Power.Name = SideArmName1?.Name + " " + Power.HeightBase+"HE";
+                                                                    Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
                                                                 }
 
 
@@ -3452,7 +3404,7 @@ namespace TLIS_Service.Services
                                                                 }
 
 
-                                                                Power.powerLibraryId = AddPower.installationConfig.powerLibraryId;
+                                                                Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                                 Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
                                                                 _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
                                                                 _unitOfWork.SaveChanges();
@@ -3481,9 +3433,9 @@ namespace TLIS_Service.Services
 
                                                                 if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                                 {
-                                                                   
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                                    
+
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+
                                                                 }
                                                             }
                                                             else
@@ -3505,25 +3457,9 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 if (Power.SpaceInstallation == 0)
                                                                 {
-                                                                    if (PowerLibrary.SpaceLibrary == 0)
-                                                                    {
-                                                                        if (PowerLibrary.Length == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        if (PowerLibrary.width == 0)
-                                                                        {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        Power.SpaceInstallation = PowerLibrary.SpaceLibrary;
-                                                                    }
+
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                                 }
 
                                                                 if (AddPower.installationAttributes.Azimuth <= 0)
@@ -3550,7 +3486,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                                 if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                                 {
-                                                                    Power.Name = SideArmName1?.Name + " "+ Power.HeightBase+"HE";
+                                                                    Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
                                                                 }
 
 
@@ -3562,7 +3498,7 @@ namespace TLIS_Service.Services
                                                                 if (CheckName != null)
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {Power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                                                Power.powerLibraryId = AddPower.installationConfig.powerLibraryId;
+                                                                Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                                 Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
                                                                 _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
                                                                 _unitOfWork.SaveChanges();
@@ -3591,9 +3527,9 @@ namespace TLIS_Service.Services
 
                                                                 if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                                 {
-                                                                    
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                                    
+
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+
                                                                 }
 
                                                             }
@@ -3681,25 +3617,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (Power.SpaceInstallation == 0)
                                                         {
-                                                            if (PowerLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (PowerLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (PowerLibrary.width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                Power.SpaceInstallation = PowerLibrary.SpaceLibrary;
-                                                            }
+
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
 
                                                         if (AddPower.installationAttributes.Azimuth <= 0)
@@ -3727,7 +3647,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                         if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                         {
-                                                            Power.Name = SideArmName1?.Name + " " + Power.HeightBase+"HE";
+                                                            Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
                                                         }
 
 
@@ -3758,7 +3678,7 @@ namespace TLIS_Service.Services
                                                         }
 
 
-                                                        Power.powerLibraryId = AddPower.installationConfig.powerLibraryId;
+                                                        Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                         Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
                                                         _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
                                                         _unitOfWork.SaveChanges();
@@ -3787,9 +3707,9 @@ namespace TLIS_Service.Services
 
                                                         if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                         {
-                                                           
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                            
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+
                                                         }
                                                     }
                                                     else
@@ -3811,25 +3731,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (Power.SpaceInstallation == 0)
                                                         {
-                                                            if (PowerLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (PowerLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (PowerLibrary.width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                Power.SpaceInstallation = PowerLibrary.SpaceLibrary;
-                                                            }
+
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
 
                                                         if (AddPower.installationAttributes.Azimuth <= 0)
@@ -3857,7 +3761,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                         if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                         {
-                                                            Power.Name = SideArmName1?.Name + " "+ Power.HeightBase+"HE";
+                                                            Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
                                                         }
 
 
@@ -3870,7 +3774,7 @@ namespace TLIS_Service.Services
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {Power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                                        Power.powerLibraryId = AddPower.installationConfig.powerLibraryId;
+                                                        Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                         Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
                                                         _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
                                                         _unitOfWork.SaveChanges();
@@ -3899,9 +3803,9 @@ namespace TLIS_Service.Services
 
                                                         if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                         {
-                                                            
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                            
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+
                                                         }
 
                                                     }
@@ -3977,27 +3881,11 @@ namespace TLIS_Service.Services
                                                             Power.CenterHigh = Power.HBA + PowerLibrary.Length / 2;
                                                         }
                                                     }
-                                                    else if (Power.SpaceInstallation == 0)
+                                                    if (Power.SpaceInstallation == 0)
                                                     {
-                                                        if (PowerLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (PowerLibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (PowerLibrary.width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                Power.SpaceInstallation = PowerLibrary.Length * PowerLibrary.width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            Power.SpaceInstallation = PowerLibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
 
                                                     if (AddPower.installationAttributes.Azimuth <= 0)
@@ -4025,7 +3913,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                     if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
                                                     {
-                                                        Power.Name = SideArmName1?.Name + " " + Power.HeightBase+"HE";
+                                                        Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
                                                     }
 
 
@@ -4037,7 +3925,7 @@ namespace TLIS_Service.Services
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {Power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                                    Power.powerLibraryId = AddPower.installationConfig.powerLibraryId;
+                                                    Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
                                                     _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
                                                     _unitOfWork.SaveChanges();
@@ -4066,9 +3954,9 @@ namespace TLIS_Service.Services
 
                                                     if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
                                                     {
-                                                       
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
-                                                        
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+
                                                     }
 
                                                 }
@@ -4120,9 +4008,9 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
-                           
+
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
-                           
+
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
                         catch (Exception err)
@@ -4144,42 +4032,985 @@ namespace TLIS_Service.Services
                 {
                     TLIcivilSiteDate AllcivilinstId = null;
                     List<TLIallLoadInst> RadioAntennas = new List<TLIallLoadInst>();
-                    
-                        var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIpower.ToString().ToLower()).Id;
-                        EditPowerInstallationOject Editpower = _mapper.Map<EditPowerInstallationOject>(PowerInstallationViewModel);
-                        TLIpower power = _mapper.Map<TLIpower>(Editpower.installationAttributes);
-                        TLIcivilLoads powerInst = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                       .Include(x => x.allLoadInst).Include(x => x.allLoadInst.power).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                       .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
 
-                        if (powerInst == null)
-                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "power is not found", (int)ApiReturnCode.fail);
-                        if (Editpower.installationConfig.InstallationPlaceId == 1)
+                    var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIpower.ToString().ToLower()).Id;
+                    EditPowerInstallationOject Editpower = _mapper.Map<EditPowerInstallationOject>(PowerInstallationViewModel);
+                    TLIpower power = _mapper.Map<TLIpower>(Editpower.installationAttributes);
+                    TLIcivilLoads powerInst = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                   .Include(x => x.allLoadInst).Include(x => x.allLoadInst.power).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                   .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                   .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                    if (powerInst == null)
+                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "power is not found", (int)ApiReturnCode.fail);
+                    if (Editpower.installationConfig.InstallationPlaceId == 1)
+                    {
+                        if (Editpower.installationConfig.civilWithLegId != null)
+                        {
+                            AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                            Editpower.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                            x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                            if (AllcivilinstId != null)
+                            {
+                                if (Editpower.installationConfig.legId != null)
+                                {
+                                    if (Editpower.installationConfig.sideArmId != null)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected sidearm because installation place is leg ", (int)ApiReturnCode.fail);
+
+                                    var Leg = _unitOfWork.LegRepository.GetIncludeWhereFirst(x => x.CivilWithLegInstId ==
+                                            Editpower.installationConfig.civilWithLegId && x.Id == Editpower.installationConfig.legId
+                                            , x => x.CivilWithLegInst);
+                                    if (Leg != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(power.SerialNumber))
+                                        {
+                                            bool CheckSerialNumber = _dbContext.MV_POWER_VIEW.Any(x => x.SerialNumber == power.SerialNumber && !x.Dismantle && x.Id != power.Id);
+                                            if (CheckSerialNumber)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {power.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+                                        }
+
+                                        if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == true)
+                                        {
+                                            if (power.CenterHigh <= 0)
+                                            {
+                                                if (power.HBA <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                }
+                                            }
+                                            if (power.SpaceInstallation == 0)
+                                            {
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                            }
+
+                                            if (Editpower.installationAttributes.Azimuth <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+
+                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                    x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
+                                                    && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                        .Select(g => g.First())
+                                                                        .ToList();
+
+                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+
+                                            TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
+                                            if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            {
+                                                power.Name = legname?.CiviLegName + " " + power.HeightBase + "HE";
+
+                                            }
+                                            var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle && x.Id != power.Id &&
+                                                       x.Name.ToLower() == power.Name.ToLower() &&
+                                                       x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+                                            if (CheckName != null)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                            if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                            {
+                                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                            }
+                                            var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                            if (OldVcivilinfo != null)
+                                            {
+                                                var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+                                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                power.EquivalentSpace = EquivalentSpace;
+                                                _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                            power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                            power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                            _unitOfWork.SaveChanges();
+                                            if (Editpower.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                NewpowerInst.sideArm2Id = null;
+                                                NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                _unitOfWork.SaveChanges();
+
+                                            }
+
+                                            if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+
+                                        }
+                                        else if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
+                                        {
+                                            if (power.CenterHigh <= 0)
+                                            {
+                                                if (power.HBA <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                }
+                                            }
+                                            if (power.SpaceInstallation == 0)
+                                            {
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                            }
+                                            if (Editpower.installationAttributes.Azimuth <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                            x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
+                                            && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                .Select(g => g.First())
+                                                                .ToList();
+
+                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+
+                                            TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
+                                            if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            {
+                                                power.Name = legname?.CiviLegName + " " + power.HeightBase + "HE";
+
+                                            }
+
+                                            var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                          !x.Dismantle && x.Id != power.Id &&
+                                                          x.Name.ToLower() == power.Name.ToLower() &&
+                                                          x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
+                                            if (CheckName != null)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                            var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+                                            if (OldVcivilinfo != null)
+                                            {
+                                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - powerInst.allLoadInst.power.EquivalentSpace;
+                                                _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+                                                _unitOfWork.SaveChanges();
+                                                power.EquivalentSpace = 0;
+                                            }
+                                            power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                            power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                            _unitOfWork.SaveChanges();
+                                            if (Editpower.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                NewpowerInst.sideArm2Id = null;
+                                                NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                _unitOfWork.SaveChanges();
+
+                                            }
+
+                                            if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                        }
+                                        else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
+                                        {
+                                            if (power.CenterHigh <= 0)
+                                            {
+                                                if (power.HBA <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                }
+                                            }
+                                            if (power.SpaceInstallation == 0)
+                                            {
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                            }
+                                            if (Editpower.installationAttributes.Azimuth <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+
+                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                    x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
+                                                    && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                .Select(g => g.First())
+                                                                .ToList();
+
+                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+
+                                            TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
+                                            if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            {
+                                                power.Name = legname?.CiviLegName + " " + power.HeightBase + "HE";
+
+                                            }
+
+                                            var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                   !x.Dismantle && x.Id != power.Id &&
+                                                   x.Name.ToLower() == power.Name.ToLower() &&
+                                                   x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
+                                            if (CheckName != null)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                            if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                            {
+                                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                            }
+                                            var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                            if (OldVcivilinfo != null)
+                                            {
+                                                var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+                                                AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                power.EquivalentSpace = EquivalentSpace;
+                                                _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
+                                                _unitOfWork.SaveChanges();
+                                            }
+
+                                            power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                            power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                            _unitOfWork.SaveChanges();
+                                            if (Editpower.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                NewpowerInst.sideArm2Id = null;
+                                                NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                _unitOfWork.SaveChanges();
+
+                                            }
+
+                                            if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                        }
+                                        else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
+                                        {
+                                            if (power.CenterHigh <= 0)
+                                            {
+                                                if (power.HBA <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                }
+                                            }
+                                            if (power.SpaceInstallation == 0)
+                                            {
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                            }
+
+                                            if (Editpower.installationAttributes.Azimuth <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+
+                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                    x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
+                                                    && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                             .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                .Select(g => g.First())
+                                                                .ToList();
+
+                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+
+                                            TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
+                                            if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            {
+                                                power.Name = legname?.CiviLegName + " " + power.HeightBase + "HE";
+
+                                            }
+
+                                            var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle && x.Id != power.Id &&
+                                                       x.Name.ToLower() == power.Name.ToLower() &&
+                                                       x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
+                                            if (CheckName != null)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                            power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                            power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                            _unitOfWork.SaveChanges();
+                                            if (Editpower.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                NewpowerInst.sideArm2Id = null;
+                                                NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                _unitOfWork.SaveChanges();
+
+                                            }
+
+                                            if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this leg is not found", (int)ApiReturnCode.fail);
+                                    }
+                                }
+
+                                else
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected leg ", (int)ApiReturnCode.fail);
+                                }
+
+
+                            }
+
+                            else
+                            {
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                            }
+
+                        }
+                        else
+                        {
+                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs item ", (int)ApiReturnCode.fail);
+                        }
+
+
+                    }
+                    else if (Editpower.installationConfig.InstallationPlaceId == 2)
+                    {
+                        if (Editpower.installationConfig.civilSteelType == 0)
                         {
                             if (Editpower.installationConfig.civilWithLegId != null)
                             {
+
                                 AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                Editpower.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                                x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                               Editpower.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                               x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                 if (AllcivilinstId != null)
                                 {
                                     if (Editpower.installationConfig.legId != null)
                                     {
-                                        if (Editpower.installationConfig.sideArmId != null)
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected sidearm because installation place is leg ", (int)ApiReturnCode.fail);
+                                        var LegIsFound = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.legId
+                                                 && x.CivilWithLegInstId == Editpower.installationConfig.civilWithLegId);
+                                        if (LegIsFound == null)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "selected Leg is not found on civil", (int)ApiReturnCode.fail);
 
-                                        var Leg = _unitOfWork.LegRepository.GetIncludeWhereFirst(x => x.CivilWithLegInstId ==
-                                                Editpower.installationConfig.civilWithLegId && x.Id == Editpower.installationConfig.legId
-                                                , x => x.CivilWithLegInst);
-                                        if (Leg != null)
+                                        if (Editpower.installationConfig.sideArmId != null)
+                                        {
+
+                                            var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                              Editpower.installationConfig.civilWithLegId && !x.Dismantle && x.sideArmId ==
+                                              Editpower.installationConfig.sideArmId
+                                              && x.legId == Editpower.installationConfig.legId, x => x.allCivilInst,
+                                              x => x.allCivilInst.civilWithLegs,
+                                              x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib,
+                                              x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                            if (SideArm != null)
+                                            {
+                                                if (!string.IsNullOrEmpty(power.SerialNumber))
+                                                {
+                                                    bool CheckSerialNumber = _dbContext.MV_POWER_VIEW.Any(x => x.SerialNumber == power.SerialNumber && !x.Dismantle && x.Id != x.Id);
+                                                    if (CheckSerialNumber)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {power.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+                                                }
+
+
+                                                if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == true)
+                                                {
+                                                    if (power.CenterHigh <= 0)
+                                                    {
+                                                        if (power.HBA <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                        }
+                                                    }
+                                                    if (power.SpaceInstallation == 0)
+                                                    {
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                                    }
+                                                    if (Editpower.installationAttributes.Azimuth <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (Editpower.installationAttributes.HeightBase <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+
+                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                            x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                            && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
+
+                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                    {
+                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                    }
+
+                                                    var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                              !x.Dismantle && x.Id != power.Id &&
+                                                              x.Name.ToLower() == power.Name.ToLower() &&
+                                                              x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
+                                                    if (CheckName != null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                    if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                    {
+                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                    }
+                                                    var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                                    if (OldVcivilinfo != null)
+                                                    {
+                                                        var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                        power.EquivalentSpace = EquivalentSpace;
+                                                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                                    power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                    _unitOfWork.SaveChanges();
+                                                    if (Editpower.civilLoads != null)
+                                                    {
+
+                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                        TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                            .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                            .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                        NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                        NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                        NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                        NewpowerInst.sideArm2Id = null;
+                                                        NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                        NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                        NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                        NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                    if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                }
+                                                else if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
+                                                {
+                                                    if (power.CenterHigh <= 0)
+                                                    {
+                                                        if (power.HBA <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                        }
+                                                    }
+                                                    if (power.SpaceInstallation == 0)
+                                                    {
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                                    }
+
+                                                    if (Editpower.installationAttributes.Azimuth <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (Editpower.installationAttributes.HeightBase <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+
+                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                           x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                           x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                           && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
+
+                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                    {
+                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                    }
+
+                                                    var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                       !x.Dismantle && x.Id != power.Id &&
+                                                       x.Name.ToLower() == power.Name.ToLower() &&
+                                                       x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
+                                                    if (CheckName != null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                    var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+                                                    if (OldVcivilinfo != null)
+                                                    {
+                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - powerInst.allLoadInst.power.EquivalentSpace;
+                                                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+                                                        _unitOfWork.SaveChanges();
+                                                        power.EquivalentSpace = 0;
+                                                    }
+                                                    power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                                    power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                    _unitOfWork.SaveChanges();
+                                                    if (Editpower.civilLoads != null)
+                                                    {
+
+                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                        TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                            .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                            .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                        NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                        NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                        NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                        NewpowerInst.sideArm2Id = null;
+                                                        NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                        NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                        NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                        NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+
+                                                    if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                }
+                                                else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
+                                                {
+                                                    if (power.CenterHigh <= 0)
+                                                    {
+                                                        if (power.HBA <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                        }
+                                                    }
+                                                    if (power.SpaceInstallation == 0)
+                                                    {
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                                    }
+
+                                                    if (Editpower.installationAttributes.Azimuth <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (Editpower.installationAttributes.HeightBase <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+
+                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                               x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                               && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
+                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                    {
+                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                    }
+
+
+                                                    var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                        !x.Dismantle && x.Id != power.Id &&
+                                                        x.Name.ToLower() == power.Name.ToLower() &&
+                                                        x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
+                                                    if (CheckName != null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                    if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                    {
+                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                    }
+                                                    var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+
+                                                    if (OldVcivilinfo != null)
+                                                    {
+                                                        var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+                                                        AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                        power.EquivalentSpace = EquivalentSpace;
+                                                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+
+                                                    power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                                    power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                    _unitOfWork.SaveChanges();
+                                                    if (Editpower.civilLoads != null)
+                                                    {
+
+                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                        TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                            .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                            .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                        NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                        NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                        NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                        NewpowerInst.sideArm2Id = null;
+                                                        NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                        NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                        NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                        NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+
+                                                    if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                }
+                                                else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
+                                                {
+                                                    if (power.CenterHigh <= 0)
+                                                    {
+                                                        if (power.HBA <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                        }
+                                                    }
+                                                    if (power.SpaceInstallation == 0)
+                                                    {
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                                    }
+                                                    if (Editpower.installationAttributes.Azimuth <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+                                                    if (Editpower.installationAttributes.HeightBase <= 0)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    }
+
+                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                      x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                      && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
+                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                    {
+                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                    }
+
+                                                    var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                          !x.Dismantle && x.Id != power.Id &&
+                                                          x.Name.ToLower() == power.Name.ToLower() &&
+                                                          x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
+                                                    if (CheckName != null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                                    power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                                    power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                    _unitOfWork.SaveChanges();
+                                                    if (Editpower.civilLoads != null)
+                                                    {
+
+                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                        TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                            .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                            .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                        NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                        NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                        NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                        NewpowerInst.sideArm2Id = null;
+                                                        NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
+                                                        NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                        NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                        NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+
+                                                    if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                }
+
+
+
+                                            }
+
+                                            else
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected Leg ", (int)ApiReturnCode.fail);
+                                    }
+
+                                }
+                                else
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                }
+
+
+                            }
+
+                            else
+                            {
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs item ", (int)ApiReturnCode.fail);
+                            }
+                        }
+                        else if (Editpower.installationConfig.civilSteelType == 1)
+                        {
+                            if (Editpower.installationConfig.civilWithoutLegId != null)
+                            {
+                                AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
+                                  Editpower.installationConfig.civilWithoutLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                  x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+
+                                if (AllcivilinstId != null)
+                                {
+                                    if (Editpower.installationConfig.sideArmId != null)
+                                    {
+                                        if (Editpower.installationConfig.legId != null)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected leg because installation place is sidearm ", (int)ApiReturnCode.fail);
+
+                                        var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
+                                          Editpower.installationConfig.civilWithoutLegId && !x.Dismantle && x.sideArmId == Editpower.installationConfig.sideArmId, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                                          x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                        if (SideArm != null)
                                         {
                                             if (!string.IsNullOrEmpty(power.SerialNumber))
                                             {
-                                                bool CheckSerialNumber = _dbContext.MV_POWER_VIEW.Any(x => x.SerialNumber == power.SerialNumber && !x.Dismantle && x.Id != power.Id);
+                                                bool CheckSerialNumber = _dbContext.MV_POWER_VIEW.Any(x => x.SerialNumber == power.SerialNumber && !x.Dismantle && x.Id != x.Id);
                                                 if (CheckSerialNumber)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {power.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                                             }
+
 
                                             if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == true)
                                             {
@@ -4200,25 +5031,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (power.SpaceInstallation == 0)
                                                 {
-                                                    if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                    }
+
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
 
                                                 if (Editpower.installationAttributes.Azimuth <= 0)
@@ -4229,44 +5044,43 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
-                                                        && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                     x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                     && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
-                                                if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                power.Name = legname?.CiviLegName + " " + power.HeightBase+"HE";
-
+                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
                                                 }
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != power.Id &&
                                                            x.Name.ToLower() == power.Name.ToLower() &&
                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                                if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                if (AllcivilinstId.allCivilInst.civilWithoutLeg?.CurrentLoads == null)
                                                 {
-                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                    AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = 0;
                                                 }
-                                                var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+                                                var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithoutLegId);
 
                                                 if (OldVcivilinfo != null)
                                                 {
-                                                    var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                    var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
+                                                    AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                     power.EquivalentSpace = EquivalentSpace;
-                                                    _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+                                                    _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
 
                                                     _unitOfWork.SaveChanges();
                                                 }
@@ -4303,9 +5117,8 @@ namespace TLIS_Service.Services
 
                                                 if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-
                                             }
-                                            if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
+                                            else if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
                                             {
                                                 if (power.CenterHigh <= 0)
                                                 {
@@ -4324,25 +5137,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (power.SpaceInstallation == 0)
                                                 {
-                                                    if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                    }
+
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
 
                                                 if (Editpower.installationAttributes.Azimuth <= 0)
@@ -4353,38 +5150,37 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
+
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
-                                                && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                   x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                   && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-
-                                                TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
-                                                if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                    power.Name = legname?.CiviLegName + " " + power.HeightBase+"HE";
-
+                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
                                                 }
 
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                              !x.Dismantle && x.Id != power.Id &&
-                                                              x.Name.ToLower() == power.Name.ToLower() &&
-                                                              x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+                                                    !x.Dismantle && x.Id != power.Id &&
+                                                    x.Name.ToLower() == power.Name.ToLower() &&
+                                                    x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                                var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+                                                var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithoutLegId);
                                                 if (OldVcivilinfo != null)
                                                 {
-                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - powerInst.allLoadInst.power.EquivalentSpace;
-                                                    _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+                                                    AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads - powerInst.allLoadInst.power.EquivalentSpace;
+                                                    _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
                                                     _unitOfWork.SaveChanges();
                                                     power.EquivalentSpace = 0;
                                                 }
@@ -4418,11 +5214,10 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
 
                                                 }
-
                                                 if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
                                             }
-                                            if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
+                                            else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
                                             {
                                                 if (power.CenterHigh <= 0)
                                                 {
@@ -4441,25 +5236,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (power.SpaceInstallation == 0)
                                                 {
-                                                    if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                    }
+
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
 
                                                 if (Editpower.installationAttributes.Azimuth <= 0)
@@ -4472,44 +5251,42 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
-                                                        && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                     x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                     && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-
-                                                TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
-                                                if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                   power.Name = legname?.CiviLegName + " " + power.HeightBase+"HE";
-  
+                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
                                                 }
 
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                       !x.Dismantle && x.Id != power.Id &&
-                                                       x.Name.ToLower() == power.Name.ToLower() &&
-                                                       x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+                                                     !x.Dismantle && x.Id != power.Id &&
+                                                     x.Name.ToLower() == power.Name.ToLower() &&
+                                                     x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                                if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                                if (AllcivilinstId.allCivilInst.civilWithoutLeg?.CurrentLoads == null)
                                                 {
-                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                                    AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = 0;
                                                 }
-                                                var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
+                                                var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithoutLegId);
 
                                                 if (OldVcivilinfo != null)
                                                 {
-                                                    var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                    var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
+                                                    AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                     power.EquivalentSpace = EquivalentSpace;
-                                                    _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
+                                                    _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
 
                                                     _unitOfWork.SaveChanges();
                                                 }
@@ -4548,7 +5325,7 @@ namespace TLIS_Service.Services
                                                 if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
                                             }
-                                            if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
+                                            else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
                                             {
                                                 if (power.CenterHigh <= 0)
                                                 {
@@ -4567,27 +5344,10 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (power.SpaceInstallation == 0)
                                                 {
-                                                    if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                    }
-                                                }
 
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                                }
                                                 if (Editpower.installationAttributes.Azimuth <= 0)
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
@@ -4598,28 +5358,26 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
-                                                        && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                   x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                   && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-
-                                                TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
-                                                if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
                                                 {
-                                                   power.Name = legname?.CiviLegName + " " + power.HeightBase+"HE";
-
+                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
                                                 }
 
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                           !x.Dismantle && x.Id != power.Id &&
-                                                           x.Name.ToLower() == power.Name.ToLower() &&
-                                                           x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+                                                        !x.Dismantle && x.Id != power.Id &&
+                                                        x.Name.ToLower() == power.Name.ToLower() &&
+                                                        x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
 
                                                 if (CheckName != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4635,7 +5393,6 @@ namespace TLIS_Service.Services
                                                         .GetAllAsQueryable()
                                                         .AsNoTracking()
                                                         .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
 
                                                     TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
                                                       .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
@@ -4658,21 +5415,165 @@ namespace TLIS_Service.Services
                                                 if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
                                             }
+
+
                                         }
                                         else
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this leg is not found", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
                                         }
-                                    }
 
+
+
+                                    }
                                     else
                                     {
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected leg ", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                                    }
+                                }
+                                else
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                }
+                            }
+
+                            else
+                            {
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithoutlegs item ", (int)ApiReturnCode.fail);
+                            }
+                        }
+                        else if (Editpower.installationConfig.civilSteelType == 2)
+                        {
+                            if (Editpower.installationConfig.civilNonSteelId != null)
+                            {
+                                AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
+                                   Editpower.installationConfig.civilNonSteelId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                   x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                if (AllcivilinstId != null)
+                                {
+                                    if (Editpower.installationConfig.sideArmId != null)
+                                    {
+                                        if (Editpower.installationConfig.legId != null)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected leg because installation place is sidearm ", (int)ApiReturnCode.fail);
+
+                                        var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
+                                          Editpower.installationConfig.civilNonSteelId && !x.Dismantle && x.sideArmId == Editpower.installationConfig.sideArmId, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                                          x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                        if (SideArm != null)
+                                        {
+                                            if (!string.IsNullOrEmpty(power.SerialNumber))
+                                            {
+                                                bool CheckSerialNumber = _dbContext.MV_POWER_VIEW.Any(x => x.SerialNumber == power.SerialNumber && !x.Dismantle && x.Id != x.Id);
+                                                if (CheckSerialNumber)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {power.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+                                            }
+                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                            if (Message != "Success")
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                            }
+                                            if (power.CenterHigh <= 0)
+                                            {
+                                                if (power.HBA <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                }
+                                            }
+                                            if (power.SpaceInstallation == 0)
+                                            {
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                            }
+
+                                            if (Editpower.installationAttributes.Azimuth <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                            }
+                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
+                                                    x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
+                                                    && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
+                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                          .Select(g => g.First())
+                                                          .ToList();
+
+                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+
+                                            var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
+                                            if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            {
+                                                power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                            }
+
+                                            var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
+                                                     !x.Dismantle && x.Id != power.Id &&
+                                                     x.Name.ToLower() == power.Name.ToLower() &&
+                                                     x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
+
+                                            if (CheckName != null)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                            power.powerLibraryId = Editpower.civilType.powerLibraryId;
+                                            power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
+                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                            _unitOfWork.SaveChanges();
+                                            if (Editpower.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
+                                                NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
+                                                NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
+                                                NewpowerInst.sideArm2Id = null;
+                                                NewpowerInst.legId = null;
+                                                NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
+                                                NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
+                                                NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                _unitOfWork.SaveChanges();
+
+                                            }
+
+                                            if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                        }
+                                        else
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
                                     }
 
-
                                 }
-
                                 else
                                 {
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
@@ -4681,1240 +5582,14 @@ namespace TLIS_Service.Services
                             }
                             else
                             {
-                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs item ", (int)ApiReturnCode.fail);
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilnonsteel item ", (int)ApiReturnCode.fail);
                             }
 
 
                         }
-                        else if (Editpower.installationConfig.InstallationPlaceId == 2)
-                        {
-                            if (Editpower.installationConfig.civilSteelType == 0)
-                            {
-                                if (Editpower.installationConfig.civilWithLegId != null)
-                                {
 
-                                    AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                   Editpower.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                                   x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                                    if (AllcivilinstId != null)
-                                    {
-                                        if (Editpower.installationConfig.legId != null)
-                                        {
-                                            var LegIsFound = _unitOfWork.LegRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.legId
-                                                     && x.CivilWithLegInstId == Editpower.installationConfig.civilWithLegId);
-                                            if (LegIsFound == null)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "selected Leg is not found on civil", (int)ApiReturnCode.fail);
+                    }
 
-                                            if (Editpower.installationConfig.sideArmId != null)
-                                            {
-
-                                                var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                                  Editpower.installationConfig.civilWithLegId && !x.Dismantle && x.sideArmId ==
-                                                  Editpower.installationConfig.sideArmId
-                                                  && x.legId == Editpower.installationConfig.legId, x => x.allCivilInst,
-                                                  x => x.allCivilInst.civilWithLegs,
-                                                  x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib,
-                                                  x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                                                if (SideArm != null)
-                                                {
-                                                    if (!string.IsNullOrEmpty(power.SerialNumber))
-                                                    {
-                                                        bool CheckSerialNumber = _dbContext.MV_POWER_VIEW.Any(x => x.SerialNumber == power.SerialNumber && !x.Dismantle && x.Id != x.Id);
-                                                        if (CheckSerialNumber)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {power.SerialNumber} is already exists", (int)ApiReturnCode.fail);
-                                                    }
-
-
-                                                    if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == true)
-                                                    {
-                                                        if (power.CenterHigh <= 0)
-                                                        {
-                                                            if (power.HBA <= 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                            }
-                                                        }
-                                                        if (power.SpaceInstallation == 0)
-                                                        {
-                                                            if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                            }
-                                                        }
-
-                                                        if (Editpower.installationAttributes.Azimuth <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (Editpower.installationAttributes.HeightBase <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                                && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                        var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                        if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                        {
-                                                            power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                                        }
-
-                                                        var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                                  !x.Dismantle && x.Id != power.Id &&
-                                                                  x.Name.ToLower() == power.Name.ToLower() &&
-                                                                  x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                        if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                        if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
-                                                        {
-                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
-                                                        }
-                                                        var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
-
-                                                        if (OldVcivilinfo != null)
-                                                        {
-                                                            var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
-                                                            power.EquivalentSpace = EquivalentSpace;
-                                                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-
-                                                            _unitOfWork.SaveChanges();
-                                                        }
-                                                        power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                        power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                        _unitOfWork.SaveChanges();
-                                                        if (Editpower.civilLoads != null)
-                                                        {
-
-                                                            var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                                .GetAllAsQueryable()
-                                                                .AsNoTracking()
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-
-                                                            TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                            NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                            NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                            NewpowerInst.sideArm2Id = null;
-                                                            NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
-                                                            NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                            NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                            NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-                                                        if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                                    }
-                                                    if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
-                                                    {
-                                                        if (power.CenterHigh <= 0)
-                                                        {
-                                                            if (power.HBA <= 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                            }
-                                                        }
-                                                        if (power.SpaceInstallation == 0)
-                                                        {
-                                                            if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                            }
-                                                        }
-
-                                                        if (Editpower.installationAttributes.Azimuth <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (Editpower.installationAttributes.HeightBase <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                               x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                               && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                        var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                        if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                        {
-                                                            power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                                    }
-
-                                                        var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                           !x.Dismantle && x.Id != power.Id &&
-                                                           x.Name.ToLower() == power.Name.ToLower() &&
-                                                           x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                        if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                        var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
-                                                        if (OldVcivilinfo != null)
-                                                        {
-                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - powerInst.allLoadInst.power.EquivalentSpace;
-                                                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-                                                            _unitOfWork.SaveChanges();
-                                                            power.EquivalentSpace = 0;
-                                                        }
-                                                        power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                        power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                        _unitOfWork.SaveChanges();
-                                                        if (Editpower.civilLoads != null)
-                                                        {
-
-                                                            var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                                .GetAllAsQueryable()
-                                                                .AsNoTracking()
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-
-                                                            TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                            NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                            NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                            NewpowerInst.sideArm2Id = null;
-                                                            NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
-                                                            NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                            NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                            NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-
-                                                        if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                                    }
-                                                    if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
-                                                    {
-                                                        if (power.CenterHigh <= 0)
-                                                        {
-                                                            if (power.HBA <= 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                            }
-                                                        }
-                                                        if (power.SpaceInstallation == 0)
-                                                        {
-                                                            if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                            }
-                                                        }
-
-                                                        if (Editpower.installationAttributes.Azimuth <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (Editpower.installationAttributes.HeightBase <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                   x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                                   && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                        var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                        if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                        {
-                                                            power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                                    }
-
-
-                                                        var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                            !x.Dismantle && x.Id != power.Id &&
-                                                            x.Name.ToLower() == power.Name.ToLower() &&
-                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                        if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                        if (AllcivilinstId.allCivilInst.civilWithLegs?.CurrentLoads == null)
-                                                        {
-                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = 0;
-                                                        }
-                                                        var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
-
-                                                        if (OldVcivilinfo != null)
-                                                        {
-                                                            var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
-                                                            power.EquivalentSpace = EquivalentSpace;
-                                                            _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
-
-                                                            _unitOfWork.SaveChanges();
-                                                        }
-
-                                                        power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                        power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                        _unitOfWork.SaveChanges();
-                                                        if (Editpower.civilLoads != null)
-                                                        {
-
-                                                            var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                                .GetAllAsQueryable()
-                                                                .AsNoTracking()
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-
-                                                            TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                            NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                            NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                            NewpowerInst.sideArm2Id = null;
-                                                            NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
-                                                            NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                            NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                            NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-
-                                                        if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                                    }
-                                                    if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
-                                                    {
-                                                        if (power.CenterHigh <= 0)
-                                                        {
-                                                            if (power.HBA <= 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                            }
-                                                        }
-                                                        if (power.SpaceInstallation == 0)
-                                                        {
-                                                            if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                            }
-                                                        }
-
-                                                        if (Editpower.installationAttributes.Azimuth <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (Editpower.installationAttributes.HeightBase <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                          x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                          && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                         .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                                        var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                        if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                        {
-                                                            power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                                    }
-
-                                                        var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                              !x.Dismantle && x.Id != power.Id &&
-                                                              x.Name.ToLower() == power.Name.ToLower() &&
-                                                              x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                        if (CheckName != null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                        power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                        power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                        _unitOfWork.SaveChanges();
-                                                        if (Editpower.civilLoads != null)
-                                                        {
-
-                                                            var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                                .GetAllAsQueryable()
-                                                                .AsNoTracking()
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-
-                                                            TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                            NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                            NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                            NewpowerInst.sideArm2Id = null;
-                                                            NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
-                                                            NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                            NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                            NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-
-                                                        if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                                    }
-
-
-
-                                                }
-
-                                                else
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found", (int)ApiReturnCode.fail);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected Leg ", (int)ApiReturnCode.fail);
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
-                                    }
-
-
-                                }
-
-                                else
-                                {
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithlegs item ", (int)ApiReturnCode.fail);
-                                }
-                            }
-                            else if (Editpower.installationConfig.civilSteelType == 1)
-                            {
-                                if (Editpower.installationConfig.civilWithoutLegId != null)
-                                {
-                                    AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
-                                      Editpower.installationConfig.civilWithoutLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                                      x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-
-                                    if (AllcivilinstId != null)
-                                    {
-                                        if (Editpower.installationConfig.sideArmId != null)
-                                        {
-                                            if (Editpower.installationConfig.legId != null)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected leg because installation place is sidearm ", (int)ApiReturnCode.fail);
-
-                                            var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
-                                              Editpower.installationConfig.civilWithoutLegId && !x.Dismantle && x.sideArmId == Editpower.installationConfig.sideArmId, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                                              x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                                            if (SideArm != null)
-                                            {
-                                                if (!string.IsNullOrEmpty(power.SerialNumber))
-                                                {
-                                                    bool CheckSerialNumber = _dbContext.MV_POWER_VIEW.Any(x => x.SerialNumber == power.SerialNumber && !x.Dismantle && x.Id != x.Id);
-                                                    if (CheckSerialNumber)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {power.SerialNumber} is already exists", (int)ApiReturnCode.fail);
-                                                }
-
-
-                                                if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == true)
-                                                {
-                                                    if (power.CenterHigh <= 0)
-                                                    {
-                                                        if (power.HBA <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                        }
-                                                    }
-                                                    if (power.SpaceInstallation == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                        }
-                                                    }
-
-                                                    if (Editpower.installationAttributes.Azimuth <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    if (Editpower.installationAttributes.HeightBase <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                         x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                         && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                    {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                                }
-                                                    var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                               !x.Dismantle && x.Id != power.Id &&
-                                                               x.Name.ToLower() == power.Name.ToLower() &&
-                                                               x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                    if (CheckName != null)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                    if (AllcivilinstId.allCivilInst.civilWithoutLeg?.CurrentLoads == null)
-                                                    {
-                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = 0;
-                                                    }
-                                                    var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithoutLegId);
-
-                                                    if (OldVcivilinfo != null)
-                                                    {
-                                                        var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
-                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
-                                                        power.EquivalentSpace = EquivalentSpace;
-                                                        _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
-
-                                                        _unitOfWork.SaveChanges();
-                                                    }
-                                                    power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                    power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                    _unitOfWork.SaveChanges();
-                                                    if (Editpower.civilLoads != null)
-                                                    {
-
-                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                            .GetAllAsQueryable()
-                                                            .AsNoTracking()
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-
-                                                        TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                        NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                        NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                        NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                        NewpowerInst.sideArm2Id = null;
-                                                        NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
-                                                        NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                        NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                        NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                        _unitOfWork.SaveChanges();
-
-                                                    }
-
-                                                    if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                                }
-                                                if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
-                                                {
-                                                    if (power.CenterHigh <= 0)
-                                                    {
-                                                        if (power.HBA <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                        }
-                                                    }
-                                                    if (power.SpaceInstallation == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                        }
-                                                    }
-
-                                                    if (Editpower.installationAttributes.Azimuth <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    if (Editpower.installationAttributes.HeightBase <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                       && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                    {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                                }
-
-                                                    var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                        !x.Dismantle && x.Id != power.Id &&
-                                                        x.Name.ToLower() == power.Name.ToLower() &&
-                                                        x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                    if (CheckName != null)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                    var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithoutLegId);
-                                                    if (OldVcivilinfo != null)
-                                                    {
-                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads - powerInst.allLoadInst.power.EquivalentSpace;
-                                                        _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
-                                                        _unitOfWork.SaveChanges();
-                                                        power.EquivalentSpace = 0;
-                                                    }
-                                                    power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                    power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                    _unitOfWork.SaveChanges();
-                                                    if (Editpower.civilLoads != null)
-                                                    {
-
-                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                            .GetAllAsQueryable()
-                                                            .AsNoTracking()
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-
-                                                        TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                        NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                        NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                        NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                        NewpowerInst.sideArm2Id = null;
-                                                        NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
-                                                        NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                        NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                        NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                        _unitOfWork.SaveChanges();
-
-                                                    }
-                                                    if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                                }
-                                                if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
-                                                {
-                                                    if (power.CenterHigh <= 0)
-                                                    {
-                                                        if (power.HBA <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                        }
-                                                    }
-                                                    if (power.SpaceInstallation == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                        }
-                                                    }
-
-                                                    if (Editpower.installationAttributes.Azimuth <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    if (Editpower.installationAttributes.HeightBase <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                         x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                         && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                    {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                                }
-
-                                                    var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                         !x.Dismantle && x.Id != power.Id &&
-                                                         x.Name.ToLower() == power.Name.ToLower() &&
-                                                         x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                    if (CheckName != null)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                    if (AllcivilinstId.allCivilInst.civilWithoutLeg?.CurrentLoads == null)
-                                                    {
-                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = 0;
-                                                    }
-                                                    var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithoutLegId);
-
-                                                    if (OldVcivilinfo != null)
-                                                    {
-                                                        var EquivalentSpace = power.SpaceInstallation * (power.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
-                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
-                                                        power.EquivalentSpace = EquivalentSpace;
-                                                        _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
-
-                                                        _unitOfWork.SaveChanges();
-                                                    }
-
-                                                    power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                    power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                    _unitOfWork.SaveChanges();
-                                                    if (Editpower.civilLoads != null)
-                                                    {
-
-                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                            .GetAllAsQueryable()
-                                                            .AsNoTracking()
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-
-                                                        TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                        NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                        NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                        NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                        NewpowerInst.sideArm2Id = null;
-                                                        NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
-                                                        NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                        NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                        NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                        _unitOfWork.SaveChanges();
-
-                                                    }
-
-                                                    if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                                }
-                                                if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
-                                                {
-                                                    if (power.CenterHigh <= 0)
-                                                    {
-                                                        if (power.HBA <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                        }
-                                                    }
-                                                    if (power.SpaceInstallation == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                        }
-                                                    }
-
-                                                    if (Editpower.installationAttributes.Azimuth <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    if (Editpower.installationAttributes.HeightBase <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                       && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                    {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                                }
-
-                                                    var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                            !x.Dismantle && x.Id != power.Id &&
-                                                            x.Name.ToLower() == power.Name.ToLower() &&
-                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                    if (CheckName != null)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                    power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                    power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                    _unitOfWork.SaveChanges();
-                                                    if (Editpower.civilLoads != null)
-                                                    {
-
-                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                            .GetAllAsQueryable()
-                                                            .AsNoTracking()
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                        TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                        NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                        NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                        NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                        NewpowerInst.sideArm2Id = null;
-                                                        NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
-                                                        NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                        NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                        NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                        _unitOfWork.SaveChanges();
-
-                                                    }
-
-                                                    if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                                }
-
-
-                                            }
-                                            else
-                                            {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
-                                            }
-
-
-
-                                        }
-                                        else
-                                        {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
-                                    }
-                                }
-
-                                else
-                                {
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilwithoutlegs item ", (int)ApiReturnCode.fail);
-                                }
-                            }
-                            else if (Editpower.installationConfig.civilSteelType == 2)
-                            {
-                                if (Editpower.installationConfig.civilNonSteelId != null)
-                                {
-                                    AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
-                                       Editpower.installationConfig.civilNonSteelId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                                       x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                                    if (AllcivilinstId != null)
-                                    {
-                                        if (Editpower.installationConfig.sideArmId != null)
-                                        {
-                                            if (Editpower.installationConfig.legId != null)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected leg because installation place is sidearm ", (int)ApiReturnCode.fail);
-
-                                            var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
-                                              Editpower.installationConfig.civilNonSteelId && !x.Dismantle && x.sideArmId == Editpower.installationConfig.sideArmId, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                                              x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
-                                            if (SideArm != null)
-                                            {
-                                                if (!string.IsNullOrEmpty(power.SerialNumber))
-                                                {
-                                                    bool CheckSerialNumber = _dbContext.MV_POWER_VIEW.Any(x => x.SerialNumber == power.SerialNumber && !x.Dismantle && x.Id != x.Id);
-                                                    if (CheckSerialNumber)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {power.SerialNumber} is already exists", (int)ApiReturnCode.fail);
-                                                }
-                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                                                if (Message != "Success")
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                }
-                                                if (power.CenterHigh <= 0)
-                                                {
-                                                    if (power.HBA <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    if (powerInst.allLoadInst.power.powerLibrary.Length <= 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    else
-                                                    {
-                                                        power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
-                                                    }
-                                                }
-                                                if (power.SpaceInstallation == 0)
-                                                {
-                                                    if (powerInst.allLoadInst.power.powerLibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if (powerInst.allLoadInst.power.powerLibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if (powerInst.allLoadInst.power.powerLibrary.width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.Length * powerInst.allLoadInst.power.powerLibrary.width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        power.SpaceInstallation = powerInst.allLoadInst.power.powerLibrary.SpaceLibrary;
-                                                    }
-                                                }
-
-                                                if (Editpower.installationAttributes.Azimuth <= 0)
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
-                                                }
-                                                if (Editpower.installationAttributes.HeightBase <= 0)
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
-                                                }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                        && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
-                                                {
-                                                    power.Name = SideArmName?.Name + " " + power.HeightBase+"HE";
-                                            }
-
-                                                var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
-                                                         !x.Dismantle && x.Id != power.Id &&
-                                                         x.Name.ToLower() == power.Name.ToLower() &&
-                                                         x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
-
-                                                if (CheckName != null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {power.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                                power.powerLibraryId = Editpower.civilType.powerLibraryId;
-                                                power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
-                                                _unitOfWork.SaveChanges();
-                                                if (Editpower.civilLoads != null)
-                                                {
-
-                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                        .GetAllAsQueryable()
-                                                        .AsNoTracking()
-                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-
-                                                    TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
-
-                                                    NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                    NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
-                                                    NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
-                                                    NewpowerInst.sideArm2Id = null;
-                                                    NewpowerInst.legId = null;
-                                                    NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
-                                                    NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
-                                                    NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
-                                                    _unitOfWork.SaveChanges();
-
-                                                }
-
-                                                if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                            }
-                                            else
-                                            {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
-                                    }
-
-                                }
-                                else
-                                {
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilnonsteel item ", (int)ApiReturnCode.fail);
-                                }
-
-
-                            }
-
-                        }
-                    
 
                     if (TaskId != null)
                     {
@@ -5936,9 +5611,9 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
-                   
+
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
-                   
+
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)

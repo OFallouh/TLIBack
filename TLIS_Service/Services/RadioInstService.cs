@@ -1624,25 +1624,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioAntennaLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioAntennaLibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                            }
+                                                           
+                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                               
                                                         }
 
                                                         if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
@@ -1754,25 +1738,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioAntennaLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioAntennaLibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                            }
+
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
                                                         if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
                                                         {
@@ -1933,25 +1901,9 @@ namespace TLIS_Service.Services
                                                                     }
                                                                     if (RadioAntenna.SpaceInstallation == 0)
                                                                     {
-                                                                        if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                                        {
-                                                                            if (RadioAntennaLibrary.Length == 0)
-                                                                            {
-                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                            }
-                                                                            if (RadioAntennaLibrary.Width == 0)
-                                                                            {
-                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                                        }
+
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                                     }
 
                                                                     if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
@@ -2061,27 +2013,10 @@ namespace TLIS_Service.Services
                                                                     }
                                                                     if (RadioAntenna.SpaceInstallation == 0)
                                                                     {
-                                                                        if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                                        {
-                                                                            if (RadioAntennaLibrary.Length == 0)
-                                                                            {
-                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                            }
-                                                                            if (RadioAntennaLibrary.Width == 0)
-                                                                            {
-                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                                        }
-                                                                    }
 
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                                                    }
                                                                     if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
@@ -2237,25 +2172,9 @@ namespace TLIS_Service.Services
                                                             }
                                                             if (RadioAntenna.SpaceInstallation == 0)
                                                             {
-                                                                if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                                {
-                                                                    if (RadioAntennaLibrary.Length == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    if (RadioAntennaLibrary.Width == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                                }
+
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                             }
 
                                                             if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
@@ -2367,25 +2286,9 @@ namespace TLIS_Service.Services
                                                             }
                                                             if (RadioAntenna.SpaceInstallation == 0)
                                                             {
-                                                                if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                                {
-                                                                    if (RadioAntennaLibrary.Length == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    if (RadioAntennaLibrary.Width == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                                }
+
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                             }
 
                                                             if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
@@ -2533,27 +2436,11 @@ namespace TLIS_Service.Services
                                                                 RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
                                                             }
                                                         }
-                                                        else if (RadioAntenna.SpaceInstallation == 0)
+                                                        if (RadioAntenna.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioAntennaLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioAntennaLibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioAntennaLibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioAntenna.SpaceInstallation = RadioAntennaLibrary.Length * RadioAntennaLibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioAntenna.SpaceInstallation = RadioAntennaLibrary.SpaceLibrary;
-                                                            }
+
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
 
                                                         if (AddRadioAntenna.installationAttributes.Azimuth <= 0)
@@ -2731,25 +2618,10 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioRRULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioRRULibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRULibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
-                                                            }
+                                                            
+                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                
+                                                           
                                                         }
 
                                                         if (AddRadioRRU.installationAttributes.Azimuth <= 0)
@@ -2868,25 +2740,10 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioRRULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioRRULibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRULibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
-                                                            }
+
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+
                                                         }
                                                         if (AddRadioRRU.installationAttributes.Azimuth <= 0)
                                                         {
@@ -3018,15 +2875,17 @@ namespace TLIS_Service.Services
                                                           x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                                         if (SideArm != null)
                                                         {
-                                                          
-                                                            for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                            if (AddRadioRRU.installationConfig.radioAntennaId != null)
                                                             {
-                                                                var RadioAntenna = _unitOfWork.CivilLoadsRepository
-                                                                    .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == AddRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
-                                                                    && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                                    AddRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
-                                                                if (RadioAntenna == null)
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                                for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                                {
+                                                                    var RadioAntenna = _unitOfWork.CivilLoadsRepository
+                                                                        .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == AddRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
+                                                                        && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
+                                                                        AddRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                                    if (RadioAntenna == null)
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                                }
                                                             }
                                                             if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
                                                             {
@@ -3062,25 +2921,10 @@ namespace TLIS_Service.Services
                                                                     }
                                                                     if (RadioRRU.SpaceInstallation == 0)
                                                                     {
-                                                                        if (RadioRRULibrary.SpaceLibrary == 0)
-                                                                        {
-                                                                            if (RadioRRULibrary.Length == 0)
-                                                                            {
-                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                            }
-                                                                            if (RadioRRULibrary.Width == 0)
-                                                                            {
-                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
-                                                                        }
+
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+
                                                                     }
 
                                                                     if (AddRadioRRU.installationAttributes.Azimuth <= 0)
@@ -3199,25 +3043,10 @@ namespace TLIS_Service.Services
                                                                     }
                                                                     if (RadioRRU.SpaceInstallation == 0)
                                                                     {
-                                                                        if (RadioRRULibrary.SpaceLibrary == 0)
-                                                                        {
-                                                                            if (RadioRRULibrary.Length == 0)
-                                                                            {
-                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                            }
-                                                                            if (RadioRRULibrary.Width == 0)
-                                                                            {
-                                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
-                                                                        }
+
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+
                                                                     }
 
                                                                     if (AddRadioRRU.installationAttributes.Azimuth <= 0)
@@ -3348,14 +3177,17 @@ namespace TLIS_Service.Services
 
                                                     if (SideArm != null)
                                                     {
-                                                        for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                        if (AddRadioRRU.installationConfig.radioAntennaId != null)
                                                         {
-                                                            var RadioAntenna = _unitOfWork.CivilLoadsRepository
-                                                                .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == AddRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
-                                                                && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                                AddRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
-                                                            if (RadioAntenna == null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                            for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                            {
+                                                                var RadioAntenna = _unitOfWork.CivilLoadsRepository
+                                                                    .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == AddRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
+                                                                    && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
+                                                                    AddRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                                if (RadioAntenna == null)
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                            }
                                                         }
                                                         if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
                                                         {
@@ -3389,25 +3221,10 @@ namespace TLIS_Service.Services
                                                             }
                                                             if (RadioRRU.SpaceInstallation == 0)
                                                             {
-                                                                if (RadioRRULibrary.SpaceLibrary == 0)
-                                                                {
-                                                                    if (RadioRRULibrary.Length == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    if (RadioRRULibrary.Width == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
-                                                                }
+
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+
                                                             }
 
                                                             if (AddRadioRRU.installationAttributes.Azimuth <= 0)
@@ -3524,25 +3341,10 @@ namespace TLIS_Service.Services
                                                             }
                                                             if (RadioRRU.SpaceInstallation == 0)
                                                             {
-                                                                if (RadioRRULibrary.SpaceLibrary == 0)
-                                                                {
-                                                                    if (RadioRRULibrary.Length == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    if (RadioRRULibrary.Width == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
-                                                                }
+
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+
                                                             }
 
                                                             if (AddRadioRRU.installationAttributes.Azimuth <= 0)
@@ -3660,15 +3462,17 @@ namespace TLIS_Service.Services
                                                      x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                                     if (SideArm != null)
                                                     {
-                                                   
-                                                        for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                        if (AddRadioRRU.installationConfig.radioAntennaId != null)
                                                         {
-                                                            var RadioAntenna = _unitOfWork.CivilLoadsRepository
-                                                                .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == AddRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
-                                                                && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                                AddRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
-                                                            if (RadioAntenna == null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                            for (int i = 0; i < AddRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                            {
+                                                                var RadioAntenna = _unitOfWork.CivilLoadsRepository
+                                                                    .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == AddRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
+                                                                    && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
+                                                                    AddRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                                if (RadioAntenna == null)
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                            }
                                                         }
                                                         if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
                                                         {
@@ -3701,29 +3505,13 @@ namespace TLIS_Service.Services
                                                                 RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
                                                             }
                                                         }
-                                                        else if (RadioRRU.SpaceInstallation == 0)
+                                                        if (RadioRRU.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioRRULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioRRULibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRULibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRULibrary.Length * RadioRRULibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation = RadioRRULibrary.SpaceLibrary;
-                                                            }
-                                                        }
 
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+
+                                                        }
                                                         if (AddRadioRRU.installationAttributes.Azimuth <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
@@ -4040,7 +3828,7 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
 
                                             }
-                                            if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
+                                            else if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                             {
                                                 if (RadioAntenna.CenterHigh <= 0)
                                                 {
@@ -4157,7 +3945,7 @@ namespace TLIS_Service.Services
                                                 if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                             }
-                                            if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
+                                            else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                             {
                                                 if (RadioAntenna.CenterHigh <= 0)
                                                 {
@@ -4283,7 +4071,7 @@ namespace TLIS_Service.Services
                                                 if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
                                             }
-                                            if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
+                                            else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                             {
                                                 if (RadioAntenna.CenterHigh <= 0)
                                                 {
@@ -5681,14 +5469,17 @@ namespace TLIS_Service.Services
                                                 , x => x.CivilWithLegInst);
                                         if (Leg != null)
                                         {
-                                            for (int i = 0; i < EditRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                            if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                             {
-                                                var RadioAntenna = _unitOfWork.CivilLoadsRepository
-                                                    .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == EditRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
-                                                    && !x.Dismantle && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                    EditRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
-                                                if (RadioAntenna == null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                for (int i = 0; i < EditRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                {
+                                                    var RadioAntenna = _unitOfWork.CivilLoadsRepository
+                                                        .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == EditRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
+                                                        && !x.Dismantle && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
+                                                        EditRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                    if (RadioAntenna == null)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                }
                                             }
                                             if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
                                             {
@@ -5716,26 +5507,11 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
                                                 {
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                    }
+
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
+
 
                                                 if (EditRadioRRU.installationAttributes.Azimuth <= 0)
                                                 {
@@ -5828,7 +5604,7 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
 
                                             }
-                                            if (RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                            else if (RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
                                             {
                                                 if (RadioRRU.CenterHigh <= 0)
                                                 {
@@ -5847,25 +5623,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
                                                 {
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                    }
+                                                  
+                                                       return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                       
                                                 }
 
                                                 if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -5951,7 +5711,7 @@ namespace TLIS_Service.Services
                                                 if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                             }
-                                            if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
+                                            else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                             {
                                                 if (RadioRRU.CenterHigh <= 0)
                                                 {
@@ -5970,25 +5730,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
                                                 {
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                    }
+
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
 
                                                 if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -6082,7 +5826,7 @@ namespace TLIS_Service.Services
                                                 if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
                                                     _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                             }
-                                            if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                            else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                             {
                                                 if (RadioRRU.CenterHigh <= 0)
                                                 {
@@ -6101,26 +5845,11 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
                                                 {
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                    }
+
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
+
 
                                                 if (EditRadioRRU.installationAttributes.Azimuth <= 0)
                                                 {
@@ -6254,14 +5983,17 @@ namespace TLIS_Service.Services
                                                   x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                                 if (SideArm != null)
                                                 {
-                                                    for (int i = 0; i < EditRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                    if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                        var RadioAntenna = _unitOfWork.CivilLoadsRepository
-                                                            .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == EditRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
-                                                            && !x.Dismantle && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                            EditRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
-                                                        if (RadioAntenna == null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                        for (int i = 0; i < EditRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                        {
+                                                            var RadioAntenna = _unitOfWork.CivilLoadsRepository
+                                                                .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == EditRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
+                                                                && !x.Dismantle && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
+                                                                EditRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                            if (RadioAntenna == null)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                        }
                                                     }
                                                     if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
                                                     {
@@ -6288,25 +6020,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length * RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation = RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                            }
+
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
 
                                                         if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -6416,7 +6132,7 @@ namespace TLIS_Service.Services
                                                         if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
                                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                                     }
-                                                    if (RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                                    else if(RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (RadioRRU.CenterHigh <= 0)
                                                         {
@@ -6435,25 +6151,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length * RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation = RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                            }
+
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
 
                                                         if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -6540,7 +6240,7 @@ namespace TLIS_Service.Services
                                                         if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
                                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                                     }
-                                                    if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
+                                                    else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                                     {
                                                         if (RadioRRU.CenterHigh <= 0)
                                                         {
@@ -6557,29 +6257,7 @@ namespace TLIS_Service.Services
                                                                 RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
                                                             }
                                                         }
-                                                        if (RadioRRU.SpaceInstallation == 0)
-                                                        {
-                                                            if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length * RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation = RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                            }
-                                                        }
-
+                                                        
                                                         if (EditRadioRRU.installationAttributes.Azimuth <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
@@ -6689,7 +6367,7 @@ namespace TLIS_Service.Services
                                                         if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
                                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                                     }
-                                                    if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                                    else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (RadioRRU.CenterHigh <= 0)
                                                         {
@@ -6708,25 +6386,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
                                                         {
-                                                            if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                else
-                                                                {
-                                                                    RadioRRU.SpaceInstallation = RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length * RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation = RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                            }
+
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
 
                                                         if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -6857,14 +6519,17 @@ namespace TLIS_Service.Services
                                               x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                             if (SideArm != null)
                                             {
-                                                for (int i = 0; i < EditRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                    var RadioAntenna = _unitOfWork.CivilLoadsRepository
-                                                        .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == EditRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
-                                                        && !x.Dismantle && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                        EditRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
-                                                    if (RadioAntenna == null)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                    for (int i = 0; i < EditRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                    {
+                                                        var RadioAntenna = _unitOfWork.CivilLoadsRepository
+                                                            .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == EditRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
+                                                            && !x.Dismantle && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
+                                                            EditRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                        if (RadioAntenna == null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                    }
                                                 }
                                                 if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
                                                 {
@@ -6893,25 +6558,9 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
                                                     {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
 
                                                     if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -7004,7 +6653,7 @@ namespace TLIS_Service.Services
                                                     if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
                                                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                                 }
-                                                if (RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                                else if(RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (RadioRRU.CenterHigh <= 0)
                                                     {
@@ -7023,26 +6672,11 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
                                                     {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
+
 
                                                     if (EditRadioRRU.installationAttributes.Azimuth <= 0)
                                                     {
@@ -7126,7 +6760,7 @@ namespace TLIS_Service.Services
                                                     if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
                                                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                                 }
-                                                if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
+                                                else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                                 {
                                                     if (RadioRRU.CenterHigh <= 0)
                                                     {
@@ -7145,26 +6779,11 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
                                                     {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
+
 
                                                     if (EditRadioRRU.installationAttributes.Azimuth <= 0)
                                                     {
@@ -7257,7 +6876,7 @@ namespace TLIS_Service.Services
                                                     if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
                                                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
                                                 }
-                                                if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                                else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (RadioRRU.CenterHigh <= 0)
                                                     {
@@ -7276,25 +6895,9 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
                                                     {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            else
-                                                            {
-                                                                RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
 
                                                     if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -7418,14 +7021,17 @@ namespace TLIS_Service.Services
                                               x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                             if (SideArm != null)
                                             {
-                                                for (int i = 0; i < EditRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                    var RadioAntenna = _unitOfWork.CivilLoadsRepository
-                                                        .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == EditRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
-                                                        && !x.Dismantle && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                        EditRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
-                                                    if (RadioAntenna == null)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                    for (int i = 0; i < EditRadioRRU.installationConfig.radioAntennaId.Count; i++)
+                                                    {
+                                                        var RadioAntenna = _unitOfWork.CivilLoadsRepository
+                                                            .GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == EditRadioRRU.installationConfig.radioAntennaId[i] && x.allLoadInst.radioRRUId == null
+                                                            && !x.Dismantle && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
+                                                            EditRadioRRU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                        if (RadioAntenna == null)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The radioantenna is not found", (int)ApiReturnCode.fail);
+                                                    }
                                                 }
                                                 if (!string.IsNullOrEmpty(RadioRRU.SerialNumber))
                                                 {
@@ -7456,25 +7062,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
                                                 {
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        else
-                                                        {
-                                                            RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length *  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Width;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        RadioRRU.SpaceInstallation =  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.SpaceLibrary;
-                                                    }
+
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
 
                                                 if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -10982,7 +10572,7 @@ namespace TLIS_Service.Services
 
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(TablePartName.Radio.ToString(), TablesNames.TLImwDishLibrary.ToString(), RadioAntenna.allLoadInst.radioAntenna.radioAntennaLibrary.Id).ToList());
+                        .GetLogisticals(TablePartName.Radio.ToString(), TablesNames.TLIradioAntennaLibrary.ToString(), RadioAntenna.allLoadInst.radioAntenna.radioAntennaLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 

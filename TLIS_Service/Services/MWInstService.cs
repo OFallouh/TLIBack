@@ -3562,19 +3562,9 @@ namespace TLIS_Service.Services
                                                                 }
                                                             }
                                                             if (mwODU.SpaceInstallation == 0)
-                                                            {
-                                                                if (MWODULibrary.SpaceLibrary == 0)
-                                                                {
-                                                                    if (MWODULibrary.Height == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    mwODU.SpaceInstallation = MWODULibrary.Height * MWODULibrary.Width;
-                                                                }
-                                                                else
-                                                                {
-                                                                    mwODU.SpaceInstallation = MWODULibrary.SpaceLibrary;
-                                                                }
+                                                            { 
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                 
                                                             }
 
                                                             if (mwODU.Azimuth <= 0)
@@ -3681,18 +3671,8 @@ namespace TLIS_Service.Services
                                                             }
                                                             if (mwODU.SpaceInstallation == 0)
                                                             {
-                                                                if (MWODULibrary.SpaceLibrary == 0)
-                                                                {
-                                                                    if (MWODULibrary.Height == 0)
-                                                                    {
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                    }
-                                                                    mwODU.SpaceInstallation = MWODULibrary.Height * MWODULibrary.Width;
-                                                                }
-                                                                else
-                                                                {
-                                                                    mwODU.SpaceInstallation = MWODULibrary.SpaceLibrary;
-                                                                }
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                             }
 
                                                             if (mwODU.Azimuth <= 0)
@@ -3856,18 +3836,8 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (mwODU.SpaceInstallation == 0)
                                                         {
-                                                            if (MWODULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (MWODULibrary.Height == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                mwODU.SpaceInstallation = MWODULibrary.Height * MWODULibrary.Width;
-                                                            }
-                                                            else
-                                                            {
-                                                                mwODU.SpaceInstallation = MWODULibrary.SpaceLibrary;
-                                                            }
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
 
                                                         if (mwODU.Azimuth <= 0)
@@ -3976,18 +3946,8 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (mwODU.SpaceInstallation == 0)
                                                         {
-                                                            if (MWODULibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (MWODULibrary.Height == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                mwODU.SpaceInstallation = MWODULibrary.Height * MWODULibrary.Width;
-                                                            }
-                                                            else
-                                                            {
-                                                                mwODU.SpaceInstallation = MWODULibrary.SpaceLibrary;
-                                                            }
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
 
                                                         if (mwODU.Azimuth <= 0)
@@ -4138,18 +4098,8 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (mwODU.SpaceInstallation == 0)
                                                     {
-                                                        if (MWODULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (MWODULibrary.Height == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            mwODU.SpaceInstallation = MWODULibrary.Height * MWODULibrary.Width;
-                                                        }
-                                                        else
-                                                        {
-                                                            mwODU.SpaceInstallation = MWODULibrary.SpaceLibrary;
-                                                        }
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
 
                                                     if (mwODU.Azimuth <= 0)
@@ -4424,18 +4374,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
                                                         {
-                                                            if (MWDishLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (MWDishLibrary.diameter == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                                                            }
-                                                            else
-                                                            {
-                                                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                                                            }
+                                                            
+                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                                
                                                         }
 
                                                         if (AddMW_Dish.installationAttributes.Azimuth <= 0)
@@ -4607,19 +4548,8 @@ namespace TLIS_Service.Services
                                                         if (mwDish.SpaceInstallation == 0)
                                                         {
 
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
 
-                                                            if (MWDishLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (MWDishLibrary.diameter == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                                                            }
-                                                            else
-                                                            {
-                                                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                                                            }
                                                         }
                                                         if (AddMW_Dish.installationAttributes.Azimuth <= 0)
                                                         {
@@ -4857,18 +4787,8 @@ namespace TLIS_Service.Services
                                                         if (mwDish.SpaceInstallation == 0)
                                                         {
 
-                                                            if (MWDishLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (MWDishLibrary.diameter == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                                                            }
-                                                            else
-                                                            {
-                                                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                                                            }
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                         }
                                                         if (AddMW_Dish.installationAttributes.Azimuth <= 0)
                                                         {
@@ -5088,19 +5008,8 @@ namespace TLIS_Service.Services
                                                         if (mwDish.SpaceInstallation == 0)
                                                         {
 
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
 
-                                                            if (MWDishLibrary.SpaceLibrary == 0)
-                                                            {
-                                                                if (MWDishLibrary.diameter == 0)
-                                                                {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                                }
-                                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                                                            }
-                                                            else
-                                                            {
-                                                                mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                                                            }
                                                         }
 
                                                         if (AddMW_Dish.installationAttributes.Azimuth <= 0)
@@ -5349,19 +5258,8 @@ namespace TLIS_Service.Services
                                                     if (mwDish.SpaceInstallation == 0)
                                                     {
 
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
 
-                                                        if (MWDishLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (MWDishLibrary.diameter == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                                                        }
-                                                        else
-                                                        {
-                                                            mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                                                        }
                                                     }
                                                     if (mwDish.Azimuth <= 0)
                                                     {
@@ -5574,19 +5472,8 @@ namespace TLIS_Service.Services
                                                     if (mwDish.SpaceInstallation == 0)
                                                     {
 
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
 
-                                                        if (MWDishLibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (MWDishLibrary.diameter == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                                                        }
-                                                        else
-                                                        {
-                                                            mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                                                        }
                                                     }
                                                     if (mwDish.Azimuth <= 0)
                                                     {
@@ -5819,18 +5706,8 @@ namespace TLIS_Service.Services
                                                 if (mwDish.SpaceInstallation == 0)
                                                 {
 
-                                                    if (MWDishLibrary.SpaceLibrary == 0)
-                                                    {
-                                                        if (MWDishLibrary.diameter == 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                        }
-                                                        mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibrary.diameter / 2, 2);
-                                                    }
-                                                    else
-                                                    {
-                                                        mwDish.SpaceInstallation = MWDishLibrary.SpaceLibrary;
-                                                    }
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
 
                                                 if (mwDish.Azimuth <= 0)
@@ -6265,18 +6142,9 @@ namespace TLIS_Service.Services
                                             }
                                             if (mwDish.SpaceInstallation == 0)
                                             {
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                                }
-                                                else
-                                                {
-                                                    mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                                }
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
 
                                             if (mwDish.Azimuth <= 0)
@@ -6449,18 +6317,9 @@ namespace TLIS_Service.Services
                                             }
                                             if (mwDish.SpaceInstallation == 0)
                                             {
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                                }
-                                                else
-                                                {
-                                                    mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                                }
+                                                
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                   
                                             }
 
                                             if (mwDish.Azimuth <= 0)
@@ -6622,18 +6481,9 @@ namespace TLIS_Service.Services
                                             }
                                             if (mwDish.SpaceInstallation == 0)
                                             {
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                                }
-                                                else
-                                                {
-                                                    mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                                }
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
 
                                             if (mwDish.Azimuth <= 0)
@@ -6801,18 +6651,9 @@ namespace TLIS_Service.Services
                                             }
                                             if (mwDish.SpaceInstallation == 0)
                                             {
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                                }
-                                                else
-                                                {
-                                                    mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                                }
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
 
                                             if (mwDish.Azimuth <= 0)
@@ -7048,18 +6889,8 @@ namespace TLIS_Service.Services
                                             if (mwDish.SpaceInstallation == 0)
                                             {
 
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                                }
-                                                else
-                                                {
-                                                    mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                                }
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
                                             if (mwDish.Azimuth <= 0)
                                             {
@@ -7274,18 +7105,8 @@ namespace TLIS_Service.Services
                                             if (mwDish.SpaceInstallation == 0)
                                             {
 
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                                }
-                                                else
-                                                {
-                                                    mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                                }
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
                                             if (mwDish.Azimuth <= 0)
                                             {
@@ -7494,18 +7315,8 @@ namespace TLIS_Service.Services
                                             if (mwDish.SpaceInstallation == 0)
                                             {
 
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                                }
-                                                else
-                                                {
-                                                    mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                                }
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
                                             if (mwDish.Azimuth <= 0)
                                             {
@@ -7722,18 +7533,8 @@ namespace TLIS_Service.Services
                                             if (mwDish.SpaceInstallation == 0)
                                             {
 
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                                }
-                                                else
-                                                {
-                                                    mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                                }
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
                                             if (mwDish.Azimuth <= 0)
                                             {
@@ -7983,18 +7784,8 @@ namespace TLIS_Service.Services
                                         if (mwDish.SpaceInstallation == 0)
                                         {
 
-                                            if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                            {
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                }
-                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                            }
-                                            else
-                                            {
-                                                mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                            }
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                         }
                                         if (mwDish.Azimuth <= 0)
                                         {
@@ -8210,18 +8001,8 @@ namespace TLIS_Service.Services
                                         if (mwDish.SpaceInstallation == 0)
                                         {
 
-                                            if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                            {
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                }
-                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                            }
-                                            else
-                                            {
-                                                mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                            }
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                         }
                                         if (mwDish.Azimuth <= 0)
                                         {
@@ -8437,18 +8218,8 @@ namespace TLIS_Service.Services
                                         if (mwDish.SpaceInstallation == 0)
                                         {
 
-                                            if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                            {
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                }
-                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                            }
-                                            else
-                                            {
-                                                mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                            }
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                         }
                                         if (mwDish.Azimuth <= 0)
                                         {
@@ -8664,18 +8435,8 @@ namespace TLIS_Service.Services
                                         if (mwDish.SpaceInstallation == 0)
                                         {
 
-                                            if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                            {
-                                                if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                }
-                                                mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                            }
-                                            else
-                                            {
-                                                mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                            }
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                         }
                                         if (mwDish.Azimuth <= 0)
                                         {
@@ -8918,18 +8679,8 @@ namespace TLIS_Service.Services
                                     if (mwDish.SpaceInstallation == 0)
                                     {
 
-                                        if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary == 0)
-                                        {
-                                            if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter == 0)
-                                            {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                            }
-                                            mwDish.SpaceInstallation = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2, 2);
-                                        }
-                                        else
-                                        {
-                                            mwDish.SpaceInstallation = MWDishInst.allLoadInst.mwDish.MwDishLibrary.SpaceLibrary;
-                                        }
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                     }
                                     if (mwDish.Azimuth <= 0)
                                     {
@@ -9555,18 +9306,9 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (mwODU.SpaceInstallation == 0)
                                                     {
-                                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                                        }
-                                                        else
-                                                        {
-                                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                                        }
+                                                        
+                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+                                                            
                                                     }
 
                                                     if (mwODU.Azimuth <= 0)
@@ -9676,18 +9418,9 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (mwODU.SpaceInstallation == 0)
                                                     {
-                                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                                        }
-                                                        else
-                                                        {
-                                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
 
                                                     if (mwODU.Azimuth <= 0)
@@ -9795,20 +9528,10 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (mwODU.SpaceInstallation == 0)
                                                     {
-                                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                                        }
-                                                        else
-                                                        {
-                                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                                        }
-                                                    }
 
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                                    }
                                                     if (mwODU.Azimuth <= 0)
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
@@ -9912,18 +9635,9 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (mwODU.SpaceInstallation == 0)
                                                     {
-                                                        if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                                        {
-                                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                            }
-                                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                                        }
-                                                        else
-                                                        {
-                                                            mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                                        }
+
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                     }
 
                                                     if (mwODU.Azimuth <= 0)
@@ -10079,18 +9793,9 @@ namespace TLIS_Service.Services
                                             }
                                             if (mwODU.SpaceInstallation == 0)
                                             {
-                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                                }
-                                                else
-                                                {
-                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                                }
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
 
                                             if (mwODU.Azimuth <= 0)
@@ -10196,18 +9901,9 @@ namespace TLIS_Service.Services
                                             }
                                             if (mwODU.SpaceInstallation == 0)
                                             {
-                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                                }
-                                                else
-                                                {
-                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                                }
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
 
                                             if (mwODU.Azimuth <= 0)
@@ -10316,18 +10012,9 @@ namespace TLIS_Service.Services
                                             }
                                             if (mwODU.SpaceInstallation == 0)
                                             {
-                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                                }
-                                                else
-                                                {
-                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                                }
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
 
                                             if (mwODU.Azimuth <= 0)
@@ -10430,18 +10117,9 @@ namespace TLIS_Service.Services
                                             }
                                             if (mwODU.SpaceInstallation == 0)
                                             {
-                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                                {
-                                                    if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                    }
-                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                                }
-                                                else
-                                                {
-                                                    mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                                }
+
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                             }
 
                                             if (mwODU.Azimuth <= 0)
@@ -10591,20 +10269,10 @@ namespace TLIS_Service.Services
                                         }
                                         if (mwODU.SpaceInstallation == 0)
                                         {
-                                            if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary == 0)
-                                            {
-                                                if (TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height == 0)
-                                                {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                }
-                                                mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.Height * TLIMWODU.allLoadInst.mwODU.MwODULibrary.Width;
-                                            }
-                                            else
-                                            {
-                                                mwODU.SpaceInstallation = TLIMWODU.allLoadInst.mwODU.MwODULibrary.SpaceLibrary;
-                                            }
-                                        }
 
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+                                        }
                                         if (mwODU.Azimuth <= 0)
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
