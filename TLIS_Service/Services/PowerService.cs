@@ -2142,7 +2142,7 @@ namespace TLIS_Service.Services
                     }
                 }
                 List<BaseAttView> LogisticalAttributes = _mapper.Map<List<BaseAttView>>(_unitOfWork.LogistcalRepository
-                    .GetLogistical(TablePartName.Power.ToString(), TablesNames.TLIpowerLibrary.ToString(), powerlib.Id).ToList());
+                    .GetLogisticals(TablePartName.Power.ToString(), TablesNames.TLIpowerLibrary.ToString(), powerlib.Id).ToList());
 
                 LibraryAttributes.AddRange(LogisticalAttributes);
                 objectInst.LibraryActivatedAttributes = LibraryAttributes;
