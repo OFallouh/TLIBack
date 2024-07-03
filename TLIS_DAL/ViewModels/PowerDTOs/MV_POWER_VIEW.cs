@@ -64,6 +64,7 @@ namespace TLIS_DAL.ViewModels.PowerDTOs
             outputData.Add("HeightLand", HeightLand);
             outputData.Add("VisibleStatus", VisibleStatus);
             outputData.Add("CenterHigh", CenterHigh);
+            outputData.Add("Height", Height);
             outputData.Add("HBA", HBA);
             outputData.Add("HieghFromLand", HieghFromLand);
             outputData.Add("EquivalentSpace", EquivalentSpace);

@@ -2616,7 +2616,7 @@ namespace TLIS_Service.Services
 
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(TablePartName.Radio.ToString(), TablesNames.TLIpowerLibrary.ToString(), Power.allLoadInst.power.powerLibrary.Id).ToList());
+                        .GetLogisticals(TablePartName.Power.ToString(), TablesNames.TLIpowerLibrary.ToString(), Power.allLoadInst.power.powerLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 
@@ -2974,7 +2974,8 @@ namespace TLIS_Service.Services
                            SIDEARM_ID = x.SIDEARM_ID,
                            ALLCIVILINST_ID = x.ALLCIVILINST_ID,
                            LEGID = x.LEGID,
-                           OWNER = x.OWNER
+                           OWNER = x.OWNER,
+                           Height = x.Height
 
 
                        })

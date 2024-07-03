@@ -25,6 +25,7 @@ using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
 using TLIS_DAL.ViewModels.RadioRRUDTOs;
 using TLIS_DAL.ViewModels.PowerLibraryDTOs;
 using TLIS_DAL.ViewModels.PowerDTOs;
+using TLIS_DAL.ViewModels.GeneratorLibraryDTOs;
 
 
 namespace TLIS_DAL
@@ -200,6 +201,7 @@ namespace TLIS_DAL
         public virtual DbSet<MV_RADIO_RRU_VIEW> MV_RADIO_RRU_VIEW { get; set; }
         public virtual DbSet<MV_POWER_LIBRARY_VIEW> MV_POWER_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MV_POWER_VIEW> MV_POWER_VIEW { get; set; }
+        public virtual DbSet<MV_GENERATOR_LIBRARY_VIEW> MV_GENERATOR_LIBRARY_VIEW { get; set; }
       
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -345,6 +347,12 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("MV_POWER_VIEW");
+
+            });
+            builder.Entity<MV_GENERATOR_LIBRARY_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_GENERATOR_LIBRARY_VIEW");
             });
             builder.Entity<TLIsession>();
 

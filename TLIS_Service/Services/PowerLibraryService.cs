@@ -654,7 +654,7 @@ namespace TLIS_Service.Services
                         Test[Test.IndexOf(NameAttribute)] = Swap;
                         Test[0] = NameAttribute;
                         attributes.AttributesActivatedLibrary = Test;
-                        //NameAttribute.Value = db.MV_MWODU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                        NameAttribute.Value = db.MV_POWER_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
                     }
                 }
                 else

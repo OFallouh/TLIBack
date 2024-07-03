@@ -465,7 +465,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_OtherInventoryLibraryService == null)
-                    _OtherInventoryLibraryService = new OtherInventoryLibraryService(_unitOfWork, _services,_mapper);
+                    _OtherInventoryLibraryService = new OtherInventoryLibraryService(_unitOfWork, _services,_mapper,db);
                 return _OtherInventoryLibraryService;
             }
         }

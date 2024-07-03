@@ -177,6 +177,8 @@ using static TLIS_DAL.ViewModels.PowerLibraryDTOs.AddPowerLibraryObject;
 using static TLIS_DAL.ViewModels.PowerLibraryDTOs.EditPowerLibraryObject;
 using static TLIS_DAL.ViewModels.PowerDTOs.AddPowerInstallationObject;
 using static TLIS_DAL.ViewModels.PowerDTOs.EditPowerInstallationOject;
+using static TLIS_DAL.ViewModels.GeneratorLibraryDTOs.EditGeneratorLibraryObject;
+using static TLIS_DAL.ViewModels.GeneratorLibraryDTOs.AddGeneratorLibraryObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -215,6 +217,9 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditInstallationRadioAntennaAttributeObject, TLIRadioRRU>().ReverseMap();
             CreateMap<InstallationRadioRRUConfigObject, TLIRadioRRU>().ReverseMap();
             CreateMap<EditInstallationRadioRRUAttributeObject, TLIRadioRRU>().ReverseMap();
+            CreateMap<PolarityTypeViewModel, TLIcapacity>().ReverseMap();
+            CreateMap<GeneratorLibraryAttributes, TLIgeneratorLibrary>().ReverseMap();
+            CreateMap<EditGeneratorLibraryAttributes, TLIgeneratorLibrary>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

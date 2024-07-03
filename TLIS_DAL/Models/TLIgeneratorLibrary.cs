@@ -12,12 +12,11 @@ namespace TLIS_DAL.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        // [Index(IsUnique = true)]
         public string Model { get; set; }
         public float Width { get; set; }
-        public float? Weight { get; set; }
+        public float Weight { get; set; }
         public float Length { get; set; }
-        public string LayoutCode { get; set; }
+        public string? LayoutCode { get; set; }
         public float Height { get; set; }
         public float SpaceLibrary { get; set; }
         public TLIcapacity Capacity { get; set; }
