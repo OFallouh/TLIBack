@@ -2688,7 +2688,7 @@ namespace TLIS_Service.Services
                 if (OtherInventoryType.TLIgeneratorLibrary.ToString() == TableName)
                 {
                     TLIgeneratorLibrary GeneratorLibrary = _unitOfWork.GeneratorLibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id && x.Active && !x.Deleted, x => x.Capacity);
+                        x.Id == Id && !x.Deleted, x => x.Capacity);
                     if (GeneratorLibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, GeneratorLibrary, null).ToList();
@@ -2722,7 +2722,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this MWODU is not  found", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this generator is not  found", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 //else if (OtherInventoryType.TLIsolarLibrary.ToString() == TableName)

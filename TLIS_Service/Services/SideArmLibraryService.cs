@@ -2324,25 +2324,31 @@ namespace TLIS_Service.Services
                     c.TableName == TablesNames.TLIsideArmLibrary.ToString());
 
                 TLIsideArmLibrary SideArmLibrary = _unitOfWork.SideArmLibraryRepository.GetIncludeWhereFirst(x =>
-                    x.Id == Id);
-
-                List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary, null).ToList();
-            
-                var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.SideArm.ToString(), TablesNames.TLIsideArmLibrary.ToString(), Id);
-                attributes.LogisticalItems = LogisticalItems;
-                attributes.AttributesActivatedLibrary = listofAttributesActivated;
-
-                attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
-
-                List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
-                BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
-                if (NameAttribute != null)
+                    x.Id == Id && !x.Deleted);
+                if (SideArmLibrary != null)
                 {
-                    BaseInstAttViews Swap = Test.ToList()[0];
-                    Test[Test.IndexOf(NameAttribute)] = Swap;
-                    Test[0] = NameAttribute;
-                    attributes.AttributesActivatedLibrary = Test;
-                    NameAttribute.Value = db.MV_SIDEARM_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                    List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsideArmLibrary.ToString(), SideArmLibrary, null).ToList();
+
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.SideArm.ToString(), TablesNames.TLIsideArmLibrary.ToString(), Id);
+                    attributes.LogisticalItems = LogisticalItems;
+                    attributes.AttributesActivatedLibrary = listofAttributesActivated;
+
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+
+                    List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                    BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = Test.ToList()[0];
+                        Test[Test.IndexOf(NameAttribute)] = Swap;
+                        Test[0] = NameAttribute;
+                        attributes.AttributesActivatedLibrary = Test;
+                        NameAttribute.Value = db.MV_SIDEARM_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                    }
+                }
+                else
+                {
+                    return new Response<GetForAddCivilLibrarybject>(false, null, null, "this sidearm is not found", (int)Helpers.Constants.ApiReturnCode.success);
                 }
 
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);

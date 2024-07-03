@@ -1640,7 +1640,7 @@ namespace TLIS_Service.Services
                 if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
                 {
                     TLIradioAntennaLibrary RadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x =>
-                        x.Id == Id && !x.Deleted && x.Active);
+                        x.Id == Id && !x.Deleted );
                     if (RadioAntennaLibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, RadioAntennaLibrary, null).ToList();
@@ -1667,7 +1667,7 @@ namespace TLIS_Service.Services
                 else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                 {
                     TLIradioRRULibrary RadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x =>
-                      x.Id == Id && !x.Deleted && x.Active);
+                      x.Id == Id && !x.Deleted );
                     if (RadioRRULibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, RadioRRULibrary, null).ToList();

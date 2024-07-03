@@ -454,7 +454,7 @@ namespace TLIS_Service.Services
                 else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                 {
                     TLImwDishLibrary MWDishLibrary = _unitOfWork.MW_DishLibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id && x.Active && !x.Deleted, x => x.asType, x => x.polarityType);
+                        x.Id == Id && !x.Deleted, x => x.asType, x => x.polarityType);
                     if (MWDishLibrary != null)
                     {
 
@@ -501,7 +501,7 @@ namespace TLIS_Service.Services
                 else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
                 {
                     TLImwODULibrary MWODUULibrary = _unitOfWork.MW_ODULibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id && x.Active && !x.Deleted, x => x.parity);
+                        x.Id == Id  && !x.Deleted, x => x.parity);
                     if (MWODUULibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, MWODUULibrary, null).ToList();

@@ -639,7 +639,7 @@ namespace TLIS_Service.Services
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c =>
                    c.TableName == "TLIpowerLibrary");
                 TLIpowerLibrary PowerLibrary = _unitOfWork.PowerLibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id && x.Active && !x.Deleted);
+                        x.Id == Id && !x.Deleted);
                 if (PowerLibrary != null)
                 {
                     List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, PowerLibrary, null).ToList();
