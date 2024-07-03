@@ -11,6 +11,7 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.GeneratorLibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
@@ -137,6 +138,13 @@ namespace TLIS_API.Controllers.OtherInventory
         public async Task<IActionResult> DeleteGeneratorLibrary(int Id)
         {
             var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddPowerLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddPowerLibrary()
+        {
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString());
             return Ok(response);
         }
     }

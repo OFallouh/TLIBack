@@ -985,7 +985,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    if (_unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Model == PowerLibraryEntites.Model && x.Id != PowerLibraryEntites.Id && !x.Deleted) != null)
+                    if (_unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Model == PowerLibraryEntites.Model && x.Id != PowerLibraryEntites.Id && !x.Deleted) != null)
                     {
                         return new Response<EditPowerLibraryObject>(false, null, null, $"This model {PowerLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }

@@ -8901,7 +8901,7 @@ namespace TLIS_Service.Services
 
         public async Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString)
         {
-            using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using (var transactionScope = new TransactionScope())
             {
                 try
                 {

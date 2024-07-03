@@ -1322,6 +1322,11 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName == TableName);
                     if (OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TableName)
                     {
+                        var UseCabinetPower = _unitOfWork.CabinetRepository.GetWhere(x => x.CabinetPowerLibraryId == Id).ToList();
+                        if (UseCabinetPower != null && UseCabinetPower.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
                         var CabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         var NewCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewCabinetPowerLibrary.Active = !(NewCabinetPowerLibrary.Active);
@@ -1331,6 +1336,10 @@ namespace TLIS_Service.Services
                     }
                     else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
                     {
+                        var UseCabinetPower = _unitOfWork.CabinetRepository.GetWhere(x => x.CabinetTelecomLibraryId == Id).ToList();
+                        if (UseCabinetPower != null && UseCabinetPower.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         var CabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIcabinetTelecomLibrary NewCabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewCabinetTelecomLibrary.Active = !(NewCabinetTelecomLibrary.Active);
@@ -1340,6 +1349,10 @@ namespace TLIS_Service.Services
                     }
                     else if (OtherInventoryType.TLIgeneratorLibrary.ToString() == TableName)
                     {
+                        var UseCabinetPower = _unitOfWork.GeneratorRepository.GetWhere(x => x.GeneratorLibraryId == Id).ToList();
+                        if (UseCabinetPower != null && UseCabinetPower.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         TLIgeneratorLibrary OldGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIgeneratorLibrary NewGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -1351,6 +1364,10 @@ namespace TLIS_Service.Services
                     }
                     else if (OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
                     {
+                        var UseCabinetPower = _unitOfWork.SolarRepository.GetWhere(x => x.SolarLibraryId == Id).ToList();
+                        if (UseCabinetPower != null && UseCabinetPower.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         var SolarLibrary = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIsolarLibrary NewSolarLibrary = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewSolarLibrary.Active = !(NewSolarLibrary.Active);
@@ -3511,18 +3528,27 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName == TableName);
                     if (OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TableName)
                     {
-                        var CabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        var NeweCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
-                        NeweCabinetPowerLibrary.Deleted = true;
-                        NeweCabinetPowerLibrary.Model = NeweCabinetPowerLibrary.Model + "_" + DateTime.Now.ToString();
+                        var UseCabinetPower=_unitOfWork.CabinetRepository.GetWhere(x=>x.CabinetPowerLibraryId == Id).ToList();
+                        if (UseCabinetPower != null && UseCabinetPower.Count>0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        _unitOfWork.CabinetPowerLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CabinetPowerLibrary, NeweCabinetPowerLibrary);
-                        _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
-                        await _unitOfWork.SaveChangesAsync();
+                            var CabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                            var NeweCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
+                            NeweCabinetPowerLibrary.Deleted = true;
+                            NeweCabinetPowerLibrary.Model = NeweCabinetPowerLibrary.Model + "_" + DateTime.Now.ToString();
+
+                            _unitOfWork.CabinetPowerLibraryRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, CabinetPowerLibrary, NeweCabinetPowerLibrary);
+                            _unitOfWork.DynamicAttLibRepository.DisableDynamicAttLibValues(TableNameEntity.Id, Id);
+                            await _unitOfWork.SaveChangesAsync();
+                       
                         //  AddHistory(CabinetPowerLibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString());
                     }
                     else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
                     {
+                        var UseCabinetPower = _unitOfWork.CabinetRepository.GetWhere(x => x.CabinetTelecomLibraryId == Id).ToList();
+                        if (UseCabinetPower != null && UseCabinetPower.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         var CabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIcabinetTelecomLibrary NewCabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewCabinetTelecomLibrary.Deleted = true;
@@ -3535,6 +3561,10 @@ namespace TLIS_Service.Services
                     }
                     else if (OtherInventoryType.TLIgeneratorLibrary.ToString() == TableName)
                     {
+                        var UseCabinetPower = _unitOfWork.GeneratorRepository.GetWhere(x => x.GeneratorLibraryId == Id).ToList();
+                        if (UseCabinetPower != null && UseCabinetPower.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         TLIgeneratorLibrary OldGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         TLIgeneratorLibrary NewGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
@@ -3548,6 +3578,10 @@ namespace TLIS_Service.Services
                     }
                     else if (OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
                     {
+                        var UseCabinetPower = _unitOfWork.SolarRepository.GetWhere(x => x.SolarLibraryId == Id).ToList();
+                        if (UseCabinetPower != null && UseCabinetPower.Count > 0)
+                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         var SolarLibrary = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIsolarLibrary NewSolarLibrary = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewSolarLibrary.Deleted = true;
