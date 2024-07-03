@@ -18,7 +18,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.OtherInventory
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+    //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
@@ -140,11 +140,11 @@ namespace TLIS_API.Controllers.OtherInventory
             var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString());
             return Ok(response);
         }
-        [HttpGet("GetForAddPowerLibrary")]
+        [HttpGet("GetForAddGeneratorLibrary")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
-        public IActionResult GetForAddPowerLibrary()
+        public IActionResult GetForAddPGetForAddGeneratorLibraryowerLibrary()
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIpowerLibrary.ToString());
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetForAdd(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString());
             return Ok(response);
         }
     }
