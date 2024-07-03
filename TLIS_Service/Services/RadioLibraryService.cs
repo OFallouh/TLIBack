@@ -1645,7 +1645,7 @@ namespace TLIS_Service.Services
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, RadioAntennaLibrary, null).ToList();
 
-                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.Radio.ToString(), TableName, Id);
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.Radio.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
                         List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
@@ -1672,7 +1672,7 @@ namespace TLIS_Service.Services
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, RadioRRULibrary, null).ToList();
 
-                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.Radio.ToString(), TableName, Id);
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.Radio.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
                         List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();

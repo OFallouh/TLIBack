@@ -8394,7 +8394,7 @@ namespace TLIS_Service.Services
         //Function Update dynamic attribute
         public async Task<Response<DynamicAttViewModel>> Edit(EditDynamicAttViewModel DynamicAttViewModel, string connectionString)
         {
-            using (TransactionScope transaction = new TransactionScope())
+            using (TransactionScope transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {

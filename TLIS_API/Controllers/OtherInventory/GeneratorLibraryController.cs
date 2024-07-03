@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -31,16 +32,17 @@ namespace TLIS_API.Controllers.OtherInventory
         }
         [HttpPost("GetGeneratorLibraries")]
         [ProducesResponseType(200, Type = typeof(List<GeneratorLibraryViewModel>))]
-        public IActionResult GetGeneratorLibraries([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetGeneratorLibraries([FromBody] List<FilterObjectList> filters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
         {
             var response = _unitOfWorkService.OtherInventoryLibraryService.GetGeneratorLibraries(filters, WithFilterData, parameters);
             return Ok(response);
         }
-        [HttpPost("GetGeneratorLibraryEnabledAtt")]
+        [HttpPost("GetGeneratorLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetGeneratorLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery]bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetGeneratorLibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetGeneratorLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetGeneratorLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetGeneratorLibraryById/{id}")]
@@ -52,12 +54,30 @@ namespace TLIS_API.Controllers.OtherInventory
         }
         [HttpPost("AddGeneratorLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult AddGeneratorLibrary([FromBody]AddGeneratorLibraryViewModel addGeneratorLibrary)
+        public IActionResult AddGeneratorLibrary([FromBody]AddGeneratorLibraryObject addGeneratorLibrary)
         {
-            if (TryValidateModel(addGeneratorLibrary, nameof(AddGeneratorLibraryViewModel)))
+            if (TryValidateModel(addGeneratorLibrary, nameof(AddGeneratorLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.OtherInventoryLibraryService.AddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), addGeneratorLibrary, ConnectionString);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.OtherInventoryLibraryService.AddGenertatoLibrary(userId, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), addGeneratorLibrary, ConnectionString);
                 return Ok(response);
             }
             else
@@ -68,23 +88,43 @@ namespace TLIS_API.Controllers.OtherInventory
                 return Ok(new Response<AddGeneratorLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        //[HttpPost("UpdateGeneratorLibrary")]
-        //[ProducesResponseType(200, Type = typeof(Nullable))]
-        //public async Task<IActionResult> UpdateGeneratorLibrary([FromBody]EditGeneratorLibraryViewModel editGeneratorLibrary)
-        //{
-        //    if (TryValidateModel(editGeneratorLibrary, nameof(EditGeneratorLibraryViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editGeneratorLibrary, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString());
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditGeneratorLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [HttpPost("EditGeneratorLibrary")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public async Task<IActionResult> EditGeneratorLibrary([FromBody] EditGeneratorLibraryObject editGeneratorLibrary)
+        {
+            if (TryValidateModel(editGeneratorLibrary, nameof(EditGeneratorLibraryViewModel)))
+
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.OtherInventoryLibraryService.EditGeneratorLibrary(userId,editGeneratorLibrary, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditGeneratorLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [HttpPost("DisableGeneratorLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableGeneratorLibrary(int Id)
