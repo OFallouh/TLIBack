@@ -4444,6 +4444,8 @@ namespace TLIS_Service.Services
 
                                                                 AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                                 mwDish.EquivalentSpace = EquivalentSpace;
+                                                                
+                                                         
                                                                 _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
 
                                                                 _unitOfWork.SaveChanges();
@@ -18681,7 +18683,7 @@ namespace TLIS_Service.Services
                     .Where(x => new[] { "installationplace_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
-
+              
                     var ExeptAttributes = ListAttributesActivated
                     .Where(x => new[] { "installationplace_name", "mwdishlibrary_name" }
                                 .Contains(x.Label.ToLower()))
@@ -18701,8 +18703,27 @@ namespace TLIS_Service.Services
                         }
                         return FKitem;
                     }).ToList();
-
                     Config.AddRange(foreignKeyAttribute);
+
+                    var visibilityAttributes = ListAttributesActivated.Select(FKitem =>
+                    {
+                        switch (FKitem.Label.ToLower())
+                        {
+                            case "far_end_site_code":
+                                if (MWDish.allLoadInst.mwDish.ItemConnectToId == 2 && MWDish.allLoadInst.mwDish.RepeaterTypeId == 1)
+                                {
+                                    FKitem.visible = true;
+                                }
+                                else
+                                {
+                                    FKitem.visible = false;
+                                }
+                                break;
+                        }
+                        return FKitem;
+                    }).ToList();
+
+                    Config.AddRange(visibilityAttributes);
 
                     if (MWDish.allCivilInst != null)
                     {
