@@ -85,19 +85,19 @@ namespace TLIS_API.Controllers.OtherInventory
         //        return Ok(new Response<EditCabinetTelecomLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
         //    }
         //}
-        [HttpPost("DisableCabinetTelecomLibrary/{Id}")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DisableCabinetTelecomLibrary(int Id)
-        {
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString());
-            return Ok(response);
-        }
-        [HttpPost("DeleteCabinetTelecomLibrary/{Id}")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DeleteCabinetTelecomLibrary(int Id)
-        {
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString());
-            return Ok(response);
-        }
+        //[HttpPost("DisableCabinetTelecomLibrary/{Id}")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DisableCabinetTelecomLibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString());
+        //    return Ok(response);
+        //}
+        //[HttpPost("DeleteCabinetTelecomLibrary/{Id}")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DeleteCabinetTelecomLibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString());
+        //    return Ok(response);
+        //}
     }
 }

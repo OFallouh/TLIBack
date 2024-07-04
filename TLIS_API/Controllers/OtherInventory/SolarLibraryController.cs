@@ -85,19 +85,19 @@ namespace TLIS_API.Controllers.OtherInventory
         //        return Ok(new Response<EditSolarLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
         //    }
         //}
-        [HttpPost("DisableSolarLibrary/{Id}")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DisableSolarLibrary(int Id)
-        {
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString());
-            return Ok(response);
-        }
-        [HttpPost("DeleteSolarLibrary/{Id}")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DeleteSolarLibrary(int Id)
-        {
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString());
-            return Ok(response);
-        }
+        //[HttpPost("DisableSolarLibrary/{Id}")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DisableSolarLibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString());
+        //    return Ok(response);
+        //}
+        //[HttpPost("DeleteSolarLibrary/{Id}")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DeleteSolarLibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString());
+        //    return Ok(response);
+        //}
     }
 }

@@ -1313,7 +1313,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //disable or active record depened on record status
         //update Entity
-        public async Task<Response<AllItemAttributes>> Disable(int Id, string TableName)
+        public async Task<Response<AllItemAttributes>> Disable(int Id, string TableName, string ConnectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -1376,6 +1376,7 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
@@ -3519,7 +3520,7 @@ namespace TLIS_Service.Services
         //set Deleted to true
         //Update Entity
         //disable dynamic attributes related to that record
-        public async Task<Response<AllItemAttributes>> Delete(int Id, string TableName)
+        public async Task<Response<AllItemAttributes>> Delete(int Id, string TableName,string ConnectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3593,6 +3594,7 @@ namespace TLIS_Service.Services
                         //  AddHistory(SolarLibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIsolarLibrary.ToString());
                     }
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
@@ -5626,7 +5628,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "PowerLibrary"
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "GeneratorLibrary"
                         && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
                           .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))

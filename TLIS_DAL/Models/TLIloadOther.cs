@@ -24,7 +24,7 @@ namespace TLIS_DAL.Models
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
-
+        public float Azimuth { get; set; }
         public TLIinstallationPlace InstallationPlace { get; set; }
         public int InstallationPlaceId { get; set; }
 

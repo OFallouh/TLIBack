@@ -103,19 +103,19 @@ namespace TLIS_API.Controllers.OtherInventory
         //        return Ok(new Response<EditCabinetPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
         //    }
         //}
-        [HttpPost("DisableCabinetPowerLibrary/{Id}")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DisableCabinetPowerLibrary(int Id)
-        {
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
-            return Ok(response);
-        }
-        [HttpPost("DeleteCabinetPowerLibrary/{Id}")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<IActionResult> DeleteCabinetPowerLibrary(int Id)
-        {
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
-            return Ok(response);
-        }
+        //[HttpPost("DisableCabinetPowerLibrary/{Id}")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DisableCabinetPowerLibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
+        //    return Ok(response);
+        //}
+        //[HttpPost("DeleteCabinetPowerLibrary/{Id}")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<IActionResult> DeleteCabinetPowerLibrary(int Id)
+        //{
+        //    var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
+        //    return Ok(response);
+        //}
     }
 }

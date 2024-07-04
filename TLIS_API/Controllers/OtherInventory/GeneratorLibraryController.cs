@@ -130,14 +130,16 @@ namespace TLIS_API.Controllers.OtherInventory
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableGeneratorLibrary(int Id)
         {
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString());
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), ConnectionString);
             return Ok(response);
         }
         [HttpPost("DeleteGeneratorLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DeleteGeneratorLibrary(int Id)
         {
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString());
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetForAddGeneratorLibrary")]

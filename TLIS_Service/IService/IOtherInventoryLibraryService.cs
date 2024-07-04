@@ -27,9 +27,9 @@ namespace TLIS_Service.IService
         Task<Response<EditGeneratorLibraryObject>> EditGeneratorLibrary(int userId, EditGeneratorLibraryObject editGeneratorLibraryObject, string TableName, string connectionString);
         Response<AddGeneratorLibraryObject> AddGenertatoLibrary(int UserId, string TableName, AddGeneratorLibraryObject addGeneratorLibraryObject, string connectionString);
         Response<AllItemAttributes> AddOtherInventoryLibrary(string OtherInventoryType, object OtherInventoryLibraryViewModel, string connectionString);
-       // Task<Response<AllItemAttributes>> EditOtherInventoryLibrary(object OtherInventoryLibraryViewModel, string OtherInventoryType);
-        Task<Response<AllItemAttributes>> Disable(int Id, string OtherInventoryType);
-        Task<Response<AllItemAttributes>> Delete(int Id, string OtherInventoryType);
+        // Task<Response<AllItemAttributes>> EditOtherInventoryLibrary(object OtherInventoryLibraryViewModel, string OtherInventoryType);
+        Task<Response<AllItemAttributes>> Disable(int Id, string OtherInventoryType, string ConnectionString);
+        Task<Response<AllItemAttributes>> Delete(int Id, string OtherInventoryType, string ConnectionString);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<ReturnWithFilters<object>> GetCabinetPowerLibraryEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetCabinetTelecomLibraryEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);

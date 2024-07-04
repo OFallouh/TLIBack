@@ -29,6 +29,7 @@ namespace TLIS_DAL.Models
         public float EquivalentSpace { get; set; }
 
         public float Spaceinstallation { get; set; }
+        public float Azimuth { get; set; }
 
         public IEnumerable<TLIallLoadInst> allLoadInsts { get; set; }
     }

@@ -1120,7 +1120,7 @@ namespace TLIS_Service.Services
                     var attActivated = _dbContext.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "SideArmInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                           .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
                       .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
                             .ThenBy(x => x.attribute == null)
                             .ThenBy(x => x.attribute)
@@ -1128,6 +1128,13 @@ namespace TLIS_Service.Services
                     getEnableAttribute.Type = attActivated;
                     List<string> propertyNamesStatic = new List<string>();
                     Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    propertyNamesStatic.Add("SITECODE");
+                    propertyNamesStatic.Add("CIVILNAME");
+                    propertyNamesStatic.Add("CIVILID");
+                    propertyNamesStatic.Add("FIRST_LEG");
+                    propertyNamesStatic.Add("FIRST_LEG_ID");
+                    propertyNamesStatic.Add("SECOND_LEG");
+                    propertyNamesStatic.Add("SECOND_LEG_ID");
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -1152,13 +1159,7 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    propertyNamesStatic.Add("SITECODE");
-                    propertyNamesStatic.Add("CIVILNAME");
-                    propertyNamesStatic.Add("CIVILID");
-                    propertyNamesStatic.Add("FIRST_LEG");
-                    propertyNamesStatic.Add("FIRST_LEG_ID");
-                    propertyNamesStatic.Add("SECOND_LEG");
-                    propertyNamesStatic.Add("SECOND_LEG_ID");
+                   
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)
