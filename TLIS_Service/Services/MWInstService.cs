@@ -18723,7 +18723,6 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
 
-                    Config.AddRange(visibilityAttributes);
 
                     if (MWDish.allCivilInst != null)
                     {
