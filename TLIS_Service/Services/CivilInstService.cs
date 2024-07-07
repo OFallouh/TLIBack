@@ -3906,9 +3906,10 @@ namespace TLIS_Service.Services
                     var CivilNonSteelInst = _unitOfWork.CivilNonSteelRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.CivilNonsteelLibrary)
                         .FirstOrDefault(x => x.Id == editCivilNonSteelInstallationObject.installationAttributes.Id);
 
-                    var SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
-                        ((x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == editCivilNonSteelInstallationObject.installationAttributes.Id : false) &&
-                            !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst,x=>x.Site);
+                    var SiteCode = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.allCivilInst).Include(x => x.Site)
+                    .FirstOrDefault(x => x.allCivilInst != null ? ((x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId
+                    == editCivilNonSteelInstallationObject.installationAttributes.Id : false) &&
+                            !x.Dismantle && !x.allCivilInst.Draft) : false);
                     if(SiteCode != null)
                     {
                         if (civilNonSteelEntity.SpaceInstallation == 0)

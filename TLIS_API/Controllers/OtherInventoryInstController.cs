@@ -55,9 +55,9 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddGeneratorInstallation(int OtherInventoryLibraryId, string SiteCode)
+        public IActionResult GetAttForAddGeneratorInstallation(int GeneratorIdLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(),OtherInventoryLibraryId, SiteCode);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -196,12 +196,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetGenertorInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetGenertorInstallationById(int OtherInventoryInstId)
+        public IActionResult GetGenertorInstallationById(int GeneratorId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
+            var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -283,12 +283,13 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetSolarBySiteWithEnabledAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetGeneratorBySiteWithEnabledAtt")]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetGeneratorWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetGeneratorBySiteWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetGeneratorWithEnableAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetGeneratorBySiteWithEnabledAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryInstService.GetGeneratorWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

@@ -2327,7 +2327,7 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName == "TLIgenerator");
 
-                            var Generator = _mapper.Map<TLIgenerator>(addGeneratorInstallationObject);
+                            var Generator = _mapper.Map<TLIgenerator>(addGeneratorInstallationObject.installationAttributes);
                             if (addGeneratorInstallationObject.OtherInSite.ReservedSpace == true)
                             {
                                 var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, "TLIgenerator", addGeneratorInstallationObject.GeneratorType.GeneratorLibraryId, addGeneratorInstallationObject.installationAttributes.SpaceInstallation, null).Message;
@@ -2357,13 +2357,13 @@ namespace TLIS_Service.Services
                                            x.SITECODE.ToLower() == SiteCode.ToLower())
                                .ToList();
 
-                            if (CheckName != null)
+                            if (CheckName.Count >0 )
                                 return new Response<ObjectInstAtts>(true, null, null, $"This name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
 
                             var CheckSerialNumber = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.SerialNumber == Generator.SerialNumber);
                             if (CheckSerialNumber != null)
                                 return new Response<ObjectInstAtts>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
-
+                            Generator.GeneratorLibraryId = addGeneratorInstallationObject.GeneratorType.GeneratorLibraryId;
                             _unitOfWork.GeneratorRepository.AddWithHistory(UserId, Generator);
                             _unitOfWork.SaveChanges();
 
@@ -2422,6 +2422,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                             return new Response<ObjectInstAtts>();
                         }
                         catch (Exception err)
@@ -4173,7 +4174,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //get activated attributes and values
         //get dynamic attributes by TableNameId
-        public Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int CivilInsId, string TableName)
+        public Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int GeneratorId, string TableName)
         {
             try
             {
@@ -4184,7 +4185,7 @@ namespace TLIS_Service.Services
 
 
                 TLIotherInSite GeneratorInst = _unitOfWork.OtherInSiteRepository
-                    .GetIncludeWhereFirst(x => x.allOtherInventoryInst.generatorId == CivilInsId && !x.Dismantle, x => x.allOtherInventoryInst.generator.BaseGeneratorType);
+                    .GetIncludeWhereFirst(x => x.allOtherInventoryInst.generatorId == GeneratorId && !x.Dismantle, x => x.allOtherInventoryInst.generator.BaseGeneratorType);
                 if (GeneratorInst != null)
                 {
                     EditGeneratorLibraryAttributes GeneratorLibrary = _mapper.Map<EditGeneratorLibraryAttributes>(_unitOfWork.GeneratorLibraryRepository
@@ -4210,7 +4211,7 @@ namespace TLIS_Service.Services
                         BaseInstAttViews Swap = ListAttributesActivated[0];
                         ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
                         ListAttributesActivated[0] = NameAttribute;
-                        NameAttribute.Value = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == CivilInsId)?.Name;
+                        NameAttribute.Value = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == GeneratorId)?.Name;
                     }
 
                     var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
@@ -4229,12 +4230,12 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = ListAttributesActivated;
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
-                        GetDynamicInstAtt(TableNameEntity.Id, CivilInsId, null);
+                        GetDynamicInstAtt(TableNameEntity.Id, GeneratorId, null);
 
                    
 
                     TLIallOtherInventoryInst allOtherInventoryInst = _unitOfWork.AllOtherInventoryInstRepository
-                            .GetWhereFirst(x => x.generatorId == CivilInsId);
+                            .GetWhereFirst(x => x.generatorId == GeneratorId);
                     TLIotherInSite otherInSiteInfo = _dbContext.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
 
                     List<BaseInstAttViews> otherInSiteAttributes = _unitOfWork.AttributeActivatedRepository
@@ -4249,7 +4250,7 @@ namespace TLIS_Service.Services
 
                     string siteCode = _unitOfWork.OtherInSiteRepository
                      .GetIncludeWhereFirst(
-                         x => x.allOtherInventoryInst.generator.Id == CivilInsId && !x.Dismantle && !x.allOtherInventoryInst.Draft,
+                         x => x.allOtherInventoryInst.generator.Id == GeneratorId && !x.Dismantle && !x.allOtherInventoryInst.Draft,
                          x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
                      )?.SiteCode;
                     objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
