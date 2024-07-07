@@ -54,6 +54,7 @@ using static TLIS_DAL.ViewModels.GeneratorLibraryDTOs.EditGeneratorLibraryObject
 using TLIS_DAL.ViewModels.OtherInSiteDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
+using TLIS_DAL.ViewModels.LocationTypeDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -440,7 +441,30 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = ListAttributesActivated;
                     objectInst.OtherInSite = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIotherInSite.ToString(), null, "allOtherInventoryInstId", "Dismantle", "SiteCode");
                     objectInst.OtherInventoryDistance = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIotherInventoryDistance.ToString(), null, "allOtherInventoryInstId", "SiteCode");
+                    var query = _dbContext.TLIotherInSite
+                    .Include(x => x.allOtherInventoryInst).Include(x => x.allOtherInventoryInst.generator).Include(x => x.allOtherInventoryInst.cabinet).
+                    Include(x => x.allOtherInventoryInst.solar)
+                    .Where(x => x.SiteCode == SiteCode && x.allOtherInventoryInst != null && !x.Dismantle)
+                    .ToList();
 
+                    var locationTypeViewModels = query
+                    .Select(item => new LocationTypeViewModel
+                    {
+                        Id = item.allOtherInventoryInstId,
+                        Name = $"{_dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.generatorId)?.Name}" /*+*/
+                        //$" {_dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilWithoutLegId)?.Name}" +
+                        //$" {_dbContext.MV_CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == item.allCivilInst.civilNonSteelId)?.Name}".Trim()
+                    })
+                    .ToList();
+
+                    objectInst.OtherInventoryDistance = objectInst.OtherInventoryDistance.Select(x =>
+                    {
+                        if (x.Label.ToLower() == "referenceotherinventory_name")
+                        {
+                            x.Options = locationTypeViewModels.ToList();
+                        }
+                        return x;
+                    });
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
                     return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
