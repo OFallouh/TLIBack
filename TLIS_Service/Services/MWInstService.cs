@@ -3540,12 +3540,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (AddMW_ODU.civilLoads.ReservedSpace == true)
                                                         {
-                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
-
-                                                            if (Message != "Success")
-                                                            {
-                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                            }
+                                                            
                                                             if (mwODU.CenterHigh <= 0)
                                                             {
                                                                 if (mwODU.HBA <= 0)
@@ -3613,6 +3608,12 @@ namespace TLIS_Service.Services
 
                                                                     CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                                     mwODU.EquivalentSpace = EquivalentSpace;
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                                    }
                                                                     _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithLegs);
                                                                     _unitOfWork.SaveChanges();
                                                                 }
@@ -3813,12 +3814,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (AddMW_ODU.civilLoads.ReservedSpace == true)
                                                     {
-                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
-
-                                                        if (Message != "Success")
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                        }
+                                                       
                                                         if (mwODU.CenterHigh <= 0)
                                                         {
                                                             if (mwODU.HBA <= 0)
@@ -3888,6 +3884,12 @@ namespace TLIS_Service.Services
 
                                                                 CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                                 mwODU.EquivalentSpace = EquivalentSpace;
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                                }
                                                                 _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithoutLeg);
                                                                 _unitOfWork.SaveChanges();
                                                             }
@@ -4351,12 +4353,7 @@ namespace TLIS_Service.Services
 
                                                     if (AddMW_Dish.civilLoads.ReservedSpace == true)
                                                     {
-                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                                                        if (Message != "Success")
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                        }
+                                                       
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
                                                             if (mwDish.HBA_Surface <= 0)
@@ -4444,8 +4441,13 @@ namespace TLIS_Service.Services
 
                                                                 AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                                 mwDish.EquivalentSpace = EquivalentSpace;
-                                                                
-                                                         
+
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                                }
                                                                 _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
 
                                                                 _unitOfWork.SaveChanges();
@@ -4764,13 +4766,7 @@ namespace TLIS_Service.Services
 
                                                     if (AddMW_Dish.civilLoads.ReservedSpace == true)
                                                     {
-                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                                                        if (Message != "Success")
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                        }
-
+                                                       
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
                                                             if (mwDish.HBA_Surface <= 0)
@@ -4908,6 +4904,12 @@ namespace TLIS_Service.Services
 
                                                             AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                             mwDish.EquivalentSpace = EquivalentSpace;
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                            }
                                                             _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
 
                                                             _unitOfWork.SaveChanges();
@@ -5236,12 +5238,7 @@ namespace TLIS_Service.Services
 
                                                 if (AddMW_Dish.civilLoads.ReservedSpace == true)
                                                 {
-                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
-
-                                                    if (Message != "Success")
-                                                    {
-                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
-                                                    }
+                                                   
                                                     if (mwDish.CenterHigh <= 0)
                                                     {
                                                         if (mwDish.HBA_Surface <= 0)
@@ -5372,6 +5369,12 @@ namespace TLIS_Service.Services
 
                                                         AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                         mwDish.EquivalentSpace = EquivalentSpace;
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                        }
                                                         _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
                                                         _unitOfWork.SaveChanges();
                                                     }
@@ -6214,6 +6217,12 @@ namespace TLIS_Service.Services
                                                     var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
                                                     AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                     mwDish.EquivalentSpace = EquivalentSpace;
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                    }
                                                     _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
 
                                                     _unitOfWork.SaveChanges();
@@ -6549,6 +6558,12 @@ namespace TLIS_Service.Services
 
                                                     AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                     mwDish.EquivalentSpace = EquivalentSpace;
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                    }
                                                     _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
 
                                                     _unitOfWork.SaveChanges();
@@ -7004,6 +7019,12 @@ namespace TLIS_Service.Services
                                                 var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
                                                 AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                 mwDish.EquivalentSpace = EquivalentSpace;
+                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                if (Message != "Success")
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                }
                                                 _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
 
                                                 _unitOfWork.SaveChanges();
@@ -7430,6 +7451,12 @@ namespace TLIS_Service.Services
                                                 var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
                                                 AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                 mwDish.EquivalentSpace = EquivalentSpace;
+                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                                if (Message != "Success")
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                }
                                                 _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
 
                                                 _unitOfWork.SaveChanges();
@@ -7899,6 +7926,12 @@ namespace TLIS_Service.Services
                                             var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
                                             AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                             mwDish.EquivalentSpace = EquivalentSpace;
+                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                            if (Message != "Success")
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                            }
                                             _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
                                             _unitOfWork.SaveChanges();
                                         }
@@ -8332,6 +8365,12 @@ namespace TLIS_Service.Services
                                             var EquivalentSpace = mwDish.SpaceInstallation * (mwDish.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
                                             AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                             mwDish.EquivalentSpace = EquivalentSpace;
+                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
+
+                                            if (Message != "Success")
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                            }
                                             _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
                                             _unitOfWork.SaveChanges();
                                         }
@@ -9363,6 +9402,12 @@ namespace TLIS_Service.Services
                                                             var EquivalentSpace = mwODU.SpaceInstallation * (mwODU.CenterHigh / CivilFound.allCivilInst.civilWithLegs.HeightBase);
                                                             CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                             mwODU.EquivalentSpace = EquivalentSpace;
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                            }
                                                             _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithLegs);
                                                             _unitOfWork.SaveChanges();
                                                         }
@@ -9475,6 +9520,12 @@ namespace TLIS_Service.Services
 
                                                             CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                             mwODU.EquivalentSpace = EquivalentSpace;
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                            }
                                                             _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithLegs);
                                                             _unitOfWork.SaveChanges();
                                                         }
@@ -9848,6 +9899,12 @@ namespace TLIS_Service.Services
                                                     var EquivalentSpace = mwODU.SpaceInstallation * (mwODU.CenterHigh / CivilFound.allCivilInst.civilWithoutLeg.HeightBase);
                                                     CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                     mwODU.EquivalentSpace = EquivalentSpace;
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                    }
                                                     _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithoutLeg);
                                                     _unitOfWork.SaveChanges();
                                                 }
@@ -9958,6 +10015,12 @@ namespace TLIS_Service.Services
 
                                                     CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                     mwODU.EquivalentSpace = EquivalentSpace;
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
+
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                                    }
                                                     _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, CivilFound.allCivilInst.civilWithoutLeg);
                                                     _unitOfWork.SaveChanges();
                                                 }

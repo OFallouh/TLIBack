@@ -13,6 +13,7 @@ using TLIS_DAL.ViewModels.CabinetTelecomLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.GeneratorDTOs;
 using TLIS_DAL.ViewModels.GeneratorLibraryDTOs;
+using TLIS_DAL.ViewModels.OtherInSiteDTOs;
 using TLIS_DAL.ViewModels.SolarDTOs;
 using TLIS_DAL.ViewModels.SolarLibraryDTOs;
 
@@ -25,6 +26,7 @@ namespace TLIS_Service.IService
         Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId);
 
         Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId);
+        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode);
 
         Response<ObjectInstAtts> GetById(int OtherInventoryInsId, string TableName);
         public Response<bool> DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId);

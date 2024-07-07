@@ -2710,20 +2710,6 @@ namespace TLIS_Service.Services
                     if (GeneratorLibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, GeneratorLibrary, null).ToList();
-                        listofAttributesActivated
-                            .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
-                            .ToList()
-                            .Select(FKitem =>
-                            {
-                                if (FKitem.Label.ToLower() == "capacity_name")
-                                {
-                                    FKitem.Options = _mapper.Map<List<PolarityTypeViewModel>>(_unitOfWork.CapacityRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
-                                    FKitem.Value = _mapper.Map<PolarityTypeViewModel>(GeneratorLibrary.Capacity);
-                                }
-
-                                return FKitem;
-                            })
-                            .ToList();
                         attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
@@ -3435,23 +3421,7 @@ namespace TLIS_Service.Services
                 else if (OtherInventoryType.TLIgeneratorLibrary.ToString() == TableName)
                 {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIgeneratorLibrary.ToString(), null, null)
-                      .Select(FKitem =>
-                      {
-                          if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                          {
-                              switch (FKitem.Label.ToLower())
-                              {
-                                  case "capacity_name":
-                                      FKitem.Options = _unitOfWork.CapacityRepository
-                                          .GetWhere(x => !x.Delete && !x.Disable)
-                                          .Select(x => _mapper.Map<PolarityTypeViewModel>(x))
-                                          .ToList();
-                                      break;
-                                  
-                              }
-                          }
-                          return FKitem;
-                      }).ToList();
+                      .ToList();
                     var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("OtherInventory");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;

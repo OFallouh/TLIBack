@@ -30,6 +30,7 @@ namespace TLIS_Service.IService
     {        
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
+        Response<List<RecalculatSpaceOnSite>> RecalculateSite(string SiteCode);
         List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString);
         Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int? TaskId,int UserId);
         Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId, int UserId);

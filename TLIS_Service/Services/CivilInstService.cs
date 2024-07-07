@@ -3370,10 +3370,9 @@ namespace TLIS_Service.Services
 
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
                                 var tLIsite = OldValueSite;
-                                var Site = _dbContext.TLIsite.Where(x => x.SiteCode == SiteCode.SiteCode).AsNoTracking().FirstOrDefault();
-                                Site.ReservedSpace = Site.ReservedSpace - CivilWithLegInst.SpaceInstallation;
-                                Site.ReservedSpace = Site.ReservedSpace + civilWithLegsEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
+                                SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithLegInst.SpaceInstallation;
+                                SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilWithLegsEntity.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, SiteCode.Site);
                                 _dbContext.SaveChanges();
                             }
                         }
@@ -3567,7 +3566,8 @@ namespace TLIS_Service.Services
 
                     var SiteCode = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking()
                         .Include(x=>x.Site).Include(x=>x.allCivilInst).FirstOrDefault(x => x.allCivilInst != null ?
-                    ((x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLegId == editCivilWithoutLegsInstallationObject.installationAttributes.Id : false) &&
+                    ((x.allCivilInst.civilWithoutLegId != null ? x.allCivilInst.civilWithoutLegId ==
+                    editCivilWithoutLegsInstallationObject.installationAttributes.Id : false) &&
                         !x.Dismantle && !x.allCivilInst.Draft) : false);
                     if (SiteCode != null)
                     {
@@ -3791,10 +3791,9 @@ namespace TLIS_Service.Services
 
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
                                 var tLIsite = OldValueSite;
-                                var Site = _dbContext.TLIsite.Where(x => x.SiteCode == SiteCode.SiteCode).AsNoTracking().FirstOrDefault();
-                                Site.ReservedSpace = Site.ReservedSpace - CivilWithoutLegInst.SpaceInstallation;
-                                Site.ReservedSpace = Site.ReservedSpace + civilWithoutLegsEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
+                                SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithoutLegInst.SpaceInstallation;
+                                SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilWithoutLegsEntity.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, SiteCode.Site);
                                 _dbContext.SaveChanges();
                             }
                         }
@@ -3909,8 +3908,9 @@ namespace TLIS_Service.Services
 
                     var SiteCode = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst != null ?
                         ((x.allCivilInst.civilNonSteelId != null ? x.allCivilInst.civilNonSteelId == editCivilNonSteelInstallationObject.installationAttributes.Id : false) &&
-                            !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst);
-                    if(SiteCode != null) {
+                            !x.Dismantle && !x.allCivilInst.Draft) : false, x => x.allCivilInst,x=>x.Site);
+                    if(SiteCode != null)
+                    {
                         if (civilNonSteelEntity.SpaceInstallation == 0)
                         {
                           
@@ -3937,10 +3937,9 @@ namespace TLIS_Service.Services
 
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower());
                                 var tLIsite = OldValueSite;
-                                var Site = _dbContext.TLIsite.Where(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).AsNoTracking().FirstOrDefault();
-                                Site.ReservedSpace = Site.ReservedSpace - CivilNonSteelInst.SpaceInstallation;
-                                Site.ReservedSpace = Site.ReservedSpace + civilNonSteelEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, Site);
+                                SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilNonSteelInst.SpaceInstallation;
+                                SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilNonSteelEntity.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, SiteCode.Site);
                                 _dbContext.SaveChanges();
                             }
                         }
@@ -8299,9 +8298,75 @@ namespace TLIS_Service.Services
                     {
                         if (propertyNamesDynamic.Count == 0)
                         {
-                            var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => 
-                             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).AsEnumerable().OrderBy(x => x.Name)
-                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+
+                            var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
+                            .Where(x =>
+                             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle)
+                            .AsEnumerable().Select(x =>
+
+                                 new
+                                 {
+                                     HieghFromLand = x.HieghFromLand,
+                                     EquivalentSpace = x.EquivalentSpace,
+                                     Support_Limited_Load = x.Support_Limited_Load,
+                                     SITECODE = x.SITECODE,
+                                     Id = x.Id,
+                                     Name = x.Name,
+                                     UpperPartLengthm = x.UpperPartLengthm,
+                                     UpperPartDiameterm = x.UpperPartDiameterm,
+                                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                                     NumberOfCivilParts = x.NumberOfCivilParts,
+                                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                                     FlangeThicknesscm = x.FlangeThicknesscm,
+                                     FlangeDiametercm = x.FlangeDiametercm,
+                                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                                     Civil_Remarks = x.Civil_Remarks,
+                                     BottomPartLengthm = x.BottomPartLengthm,
+                                     BottomPartDiameterm = x.BottomPartDiameterm,
+                                     BasePlateWidthcm = x.BasePlateWidthcm,
+                                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                                     BasePlateLengthcm = x.BasePlateLengthcm,
+                                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                                     Location_Height = x.Location_Height,
+                                     PoType = x.PoType,
+                                     PoNo = x.PoNo,
+                                     PoDate = x.PoDate,
+                                     HeightImplemented = x.HeightImplemented,
+                                     BuildingMaxLoad = x.BuildingMaxLoad,
+                                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                     CurrentLoads = x.CurrentLoads,
+                                     WarningPercentageLoads = x.WarningPercentageLoads,
+                                     Visiable_Status = x.Visiable_Status,
+                                     SpaceInstallation = x.SpaceInstallation,
+                                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                                     OWNER = x.OWNER,
+                                     SUBTYPE = x.SUBTYPE,
+                                     HeightBase = x.HeightBase,
+                                     BuildingHeightH3 = x.BuildingHeightH3,
+                                     reinforced = x.reinforced,
+                                     ladderSteps = x.ladderSteps,
+                                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                                     equipmentsLocation = x.equipmentsLocation,
+                                     CenterHigh = x.CenterHigh,
+                                     HBA = x.HBA,
+                                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                                     Dismantle = x.Dismantle
+
+                                 }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                          ;
                             int count = query.Count();
 
                             getEnableAttribute.Model = query;
@@ -8309,8 +8374,73 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => 
-                             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).AsEnumerable()
+                            var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x =>
+                             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).Select(x =>
+
+                                 new
+                                 {
+                                     HieghFromLand = x.HieghFromLand,
+                                     EquivalentSpace = x.EquivalentSpace,
+                                     Support_Limited_Load = x.Support_Limited_Load,
+                                     SITECODE = x.SITECODE,
+                                     Id = x.Id,
+                                     Name = x.Name,
+                                     UpperPartLengthm = x.UpperPartLengthm,
+                                     UpperPartDiameterm = x.UpperPartDiameterm,
+                                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                                     NumberOfCivilParts = x.NumberOfCivilParts,
+                                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                                     FlangeThicknesscm = x.FlangeThicknesscm,
+                                     FlangeDiametercm = x.FlangeDiametercm,
+                                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                                     Civil_Remarks = x.Civil_Remarks,
+                                     BottomPartLengthm = x.BottomPartLengthm,
+                                     BottomPartDiameterm = x.BottomPartDiameterm,
+                                     BasePlateWidthcm = x.BasePlateWidthcm,
+                                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                                     BasePlateLengthcm = x.BasePlateLengthcm,
+                                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                                     Location_Height = x.Location_Height,
+                                     PoType = x.PoType,
+                                     PoNo = x.PoNo,
+                                     PoDate = x.PoDate,
+                                     HeightImplemented = x.HeightImplemented,
+                                     BuildingMaxLoad = x.BuildingMaxLoad,
+                                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                     CurrentLoads = x.CurrentLoads,
+                                     WarningPercentageLoads = x.WarningPercentageLoads,
+                                     Visiable_Status = x.Visiable_Status,
+                                     SpaceInstallation = x.SpaceInstallation,
+                                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                                     OWNER = x.OWNER,
+                                     SUBTYPE = x.SUBTYPE,
+                                     HeightBase = x.HeightBase,
+                                     BuildingHeightH3 = x.BuildingHeightH3,
+                                     reinforced = x.reinforced,
+                                     ladderSteps = x.ladderSteps,
+                                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                                     equipmentsLocation = x.equipmentsLocation,
+                                     CenterHigh = x.CenterHigh,
+                                     HBA = x.HBA,
+                                     INPUTVALUE = x.INPUTVALUE,
+                                     Key = x.Key,
+                                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                                     Dismantle = x.Dismantle
+
+                                 }).AsEnumerable()
                         .GroupBy(x => new
                         {
                             HieghFromLand = x.HieghFromLand,
@@ -8369,12 +8499,14 @@ namespace TLIS_Service.Services
                             equipmentsLocation = x.equipmentsLocation,
                             CenterHigh = x.CenterHigh,
                             HBA = x.HBA,
-                            CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY
+                            CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                            Dismantle = x.Dismantle
                         }).OrderBy(x => x.Key.Name)
-                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                        .Select(x =>
+                            new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                        )
                         .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                             int count = query.Count();
-
 
                             getEnableAttribute.Model = query;
                             return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
@@ -8382,18 +8514,149 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                         x.CIVILWITHOUTLEGCATEGORY.ToLower()== "capsule" && !x.Dismantle).AsEnumerable().OrderBy(x => x.Name)
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
+                        .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                         x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle)
+                        .AsEnumerable().Select(x =>
+
+                             new
+                             {
+                                 HieghFromLand = x.HieghFromLand,
+                                 EquivalentSpace = x.EquivalentSpace,
+                                 Support_Limited_Load = x.Support_Limited_Load,
+                                 SITECODE = x.SITECODE,
+                                 Id = x.Id,
+                                 Name = x.Name,
+                                 UpperPartLengthm = x.UpperPartLengthm,
+                                 UpperPartDiameterm = x.UpperPartDiameterm,
+                                 SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                                 SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                                 ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                                 SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                                 NumberOfCivilParts = x.NumberOfCivilParts,
+                                 NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                                 NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                                 CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                                 CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                                 LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                                 HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                                 HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                                 FlangeThicknesscm = x.FlangeThicknesscm,
+                                 FlangeDiametercm = x.FlangeDiametercm,
+                                 FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                                 ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                                 ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                                 Civil_Remarks = x.Civil_Remarks,
+                                 BottomPartLengthm = x.BottomPartLengthm,
+                                 BottomPartDiameterm = x.BottomPartDiameterm,
+                                 BasePlateWidthcm = x.BasePlateWidthcm,
+                                 BasePlateThicknesscm = x.BasePlateThicknesscm,
+                                 BasePlateLengthcm = x.BasePlateLengthcm,
+                                 BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                                 BaseBeamSectionmm = x.BaseBeamSectionmm,
+                                 WindMaxLoadm2 = x.WindMaxLoadm2,
+                                 Location_Height = x.Location_Height,
+                                 PoType = x.PoType,
+                                 PoNo = x.PoNo,
+                                 PoDate = x.PoDate,
+                                 HeightImplemented = x.HeightImplemented,
+                                 BuildingMaxLoad = x.BuildingMaxLoad,
+                                 SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                 CurrentLoads = x.CurrentLoads,
+                                 WarningPercentageLoads = x.WarningPercentageLoads,
+                                 Visiable_Status = x.Visiable_Status,
+                                 SpaceInstallation = x.SpaceInstallation,
+                                 CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                                 OWNER = x.OWNER,
+                                 SUBTYPE = x.SUBTYPE,
+                                 HeightBase = x.HeightBase,
+                                 BuildingHeightH3 = x.BuildingHeightH3,
+                                 reinforced = x.reinforced,
+                                 ladderSteps = x.ladderSteps,
+                                 availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                                 equipmentsLocation = x.equipmentsLocation,
+                                 CenterHigh = x.CenterHigh,
+                                 HBA = x.HBA,
+                                 CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                                 Dismantle = x.Dismantle
+
+                             }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                      ;
                         int count = query.Count();
-                       
+
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     else
                     {
-                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                        && x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).AsEnumerable()
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                         x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).Select(x =>
+
+                             new
+                             {
+                                 HieghFromLand = x.HieghFromLand,
+                                 EquivalentSpace = x.EquivalentSpace,
+                                 Support_Limited_Load = x.Support_Limited_Load,
+                                 SITECODE = x.SITECODE,
+                                 Id = x.Id,
+                                 Name = x.Name,
+                                 UpperPartLengthm = x.UpperPartLengthm,
+                                 UpperPartDiameterm = x.UpperPartDiameterm,
+                                 SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                                 SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                                 ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                                 SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                                 NumberOfCivilParts = x.NumberOfCivilParts,
+                                 NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                                 NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                                 CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                                 CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                                 LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                                 HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                                 HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                                 FlangeThicknesscm = x.FlangeThicknesscm,
+                                 FlangeDiametercm = x.FlangeDiametercm,
+                                 FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                                 ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                                 ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                                 Civil_Remarks = x.Civil_Remarks,
+                                 BottomPartLengthm = x.BottomPartLengthm,
+                                 BottomPartDiameterm = x.BottomPartDiameterm,
+                                 BasePlateWidthcm = x.BasePlateWidthcm,
+                                 BasePlateThicknesscm = x.BasePlateThicknesscm,
+                                 BasePlateLengthcm = x.BasePlateLengthcm,
+                                 BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                                 BaseBeamSectionmm = x.BaseBeamSectionmm,
+                                 WindMaxLoadm2 = x.WindMaxLoadm2,
+                                 Location_Height = x.Location_Height,
+                                 PoType = x.PoType,
+                                 PoNo = x.PoNo,
+                                 PoDate = x.PoDate,
+                                 HeightImplemented = x.HeightImplemented,
+                                 BuildingMaxLoad = x.BuildingMaxLoad,
+                                 SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                 CurrentLoads = x.CurrentLoads,
+                                 WarningPercentageLoads = x.WarningPercentageLoads,
+                                 Visiable_Status = x.Visiable_Status,
+                                 SpaceInstallation = x.SpaceInstallation,
+                                 CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                                 OWNER = x.OWNER,
+                                 SUBTYPE = x.SUBTYPE,
+                                 HeightBase = x.HeightBase,
+                                 BuildingHeightH3 = x.BuildingHeightH3,
+                                 reinforced = x.reinforced,
+                                 ladderSteps = x.ladderSteps,
+                                 availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                                 equipmentsLocation = x.equipmentsLocation,
+                                 CenterHigh = x.CenterHigh,
+                                 HBA = x.HBA,
+                                 INPUTVALUE = x.INPUTVALUE,
+                                 Key = x.Key,
+                                 CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                                 Dismantle = x.Dismantle
+
+                             }).AsEnumerable()
                     .GroupBy(x => new
                     {
                         HieghFromLand = x.HieghFromLand,
@@ -8452,13 +8715,15 @@ namespace TLIS_Service.Services
                         equipmentsLocation = x.equipmentsLocation,
                         CenterHigh = x.CenterHigh,
                         HBA = x.HBA,
-                        CIVILWITHOUTLEGCATEGORY=x.CIVILWITHOUTLEGCATEGORY
+                        CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                        Dismantle = x.Dismantle
                     }).OrderBy(x => x.Key.Name)
-                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(x =>
+                        new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                    )
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
 
-                        
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
@@ -8527,9 +8792,75 @@ namespace TLIS_Service.Services
                     {
                         if (propertyNamesDynamic.Count == 0)
                         {
-                            var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => 
-                            x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).AsEnumerable().OrderBy(x => x.Name)
-                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+
+                            var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
+                            .Where(x =>
+                             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle)
+                            .AsEnumerable().Select(x =>
+
+                                 new
+                                 {
+                                     HieghFromLand = x.HieghFromLand,
+                                     EquivalentSpace = x.EquivalentSpace,
+                                     Support_Limited_Load = x.Support_Limited_Load,
+                                     SITECODE = x.SITECODE,
+                                     Id = x.Id,
+                                     Name = x.Name,
+                                     UpperPartLengthm = x.UpperPartLengthm,
+                                     UpperPartDiameterm = x.UpperPartDiameterm,
+                                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                                     NumberOfCivilParts = x.NumberOfCivilParts,
+                                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                                     FlangeThicknesscm = x.FlangeThicknesscm,
+                                     FlangeDiametercm = x.FlangeDiametercm,
+                                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                                     Civil_Remarks = x.Civil_Remarks,
+                                     BottomPartLengthm = x.BottomPartLengthm,
+                                     BottomPartDiameterm = x.BottomPartDiameterm,
+                                     BasePlateWidthcm = x.BasePlateWidthcm,
+                                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                                     BasePlateLengthcm = x.BasePlateLengthcm,
+                                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                                     Location_Height = x.Location_Height,
+                                     PoType = x.PoType,
+                                     PoNo = x.PoNo,
+                                     PoDate = x.PoDate,
+                                     HeightImplemented = x.HeightImplemented,
+                                     BuildingMaxLoad = x.BuildingMaxLoad,
+                                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                     CurrentLoads = x.CurrentLoads,
+                                     WarningPercentageLoads = x.WarningPercentageLoads,
+                                     Visiable_Status = x.Visiable_Status,
+                                     SpaceInstallation = x.SpaceInstallation,
+                                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                                     OWNER = x.OWNER,
+                                     SUBTYPE = x.SUBTYPE,
+                                     HeightBase = x.HeightBase,
+                                     BuildingHeightH3 = x.BuildingHeightH3,
+                                     reinforced = x.reinforced,
+                                     ladderSteps = x.ladderSteps,
+                                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                                     equipmentsLocation = x.equipmentsLocation,
+                                     CenterHigh = x.CenterHigh,
+                                     HBA = x.HBA,
+                                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                                     Dismantle = x.Dismantle
+
+                                 }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                          ;
                             int count = query.Count();
 
                             getEnableAttribute.Model = query;
@@ -8538,7 +8869,72 @@ namespace TLIS_Service.Services
                         else
                         {
                             var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x =>
-                            x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).AsEnumerable()
+                             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).Select(x =>
+
+                                 new
+                                 {
+                                     HieghFromLand = x.HieghFromLand,
+                                     EquivalentSpace = x.EquivalentSpace,
+                                     Support_Limited_Load = x.Support_Limited_Load,
+                                     SITECODE = x.SITECODE,
+                                     Id = x.Id,
+                                     Name = x.Name,
+                                     UpperPartLengthm = x.UpperPartLengthm,
+                                     UpperPartDiameterm = x.UpperPartDiameterm,
+                                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                                     NumberOfCivilParts = x.NumberOfCivilParts,
+                                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                                     FlangeThicknesscm = x.FlangeThicknesscm,
+                                     FlangeDiametercm = x.FlangeDiametercm,
+                                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                                     Civil_Remarks = x.Civil_Remarks,
+                                     BottomPartLengthm = x.BottomPartLengthm,
+                                     BottomPartDiameterm = x.BottomPartDiameterm,
+                                     BasePlateWidthcm = x.BasePlateWidthcm,
+                                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                                     BasePlateLengthcm = x.BasePlateLengthcm,
+                                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                                     Location_Height = x.Location_Height,
+                                     PoType = x.PoType,
+                                     PoNo = x.PoNo,
+                                     PoDate = x.PoDate,
+                                     HeightImplemented = x.HeightImplemented,
+                                     BuildingMaxLoad = x.BuildingMaxLoad,
+                                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                     CurrentLoads = x.CurrentLoads,
+                                     WarningPercentageLoads = x.WarningPercentageLoads,
+                                     Visiable_Status = x.Visiable_Status,
+                                     SpaceInstallation = x.SpaceInstallation,
+                                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                                     OWNER = x.OWNER,
+                                     SUBTYPE = x.SUBTYPE,
+                                     HeightBase = x.HeightBase,
+                                     BuildingHeightH3 = x.BuildingHeightH3,
+                                     reinforced = x.reinforced,
+                                     ladderSteps = x.ladderSteps,
+                                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                                     equipmentsLocation = x.equipmentsLocation,
+                                     CenterHigh = x.CenterHigh,
+                                     HBA = x.HBA,
+                                     INPUTVALUE = x.INPUTVALUE,
+                                     Key = x.Key,
+                                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                                     Dismantle = x.Dismantle
+
+                                 }).AsEnumerable()
                         .GroupBy(x => new
                         {
                             HieghFromLand = x.HieghFromLand,
@@ -8597,11 +8993,14 @@ namespace TLIS_Service.Services
                             equipmentsLocation = x.equipmentsLocation,
                             CenterHigh = x.CenterHigh,
                             HBA = x.HBA,
+                            CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                            Dismantle = x.Dismantle
                         }).OrderBy(x => x.Key.Name)
-                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                        .Select(x =>
+                            new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                        )
                         .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                             int count = query.Count();
-
 
                             getEnableAttribute.Model = query;
                             return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
@@ -8609,19 +9008,149 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                        &&
-                        x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).AsEnumerable().OrderBy(x => x.Name)
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
+                        .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                         x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle)
+                        .AsEnumerable().Select(x =>
+
+                             new
+                             {
+                                 HieghFromLand = x.HieghFromLand,
+                                 EquivalentSpace = x.EquivalentSpace,
+                                 Support_Limited_Load = x.Support_Limited_Load,
+                                 SITECODE = x.SITECODE,
+                                 Id = x.Id,
+                                 Name = x.Name,
+                                 UpperPartLengthm = x.UpperPartLengthm,
+                                 UpperPartDiameterm = x.UpperPartDiameterm,
+                                 SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                                 SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                                 ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                                 SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                                 NumberOfCivilParts = x.NumberOfCivilParts,
+                                 NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                                 NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                                 CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                                 CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                                 LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                                 HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                                 HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                                 FlangeThicknesscm = x.FlangeThicknesscm,
+                                 FlangeDiametercm = x.FlangeDiametercm,
+                                 FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                                 ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                                 ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                                 Civil_Remarks = x.Civil_Remarks,
+                                 BottomPartLengthm = x.BottomPartLengthm,
+                                 BottomPartDiameterm = x.BottomPartDiameterm,
+                                 BasePlateWidthcm = x.BasePlateWidthcm,
+                                 BasePlateThicknesscm = x.BasePlateThicknesscm,
+                                 BasePlateLengthcm = x.BasePlateLengthcm,
+                                 BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                                 BaseBeamSectionmm = x.BaseBeamSectionmm,
+                                 WindMaxLoadm2 = x.WindMaxLoadm2,
+                                 Location_Height = x.Location_Height,
+                                 PoType = x.PoType,
+                                 PoNo = x.PoNo,
+                                 PoDate = x.PoDate,
+                                 HeightImplemented = x.HeightImplemented,
+                                 BuildingMaxLoad = x.BuildingMaxLoad,
+                                 SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                 CurrentLoads = x.CurrentLoads,
+                                 WarningPercentageLoads = x.WarningPercentageLoads,
+                                 Visiable_Status = x.Visiable_Status,
+                                 SpaceInstallation = x.SpaceInstallation,
+                                 CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                                 OWNER = x.OWNER,
+                                 SUBTYPE = x.SUBTYPE,
+                                 HeightBase = x.HeightBase,
+                                 BuildingHeightH3 = x.BuildingHeightH3,
+                                 reinforced = x.reinforced,
+                                 ladderSteps = x.ladderSteps,
+                                 availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                                 equipmentsLocation = x.equipmentsLocation,
+                                 CenterHigh = x.CenterHigh,
+                                 HBA = x.HBA,
+                                 CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                                 Dismantle = x.Dismantle
+
+                             }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                      ;
                         int count = query.Count();
-                       
+
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     else
                     {
-                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                        && x.CIVILWITHOUTLEGCATEGORY.ToLower()== "monopole" && !x.Dismantle).AsEnumerable()
+                        var query = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                         x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).Select(x =>
+
+                             new
+                             {
+                                 HieghFromLand = x.HieghFromLand,
+                                 EquivalentSpace = x.EquivalentSpace,
+                                 Support_Limited_Load = x.Support_Limited_Load,
+                                 SITECODE = x.SITECODE,
+                                 Id = x.Id,
+                                 Name = x.Name,
+                                 UpperPartLengthm = x.UpperPartLengthm,
+                                 UpperPartDiameterm = x.UpperPartDiameterm,
+                                 SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                                 SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                                 ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                                 SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                                 NumberOfCivilParts = x.NumberOfCivilParts,
+                                 NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                                 NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                                 CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                                 CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                                 LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                                 HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                                 HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                                 FlangeThicknesscm = x.FlangeThicknesscm,
+                                 FlangeDiametercm = x.FlangeDiametercm,
+                                 FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                                 ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                                 ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                                 Civil_Remarks = x.Civil_Remarks,
+                                 BottomPartLengthm = x.BottomPartLengthm,
+                                 BottomPartDiameterm = x.BottomPartDiameterm,
+                                 BasePlateWidthcm = x.BasePlateWidthcm,
+                                 BasePlateThicknesscm = x.BasePlateThicknesscm,
+                                 BasePlateLengthcm = x.BasePlateLengthcm,
+                                 BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                                 BaseBeamSectionmm = x.BaseBeamSectionmm,
+                                 WindMaxLoadm2 = x.WindMaxLoadm2,
+                                 Location_Height = x.Location_Height,
+                                 PoType = x.PoType,
+                                 PoNo = x.PoNo,
+                                 PoDate = x.PoDate,
+                                 HeightImplemented = x.HeightImplemented,
+                                 BuildingMaxLoad = x.BuildingMaxLoad,
+                                 SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                 CurrentLoads = x.CurrentLoads,
+                                 WarningPercentageLoads = x.WarningPercentageLoads,
+                                 Visiable_Status = x.Visiable_Status,
+                                 SpaceInstallation = x.SpaceInstallation,
+                                 CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                                 OWNER = x.OWNER,
+                                 SUBTYPE = x.SUBTYPE,
+                                 HeightBase = x.HeightBase,
+                                 BuildingHeightH3 = x.BuildingHeightH3,
+                                 reinforced = x.reinforced,
+                                 ladderSteps = x.ladderSteps,
+                                 availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                                 equipmentsLocation = x.equipmentsLocation,
+                                 CenterHigh = x.CenterHigh,
+                                 HBA = x.HBA,
+                                 INPUTVALUE = x.INPUTVALUE,
+                                 Key = x.Key,
+                                 CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                                 Dismantle = x.Dismantle
+
+                             }).AsEnumerable()
                     .GroupBy(x => new
                     {
                         HieghFromLand = x.HieghFromLand,
@@ -8680,12 +9209,15 @@ namespace TLIS_Service.Services
                         equipmentsLocation = x.equipmentsLocation,
                         CenterHigh = x.CenterHigh,
                         HBA = x.HBA,
+                        CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                        Dismantle = x.Dismantle
                     }).OrderBy(x => x.Key.Name)
-                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(x =>
+                        new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                    )
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
 
-                        
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }

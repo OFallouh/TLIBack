@@ -19,6 +19,7 @@ namespace TLIS_DAL.Models
         public string? LayoutCode { get; set; }
         public float Height { get; set; }
         public float SpaceLibrary { get; set; }
+        public string  CapaCity { get; set; }
         public TLIcapacity Capacity { get; set; }
         public int? CapacityId { get; set; }
         public bool Active { get; set; }

@@ -43,6 +43,15 @@ using TLIS_DAL.ViewModels.MW_DishDTOs;
 using System.Drawing;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static TLIS_DAL.ViewModels.MW_DishLbraryDTOs.EditMWDishLibraryObject;
+using TLIS_DAL.ViewModels.AsTypeDTOs;
+using TLIS_DAL.ViewModels.ItemConnectToDTOs;
+using TLIS_DAL.ViewModels.OwnerDTOs;
+using TLIS_DAL.ViewModels.PolarityOnLocationDTOs;
+using TLIS_DAL.ViewModels.PolarityTypeDTOs;
+using TLIS_DAL.ViewModels.RepeaterTypeDTOs;
+using static TLIS_DAL.ViewModels.GeneratorLibraryDTOs.EditGeneratorLibraryObject;
+using TLIS_DAL.ViewModels.OtherInSiteDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -368,6 +377,82 @@ namespace TLIS_Service.Services
             catch (Exception err)
             {
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+            }
+        }
+        public Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode)
+        {
+            try
+            {
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
+                    x.TableName == TableName);
+
+                GetForAddOtherInventoryInstallationObject objectInst = new GetForAddOtherInventoryInstallationObject();
+                List<BaseInstAttViews> ListAttributesActivated = new List<BaseInstAttViews>();
+
+                EditGeneratorLibraryAttributes GeneratorLibrary = _mapper.Map<EditGeneratorLibraryAttributes>(_unitOfWork.GeneratorLibraryRepository
+                    .GetIncludeWhereFirst(x => x.Id == LibraryID));
+                if (GeneratorLibrary != null)
+                {
+                    List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                        .GetAttributeActivatedGetForAdd(TablesNames.TLIgeneratorLibrary.ToString(), GeneratorLibrary, null).ToList();
+
+                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                        .GetLogisticals(TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(), GeneratorLibrary.Id).ToList());
+
+                    LibraryAttributes.AddRange(LogisticalAttributes);
+
+                    objectInst.LibraryAttribute = LibraryAttributes;
+
+                    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+                        GetInstAttributeActivatedGetForAdd(OtherInventoryType.TLIgenerator.ToString(), null, "GeneratorLibraryId").ToList();
+
+                    BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = ListAttributesActivated[0];
+                        ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                        ListAttributesActivated[0] = NameAttribute;
+                    }
+
+
+                    Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                        { "basegeneratortype_name", () => _mapper.Map<List<BaseGeneratorTypeViewModel>>(_unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList())},
+                       
+                    };
+                    ListAttributesActivated = ListAttributesActivated
+                        .Select(FKitem =>
+                        {
+                            if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                            {
+                                FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                            }
+                            else
+                            {
+                                FKitem.Options = new object[0];
+                            }
+
+                            return FKitem;
+                        })
+                        .ToList();
+
+                    objectInst.InstallationAttributes = ListAttributesActivated;
+                    objectInst.OtherInSite = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivated(TablesNames.TLIotherInSite.ToString(), null, "allOtherInventoryInstId", "Dismantle", "SiteCode");
+                    objectInst.OtherInventoryDistance = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivated(TablesNames.TLIotherInventoryDistance.ToString(), null, "allOtherInventoryInstId", "SiteCode");
+
+                    objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
+                    .GetDynamicInstAttInst(TableNameEntity.Id, null);
+                    return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                else
+                {
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this mwdishlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+            catch (Exception err)
+            {
+                return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
         #endregion    

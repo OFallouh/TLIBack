@@ -73,6 +73,7 @@ using System.Data;
 using System.Text.Json;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using static TLIS_Repository.Repositories.SiteRepository;
+using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 
 
 
@@ -7902,6 +7903,176 @@ namespace TLIS_Service.Services
             {
                 return new Response<SiteInfo>(false, null, null, "This SiteCode Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
             }
+        }
+        public Response<List<RecalculatSpaceOnSite>> RecalculateSite(string SiteCode)
+        {
+            try
+            {
+                List<RecalculatSpaceOnSite> RecalculatSpaceOnSites = new List<RecalculatSpaceOnSite>();
+                var SiteInfo = _context.TLIsite.ToList();
+                foreach (var item in SiteInfo)
+                {
+                    if (item.RentedSpace == 0)
+                    {
+                        RecalculatSpaceOnSite recalculat = new RecalculatSpaceOnSite()
+                        {
+                            AttributeName = "RentedSpace",
+                            ItemOnSiteType = "Site",
+                            ItemOnSiteName = " ",
+                            SiteName = item.SiteName,
+                            Type = "Site",
+                           
+                        };
+                        RecalculatSpaceOnSites.Add(recalculat);
+                    }
+                    item.ReservedSpace = 0;
+                    List<TLIcivilSiteDate> CivilOnSite = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude
+                    (x => x.SiteCode.ToLower() == item.SiteCode.ToLower() && !x.Dismantle && x.ReservedSpace
+                    , x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs,
+                    x => x.allCivilInst.civilWithoutLeg).ToList();
+                    foreach (var CivilOnSiteitem in CivilOnSite)
+                    {
+                        if (CivilOnSiteitem.allCivilInst.civilWithLegsId != null)
+                        {
+                            if (CivilOnSiteitem.allCivilInst.civilWithLegs.SpaceInstallation == 0)
+                            {
+                                RecalculatSpaceOnSite recalculat = new RecalculatSpaceOnSite()
+                                {
+                                    AttributeName = "SpaceInstallation",
+                                    ItemOnSiteType = "civilWithLegs",
+                                    ItemOnSiteName = CivilOnSiteitem.allCivilInst.civilWithLegs.Name,
+                                    SiteName= item.SiteName,
+                                    Type = "Installation",
+                                    ReservedSpaceInCivil = CivilOnSiteitem.ReservedSpace
+                                };
+                                RecalculatSpaceOnSites.Add(recalculat);
+                            }
+                            else
+                            {
+                                item.ReservedSpace = item.ReservedSpace + CivilOnSiteitem.allCivilInst.civilWithLegs.SpaceInstallation;
+                            }
+                        }
+                        else if (CivilOnSiteitem.allCivilInst.civilWithoutLegId != null)
+                        {
+                            if (CivilOnSiteitem.allCivilInst.civilWithoutLeg.SpaceInstallation == 0)
+                            {
+                                RecalculatSpaceOnSite recalculat = new RecalculatSpaceOnSite()
+                                {
+                                    AttributeName = "SpaceInstallation",
+                                    ItemOnSiteType = "civilWithoutLeg",
+                                    ItemOnSiteName = CivilOnSiteitem.allCivilInst.civilWithoutLeg.Name,
+                                    SiteName = item.SiteName,
+                                    Type = "Installation",
+                                    ReservedSpaceInCivil = CivilOnSiteitem.ReservedSpace
+                                };
+                                RecalculatSpaceOnSites.Add(recalculat);
+                            }
+                            else
+                            {
+                                item.ReservedSpace = item.ReservedSpace + CivilOnSiteitem.allCivilInst.civilWithoutLeg.SpaceInstallation;
+                            }
+                        }
+                        else if (CivilOnSiteitem.allCivilInst.civilNonSteelId != null)
+                        {
+                            if (CivilOnSiteitem.allCivilInst.civilNonSteel.SpaceInstallation == 0)
+                            {
+                                RecalculatSpaceOnSite recalculat = new RecalculatSpaceOnSite()
+                                {
+                                    AttributeName = "SpaceInstallation",
+                                    ItemOnSiteType = "civilNonSteel",
+                                    ItemOnSiteName = CivilOnSiteitem.allCivilInst.civilNonSteel.Name,
+                                    SiteName = item.SiteName,
+                                    Type = "Installation",
+                                    ReservedSpaceInCivil = CivilOnSiteitem.ReservedSpace
+                                };
+                                RecalculatSpaceOnSites.Add(recalculat);
+                            }
+                            else
+                            {
+                                item.ReservedSpace = item.ReservedSpace + CivilOnSiteitem.allCivilInst.civilNonSteel.SpaceInstallation;
+                            }
+                        }
+                    }
+                    List<TLIotherInSite> OtherOnSite = _unitOfWork.OtherInSiteRepository
+                    .GetWhereAndInclude(x => x.SiteCode.ToLower() == item.SiteCode.ToLower()
+                    && !x.Dismantle && x.ReservedSpace == true, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet
+                    , x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.generator).ToList();
+                    foreach (var OtherOnSiteitem in OtherOnSite)
+                    {
+                        if (OtherOnSiteitem.allOtherInventoryInst.generatorId != null)
+                        {
+                            if (OtherOnSiteitem.allOtherInventoryInst.generator.SpaceInstallation == 0)
+                            {
+                                RecalculatSpaceOnSite recalculat = new RecalculatSpaceOnSite()
+                                {
+                                    AttributeName = "SpaceInstallation",
+                                    ItemOnSiteType = "generator",
+                                    ItemOnSiteName = OtherOnSiteitem.allOtherInventoryInst.generator.Name,
+                                    SiteName = item.SiteName,
+                                    Type = "Installation",
+                                    ReservedSpaceInCivil = OtherOnSiteitem.ReservedSpace
+                                };
+                                RecalculatSpaceOnSites.Add(recalculat);
+                            }
+                            else
+                            {
+                                item.ReservedSpace = item.ReservedSpace + OtherOnSiteitem.allOtherInventoryInst.generator.SpaceInstallation;
+                            }
+                        }
+                        else if (OtherOnSiteitem.allOtherInventoryInst.cabinetId != null)
+                        {
+                            if (OtherOnSiteitem.allOtherInventoryInst.cabinet.SpaceInstallation == 0)
+                            {
+                                RecalculatSpaceOnSite recalculat = new RecalculatSpaceOnSite()
+                                {
+                                    AttributeName = "SpaceInstallation",
+                                    ItemOnSiteType = "cabinet",
+                                    ItemOnSiteName = OtherOnSiteitem.allOtherInventoryInst.cabinet.Name,
+                                    SiteName = item.SiteName,
+                                    Type = "Installation",
+                                    ReservedSpaceInCivil = OtherOnSiteitem.ReservedSpace
+                                };
+                                RecalculatSpaceOnSites.Add(recalculat);
+                            }
+                            else
+                            {
+                                item.ReservedSpace = item.ReservedSpace + OtherOnSiteitem.allOtherInventoryInst.cabinet.SpaceInstallation;
+                            }
+                        }
+                        else if (OtherOnSiteitem.allOtherInventoryInst.solarId != null)
+                        {
+                            if (OtherOnSiteitem.allOtherInventoryInst.solar.SpaceInstallation == 0)
+                            {
+                                RecalculatSpaceOnSite recalculat = new RecalculatSpaceOnSite()
+                                {
+                                    AttributeName = "SpaceInstallation",
+                                    ItemOnSiteType = "solar",
+                                    ItemOnSiteName = OtherOnSiteitem.allOtherInventoryInst.solar.Name,
+                                    SiteName = item.SiteName,
+                                    Type = "Installation",
+                                    ReservedSpaceInCivil = OtherOnSiteitem.ReservedSpace
+                                };
+                                RecalculatSpaceOnSites.Add(recalculat);
+                            }
+                            else
+                            {
+                                item.ReservedSpace = item.ReservedSpace + OtherOnSiteitem.allOtherInventoryInst.solar.SpaceInstallation;
+                            }
+                        }
+                    }
+                    _unitOfWork.SiteRepository.Update(item);
+                    _unitOfWork.SaveChanges();
+
+                }
+
+                return new Response<List<RecalculatSpaceOnSite>>(true, RecalculatSpaceOnSites, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception er)
+            {
+
+                return new Response<List<RecalculatSpaceOnSite>>(true, null, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+            
         }
 
 
