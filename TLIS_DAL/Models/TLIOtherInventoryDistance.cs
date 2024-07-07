@@ -16,7 +16,7 @@ namespace TLIS_DAL.Models
         public float Azimuth { get; set; }
         public TLIallOtherInventoryInst allOtherInventoryInst { get; set; }
         public int allOtherInventoryInstId { get; set; }
-        public int ReferenceOtherInventoryId { get; set; }
+        public int? ReferenceOtherInventoryId { get; set; }
         public TLIsite site { get; set; }
         public string SiteCode { get; set; }
         //public TLIotherInventoryType otherInventoryType2 { get; set; }

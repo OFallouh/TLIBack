@@ -12,8 +12,8 @@ namespace TLIS_DAL.ViewModels.OtherInSiteDTOs
     {
         public IEnumerable<BaseInstAttViews> LibraryAttribute { get; set; } = new List<BaseInstAttViews>();
         public IEnumerable<BaseInstAttViews> InstallationAttributes { get; set; } = new List<BaseInstAttViews>();
-        public IEnumerable<BaseInstAttView> OtherInSite { get; set; } = new List<BaseInstAttView>();
-        public IEnumerable<BaseInstAttView> OtherInventoryDistance { get; set; } = new List<BaseInstAttView>();
+        public IEnumerable<BaseInstAttViews> OtherInSite { get; set; } = new List<BaseInstAttViews>();
+        public IEnumerable<BaseInstAttViews> OtherInventoryDistance { get; set; } = new List<BaseInstAttViews>();
         public IEnumerable<BaseInstAttViewDynamic> DynamicAttribute { get; set; } = new List<BaseInstAttViewDynamic>();
     }
 }

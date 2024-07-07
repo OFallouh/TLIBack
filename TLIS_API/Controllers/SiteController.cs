@@ -521,9 +521,9 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [HttpGet("RecalculateSite")]
-        public IActionResult RecalculateSite(string SiteCode)
+        public IActionResult RecalculateSite()
         {
-            var response = _unitOfWorkService.SiteService.RecalculateSite(SiteCode);
+            var response = _unitOfWorkService.SiteService.RecalculateSite();
             return Ok(response);
         }
 

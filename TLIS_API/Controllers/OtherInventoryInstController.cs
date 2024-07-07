@@ -142,33 +142,32 @@ namespace TLIS_API.Controllers
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddGenerator")]
-        [ProducesResponseType(200, Type = typeof(AddGeneratorViewModel))]
-        public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode, int ?TaskId)
+        [HttpPost("AddGeneratorInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddGeneratorInstallationObject))]
+        public IActionResult AddGeneratorInstallation([FromBody] AddGeneratorInstallationObject addGeneratorViewModel, string SiteCode, int ?TaskId)
         {
-
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            string authHeader = HttpContext.Request.Headers["Authorization"];
-
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorInstallationObject)))
             {
-                return Unauthorized();
-            }
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
 
-            if (jsonToken == null)
-            {
-                return Unauthorized();
-            }
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
-            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-            var userId = Convert.ToInt32(userInfo);
-            if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
-            {
-                var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.OtherInventoryInstService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, ConnectionString, TaskId, userId);
                 return Ok(response);
             }
             else
@@ -198,11 +197,11 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetGeneratorById")]
+        [HttpGet("GetGenertorInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetGeneratorById(int OtherInventoryInstId)
+        public IActionResult GetGenertorInstallationById(int OtherInventoryInstId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
+            var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]

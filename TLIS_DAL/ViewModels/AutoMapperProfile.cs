@@ -179,6 +179,7 @@ using static TLIS_DAL.ViewModels.PowerDTOs.AddPowerInstallationObject;
 using static TLIS_DAL.ViewModels.PowerDTOs.EditPowerInstallationOject;
 using static TLIS_DAL.ViewModels.GeneratorLibraryDTOs.EditGeneratorLibraryObject;
 using static TLIS_DAL.ViewModels.GeneratorLibraryDTOs.AddGeneratorLibraryObject;
+using static TLIS_DAL.ViewModels.GeneratorDTOs.AddGeneratorInstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -221,6 +222,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<PolarityTypeViewModel, TLIcapacity>().ReverseMap();
             CreateMap<GeneratorLibraryAttributes, TLIgeneratorLibrary>().ReverseMap();
             CreateMap<EditGeneratorLibraryAttributes, TLIgeneratorLibrary>().ReverseMap();
+            CreateMap<installationAttributesGenerator, TLIgenerator>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

@@ -7904,7 +7904,7 @@ namespace TLIS_Service.Services
                 return new Response<SiteInfo>(false, null, null, "This SiteCode Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<List<RecalculatSpaceOnSite>> RecalculateSite(string SiteCode)
+        public Response<List<RecalculatSpaceOnSite>> RecalculateSite()
         {
             try
             {

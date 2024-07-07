@@ -52,6 +52,8 @@ using TLIS_DAL.ViewModels.PolarityTypeDTOs;
 using TLIS_DAL.ViewModels.RepeaterTypeDTOs;
 using static TLIS_DAL.ViewModels.GeneratorLibraryDTOs.EditGeneratorLibraryObject;
 using TLIS_DAL.ViewModels.OtherInSiteDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -126,8 +128,8 @@ namespace TLIS_Service.Services
                             {
                                 if (CabinetTelecomLibrary != null)
                                 {
-                                LibraryAttribute.Value = CabinetTelecomLibrary.GetType().GetProperties()
-                                    .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(CabinetTelecomLibrary);
+                                    LibraryAttribute.Value = CabinetTelecomLibrary.GetType().GetProperties()
+                                        .FirstOrDefault(x => x.Name.ToLower() == LibraryAttribute.Label.ToLower()).GetValue(CabinetTelecomLibrary);
                                 }
                             }
                         }
@@ -235,9 +237,9 @@ namespace TLIS_Service.Services
 
                             //var cabinet = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInst).Where(x => !x.Dismantle && x.allOtherInventoryInstId != null &&
                             //    x.allOtherInventoryInst.cabinetId != null).Select(x => x.allOtherInventoryInst.cabinetId).ToList();
-                           
+
                             List<TLIcabinet> TLIcabinet = new List<TLIcabinet>();
-                            var Cabinets = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInst).Where(x =>x.SiteCode== SiteCode && !x.Dismantle && x.allOtherInventoryInstId != null &&
+                            var Cabinets = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInst).Where(x => x.SiteCode == SiteCode && !x.Dismantle && x.allOtherInventoryInstId != null &&
                                 x.allOtherInventoryInst.cabinetId != null).Select(x => x.allOtherInventoryInst.cabinetId).ToList();
                             foreach (var item in Cabinets)
                             {
@@ -418,7 +420,7 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "basegeneratortype_name", () => _mapper.Map<List<BaseGeneratorTypeViewModel>>(_unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList())},
-                       
+
                     };
                     ListAttributesActivated = ListAttributesActivated
                         .Select(FKitem =>
@@ -435,10 +437,9 @@ namespace TLIS_Service.Services
                             return FKitem;
                         })
                         .ToList();
-
                     objectInst.InstallationAttributes = ListAttributesActivated;
-                    objectInst.OtherInSite = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivated(TablesNames.TLIotherInSite.ToString(), null, "allOtherInventoryInstId", "Dismantle", "SiteCode");
-                    objectInst.OtherInventoryDistance = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivated(TablesNames.TLIotherInventoryDistance.ToString(), null, "allOtherInventoryInstId", "SiteCode");
+                    objectInst.OtherInSite = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIotherInSite.ToString(), null, "allOtherInventoryInstId", "Dismantle", "SiteCode");
+                    objectInst.OtherInventoryDistance = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIotherInventoryDistance.ToString(), null, "allOtherInventoryInstId", "SiteCode");
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
@@ -1930,7 +1931,7 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId,int UserId)
+        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -1956,7 +1957,7 @@ namespace TLIS_Service.Services
                                     IsCabinetPowerLibraryType = true;
                                     if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
                                     {
-                                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId,SiteCode, TableName, addCabinetViewModel.CabinetPowerLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Power").Message;
+                                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCabinetViewModel.CabinetPowerLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Power").Message;
                                         if (CheckSpace != "Success")
                                         {
                                             return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2082,105 +2083,88 @@ namespace TLIS_Service.Services
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
                                 }
-                               
+
                             }
                             else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
                             {
-                                //Add Generator
-                                var addGeneratorViewModel = _mapper.Map<AddGeneratorViewModel>(model);
+                                var addGeneratorViewModel = _mapper.Map<AddGeneratorInstallationObject>(model);
                                 var Generator = _mapper.Map<TLIgenerator>(addGeneratorViewModel);
-                                if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == true)
+                                if (addGeneratorViewModel.OtherInSite.ReservedSpace == true)
                                 {
-                                    var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addGeneratorViewModel.GeneratorLibraryId, addGeneratorViewModel.SpaceInstallation, null).Message;
+                                    var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addGeneratorViewModel.GeneratorType.GeneratorLibraryId, addGeneratorViewModel.installationAttributes.SpaceInstallation, null).Message;
                                     if (CheckSpace != "Success")
                                     {
                                         return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                 }
-                                //Check Validations
-                                bool test = false;
-                                string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
 
-                                if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                                //string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
 
-                                string CheckGeneralValidation = CheckGeneralValidationFunction(addGeneratorViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
+                                //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                                //    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                                if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+                                //string CheckGeneralValidation = CheckGeneralValidationFunction(addGeneratorViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
 
-                                test = true;
-                                if (test == true)
+                                //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                                //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+
+                                TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
+                                    (x.allOtherInventoryInst.generatorId != null ? x.allOtherInventoryInst.generator.Name.ToLower() == Generator.Name.ToLower() : false) &&
+                                    x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
+
+                                if (CheckName != null)
+                                    return new Response<ObjectInstAtts>(true, null, null, $"This name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
+
+                                var CheckSerialNumber = _unitOfWork.GeneratorRepository.GetWhereFirst(x => x.SerialNumber == Generator.SerialNumber);
+                                if (CheckSerialNumber != null)
                                 {
-                                    TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
-                                        (x.allOtherInventoryInst.generatorId != null ? x.allOtherInventoryInst.generator.Name.ToLower() == Generator.Name.ToLower() : false) &&
-                                        x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                            x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
-
-                                    if (CheckName != null)
-                                        return new Response<ObjectInstAtts>(true, null, null, $"This name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
-
-                                    var CheckSerialNumber = _unitOfWork.GeneratorRepository.GetWhereFirst(x => x.SerialNumber == Generator.SerialNumber);
-                                    if (CheckSerialNumber != null)
-                                    {
-                                        return new Response<ObjectInstAtts>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
-                                    }
-                                    _unitOfWork.GeneratorRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, Generator);
-                                    _unitOfWork.SaveChanges();
-                                    //Add to Civil_Site_Date if there is free space
-                                    TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
-                                    allOtherInventoryInst.generatorId = Generator.Id;
-                                    _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
-                                    _unitOfWork.SaveChanges();
-                                    allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                    if (addGeneratorViewModel.TLIotherInSite != null && string.IsNullOrEmpty(SiteCode) == false)
-                                    {
-                                        TLIotherInSite otherInSite = new TLIotherInSite();
-                                        otherInSite.SiteCode = SiteCode;
-                                        otherInSite.OtherInSiteStatus = addGeneratorViewModel.TLIotherInSite.OtherInSiteStatus;
-                                        otherInSite.OtherInventoryStatus = !string.IsNullOrEmpty(addGeneratorViewModel.TLIotherInSite.OtherInventoryStatus) ?
-                                            addGeneratorViewModel.TLIotherInSite.OtherInventoryStatus : string.Empty;
-                                        otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                        otherInSite.InstallationDate = addGeneratorViewModel.TLIotherInSite.InstallationDate;
-                                        otherInSite.ReservedSpace = addGeneratorViewModel.TLIotherInSite.ReservedSpace;
-                                        _unitOfWork.OtherInSiteRepository.Add(otherInSite);
-                                        _unitOfWork.SaveChanges();
-                                    }
-                                    var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
-                                    if (addGeneratorViewModel.TLIotherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
-                                    {
-                                        TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
-                                        otherInventoryDistance.Distance = addGeneratorViewModel.TLIotherInventoryDistance.Distance != null ?
-                                            addGeneratorViewModel.TLIotherInventoryDistance.Distance.Value : 0;
-                                        otherInventoryDistance.Azimuth = addGeneratorViewModel.TLIotherInventoryDistance.Azimuth != null ?
-                                            addGeneratorViewModel.TLIotherInventoryDistance.Azimuth.Value : 0;
-                                        otherInventoryDistance.SiteCode = SiteCode;
-                                        otherInventoryDistance.ReferenceOtherInventoryId = addGeneratorViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId != null ?
-                                            addGeneratorViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
-                                        otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                        _unitOfWork.OtherInventoryDistanceRepository.Add(otherInventoryDistance);
-                                        _unitOfWork.SaveChanges();
-                                    }
-                                    //if (addGeneratorViewModel.TLIotherInSite.ReservedSpace == true)
-                                    //{
-                                    //    _unitOfWork.SiteRepository.UpdateReservedSpace(SiteCode, addGeneratorViewModel.SpaceInstallation);
-                                    //}
-                                    //Add Dynamic Attributes
-                                    if (addGeneratorViewModel.TLIdynamicAttInstValue != null ? addGeneratorViewModel.TLIdynamicAttInstValue.Count > 0 : false)
-                                    {
-                                        foreach (var DynamicAttInstValue in addGeneratorViewModel.TLIdynamicAttInstValue)
-                                        {
-                                            _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, Generator.Id);
-                                        }
-                                    }
-                                    //AddHistory(addGeneratorViewModel.ticketAtt, allOtherInventoryInstId, "Insert");
+                                    return new Response<ObjectInstAtts>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                                 }
-                                else
+                                _unitOfWork.GeneratorRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, Generator);
+                                _unitOfWork.SaveChanges();
+                                //Add to Civil_Site_Date if there is free space
+                                TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
+                                allOtherInventoryInst.generatorId = Generator.Id;
+                                _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
+                                _unitOfWork.SaveChanges();
+                                allOtherInventoryInstId = allOtherInventoryInst.Id;
+                                if (addGeneratorViewModel.OtherInSite != null && string.IsNullOrEmpty(SiteCode) == false)
                                 {
-                                    return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
+                                    TLIotherInSite otherInSite = new TLIotherInSite();
+                                    otherInSite.SiteCode = SiteCode;
+                                    otherInSite.OtherInSiteStatus = addGeneratorViewModel.OtherInSite.OtherInSiteStatus;
+                                    otherInSite.OtherInventoryStatus = !string.IsNullOrEmpty(addGeneratorViewModel.OtherInSite.OtherInventoryStatus) ?
+                                        addGeneratorViewModel.OtherInSite.OtherInventoryStatus : string.Empty;
+                                    otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
+                                    otherInSite.InstallationDate = addGeneratorViewModel.OtherInSite.InstallationDate;
+                                    otherInSite.ReservedSpace = addGeneratorViewModel.OtherInSite.ReservedSpace;
+                                    _unitOfWork.OtherInSiteRepository.Add(otherInSite);
+                                    _unitOfWork.SaveChanges();
                                 }
-                               
+                                var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
+                                if (addGeneratorViewModel.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+                                {
+                                    TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
+                                    otherInventoryDistance.Distance = addGeneratorViewModel.OtherInventoryDistance.Distance != null ?
+                                        addGeneratorViewModel.OtherInventoryDistance.Distance.Value : 0;
+                                    otherInventoryDistance.Azimuth = addGeneratorViewModel.OtherInventoryDistance.Azimuth != null ?
+                                        addGeneratorViewModel.OtherInventoryDistance.Azimuth.Value : 0;
+                                    otherInventoryDistance.SiteCode = SiteCode;
+                                    otherInventoryDistance.ReferenceOtherInventoryId = addGeneratorViewModel.OtherInventoryDistance.ReferenceOtherInventoryId != null ?
+                                        addGeneratorViewModel.OtherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
+                                    otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
+                                    _unitOfWork.OtherInventoryDistanceRepository.Add(otherInventoryDistance);
+                                    _unitOfWork.SaveChanges();
+                                }
+                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addGeneratorViewModel.dynamicAttribute, TableNameEntity.Id, Generator.Id, ConnectionString);
+
+
+
                             }
+
+
                             else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
                             {
                                 //Add Solar
@@ -2304,6 +2288,263 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public Response<ObjectInstAtts> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        {
+            int allOtherInventoryInstId = 0;
+            using (var con = new OracleConnection(ConnectionString))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    using (TransactionScope transaction = new TransactionScope())
+                    {
+                        try
+                        {
+                            string ErrorMessage = string.Empty;
+                            var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName == "TLIgenerator");
+
+                            var Generator = _mapper.Map<TLIgenerator>(addGeneratorInstallationObject);
+                            if (addGeneratorInstallationObject.OtherInSite.ReservedSpace == true)
+                            {
+                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, "TLIgenerator", addGeneratorInstallationObject.GeneratorType.GeneratorLibraryId, addGeneratorInstallationObject.installationAttributes.SpaceInstallation, null).Message;
+                                if (CheckSpace != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
+                            if(Generator.BaseExisting == true && Generator.BaseGeneratorTypeId == null)
+                                return new Response<ObjectInstAtts>(true, null, null, "BaseGeneratorType can not be null because BaseExisting is true ", (int)ApiReturnCode.fail);
+                            
+                            //string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
+
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                            //string CheckGeneralValidation = CheckGeneralValidationFunction(addGeneratorViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+
+                            var CheckName = _dbContext.MV_GENERATOR_VIEW
+                               .Where(x => x.Name != null &&
+                                           x.Name.ToLower() == Generator.Name.ToLower() &&
+                                           !x.Dismantle &&
+                                           x.SITECODE.ToLower() == SiteCode.ToLower())
+                               .ToList();
+
+                            if (CheckName != null)
+                                return new Response<ObjectInstAtts>(true, null, null, $"This name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
+
+                            var CheckSerialNumber = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.SerialNumber == Generator.SerialNumber);
+                            if (CheckSerialNumber != null)
+                                return new Response<ObjectInstAtts>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+
+                            _unitOfWork.GeneratorRepository.AddWithHistory(UserId, Generator);
+                            _unitOfWork.SaveChanges();
+
+                            TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
+                            allOtherInventoryInst.generatorId = Generator.Id;
+                            _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
+                            _unitOfWork.SaveChanges();
+                            allOtherInventoryInstId = allOtherInventoryInst.Id;
+                            if (addGeneratorInstallationObject.OtherInSite != null && string.IsNullOrEmpty(SiteCode) == false)
+                            {
+                                TLIotherInSite otherInSite = new TLIotherInSite();
+                                otherInSite.SiteCode = SiteCode;
+                                otherInSite.OtherInSiteStatus = addGeneratorInstallationObject.OtherInSite.OtherInSiteStatus;
+                                otherInSite.OtherInventoryStatus = !string.IsNullOrEmpty(addGeneratorInstallationObject.OtherInSite.OtherInventoryStatus) ?
+                                    addGeneratorInstallationObject.OtherInSite.OtherInventoryStatus : string.Empty;
+                                otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
+                                otherInSite.InstallationDate = addGeneratorInstallationObject.OtherInSite.InstallationDate;
+                                otherInSite.ReservedSpace = addGeneratorInstallationObject.OtherInSite.ReservedSpace;
+                                _unitOfWork.OtherInSiteRepository.AddWithHistory(UserId, otherInSite);
+                                _unitOfWork.SaveChanges();
+                            }
+                            var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
+                            if (addGeneratorInstallationObject.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+                            {
+                                TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
+                                otherInventoryDistance.Distance = addGeneratorInstallationObject.OtherInventoryDistance.Distance != null ?
+                                    addGeneratorInstallationObject.OtherInventoryDistance.Distance.Value : 0;
+                                otherInventoryDistance.Azimuth = addGeneratorInstallationObject.OtherInventoryDistance.Azimuth != null ?
+                                    addGeneratorInstallationObject.OtherInventoryDistance.Azimuth.Value : 0;
+                                otherInventoryDistance.SiteCode = SiteCode;
+                                otherInventoryDistance.ReferenceOtherInventoryId = addGeneratorInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId != null ?
+                                    addGeneratorInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
+                                otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
+                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHistory(UserId, otherInventoryDistance);
+                                _unitOfWork.SaveChanges();
+                            }
+                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addGeneratorInstallationObject.dynamicAttribute, TableNameEntity.Id, Generator.Id, ConnectionString);
+
+                            if (TaskId != null)
+                            {
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                                var result = Submit.Result;
+                                if (result.result == true && result.errorMessage == null)
+                                {
+                                    _unitOfWork.SaveChanges();
+                                    transaction.Complete();
+                                }
+                                else
+                                {
+                                    transaction.Dispose();
+                                    return new Response<ObjectInstAtts>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                                }
+                            }
+                            else
+                            {
+                                _unitOfWork.SaveChanges();
+                                transaction.Complete();
+                            }
+                            return new Response<ObjectInstAtts>();
+                        }
+                        catch (Exception err)
+                        {
+                            tran.Rollback();
+                            return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                        }
+                    }
+                }
+            }
+        }
+        public Response<GetEnableAttribute> GetGeneratorWithEnableAtt(string? SiteCode, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    //string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
+                    var attActivated = _dbContext.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "GeneratorInstallation" &&
+                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    propertyNamesStatic.Add("SITECODE");
+                    if (SiteCode == null)
+                    {
+                        if (propertyNamesDynamic.Count == 0)
+                        {
+                            var query = _dbContext.MV_GENERATOR_VIEW.Where(x =>
+                            !x.Dismantle).AsEnumerable()
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                        else
+                        {
+                            var query = _dbContext.MV_GENERATOR_VIEW.Where(x =>
+                              !x.Dismantle).AsEnumerable()
+                        .GroupBy(x => new
+                        {
+
+                            Id = x.Id,
+                            Name = x.Name,
+                            SITECODE = x.SITECODE,
+                            SerialNumber = x.SerialNumber,
+                            NumberOfFuelTanks = x.NumberOfFuelTanks,
+                            LocationDescription = x.LocationDescription,
+                            BaseExisting = x.BaseExisting,
+                            SpaceInstallation = x.SpaceInstallation,
+                            VisibleStatus = x.VisibleStatus,
+                            BASEGENERATORTYPE = x.BASEGENERATORTYPE,
+                            GENERATORLIBRARY = x.GENERATORLIBRARY,
+                            Dismantle = x.Dismantle,
+                        }).OrderBy(x => x.Key.Name)
+                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = _dbContext.MV_GENERATOR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        && !x.Dismantle).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = _dbContext.MV_GENERATOR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                         && !x.Dismantle).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+
+                        Id = x.Id,
+                        Name = x.Name,
+                        SITECODE = x.SITECODE,
+                        SerialNumber = x.SerialNumber,
+                        NumberOfFuelTanks = x.NumberOfFuelTanks,
+                        LocationDescription = x.LocationDescription,
+                        BaseExisting = x.BaseExisting,
+                        SpaceInstallation = x.SpaceInstallation,
+                        VisibleStatus = x.VisibleStatus,
+                        BASEGENERATORTYPE = x.BASEGENERATORTYPE,
+                        GENERATORLIBRARY = x.GENERATORLIBRARY,
+                        Dismantle = x.Dismantle,
+                    }).OrderBy(x => x.Key.Name)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
         #endregion
         #region UpdateOtherInventoryInstallation
         //Function take 2 parameters model, TableName
@@ -2312,7 +2553,7 @@ namespace TLIS_Service.Services
         //Map ViewModel to Entity
         //Update Entity
         #endregion
-        public async Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName ,int? TaskId)
+        public async Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -2387,7 +2628,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(CabinetModel.DynamicInstAttsValue, TableEntity.Id, Cabinet.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-      
+
                     }
                     else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
                     {
@@ -2452,7 +2693,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(GeneratorModel.DynamicInstAttsValue, TableEntity.Id, Generator.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                 
+
                     }
                     else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
                     {
@@ -2519,7 +2760,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(SolarModel.DynamicInstAttsValue, TableEntity.Id, Solar.Id);
 
                         await _unitOfWork.SaveChangesAsync();
-                 
+
                     }
                     if (TaskId != null)
                     {
@@ -3908,6 +4149,250 @@ namespace TLIS_Service.Services
         //get record by Id
         //get activated attributes and values
         //get dynamic attributes by TableNameId
+        public Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int CivilInsId, string TableName)
+        {
+            try
+            {
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
+                    .GetWhereFirst(c => c.TableName.ToLower() == TableName.ToLower());
+
+                GetForAddOtherInventoryInstallationObject objectInst = new GetForAddOtherInventoryInstallationObject();
+
+
+                TLIotherInSite GeneratorInst = _unitOfWork.OtherInSiteRepository
+                    .GetIncludeWhereFirst(x => x.allOtherInventoryInst.generatorId == CivilInsId && !x.Dismantle, x => x.allOtherInventoryInst.generator.BaseGeneratorType);
+                if (GeneratorInst != null)
+                {
+                    EditGeneratorLibraryAttributes GeneratorLibrary = _mapper.Map<EditGeneratorLibraryAttributes>(_unitOfWork.GeneratorLibraryRepository
+                        .GetIncludeWhereFirst(x => x.Id == GeneratorInst.allOtherInventoryInst.generator.GeneratorLibraryId));
+
+                    List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(), GeneratorLibrary, null).ToList();
+
+
+                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                            .GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(), GeneratorLibrary.Id).ToList());
+
+                    LibraryAttributes.AddRange(LogisticalAttributes);
+
+                    objectInst.LibraryAttribute = LibraryAttributes;
+
+                    List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIgenerator.ToString(), GeneratorInst.allOtherInventoryInst.generator, "GeneratorLibraryId").ToList();
+
+                    BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = ListAttributesActivated[0];
+                        ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                        ListAttributesActivated[0] = NameAttribute;
+                        NameAttribute.Value = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == CivilInsId)?.Name;
+                    }
+
+                    var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
+                    {
+                        switch (FKitem.Label.ToLower())
+                        {
+                            case "basegeneratortype_name":
+                                FKitem.Value = _mapper.Map<BaseGeneratorTypeViewModel>(GeneratorInst.allOtherInventoryInst.generator.BaseGeneratorType);
+                                FKitem.Options = _mapper.Map<List<BaseGeneratorTypeViewModel>>(_unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                break;
+                            
+                        }
+                        return FKitem;
+                    }).ToList();
+
+                    objectInst.InstallationAttributes = ListAttributesActivated;
+
+                    objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
+                        GetDynamicInstAtt(TableNameEntity.Id, CivilInsId, null);
+
+                   
+
+                    TLIallOtherInventoryInst allOtherInventoryInst = _unitOfWork.AllOtherInventoryInstRepository
+                            .GetWhereFirst(x => x.generatorId == CivilInsId);
+                    TLIotherInSite otherInSiteInfo = _dbContext.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
+
+                    List<BaseInstAttViews> otherInSiteAttributes = _unitOfWork.AttributeActivatedRepository
+                         .GetAttributeActivatedGetForAdd(TablesNames.TLIotherInSite.ToString(), otherInSiteInfo, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
+
+                    objectInst.OtherInSite = _mapper.Map<IEnumerable<BaseInstAttViews>>(otherInSiteAttributes);
+
+                    TLIotherInventoryDistance otherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhereFirst(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
+
+                    List<BaseInstAttViews> otherInventorytDistanceAttributes = _unitOfWork.AttributeActivatedRepository
+                        .GetAttributeActivatedGetForAdd(TablesNames.TLIotherInventoryDistance.ToString(), otherInventoryDistance, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
+
+                    string siteCode = _unitOfWork.OtherInSiteRepository
+                     .GetIncludeWhereFirst(
+                         x => x.allOtherInventoryInst.generator.Id == CivilInsId && !x.Dismantle && !x.allOtherInventoryInst.Draft,
+                         x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
+                     )?.SiteCode;
+                    objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
+                    if (siteCode != null)
+                    {
+                        var listAttributes = objectInst.OtherInventoryDistance
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid" && otherInventoryDistance != null)
+                            .Select(attr =>
+                            {
+                                var options = new List<SupportTypeImplementedViewModel>();
+                                var Value = new SupportTypeImplementedViewModel();
+                                var support = _unitOfWork.OtherInventoryDistanceRepository
+                                    .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
+
+                                if (support != null && support.ReferenceOtherInventoryId != null)
+                                {
+                                    var supportReferenceAllCivilInst = _unitOfWork.AllOtherInventoryInstRepository
+                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceOtherInventoryId,
+                                            x => x.generator,
+                                            x => x.solar,
+                                            x => x.cabinet);
+                                    object referencesValue = new object[0];
+                                    if (supportReferenceAllCivilInst != null)
+                                    {
+                                        if (supportReferenceAllCivilInst.generatorId != null)
+                                        {
+
+                                            referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
+                                        }
+                                        //else if (supportReferenceAllCivilInst.solarId != null)
+                                        //{
+                                        //    referencesValue = _dbContext..FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
+                                        //}
+                                        //else
+                                        //{
+                                        //    referencesValue = _dbContext.MV_CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;
+                                        //}
+                                    }
+
+                                    if (referencesValue != null && support.ReferenceOtherInventoryId != null && support.ReferenceOtherInventoryId.HasValue)
+                                    {
+                                        SupportTypeImplementedViewModel views = new SupportTypeImplementedViewModel()
+                                        {
+                                            Id = support.ReferenceOtherInventoryId.Value,
+                                            Name = referencesValue.ToString()
+                                        };
+                                        attr.Value = views;
+                                    }
+                                    if (referencesValue == null)
+                                    {
+                                        attr.Value = new object[0];
+                                    }
+                                    var AllOther = _unitOfWork.OtherInSiteRepository
+                                            .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                                x => x.allOtherInventoryInst,
+                                                x => x.allOtherInventoryInst.generator,
+                                                x => x.allOtherInventoryInst.solar,
+                                                x => x.allOtherInventoryInst.cabinet)?.ToList();
+
+
+                                    if (AllOther != null && AllOther.Any())
+                                    {
+                                        options = AllOther.SelectMany(item =>
+                                        {
+                                            var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                            if (item.allOtherInventoryInst.generator != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.generator?.Name
+                                                };
+
+                                                innerOptions.Add(civilWithLegsOption);
+                                            }
+
+                                            if (item.allOtherInventoryInst.solar != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.solar?.Name
+                                                };
+                                                innerOptions.Add(civilWithoutLegOption);
+                                            }
+
+                                            if (item.allOtherInventoryInst.cabinet != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.cabinet?.Name
+                                                };
+                                                innerOptions.Add(civilNonSteelOption);
+                                            }
+
+                                            return innerOptions;
+                                        }).ToList();
+                                    }
+                                }
+                                else
+                                {
+                                    var allCivil = _unitOfWork.OtherInSiteRepository
+                                        .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                            x => x.allOtherInventoryInst,
+                                            x => x.allOtherInventoryInst.generator,
+                                            x => x.allOtherInventoryInst.solar,
+                                            x => x.allOtherInventoryInst.cabinet)?.ToList();
+                                    options = allCivil.SelectMany(item =>
+                                    {
+                                        var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                        if (item.allOtherInventoryInst.generator != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.generator?.Name
+                                            };
+
+                                            innerOptions.Add(civilWithLegsOption);
+                                        }
+
+                                        if (item.allOtherInventoryInst.solar != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.solar?.Name
+                                            };
+                                            innerOptions.Add(civilWithoutLegOption);
+                                        }
+
+                                        if (item.allOtherInventoryInst.cabinet != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.cabinet?.Name
+                                            };
+                                            innerOptions.Add(civilNonSteelOption);
+                                        }
+
+                                        return innerOptions;
+                                    }).ToList();
+                                }
+                                attr.Options = options;
+
+                                return attr;
+                            })
+                            .ToList();
+                    }
+
+                    return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                else
+                {
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this civilwithlegs is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+            catch (Exception err)
+            {
+                return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
         public Response<ObjectInstAtts> GetById(int OtherInventoryInsId, string TableName)
         {
             try
@@ -4032,7 +4517,7 @@ namespace TLIS_Service.Services
 
                     DropDownListFilters ReferenceToDelete = RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower())
                         .Value.FirstOrDefault(x => x.Id == OtherInventoryInsId);
-                    
+
                     if (ReferenceToDelete != null)
                         RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower()).Value.Remove(ReferenceToDelete);
 
@@ -4144,11 +4629,11 @@ namespace TLIS_Service.Services
                         .GetIncludeWhereFirst(x => x.allOtherInventoryInst.solar.Id == OtherInventoryInsId && !x.Dismantle && !x.allOtherInventoryInst.Draft,
                             x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar).SiteCode;
 
-                    List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = _unitOfWork.SolarRepository.GetRelatedTables(SiteCode );
+                    List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = _unitOfWork.SolarRepository.GetRelatedTables(SiteCode);
 
                     List<KeyValuePair<string, List<DropDownListFilters>>> OtherInventoryDistanceRelatedTables = _unitOfWork.OtherInventoryDistanceRepository.SolarGetRelatedTables(SiteCode);
                     RelatedTables.AddRange(OtherInventoryDistanceRelatedTables);
-                  
+
                     DropDownListFilters ReferenceToDelete = RelatedTables.FirstOrDefault(x => x.Key.ToLower() == "ReferenceOtherInventoryId".ToLower())
                         .Value.FirstOrDefault(x => x.Id == OtherInventoryInsId);
 
@@ -4793,7 +5278,7 @@ namespace TLIS_Service.Services
                 int Count = 0;
                 List<object> OutPutList = new List<object>();
                 ReturnWithFilters<object> GeneratorTableDisplay = new ReturnWithFilters<object>();
-                
+
                 //
                 // Get All OtherInSite To This BaseFilter + CombineFilters
                 //
