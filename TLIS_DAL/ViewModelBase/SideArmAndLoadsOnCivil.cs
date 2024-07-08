@@ -8,7 +8,6 @@ namespace TLIS_DAL.ViewModelBase
     {
         public double Availablespace { get; set; }  
         public double? CurrentLoads { get; set; }
-
         public double? CivilMaxLoad { get; set; }
     }
 }
