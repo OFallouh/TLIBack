@@ -21,7 +21,6 @@ namespace TLIS_DAL.ViewModels.GeneratorDTOs
         public string? INPUTVALUE { get; set; }
         public string SerialNumber { get; set; }
         public int NumberOfFuelTanks { get; set; }
-        public string? LocationDescription { get; set; }
         public bool BaseExisting { get; set; }
         public float SpaceInstallation { get; set; }
         public string? VisibleStatus { get; set; }
@@ -44,7 +43,6 @@ namespace TLIS_DAL.ViewModels.GeneratorDTOs
             outputData.Add("Name", Name);
             outputData.Add("SerialNumber", SerialNumber);
             outputData.Add("NumberOfFuelTanks", NumberOfFuelTanks);
-            outputData.Add("LocationDescription", LocationDescription);
             outputData.Add("BaseExisting", BaseExisting);
             outputData.Add("SpaceInstallation", SpaceInstallation);
             outputData.Add("VisibleStatus", VisibleStatus);

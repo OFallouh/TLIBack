@@ -471,7 +471,7 @@ namespace TLIS_Service.Services
                 }
                 else
                 {
-                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this mwdishlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this Generatorlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
             }
@@ -2511,7 +2511,6 @@ namespace TLIS_Service.Services
                             SITECODE = x.SITECODE,
                             SerialNumber = x.SerialNumber,
                             NumberOfFuelTanks = x.NumberOfFuelTanks,
-                            LocationDescription = x.LocationDescription,
                             BaseExisting = x.BaseExisting,
                             SpaceInstallation = x.SpaceInstallation,
                             VisibleStatus = x.VisibleStatus,
@@ -2548,7 +2547,6 @@ namespace TLIS_Service.Services
                         SITECODE = x.SITECODE,
                         SerialNumber = x.SerialNumber,
                         NumberOfFuelTanks = x.NumberOfFuelTanks,
-                        LocationDescription = x.LocationDescription,
                         BaseExisting = x.BaseExisting,
                         SpaceInstallation = x.SpaceInstallation,
                         VisibleStatus = x.VisibleStatus,

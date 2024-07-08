@@ -18900,7 +18900,7 @@ namespace TLIS_Service.Services
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                             baseInstAttViews.Key = "sideArmId";
                             baseInstAttViews.Value = ints;
-                            baseInstAttViews.Label = "Select sideArm'";
+                            baseInstAttViews.Label = "Select sideArm";
                             baseInstAttViews.Options = sectionsLegTypeViewModelsidearm;
                             baseInstAttViews.DataType = "MultiSelect";
                             Config.Add(baseInstAttViews);
@@ -18911,7 +18911,7 @@ namespace TLIS_Service.Services
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
                             baseInstAttViews.Key = "sideArmId";
                             baseInstAttViews.Value = null;
-                            baseInstAttViews.Label = "Select sideArm'";
+                            baseInstAttViews.Label = "Select sideArm";
                             baseInstAttViews.Options = new object[0];
                             baseInstAttViews.DataType = "MultiSelect";
                             baseInstAttViews.visible = false;
