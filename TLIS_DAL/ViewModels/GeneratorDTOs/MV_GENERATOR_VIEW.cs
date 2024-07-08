@@ -24,8 +24,8 @@ namespace TLIS_DAL.ViewModels.GeneratorDTOs
         public bool BaseExisting { get; set; }
         public float SpaceInstallation { get; set; }
         public string? VisibleStatus { get; set; }
-        public int? BASEGENERATORTYPE { get; set; }
-        public int GENERATORLIBRARY { get; set; }
+        public string BASEGENERATORTYPE { get; set; }
+        public string GENERATORLIBRARY { get; set; }
         public bool Dismantle { get; set; }
 
 
