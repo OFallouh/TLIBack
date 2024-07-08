@@ -11315,7 +11315,61 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEGID");
                     propertyNamesStatic.Add("LEGNAME");
+                    if (SiteCode == null)
+                    {
+                        if (propertyNamesDynamic.Count == 0)
+                        {
+                            var query = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(x =>!x.Dismantle).AsEnumerable()
+                           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                        else
+                        {
+                            var query = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(x =>!x.Dismantle).AsEnumerable()
+                           .GroupBy(x => new
+                           {
+                               SiteCode = x.SiteCode,
+                               Id = x.Id,
+                               Name = x.Name,
+                               Azimuth = x.Azimuth,
+                               Notes = x.Notes,
+                               VisibleStatus = x.VisibleStatus,
+                               MechanicalTilt = x.MechanicalTilt,
+                               ElectricalTilt = x.ElectricalTilt,
+                               SerialNumber = x.SerialNumber,
+                               HBASurface = x.HBASurface,
+                               SpaceInstallation = x.SpaceInstallation,
+                               HeightBase = x.HeightBase,
+                               HeightLand = x.HeightLand,
+                               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                               RADIOANTENNALIBRARY = x.RADIOANTENNALIBRARY,
+                               Dismantle = x.Dismantle,
+                               CenterHigh = x.CenterHigh,
+                               HBA = x.HBA,
+                               HieghFromLand = x.HieghFromLand,
+                               EquivalentSpace = x.EquivalentSpace,
+                               LEGNAME = x.LEGNAME,
+                               CIVILNAME = x.CIVILNAME,
+                               CIVIL_ID = x.CIVIL_ID,
+                               SIDEARMNAME = x.SIDEARMNAME,
+                               SIDEARM_ID = x.SIDEARM_ID,
+                               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                               LEGID = x.LEGID,
+                               OWNER = x.OWNER
 
+
+                           })
+                           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                             int count = query.Count();
+
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                    }
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
@@ -11432,7 +11486,60 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEGID");
                     propertyNamesStatic.Add("LEGNAME");
+                    if (SiteCode == null)
+                    {
+                        if (propertyNamesDynamic.Count == 0)
+                        {
+                            var query = _dbContext.MV_RADIO_RRU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                        else
+                        {
+                            var query = _dbContext.MV_RADIO_RRU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                           .GroupBy(x => new
+                           {
+                               SiteCode = x.SiteCode,
+                               Id = x.Id,
+                               Name = x.Name,
+                               Azimuth = x.Azimuth,
+                               Notes = x.Notes,
+                               VisibleStatus = x.VisibleStatus,
+                               SerialNumber = x.SerialNumber,
+                               HBA = x.HBA,
+                               SpaceInstallation = x.SpaceInstallation,
+                               HeightBase = x.HeightBase,
+                               HeightLand = x.HeightLand,
+                               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                               RADIORRULIBRARY = x.RADIORRULIBRARY,
+                               RADIOANTENNA = x.RADIOANTENNA,
+                               Dismantle = x.Dismantle,
+                               CenterHigh = x.CenterHigh,
+                               HieghFromLand = x.HieghFromLand,
+                               EquivalentSpace = x.EquivalentSpace,
+                               LEGNAME = x.LEGNAME,
+                               CIVILNAME = x.CIVILNAME,
+                               CIVIL_ID = x.CIVIL_ID,
+                               SIDEARMNAME = x.SIDEARMNAME,
+                               SIDEARM_ID = x.SIDEARM_ID,
+                               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                               LEGID = x.LEGID,
+                               OWNER = x.OWNER
 
+
+                           })
+                           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                            int count = query.Count();
+
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+
+                        }
+                    }
                     if (propertyNamesDynamic.Count == 0)
                     {
                         var query = _dbContext.MV_RADIO_RRU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()

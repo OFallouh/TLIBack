@@ -9553,8 +9553,7 @@ namespace TLIS_Service.Services
                     {
                         if (propertyNamesDynamic.Count == 0)
                         {
-                            var query = _dbContext.MV_CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                           && !x.Dismantle).AsEnumerable()
+                            var query = _dbContext.MV_CIVIL_NONSTEEL_VIEW.Where(x=>!x.Dismantle).AsEnumerable()
                           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                                 int count = query.Count();
                             getEnableAttribute.Model = query;

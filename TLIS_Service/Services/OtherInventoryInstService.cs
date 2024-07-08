@@ -393,7 +393,7 @@ namespace TLIS_Service.Services
                 List<BaseInstAttViews> ListAttributesActivated = new List<BaseInstAttViews>();
 
                 EditGeneratorLibraryAttributes GeneratorLibrary = _mapper.Map<EditGeneratorLibraryAttributes>(_unitOfWork.GeneratorLibraryRepository
-                    .GetIncludeWhereFirst(x => x.Id == LibraryID));
+                    .GetIncludeWhereFirst(x => x.Id == LibraryID ));
                 if (GeneratorLibrary != null)
                 {
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
@@ -4225,12 +4225,27 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
 
+                    ListAttributesActivated = ListAttributesActivated.Select(x =>
+                    {
+                        if (x.Label.ToLower() == "baseexisting" && (x.Value as bool?) == false)
+                        {
+                            ListAttributesActivated.ForEach(y =>
+                            {
+                                if (y.Label.ToLower() == "basegeneratortype_name")
+                                {
+                                    y.visible = false;
+                                }
+                            });
+                        }
+                        return x;
+                    }).ToList();
+
+
+
                     objectInst.InstallationAttributes = ListAttributesActivated;
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, GeneratorId, null);
-
-                   
 
                     TLIallOtherInventoryInst allOtherInventoryInst = _unitOfWork.AllOtherInventoryInstRepository
                             .GetWhereFirst(x => x.generatorId == GeneratorId);
@@ -4255,7 +4270,7 @@ namespace TLIS_Service.Services
                     if (siteCode != null)
                     {
                         var listAttributes = objectInst.OtherInventoryDistance
-                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid" && otherInventoryDistance != null)
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
                             .Select(attr =>
                             {
                                 var options = new List<SupportTypeImplementedViewModel>();
@@ -4352,13 +4367,13 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    var allCivil = _unitOfWork.OtherInSiteRepository
+                                    var allOther = _unitOfWork.OtherInSiteRepository
                                         .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
                                             x => x.allOtherInventoryInst,
                                             x => x.allOtherInventoryInst.generator,
                                             x => x.allOtherInventoryInst.solar,
                                             x => x.allOtherInventoryInst.cabinet)?.ToList();
-                                    options = allCivil.SelectMany(item =>
+                                    options = allOther.SelectMany(item =>
                                     {
                                         var innerOptions = new List<SupportTypeImplementedViewModel>();
 
