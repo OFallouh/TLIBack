@@ -241,9 +241,9 @@ namespace TLIS_API.Controllers
         //    }
         //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditGenerator")]
+        [HttpPost("EditGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel,int ?TaskId)
+        public async Task<IActionResult>EditGeneratorInstallation([FromBody] EditGeneratorViewModel editGeneratorViewModel,int ?TaskId)
         {
             if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorViewModel)))
             {
