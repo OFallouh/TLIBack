@@ -242,10 +242,10 @@ namespace TLIS_API.Controllers
         //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditGeneratorInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditGeneratorViewModel))]
-        public async Task<IActionResult>EditGeneratorInstallation([FromBody] EditGeneratorViewModel editGeneratorViewModel,int ?TaskId)
+        [ProducesResponseType(200, Type = typeof(EditGeneratorInstallationObject))]
+        public async Task<IActionResult>EditGeneratorInstallation([FromBody] EditGeneratorInstallationObject editGeneratorViewModel,int ?TaskId)
         {
-            if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorViewModel)))
+            if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorInstallationObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -274,7 +274,7 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<EditGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<EditGeneratorInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
