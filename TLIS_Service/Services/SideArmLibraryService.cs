@@ -155,11 +155,14 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower());
                             TLIsideArmLibrary tLIsideArmLibrary = _mapper.Map<TLIsideArmLibrary>(addSideArmLibraryViewModel.attributesActivatedLibrary);
-                            var CheckModel = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Model == tLIsideArmLibrary.Model && !x.Deleted);
+                            var CheckModel = db.MV_SIDEARM_LIBRARY_VIEW
+                              .FirstOrDefault(
+                              x => x.Model.ToLower() == tLIsideArmLibrary.Model.ToLower()
+                              && !x.Deleted);
+
                             if (CheckModel != null)
-                            {
-                                return new Response<AddSideArmLibraryObject>(false, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
+                              return new Response<AddSideArmLibraryObject>(false, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                            
                             //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArmLibraryViewModel);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -853,12 +856,16 @@ namespace TLIS_Service.Services
                 int resultId = 0;
                 var TableNames = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower());
                 TLIsideArmLibrary tLIsideArmLibrary = _mapper.Map<TLIsideArmLibrary>(editSideArmLibraryViewModel.attributesActivatedLibrary);
-                var CheckModel = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Model == tLIsideArmLibrary.Model && x.Id != tLIsideArmLibrary.Id);
+                
                 var SidArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == tLIsideArmLibrary.Id);
+                var CheckModel = db.MV_SIDEARM_LIBRARY_VIEW
+                .FirstOrDefault(
+                x => x.Model.ToLower() == tLIsideArmLibrary.Model.ToLower()
+                && x.Id != tLIsideArmLibrary.Id && !x.Deleted);
+
                 if (CheckModel != null)
-                {
-                    return new Response<EditSideArmLibraryObject>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                }
+                 return new Response<EditSideArmLibraryObject>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                
                 _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, SidArm, tLIsideArmLibrary);
                 //string CheckDependency = CheckDependencyValidationEditApiVersion(editSideArmLibraryViewModel);
                 //if (!string.IsNullOrEmpty(CheckDependency))

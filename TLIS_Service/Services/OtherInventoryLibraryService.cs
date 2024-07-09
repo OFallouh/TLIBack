@@ -39,6 +39,7 @@ using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using TLIS_DAL;
+using System.Reflection.Emit;
 
 namespace TLIS_Service.Services
 {
@@ -2793,7 +2794,11 @@ namespace TLIS_Service.Services
                             GeneratorLibraryEntites.SpaceLibrary = GeneratorLibraryEntites.Height * GeneratorLibraryEntites.Width;
                         }
                     }
-                    if (_unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Model == GeneratorLibraryEntites.Model && x.Id != GeneratorLibraryEntites.Id && !x.Deleted) != null)
+                    var CheckModel = db.MV_GENERATOR_LIBRARY_VIEW
+                             .FirstOrDefault(x => x.Model != null &&
+                                         x.Model.ToLower() == GeneratorLibraryEntites.Model.ToLower() &&
+                                         x.Id != GeneratorLibraryEntites.Id && !x.Deleted);
+                    if (CheckModel != null)
                     {
                         return new Response<EditGeneratorLibraryObject>(false, null, null, $"This model {GeneratorLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
@@ -5714,8 +5719,11 @@ namespace TLIS_Service.Services
 
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                             var CheckModel = db.MV_GENERATOR_LIBRARY_VIEW
+                               .FirstOrDefault(x => x.Model != null &&
+                                x.Model.ToLower() == GeneratorLibraryEntity.Model.ToLower()
+                                && !x.Deleted);
 
-                            var CheckModel = _unitOfWork.GeneratorLibraryRepository.GetWhereFirst(x => x.Model == GeneratorLibraryEntity.Model && !x.Deleted);
                             if (CheckModel != null)
                             {
                                 return new Response<AddGeneratorLibraryObject>(true, null, null, $"This model {GeneratorLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);

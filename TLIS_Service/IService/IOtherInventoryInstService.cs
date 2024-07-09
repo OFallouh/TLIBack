@@ -23,10 +23,10 @@ namespace TLIS_Service.IService
     public interface IOtherInventoryInstService
     {
         Response<ObjectInstAtts> GetAttForAdd(string TableName, string OtherInventoryLibraryType, int OtherInventoryId, string SiteCode);
+        Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId, int UserId, string connectionString);
         Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int CivilInsId, string TableName);
         Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId);
         Response<GetEnableAttribute> GetGeneratorWithEnableAtt(string? SiteCode, string ConnectionString);
-        Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId);
         Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode);
         Response<ObjectInstAtts> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId);
         Response<ObjectInstAtts> GetById(int OtherInventoryInsId, string TableName);

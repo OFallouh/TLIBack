@@ -11483,13 +11483,15 @@ namespace TLIS_Service.Services
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLIradioAntenna.ToString())
                 {
-                  
-                    var RadioRRuLoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
-                        x.allLoadInst.radioAntennaId == LoadId &&
-                       x.allLoadInst.radioRRUId !=null &&
-                        !x.Dismantle &&
-                        x.SiteCode.ToLower() == sitecode.ToLower()
-                    , x => x.allLoadInst,x=>x.allLoadInst.radioRRU).Select(x=>x.allLoadInst.radioRRU)
+                    var Civilload = _unitOfWork.CivilLoadsRepository.
+                        GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == LoadId &&
+                        !x.Dismantle && x.SiteCode.ToLower()==sitecode.ToLower(),x=>x.allLoadInst);
+
+                    var RadioRRuLoad = _unitOfWork.AllLoadInstRepository.GetWhereAndInclude(x =>
+                        x.radioAntennaId == LoadId &&
+                       x.radioRRUId !=null &&
+                        Civilload !=null 
+                      ,x=>x.radioRRU).Select(x=>x.radioRRU)
                     .ToList();
 
                     OutPut.TLIRadioRRU = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRRuLoad);

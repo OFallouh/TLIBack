@@ -688,7 +688,7 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == LoadSubType.TLIpowerLibrary.ToString().ToLower());
                             TLIpowerLibrary PowerLibrary = _mapper.Map<TLIpowerLibrary>(PowerLibraryViewModel.AttributesActivatedLibrary);
-                           
+
                             //string CheckDependencyValidation = CheckDependencyValidationForPower(PowerLibraryViewModel);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -698,12 +698,14 @@ namespace TLIS_Service.Services
 
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddPowerLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-                          
-                            var CheckModel = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Model == PowerLibrary.Model && !x.Deleted);
+                             var CheckModel = db.MV_POWER_LIBRARY_VIEW
+                              .FirstOrDefault(x => x.Model != null &&
+                               x.Model.ToLower() == PowerLibrary.Model.ToLower()
+                              && !x.Deleted);
+
                             if (CheckModel != null)
-                            {
-                                return new Response<AddPowerLibraryObject>(true, null, null, $"This model {PowerLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
+                             return new Response<AddPowerLibraryObject>(true, null, null, $"This model {PowerLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                            
                           
                             _unitOfWork.PowerLibraryRepository.AddAsyncWithHistory(UserId, PowerLibrary);
                             _unitOfWork.SaveChanges();
@@ -985,10 +987,14 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    if (_unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Model == PowerLibraryEntites.Model && x.Id != PowerLibraryEntites.Id && !x.Deleted) != null)
-                    {
+                    var CheckModel = db.MV_POWER_LIBRARY_VIEW
+                    .FirstOrDefault(x => x.Model != null &&
+                     x.Model.ToLower() == PowerLibraryEntites.Model.ToLower()
+                    && x.Id != PowerLibraryEntites.Id && !x.Deleted);
+
+                    if (CheckModel !=null)
                         return new Response<EditPowerLibraryObject>(false, null, null, $"This model {PowerLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+                    
 
 
                     _unitOfWork.PowerLibraryRepository.UpdateWithHistory(userId, PowerLegLib, PowerLibraryEntites);

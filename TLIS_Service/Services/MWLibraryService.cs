@@ -3581,21 +3581,24 @@ namespace TLIS_Service.Services
                                         MW_DishLibraryEntity.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MW_DishLibraryEntity.diameter / 2, 2); ;
                                     }
                                 }
-                                //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
+                            //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
-                                //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                                //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
+                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
 
-                                //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                                
-                                var CheckModel = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Model == MW_DishLibraryEntity.Model && !x.Deleted);
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                var CheckModel = db.MV_MWDISH_LIBRARY_VIEW
+                                .FirstOrDefault(x => x.Model != null &&
+                                 x.Model.ToLower() == MW_DishLibraryEntity.Model.ToLower()
+                                 && !x.Deleted);
+
                                 if (CheckModel != null)
-                                {
                                     return new Response<AddMWDishLibraryObject>(true, null, null, $"This model {MW_DishLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
+                                
 
                                 _unitOfWork.MW_DishLibraryRepository.AddWithHistory(UserId, MW_DishLibraryEntity);
                                 _unitOfWork.SaveChanges();
@@ -3664,12 +3667,13 @@ namespace TLIS_Service.Services
 
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            var CheckModel = _unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Model == MW_ODULibraryEntity.Model && !x.Deleted);
+                            var CheckModel = db.MV_MWODU_LIBRARY_VIEW
+                               .FirstOrDefault(x => x.Model != null &&
+                                x.Model.ToLower() == MW_ODULibraryEntity.Model.ToLower()
+                                && !x.Deleted);
                             if (CheckModel != null)
-                            {
-                                return new Response<ADDMWODULibraryObject>(true, null, null, $"This model {MW_ODULibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
+                              return new Response<ADDMWODULibraryObject>(true, null, null, $"This model {MW_ODULibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                            
 
                             _unitOfWork.MW_ODULibraryRepository.AddWithHistory(UserId, MW_ODULibraryEntity);
                             _unitOfWork.SaveChanges();
@@ -4982,10 +4986,14 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    if (_unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Model == MWDishLibraryEntites.Model && x.Id != MWDishLibraryEntites.Id && !x.Deleted) != null)
-                    {
-                        return new Response<EditMWDishLibraryObject>(false, null, null, $"This model {MWDishLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+                    var CheckModel = db.MV_MWDISH_LIBRARY_VIEW
+                     .FirstOrDefault(x => x.Model != null &&
+                     x.Model.ToLower() == MWDishLibraryEntites.Model.ToLower() &&
+                     x.Id != MWDishLibraryEntites.Id && !x.Deleted);
+
+                    if (CheckModel !=null)
+                      return new Response<EditMWDishLibraryObject>(false, null, null, $"This model {MWDishLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                    
 
                     MWDishLibraryEntites.Active = MWDishLegLib.Active;
                     MWDishLibraryEntites.Deleted = MWDishLegLib.Deleted;
@@ -5113,10 +5121,14 @@ namespace TLIS_Service.Services
                             MWODULibraryEntites.SpaceLibrary = MWODULibraryEntites.Height * MWODULibraryEntites.Width;
                         }
                     }
-                    if (_unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Model == MWODULibraryEntites.Model && x.Id != MWODULibraryEntites.Id && !x.Deleted) != null)
-                    {
+                    var CheckModel = db.MV_MWODU_LIBRARY_VIEW
+                   .FirstOrDefault(x => x.Model != null &&
+                     x.Model.ToLower() == MWODULibraryEntites.Model.ToLower() &&
+                     x.Id != MWODULibraryEntites.Id && !x.Deleted);
+
+                    if (CheckModel != null)
                         return new Response<EditMWODULibraryObject>(false, null, null, $"This model {MWODULibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+                    
 
                     MWODULibraryEntites.Active = MWODULegLib.Active;
                     MWODULibraryEntites.Deleted = MWODULegLib.Deleted;

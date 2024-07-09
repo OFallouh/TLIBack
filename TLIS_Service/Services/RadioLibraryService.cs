@@ -1957,8 +1957,10 @@ namespace TLIS_Service.Services
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                            var CheckModel = _unitOfWork.RadioAntennaLibraryRepository
-                                .GetWhereFirst(x => x.Model == radioAntennaLibrary.Model && !x.Deleted);
+                            var CheckModel = db.MV_RADIO_ANTENNA_LIBRARY_VIEW
+                                .FirstOrDefault(
+                                x => x.Model.ToLower() == radioAntennaLibrary.Model .ToLower()
+                                && !x.Deleted);
 
                             if (CheckModel != null)
                                 return new Response<AddRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -2019,9 +2021,10 @@ namespace TLIS_Service.Services
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                            var CheckModel = _unitOfWork.RadioRRULibraryRepository
-                                .GetWhereFirst(x => x.Model == radioRRULibrary.Model && !x.Deleted);
-
+                            var CheckModel = db.MV_RADIO_RRU_LIBRARY_VIEW
+                                   .FirstOrDefault(
+                                   x => x.Model.ToLower() == radioRRULibrary.Model.ToLower()
+                                   && !x.Deleted);
                             if (CheckModel != null)
                                 return new Response<AddRadioRRULibraryObject>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -3233,8 +3236,10 @@ namespace TLIS_Service.Services
 
                         TLIradioAntennaLibrary radioAntennaLibrary = _mapper.Map<TLIradioAntennaLibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
                         var OldRadioAntenna = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioAntennaLibrary.Id);
-                        var CheckModel = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Model.ToLower() == radioAntennaLibrary.Model.ToLower() &&
-                            x.Id != radioAntennaLibrary.Id && !x.Deleted);
+                        var CheckModel = db.MV_RADIO_ANTENNA_LIBRARY_VIEW
+                        .FirstOrDefault(
+                        x => x.Model.ToLower() == radioAntennaLibrary.Model.ToLower()
+                        && x.Id != radioAntennaLibrary.Id && !x.Deleted);
                         if (CheckModel != null)
                          return new Response<EditRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                         
@@ -3342,8 +3347,11 @@ namespace TLIS_Service.Services
                     TLIradioRRULibrary radioRRULibrary = _mapper.Map<TLIradioRRULibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
                     var OldRadioRRU= _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioRRULibrary.Id);
 
-                    var CheckModel = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Model.ToLower() == radioRRULibrary.Model.ToLower() &&
-                        x.Id != radioRRULibrary.Id && !x.Deleted);
+                    var CheckModel = db.MV_RADIO_RRU_LIBRARY_VIEW
+                         .FirstOrDefault(
+                         x => x.Model.ToLower() == radioRRULibrary.Model.ToLower()
+                         && x.Id != radioRRULibrary.Id && !x.Deleted);
+                   
                     if (CheckModel != null)
                         return new Response<EditRadioRRULibraryObject>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 

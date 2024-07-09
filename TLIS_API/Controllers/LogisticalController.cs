@@ -43,7 +43,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.LogisiticalService.AddLogistical(NewLogistical);
             return Ok(response);
         }
-        [HttpDelete("DeleteLogistical/{LogisticalId}")]
+        [HttpPost("DeleteLogistical/{LogisticalId}")]
         [ProducesResponseType(200, Type = typeof(bool))]
         public IActionResult DeleteLogistical(int LogisticalId)
         {

@@ -204,42 +204,42 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
             return Ok(response);
         }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditCabinet")]
-        [ProducesResponseType(200, Type = typeof(EditCabinetViewModel))]
-        public async Task<IActionResult> EditCabinet([FromBody] EditCabinetViewModel editCabinetViewModel,int ?TaskId)
-        {
-            if (TryValidateModel(editCabinetViewModel, nameof(EditCabinetViewModel)))
-            {
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditCabinetViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
-        [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("EditSolar")]
-        [ProducesResponseType(200, Type = typeof(EditSolarViewModel))]
-        public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int ?TaskId)
-        {
-            if (TryValidateModel(editSolarViewModel, nameof(EditSolarViewModel)))
-            {
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId);
-                return Ok(response);
-            }
-            else
-            {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-            }
-        }
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("EditCabinet")]
+        //[ProducesResponseType(200, Type = typeof(EditCabinetViewModel))]
+        //public async Task<IActionResult> EditCabinet([FromBody] EditCabinetViewModel editCabinetViewModel,int ?TaskId)
+        //{
+        //    if (TryValidateModel(editCabinetViewModel, nameof(EditCabinetViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditCabinetViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        //[HttpPost("EditSolar")]
+        //[ProducesResponseType(200, Type = typeof(EditSolarViewModel))]
+        //public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int ?TaskId)
+        //{
+        //    if (TryValidateModel(editSolarViewModel, nameof(EditSolarViewModel)))
+        //    {
+        //        var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId);
+        //        return Ok(response);
+        //    }
+        //    else
+        //    {
+        //        var ErrorMessages = from state in ModelState.Values
+        //                            from error in state.Errors
+        //                            select error.ErrorMessage;
+        //        return Ok(new Response<EditSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+        //    }
+        //}
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditGenerator")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorViewModel))]
@@ -247,7 +247,26 @@ namespace TLIS_API.Controllers
         {
             if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorViewModel)))
             {
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, userId, ConnectionString);
                 return Ok(response);
             }
             else

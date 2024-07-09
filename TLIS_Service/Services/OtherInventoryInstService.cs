@@ -55,6 +55,7 @@ using TLIS_DAL.ViewModels.OtherInSiteDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
 using TLIS_DAL.ViewModels.LocationTypeDTOs;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace TLIS_Service.Services
 {
@@ -2576,7 +2577,7 @@ namespace TLIS_Service.Services
         //Map ViewModel to Entity
         //Update Entity
         #endregion
-        public async Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId)
+        public async Task<Response<ObjectInstAtts>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId,int UserId,string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -2655,67 +2656,115 @@ namespace TLIS_Service.Services
                     }
                     else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
                     {
-                        EditGeneratorViewModel GeneratorModel = _mapper.Map<EditGeneratorViewModel>(model);
+                        EditGeneratorInstallationObject GeneratorModel = _mapper.Map<EditGeneratorInstallationObject>(model);
                         TLIgenerator Generator = _mapper.Map<TLIgenerator>(GeneratorModel);
 
-                        TLIotherInSite OtherInSite = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle &&
-                            x.allOtherInventoryInst.generatorId == GeneratorModel.Id, x => x.allOtherInventoryInst);
-
-                        string SiteCode = "";
-
-                        if (OtherInSite != null)
-                            SiteCode = OtherInSite.SiteCode;
-
-                        else
-                            SiteCode = null;
-
-                        TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository
-                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.generatorId != Generator.Id && !x.allOtherInventoryInst.Draft &&
-                                !x.Dismantle && x.allOtherInventoryInst.generator.Name.ToLower() == Generator.Name.ToLower() &&
-                                    x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                    x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
-
-                        if (CheckName != null)
-                            return new Response<ObjectInstAtts>(true, null, null, $"The name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
-
-                        TLIgenerator GeneratorInst = _unitOfWork.GeneratorRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == GeneratorModel.Id);
-                        if (Generator.SpaceInstallation != GeneratorInst.SpaceInstallation && GeneratorModel.TLIotherInSite.ReservedSpace == true)
+                        TLIotherInSite GeneratorInst =
+                           _unitOfWork.OtherInSiteRepository
+                           .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.allOtherInventoryInst
+                           .generatorId == Generator.Id
+                           && !x.Dismantle);
+                        if (GeneratorInst != null)
                         {
-                            var allother = _dbContext.TLIallOtherInventoryInst.Where(x => x.generatorId == GeneratorInst.Id).Select(x => x.Id).FirstOrDefault();
-                            var sitescode = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == allother).Select(x => x.SiteCode).FirstOrDefault();
-                            var Site = _dbContext.TLIsite.Where(x => x.SiteCode == sitescode).FirstOrDefault();
-                            Site.ReservedSpace = Site.ReservedSpace - GeneratorInst.SpaceInstallation;
-                            Site.ReservedSpace = Site.ReservedSpace + Generator.SpaceInstallation;
-                            _dbContext.SaveChanges();
+                         
+                            TLIotherInSite OtherInSite = _unitOfWork.OtherInSiteRepository
+                                .GetIncludeWhereFirst(x => !x.Dismantle &&
+                                x.allOtherInventoryInst.generatorId == GeneratorModel.installationAttributes.Id,
+                                x => x.allOtherInventoryInst, x => x.Site);
+
+                            var CheckName = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x =>
+                            !x.Dismantle &&
+                             x.Id != Generator.Id &&
+                             x.Name.ToLower() == Generator.Name.ToLower() &&
+                             x.SITECODE.ToLower() == OtherInSite.SiteCode.ToLower());
+
+                            if (CheckName != null)
+                                return new Response<ObjectInstAtts>(true, null, null, $"The name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
+
+
+                            if (OtherInSite.ReservedSpace == true && GeneratorModel.OtherInSite.ReservedSpace == true)
+                            {
+                                if (Generator.SpaceInstallation != GeneratorInst.allOtherInventoryInst.generator.SpaceInstallation)
+                                {
+
+                                    var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == OtherInSite.SiteCode);
+                                    var tLIsite = OldValueSite;
+                                    OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace - GeneratorInst.allOtherInventoryInst.generator.SpaceInstallation;
+                                    OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace + Generator.SpaceInstallation;
+                                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, tLIsite, OtherInSite.Site);
+                                    _dbContext.SaveChanges();
+                                }
+                            }
+                            else if (OtherInSite.ReservedSpace == true && GeneratorModel.OtherInSite.ReservedSpace == false)
+                            {
+                                var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking()
+                                     .FirstOrDefault(x => x.SiteCode.ToLower() == OtherInSite.SiteCode.ToLower());
+                                OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace - GeneratorInst.allOtherInventoryInst.generator.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSite, OtherInSite.Site);
+                                _dbContext.SaveChanges();
+                            }
+                            else if (OtherInSite.ReservedSpace == false && GeneratorModel.OtherInSite.ReservedSpace == true)
+                            {
+                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, OtherInSite.SiteCode, "TLIcivilWithLegs", GeneratorModel.GeneratorType.GeneratorLibraryId, Generator.SpaceInstallation, null).Message;
+                                if (CheckSpace != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+
+                            }
+                            //string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(GeneratorModel.DynamicInstAttsValue, TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                            //string CheckDependencyValidation = CheckDependencyValidationEditVersion(model, SiteCode, TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                            Generator.GeneratorLibraryId = GeneratorModel.GeneratorType.GeneratorLibraryId;
+                            _unitOfWork.GeneratorRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, GeneratorInst.allOtherInventoryInst.generator, Generator);
+                            _unitOfWork.SaveChanges();
+                            //----------------------------------------------------------------------------------//
+                            //----------------------OtherOnSite-------------------------------------------------//
+                            var OldOtherinsite = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking()
+                              .Include(x=>x.allOtherInventoryInst.otherInventoryDistances).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == Generator.Id);
+
+                            OtherInSite.OtherInSiteStatus = GeneratorModel.OtherInSite.OtherInSiteStatus;
+                            OtherInSite.InstallationDate = GeneratorModel.OtherInSite.InstallationDate;
+                            OtherInSite.ReservedSpace = GeneratorModel.OtherInSite.ReservedSpace;
+                            OtherInSite.Dismantle = GeneratorModel.OtherInSite.Dismantle;
+                            OtherInSite.OtherInventoryStatus = GeneratorModel.OtherInSite.OtherInventoryStatus;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldOtherinsite, OtherInSite);
+                            _unitOfWork.SaveChanges();
+
+                            //----------------------------------------------------------------------------------//
+                            //----------------------OtherInventoryDistance-------------------------------------------------//
+
+                            var Otherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetIncludeWhereFirst
+                                (x => x.allOtherInventoryInst.generatorId == Generator.Id, x => x.allOtherInventoryInst);
+
+                            var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
+                              .Include(x=>x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.generatorId 
+                              == Generator.Id);
+
+                            Otherinventorydistance.Azimuth = GeneratorModel.OtherInventoryDistance.Azimuth.Value;
+                            Otherinventorydistance.Distance = GeneratorModel.OtherInventoryDistance.Distance.Value;
+                            Otherinventorydistance.ReferenceOtherInventoryId = GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId.Value;
+
+                            _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
+                            _unitOfWork.SaveChanges();
+
+                            if (GeneratorModel.dynamicAttribute.Count > 0)
+                            {
+                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, GeneratorModel.dynamicAttribute, TableEntity.Id, Generator.Id, connectionString);
+                            }
+                            await _unitOfWork.SaveChangesAsync();
+
                         }
-                        string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(GeneratorModel.DynamicInstAttsValue, TableName);
+                        else
+                        {
 
-                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationEditVersion(model, SiteCode, TableName);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-                        _unitOfWork.GeneratorRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, GeneratorInst, Generator);
-                        var otherinsite = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => x.allOtherInventoryInst.generatorId == GeneratorModel.Id);
-                        otherinsite.OtherInSiteStatus = GeneratorModel.TLIotherInSite.OtherInSiteStatus;
-                        otherinsite.InstallationDate = GeneratorModel.TLIotherInSite.InstallationDate;
-                        otherinsite.ReservedSpace = GeneratorModel.TLIotherInSite.ReservedSpace;
-                        otherinsite.Dismantle = GeneratorModel.TLIotherInSite.Dismantle;
-                        otherinsite.OtherInventoryStatus = GeneratorModel.TLIotherInSite.OtherInventoryStatus;
-                        _unitOfWork.SaveChanges();
-                        var allotherinventoryinsId = _unitOfWork.AllOtherInventoryInstRepository.GetWhereFirst(x => x.generatorId == GeneratorModel.Id).Id;
-                        var otherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhereFirst(x => x.allOtherInventoryInstId == allotherinventoryinsId);
-                        otherinventorydistance.Azimuth = GeneratorModel.TLIotherInventoryDistance.Azimuth.Value;
-                        otherinventorydistance.Distance = GeneratorModel.TLIotherInventoryDistance.Distance.Value;
-                        otherinventorydistance.ReferenceOtherInventoryId = GeneratorModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value;
-                        _unitOfWork.SaveChanges();
-
-                        if (GeneratorModel.DynamicInstAttsValue != null ? GeneratorModel.DynamicInstAttsValue.Count > 0 : false)
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(GeneratorModel.DynamicInstAttsValue, TableEntity.Id, Generator.Id);
-
-                        await _unitOfWork.SaveChangesAsync();
+                        }
 
                     }
                     else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
