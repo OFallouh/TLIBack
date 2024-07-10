@@ -23,9 +23,10 @@ namespace TLIS_DAL.ViewModels.GeneratorLibraryDTOs
             public string? LayoutCode { get; set; } = " ";
             public float Height { get; set; } = 0;
             public float SpaceLibrary { get; set; } = 0;
-            public string? CapaCity { get; set; }
+            public string? GeneratorCapaCity { get; set; } = null;
             public bool Active { get; set; } = true;
             public bool Deleted { get; set; } = false;
+            public int? CapacityId { get; set; } = null;
 
 
         }

@@ -229,6 +229,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditGeneratorInstallationObject, TLIgenerator>().ReverseMap();
             CreateMap<SolarLibraryAttributes, TLIsolarLibrary>().ReverseMap();
             CreateMap<EditSolarLibraryAttributes, TLIsolarLibrary>().ReverseMap();
+            CreateMap<BaseGeneratorTypeViewModel, TLIcabinet>().ReverseMap();
+            CreateMap<AddGeneratorLibraryObject, TLIgeneratorLibrary>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

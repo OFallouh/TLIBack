@@ -2711,7 +2711,7 @@ namespace TLIS_Service.Services
                     if (GeneratorLibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, GeneratorLibrary, null).ToList();
-                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsDesigner(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
                         List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
@@ -2737,7 +2737,7 @@ namespace TLIS_Service.Services
                     if (SolarLibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, SolarLibrary, null).ToList();
-                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsDesigner(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
                         List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
