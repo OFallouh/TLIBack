@@ -9895,9 +9895,9 @@ namespace TLIS_Service.Services
                                             {
                                                 if (mwODU.SpaceInstallation != 0 && mwODU.CenterHigh != 0 && CivilFound.allCivilInst.civilWithoutLeg.HeightBase != 0)
                                                 {
-                                                    CivilFound.allCivilInst.civilWithLegs.CurrentLoads -= TLIMWODU.allLoadInst.mwODU.EquivalentSpace;
+                                                    CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads -= TLIMWODU.allLoadInst.mwODU.EquivalentSpace;
                                                     var EquivalentSpace = mwODU.SpaceInstallation * (mwODU.CenterHigh / CivilFound.allCivilInst.civilWithoutLeg.HeightBase);
-                                                    CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                    CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                     mwODU.EquivalentSpace = EquivalentSpace;
                                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
 
@@ -10013,7 +10013,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     var EquivalentSpace = mwODU.SpaceInstallation * (mwODU.CenterHigh / CivilFound.allCivilInst.civilWithoutLeg.HeightBase);
 
-                                                    CivilFound.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                                    CivilFound.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                     mwODU.EquivalentSpace = EquivalentSpace;
                                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(CivilFound.allCivilInst).Message;
 
@@ -16199,12 +16199,24 @@ namespace TLIS_Service.Services
                                 x.radioAntennaId == LoadId &&
                                x.radioRRUId != null &&
                                 Civilload != null
-                              , x => x.radioRRU)
+                              , x => x.radioRRU).Select(x=>x.radioRRUId)
                             .ToList();
 
-                            if (RadioRRuLoad != null && RadioRRuLoad.Count > 0)
+                            var RRU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => RadioRRuLoad.Any(y => y == x.allLoadInst.radioRRUId)
+                               && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(),
+                               x => x.allLoadInst, x => x.allLoadInst.radioRRU).Select(x => x.allLoadInst.radioRRU).ToList();
+
+                            var RadioRRuLoadDismantle = _unitOfWork.AllLoadInstRepository.GetWhereAndInclude(x =>
+                               x.radioAntennaId == LoadId &&
+                              RRU.Any(y=>y==x.radioRRU)&&
+                               Civilload != null
+                             , x => x.radioRRU)
+                           .ToList();
+
+
+                            if (RRU != null && RRU.Count > 0)
                                 return new Response<bool>(true, false, null, "can not dismantle this radio because found loaed on it", (int)ApiReturnCode.fail);
-                            foreach (var item in RadioRRuLoad)
+                            foreach (var item in RadioRRuLoadDismantle)
                             {
                                 _unitOfWork.AllLoadInstRepository.RemoveItemWithHistory(UserId, item);
                                 _unitOfWork.SaveChanges();

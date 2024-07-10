@@ -18,5 +18,7 @@ namespace TLIS_Repository.IRepository
         IEnumerable<BaseInstAttViews> GetLogisticals(string Part, string TableName, int RecordId);
         IEnumerable<BaseInstAttViews> GetLogisticalLibraryNonSteel(string Part);
         IEnumerable<BaseInstAttViews> GetLogisticalsNonSteel(string Part, string TableName, int RecordId);
+        IEnumerable<BaseInstAttViews> GetLogisticalLibraryDesigner(string Part);
+        IEnumerable<BaseInstAttViews> GetLogisticalsDesigner(string Part, string TableName, int RecordId);
     }
 }

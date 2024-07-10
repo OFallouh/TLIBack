@@ -12,15 +12,16 @@ namespace TLIS_DAL.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        // [Index(IsUnique = true)]
         public string Model { get; set; }
-        public float? Weight { get; set; }
-        public string TotaPanelsDimensions { get; set; }
-        public string StructureDesign { get; set; }
-        public string LayoutCode { get; set; }
-        public float? HeightFromFront { get; set; }
-        public float? HeightFromBack { get; set; }
-        public string BasePlateDimension { get; set; }
+        public float Weight { get; set; }
+        public float Length { get; set; }
+        public float Width { get; set; }
+        public string? TotaPanelsDimensions { get; set; }
+        public string? StructureDesign { get; set; }
+        public string? LayoutCode { get; set; }
+        public float HeightFromFront { get; set; }
+        public float HeightFromBack { get; set; }
+        public string? BasePlateDimension { get; set; }
         public float SpaceLibrary { get; set; }
         public TLIcapacity Capacity { get; set; }
         public int? CapacityId { get; set; }

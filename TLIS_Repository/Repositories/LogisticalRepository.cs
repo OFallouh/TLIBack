@@ -169,6 +169,103 @@ namespace TLIS_Repository.Repositories
 
             return result;
         }
+        public IEnumerable<BaseInstAttViews> GetLogisticalsDesigner(string Part, string TableName, int RecordId)
+        {
+            List<BaseInstAttViews> result = new List<BaseInstAttViews>();
+
+            int TableNameId = _context.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
+            int TablePartNameId = _context.TLItablePartName.FirstOrDefault(x => x.PartName.ToLower() == Part.ToLower()).Id;
+
+            List<TLIlogisticalType> LogistaclTypes = _context.TLIlogisticalType.Where(x => !x.Deleted && !x.Disable).ToList();
+
+            foreach (TLIlogisticalType LogisticalType in LogistaclTypes)
+            {
+                TLIlogisticalitem LogisticalItem = _context.TLIlogisticalitem.Include(x => x.logistical).ThenInclude(x => x.logisticalType)
+                    .FirstOrDefault(x => x.tablesNamesId == TableNameId && x.RecordId == RecordId &&
+                        x.logistical.tablePartNameId == TablePartNameId && x.logistical.logisticalTypeId == LogisticalType.Id);
+                List<LogisticalViewModel> Logisticals = _mapper.Map<List<LogisticalViewModel>>(_context.TLIlogistical
+                   .Where(x => x.tablePartNameId == TablePartNameId && x.logisticalTypeId == LogisticalType.Id &&
+                       x.Active && !x.Deleted).ToList());
+
+
+                if (LogisticalItem != null)
+                {
+                    if (LogisticalItem.logistical.logisticalType.Name.ToLower() == "designer")
+                    {
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = true,
+                            Value = _mapper.Map<LogisticalViewModel>(LogisticalItem.logistical),
+                            Options = Logisticals
+                        });
+
+                    }
+                    else
+                    {
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = false,
+                            Value = _mapper.Map<LogisticalViewModel>(LogisticalItem.logistical),
+                            Options = Logisticals
+                        });
+                    }
+                }
+                else
+                {
+                    if (LogisticalType.Name.ToLower() == "designer")
+                    {
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = true,
+                            Value = null,
+                            Options = Logisticals
+                        });
+
+                    }
+                    else
+                    {
+
+                        result.Add(new BaseInstAttViews
+                        {
+                            Key = LogisticalType.Name,
+                            Label = LogisticalType.Name,
+                            enable = true,
+                            DataType = "List",
+                            AutoFill = false,
+                            Desc = LogisticalType.Name,
+                            Manage = false,
+                            Required = false,
+                            Value = null,
+                            Options = Logisticals
+
+                        });
+                    }
+                }
+            }
+
+            return result;
+        }
         public IEnumerable<BaseInstAttViews> GetLogisticalsNonSteel(string Part, string TableName, int RecordId)
         {
             List<BaseInstAttViews> result = new List<BaseInstAttViews>();
@@ -381,6 +478,62 @@ namespace TLIS_Repository.Repositories
                     if (!result.Exists(x => x.Key == BaseAtt.Key))
                        result.Add(BaseAtt);
                 
+            }
+
+            return result;
+        }
+        public IEnumerable<BaseInstAttViews> GetLogisticalLibraryDesigner(string Part)
+        {
+            List<BaseInstAttViews> result = new List<BaseInstAttViews>();
+
+            int TablePartNameId = _context.TLItablePartName.FirstOrDefault(x => x.PartName.ToLower() == Part.ToLower()).Id;
+
+            List<TLIlogisticalType> LogisticalTypes = _context.TLIlogisticalType.Where(x => !x.Deleted && !x.Disable).ToList();
+
+            foreach (TLIlogisticalType LogisticalType in LogisticalTypes)
+            {
+                List<LogisticalViewModel> Logisticals = _mapper.Map<List<LogisticalViewModel>>(_context.TLIlogistical
+                    .Where(x => x.tablePartNameId == TablePartNameId && x.logisticalTypeId == LogisticalType.Id &&
+                        x.Active && !x.Deleted).ToList());
+                if (LogisticalType.Name.ToLower() == "designer")
+                {
+                    BaseInstAttViews BaseAtt = new BaseInstAttViews
+                    {
+
+                        Key = LogisticalType.Name,
+                        Label = LogisticalType.Name,
+                        Required = true,
+                        enable = true,
+                        AutoFill = false,
+                        DataType = "List",
+                        Desc = LogisticalType.Name,
+                        Manage = false,
+                        Value = null,
+                        Options = Logisticals
+                    };
+                    if (!result.Exists(x => x.Key == BaseAtt.Key))
+                        result.Add(BaseAtt);
+                }
+                else
+                {
+
+                    BaseInstAttViews BaseAtt = new BaseInstAttViews
+                    {
+
+                        Key = LogisticalType.Name,
+                        Label = LogisticalType.Name,
+                        Required = false,
+                        enable = true,
+                        AutoFill = false,
+                        DataType = "List",
+                        Desc = LogisticalType.Name,
+                        Manage = false,
+                        Value = null,
+                        Options = Logisticals
+                    };
+                    if (!result.Exists(x => x.Key == BaseAtt.Key))
+                        result.Add(BaseAtt);
+                }
             }
 
             return result;

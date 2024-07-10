@@ -36,5 +36,8 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<object>> GetSolarLibraryEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetGeneratorLibraryEnabledAtt(CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<GetEnableAttribute> GetGeneratorLibrariesEnabledAtt(string ConnectionString);
+        Task<Response<EditSolarLibraryObject>> EditSolarLibrary(int userId, EditSolarLibraryObject editSolarLibraryObject, string TableName, string connectionString);
+        Response<AddSolarLibraryObject> AddSolarLibrary(int UserId, string TableName, AddSolarLibraryObject addSolarLibraryObject, string connectionString);
+        Response<GetEnableAttribute> GetSolarLibrariesEnabledAtt(string ConnectionString);
     }
 }

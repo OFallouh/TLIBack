@@ -2711,7 +2711,7 @@ namespace TLIS_Service.Services
                     if (GeneratorLibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, GeneratorLibrary, null).ToList();
-                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsDesigner(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
                         List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
@@ -2730,29 +2730,35 @@ namespace TLIS_Service.Services
                         return new Response<GetForAddCivilLibrarybject>(false, null, null, "this generator is not  found", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                //else if (OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
-                //{
-                //    TLIsolarLibrary SolarLibrary = _unitOfWork.SolarLibraryRepository.GetIncludeWhereFirst(x =>
-                //        x.Id == Id, x => x.Capacity);
+                else if (OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
+                {
+                    TLIsolarLibrary SolarLibrary = _unitOfWork.SolarLibraryRepository.GetWhereFirst(x =>
+                        x.Id == Id && !x.Deleted);
+                    if (SolarLibrary != null)
+                    {
+                        List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, SolarLibrary, null).ToList();
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
+                        attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                        attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                        List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                        BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                        if (NameAttribute != null)
+                        {
+                            BaseInstAttViews Swap = Test.ToList()[0];
+                            Test[Test.IndexOf(NameAttribute)] = Swap;
+                            Test[0] = NameAttribute;
+                            attributes.AttributesActivatedLibrary = Test;
+                            NameAttribute.Value = db.MV_GENERATOR_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                        }
+                    }
+                    else
+                    {
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this Solar is not  found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    
+                }
 
-                //    object FK_Capacity_Name = SolarLibrary.Capacity != null ? SolarLibrary.Capacity.Name : null;
 
-                //    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, SolarLibrary, null).ToList();
-
-                //    foreach (BaseAttView FKitem in ListAttributesActivated)
-                //    {
-                //        if (FKitem.Label.ToLower() == "capacity_name")
-                //        {
-                //            if (FK_Capacity_Name == null)
-                //                FKitem.Value = _unitOfWork.CapacityRepository.GetWhereFirst(x => x.Id == 0).Name;
-
-                //            else
-                //                FKitem.Value = FK_Capacity_Name;
-                //        }
-                //    }
-                //}
-
-               
 
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)ApiReturnCode.success);
             }
@@ -2761,6 +2767,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilLibrarybject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
+
         public async Task<Response<EditGeneratorLibraryObject>> EditGeneratorLibrary(int userId, EditGeneratorLibraryObject editGeneratorLibraryObject, string TableName, string connectionString)
         {
             using (TransactionScope transaction =
@@ -2892,6 +2899,132 @@ namespace TLIS_Service.Services
                 catch (Exception err)
                 {
                     return new Response<EditGeneratorLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+        }
+        public async Task<Response<EditSolarLibraryObject>> EditSolarLibrary(int userId, EditSolarLibraryObject editSolarLibraryObject, string TableName, string connectionString)
+        {
+            using (TransactionScope transaction =
+                new TransactionScope(TransactionScopeOption.Required,
+                                   new System.TimeSpan(0, 15, 0)))
+            {
+                try
+                {
+
+                    int resultId = 0;
+
+                    TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
+
+                    TLIsolarLibrary SolarLibraryEntites = _mapper.Map<TLIsolarLibrary>(editSolarLibraryObject.AttributesActivatedLibrary);
+
+                    TLIsolarLibrary SolarLegLib = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SolarLibraryEntites.Id);
+
+
+                    if (SolarLibraryEntites.SpaceLibrary <= 0)
+                    {
+                       
+                        return new Response<EditSolarLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
+                    }
+                    var CheckModel = db.MV_SOLAR_LIBRARY_VIEW
+                             .FirstOrDefault(x => x.Model != null &&
+                                         x.Model.ToLower() == SolarLibraryEntites.Model.ToLower() &&
+                                         x.Id != SolarLibraryEntites.Id && !x.Deleted);
+                    if (CheckModel != null)
+                    {
+                        return new Response<EditSolarLibraryObject>(false, null, null, $"This model {SolarLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    SolarLibraryEntites.Active = SolarLegLib.Active;
+                    SolarLibraryEntites.Deleted = SolarLegLib.Deleted;
+
+                    _unitOfWork.SolarLibraryRepository.UpdateWithHistory(userId, SolarLegLib, SolarLibraryEntites);
+
+
+                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
+                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //{
+                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
+                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                    //{
+                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+                    var CheckVendorId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckVendorId != null)
+                        OldLogisticalItemIds.Vendor = Convert.ToInt32(CheckVendorId.logisticalId);
+
+                    var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckSupplierId != null)
+                        OldLogisticalItemIds.Supplier = CheckSupplierId.logisticalId;
+
+                    var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckDesignerId != null)
+                        OldLogisticalItemIds.Designer = CheckDesignerId.logisticalId;
+
+
+                    var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckManufacturerId != null)
+                        OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
+
+
+                    var CheckContractorId = _unitOfWork.LogisticalitemRepository
+                 .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
+                     x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntites.Id, x => x.logistical,
+                         x => x.logistical.logisticalType);
+
+                    if (CheckContractorId != null)
+                        OldLogisticalItemIds.Contractor = CheckContractorId.logisticalId;
+
+
+                    var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                       .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == SolarLibraryEntites.Id, x => x.logistical,
+                               x => x.logistical.logisticalType);
+
+                    if (CheckConsultantId != null)
+                        OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
+
+
+                    EditLogisticalItemss(userId, editSolarLibraryObject.LogisticalItems, SolarLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
+
+                    if (editSolarLibraryObject.DynamicAttributes != null ? editSolarLibraryObject.DynamicAttributes.Count > 0 : false)
+                    {
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editSolarLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, SolarLibraryEntites.Id, userId, resultId, SolarLegLib.Id);
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
+
+
+                    transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+                    return new Response<EditSolarLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                catch (Exception err)
+                {
+                    return new Response<EditSolarLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
 
@@ -3385,7 +3518,7 @@ namespace TLIS_Service.Services
                 if (OtherInventoryType.TLIsolarLibrary.ToString() == TableName)
                 {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIsolarLibrary.ToString(), null, null).ToList();
-                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibraryDesigner("OtherInventory");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
@@ -5680,6 +5813,105 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public Response<GetEnableAttribute> GetSolarLibrariesEnabledAtt(string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    //string storedProcedureName = "create_dynamic_pivot_withleg_library ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
+                    var attActivated = db.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "SolarLibrary"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = db.MV_SOLAR_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = db.MV_SOLAR_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Model = x.Model,
+                        Width = x.Width,
+                        Weight = x.Weight,
+                        Length = x.Length,
+                        LayoutCode = x.LayoutCode,
+                        TotaPanelsDimensions = x.TotaPanelsDimensions,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        SpaceLibrary = x.SpaceLibrary,
+                        CAPACITY = x.CAPACITY,
+                        StructureDesign = x.StructureDesign,
+                        HeightFromBack = x.HeightFromBack,
+                        HeightFromFront = x.HeightFromFront,
+                        BasePlateDimension = x.BasePlateDimension
+
+
+                    }).OrderBy(x => x.Key.Model)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
         public Response<AddGeneratorLibraryObject> AddGenertatoLibrary(int UserId, string TableName, AddGeneratorLibraryObject addGeneratorLibraryObject, string connectionString)
         {
             using (var con = new OracleConnection(connectionString))
@@ -5752,6 +5984,73 @@ namespace TLIS_Service.Services
                         catch (Exception err)
                         {
                             return new Response<AddGeneratorLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                }
+            }
+        }
+        public Response<AddSolarLibraryObject> AddSolarLibrary(int UserId, string TableName, AddSolarLibraryObject addSolarLibraryObject, string connectionString)
+        {
+            using (var con = new OracleConnection(connectionString))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    using (TransactionScope transaction = new TransactionScope())
+                    {
+                        try
+                        {
+                            string ErrorMessage = string.Empty;
+                            var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
+
+                            TLIsolarLibrary SolarLibraryEntity = _mapper.Map<TLIsolarLibrary>(addSolarLibraryObject.AttributesActivatedLibrary);
+                            if (SolarLibraryEntity.SpaceLibrary <= 0)
+                            {
+                                
+                                return new Response<AddSolarLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                
+                            }
+                            //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                            var CheckModel = db.MV_SOLAR_LIBRARY_VIEW
+                              .FirstOrDefault(x => x.Model != null &&
+                               x.Model.ToLower() == SolarLibraryEntity.Model.ToLower()
+                               && !x.Deleted);
+
+                            if (CheckModel != null)
+                              return new Response<AddSolarLibraryObject>(true, null, null, $"This model {SolarLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                            
+
+                            _unitOfWork.SolarLibraryRepository.AddWithHistory(UserId, SolarLibraryEntity);
+                            _unitOfWork.SaveChanges();
+
+                            dynamic LogisticalItemIds = new ExpandoObject();
+                            LogisticalItemIds = addSolarLibraryObject.LogisticalItems;
+
+                            AddLogisticalItemWithCivil(UserId, LogisticalItemIds, SolarLibraryEntity, TableNameEntity.Id);
+
+                            if (addSolarLibraryObject.DynamicAttributes.Count > 0)
+                            {
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addSolarLibraryObject.DynamicAttributes, TableNameEntity.Id, SolarLibraryEntity.Id, connectionString);
+                            }
+                            _unitOfWork.TablesHistoryRepository.AddHistory(SolarLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
+
+
+
+                            transaction.Complete();
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+                            return new Response<AddSolarLibraryObject>();
+                        }
+                        catch (Exception err)
+                        {
+                            return new Response<AddSolarLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                 }

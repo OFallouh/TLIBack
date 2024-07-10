@@ -8635,7 +8635,7 @@ namespace TLIS_Service.Services
                     {
                         var DishLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.mwDishId
                         == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwDish
-                        , x=>x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
+                        , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (DishLoad != null)
                         {
                             var ODULoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId ==
@@ -8877,19 +8877,34 @@ namespace TLIS_Service.Services
                         , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                         if (RadioAntennaLoad != null)
                         {
-                            var RadioRRuLoad = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x =>
-                             x.allLoadInst.radioAntennaId == LoadId &&
-                             x.allLoadInst.radioRRUId != null &&
-                             !x.Dismantle &&
-                             x.SiteCode.ToLower() == sitecode.ToLower(),
-                             x => x.allLoadInst
-                            ).ToList();
+                            var Civilload = _unitOfWork.CivilLoadsRepository.
+                            GetIncludeWhereFirst(x => x.allLoadInst.radioAntennaId == LoadId &&
+                            !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst);
 
-                            if (RadioRRuLoad != null && RadioRRuLoad.Count > 0)
+                            var RadioRRuLoad = _unitOfWork.AllLoadInstRepository.GetWhereAndInclude(x =>
+                                x.radioAntennaId == LoadId &&
+                               x.radioRRUId != null &&
+                                Civilload != null
+                              , x => x.radioRRU).Select(x => x.radioRRUId)
+                            .ToList();
+
+                            var RRU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => RadioRRuLoad.Any(y => y == x.allLoadInst.radioRRUId)
+                               && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(),
+                               x => x.allLoadInst, x => x.allLoadInst.radioRRU).Select(x => x.allLoadInst.radioRRU).ToList();
+
+                            var RadioRRuLoadDismantle = _unitOfWork.AllLoadInstRepository.GetWhereAndInclude(x =>
+                               x.radioAntennaId == LoadId &&
+                              RRU.Any(y => y == x.radioRRU) &&
+                               Civilload != null
+                             , x => x.radioRRU)
+                           .ToList();
+
+
+                            if (RRU != null && RRU.Count > 0)
                                 return new Response<bool>(true, false, null, "can not dismantle this radio because found loaed on it", (int)ApiReturnCode.fail);
-                            foreach (var item in RadioRRuLoad)
+                            foreach (var item in RadioRRuLoadDismantle)
                             {
-                                _unitOfWork.AllLoadInstRepository.RemoveItemWithHistory(UserId, item.allLoadInst);
+                                _unitOfWork.AllLoadInstRepository.RemoveItemWithHistory(UserId, item);
                                 _unitOfWork.SaveChanges();
                             }
                             RadioAntennaLoad.Dismantle = true;

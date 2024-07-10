@@ -3560,7 +3560,6 @@ namespace TLIS_Service.Services
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithoutLeg", x => new { x.Id }).Id;
 
                     TLIcivilWithoutLeg civilWithoutLegsEntity = _mapper.Map<TLIcivilWithoutLeg>(editCivilWithoutLegsInstallationObject.installationAttributes);
-
                     var CivilWithoutLegInst = _unitOfWork.CivilWithoutLegRepository.GetAllAsQueryable().AsNoTracking()
                         .Include(x => x.CivilWithoutlegsLib).FirstOrDefault(x => x.Id == editCivilWithoutLegsInstallationObject.installationAttributes.Id);
 
@@ -3660,11 +3659,11 @@ namespace TLIS_Service.Services
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                        if (civilWithoutLegsEntity.SpindlesBasePlateLengthcm == 0 && civilWithoutLegsEntity.CivilWithoutlegsLib.Model.ToLower().Contains("anchored"))
+                        if (civilWithoutLegsEntity.SpindlesBasePlateLengthcm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("anchored"))
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateLengthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                        if (civilWithoutLegsEntity.SpindlesBasePlateWidthcm == 0 && civilWithoutLegsEntity.CivilWithoutlegsLib.Model.ToLower().Contains("anchored"))
+                        if (civilWithoutLegsEntity.SpindlesBasePlateWidthcm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("anchored"))
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -11489,12 +11488,15 @@ namespace TLIS_Service.Services
 
                     var RadioRRuLoad = _unitOfWork.AllLoadInstRepository.GetWhereAndInclude(x =>
                         x.radioAntennaId == LoadId &&
-                       x.radioRRUId !=null &&
-                        Civilload !=null 
-                      ,x=>x.radioRRU).Select(x=>x.radioRRU)
+                       x.radioRRUId !=null 
+                      ,x=>x.radioRRU).Select(x=>x.radioRRUId)
                     .ToList();
 
-                    OutPut.TLIRadioRRU = _mapper.Map<List<LoadandsidearmViewDto>>(RadioRRuLoad);
+                    var RRU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => RadioRRuLoad.Any(y => y == x.allLoadInst.radioRRUId)
+                    && !x.Dismantle && x.SiteCode.ToLower()==sitecode.ToLower(),
+                    x=>x.allLoadInst,x=>x.allLoadInst.radioRRU).Select(x => x.allLoadInst.radioRRU).ToList();
+
+                    OutPut.TLIRadioRRU = _mapper.Map<List<LoadandsidearmViewDto>>(RRU);
                 }
                 if (Loadname == Helpers.Constants.TablesNames.TLIradioRRU.ToString())
                 {

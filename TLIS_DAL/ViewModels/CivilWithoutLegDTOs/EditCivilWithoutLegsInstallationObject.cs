@@ -71,7 +71,6 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegDTOs
             public int WarningPercentageLoads { get; set; }
             public string? Visiable_Status { get; set; }
             public float SpaceInstallation { get; set; }
-            public int CivilWithoutlegsLibId { get; set; }
             public int OwnerId { get; set; }
             public int? subTypeId { get; set; }
             public float Support_Limited_Load { get; set; }
