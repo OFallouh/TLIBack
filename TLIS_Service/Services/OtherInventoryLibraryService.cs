@@ -5794,8 +5794,9 @@ namespace TLIS_Service.Services
                         Active = x.Active,
                         Deleted = x.Deleted,
                         SpaceLibrary = x.SpaceLibrary,
-                        CAPACITY = x.CAPACITY
-                       
+                        CAPACITY = x.CAPACITY,
+                        GeneratorCapaCity = x.GeneratorCapaCity
+
 
                     }).OrderBy(x => x.Key.Model)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })

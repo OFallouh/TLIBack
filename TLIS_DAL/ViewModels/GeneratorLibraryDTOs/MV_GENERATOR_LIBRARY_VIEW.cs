@@ -19,6 +19,7 @@ namespace TLIS_DAL.ViewModels.GeneratorLibraryDTOs
         public string? LayoutCode { get; set; }
         public float Height { get; set; }
         public float SpaceLibrary { get; set; }
+        public string? GeneratorCapaCity { get; set; }
         public string? CAPACITY { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
@@ -41,6 +42,7 @@ namespace TLIS_DAL.ViewModels.GeneratorLibraryDTOs
             outputData.Add("Active", Active);
             outputData.Add("Deleted", Deleted);
             outputData.Add("SpaceLibrary", SpaceLibrary);
+            outputData.Add("GeneratorCapaCity", GeneratorCapaCity);
             outputData.Add("CAPACITY", CAPACITY);
 
             // Add dynamic property if "key" has a value
