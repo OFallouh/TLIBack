@@ -2748,7 +2748,7 @@ namespace TLIS_Service.Services
                             Test[Test.IndexOf(NameAttribute)] = Swap;
                             Test[0] = NameAttribute;
                             attributes.AttributesActivatedLibrary = Test;
-                            NameAttribute.Value = db.MV_GENERATOR_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                            NameAttribute.Value = db.MV_SOLAR_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
                         }
                     }
                     else

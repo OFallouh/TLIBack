@@ -3216,23 +3216,29 @@ namespace TLIS_Service.Services
                     if (SiteCode != null)
                     {
                         if (civilWithLegsEntity.SpaceInstallation == 0)
-                        {
-                           
-                                return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                         return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             
-                        }
+                        
                         if (civilWithLegsEntity.HeightBase <= 0)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                          return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
                         if (civilWithLegsEntity.HeightImplemented <= 0)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"HeightImplemented must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                         return new Response<ObjectInstAtts>(false, null, null, $"HeightImplemented must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
                         if (civilWithLegsEntity.OwnerId == 0 || civilWithLegsEntity?.OwnerId == null)
-                        {
                             return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
+                        if (civilWithLegsEntity.IsEnforeced == true)
+                        {
+                           if(civilWithLegsEntity.SupportMaxLoadAfterInforcement < CivilWithLegInst.CurrentLoads)
+                              return new Response<ObjectInstAtts>(false, null, null, "can not to be SupportMaxLoadAfterInforcement smaller from CurrentLoads" , (int)Helpers.Constants.ApiReturnCode.fail);
+                           
                         }
+                        
+                        if (civilWithLegsEntity.Support_Limited_Load > 0 && civilWithLegsEntity.Support_Limited_Load < CivilWithLegInst.CurrentLoads)
+                                return new Response<ObjectInstAtts>(false, null, null, "can not to be Support_Limited_Load smaller from CurrentLoads", (int)Helpers.Constants.ApiReturnCode.fail);
+                             
+                        
                         ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == civilWithLegsEntity.OwnerId)?.OwnerName;
                         if (CivilWithLegInst.CivilWithLegsLib.Model != null)
                             Model = CivilWithLegInst.CivilWithLegsLib.Model;
@@ -3571,23 +3577,23 @@ namespace TLIS_Service.Services
                     if (SiteCode != null)
                     {
                         if (civilWithoutLegsEntity.SpaceInstallation == 0)
-                        {
+                          return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             
-                                return new Response<ObjectInstAtts>(false, null, null, $"SpaceInstallation must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                            
-                        }
+                        
                         if (civilWithoutLegsEntity.HeightBase <= 0)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                          return new Response<ObjectInstAtts>(false, null, null, $"HeightBase must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
                         if (civilWithoutLegsEntity.HeightImplemented <= 0)
-                        {
                             return new Response<ObjectInstAtts>(false, null, null, $"HeightImplemented must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        
                         if (civilWithoutLegsEntity.OwnerId == 0 || civilWithoutLegsEntity?.OwnerId == null)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                         return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
+                       
+                         if (civilWithoutLegsEntity.Support_Limited_Load > 0 && civilWithoutLegsEntity.Support_Limited_Load < civilWithoutLegsEntity.CurrentLoads)
+                                return new Response<ObjectInstAtts>(false, null, null, "can not to be Support_Limited_Load smaller from CurrentLoads", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        
                         var ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == civilWithoutLegsEntity.OwnerId)?.OwnerName;
                         if (CivilWithoutLegInst.CivilWithoutlegsLib.Model != null)
                             Model = CivilWithoutLegInst.CivilWithoutlegsLib.Model;

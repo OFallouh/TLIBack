@@ -1613,6 +1613,21 @@ namespace TLIS_Service.Services
                         return new Response<EditCivilWithLegsLibraryObject>(false, null, null, $"{CivilWithLegLib.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                     }
+                    var Civilinst = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.CivilWithLegsLibId ==
+                    CivilWithLegLibraryEntites.Id,x=>x.allCivilInst,x=>x.allCivilInst.
+                    civilWithLegs,x=>x.allCivilInst.civilWithLegs.CivilWithLegsLib).ToList();
+                    
+                    foreach (var item in Civilinst)
+                    { 
+                        if(item.allCivilInst.civilWithLegs.IsEnforeced ==false && item.allCivilInst.civilWithLegs.Support_Limited_Load <= 0)
+                        {
+                            if(item.allCivilInst.civilWithLegs.CurrentLoads > CivilWithLegLibraryEntites.Manufactured_Max_Load)
+                            {
+                                return new Response<EditCivilWithLegsLibraryObject>(false, null, null, "can not to be Manufactured_Max_Load smaller from CurrentLoads", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
+
+                    }
                     var model = vendor + ' ' + CivilWithLegLibraryEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithLegLibraryEntites.Height_Designed + "HE";
 
                     var CheckModel = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW
@@ -1765,6 +1780,21 @@ namespace TLIS_Service.Services
                     if (CivilWithLegLibraryEntites.Prefix == null)
                     {
                         return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, $"{CivilWithLegLib.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    }
+                    var Civilinst = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLibId ==
+                  CivilWithLegLibraryEntites.Id, x => x.allCivilInst, x => x.allCivilInst.
+                  civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).ToList();
+
+                    foreach (var item in Civilinst)
+                    {
+                        if (item.allCivilInst.civilWithoutLeg.Support_Limited_Load <= 0)
+                        {
+                            if (item.allCivilInst.civilWithLegs.CurrentLoads > CivilWithLegLibraryEntites.Manufactured_Max_Load)
+                            {
+                                return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "can not to be Manufactured_Max_Load smaller from CurrentLoads", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                        }
 
                     }
                     var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithLegLibraryEntites.CivilWithoutLegCategoryId)?.Name;

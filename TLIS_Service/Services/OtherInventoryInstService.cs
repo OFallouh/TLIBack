@@ -521,9 +521,10 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "cabinet_name", () => _mapper.Map<List<BaseGeneratorTypeViewModel>>(_unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x => !x.Dismantle && 
-                        x.SiteCode.ToLower()==SiteCode.ToLower(),x=>x.allOtherInventoryInst).Select(x=>x.allOtherInventoryInst.generator).ToList())},
+                        x.SiteCode.ToLower()==SiteCode.ToLower()&& x.allOtherInventoryInst.cabinetId !=null,x=>x.allOtherInventoryInst).Select(x=>x.allOtherInventoryInst.cabinet).ToList())},
 
                     };
+                  
                     ListAttributesActivated = ListAttributesActivated
                         .Select(FKitem =>
                         {
@@ -539,6 +540,7 @@ namespace TLIS_Service.Services
                             return FKitem;
                         })
                         .ToList();
+
                     objectInst.InstallationAttributes = ListAttributesActivated;
                     objectInst.OtherInSite = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIotherInSite.ToString(), null, "allOtherInventoryInstId", "Dismantle", "SiteCode");
                     objectInst.OtherInventoryDistance = _unitOfWork.AttributeActivatedRepository.GetInstAttributeActivatedGetForAdd(TablesNames.TLIotherInventoryDistance.ToString(), null, "allOtherInventoryInstId", "SiteCode");
