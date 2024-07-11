@@ -3108,7 +3108,7 @@ namespace TLIS_Service.Services
 
                             Otherinventorydistance.Azimuth = GeneratorModel.OtherInventoryDistance.Azimuth.Value;
                             Otherinventorydistance.Distance = GeneratorModel.OtherInventoryDistance.Distance.Value;
-                            Otherinventorydistance.ReferenceOtherInventoryId = GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId.Value;
+                            Otherinventorydistance.ReferenceOtherInventoryId = GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId;
 
                             _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
                             _unitOfWork.SaveChanges();
@@ -3128,69 +3128,116 @@ namespace TLIS_Service.Services
                     }
                     else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
                     {
-                        EditSolarViewModel SolarModel = _mapper.Map<EditSolarViewModel>(model);
-                        TLIsolar Solar = _mapper.Map<TLIsolar>(SolarModel);
+                        EditSolarInstallationObject SolarModel = _mapper.Map<EditSolarInstallationObject>(model);
+                        TLIsolar Solar = _mapper.Map<TLIsolar>(SolarModel.installationAttributes);
 
-                        TLIotherInSite OtherInSite = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle &&
-                            x.allOtherInventoryInst.solarId == SolarModel.Id, x => x.allOtherInventoryInst);
-
-                        string SiteCode = "";
-
-                        if (OtherInSite != null)
-                            SiteCode = OtherInSite.SiteCode;
-
-                        else
-                            SiteCode = null;
-
-                        TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository
-                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.solarId != Solar.Id && !x.allOtherInventoryInst.Draft &&
-                                !x.Dismantle && x.allOtherInventoryInst.solar.Name.ToLower() == Solar.Name.ToLower() &&
-                                x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                    x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar);
-
-                        if (CheckName != null)
-                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Solar.Name} is already exists", (int)ApiReturnCode.fail);
-
-                        var SolarInst = _unitOfWork.SolarRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SolarModel.Id);
-
-                        if (Solar.SpaceInstallation != SolarInst.SpaceInstallation && SolarModel.TLIotherInSite.ReservedSpace == true)
+                        TLIotherInSite SolarInst =
+                           _unitOfWork.OtherInSiteRepository
+                           .GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst).
+                           ThenInclude(x => x.solar).FirstOrDefault(x => x.allOtherInventoryInst
+                           .solarId == Solar.Id
+                           && !x.Dismantle);
+                        if (SolarInst != null)
                         {
-                            var allother = _dbContext.TLIallOtherInventoryInst.Where(x => x.solarId == SolarInst.Id).Select(x => x.Id).FirstOrDefault();
-                            var sitescode = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == allother).Select(x => x.SiteCode).FirstOrDefault();
-                            var Site = _dbContext.TLIsite.Where(x => x.SiteCode == sitescode).FirstOrDefault();
-                            Site.ReservedSpace = Site.ReservedSpace - SolarInst.SpaceInstallation;
-                            Site.ReservedSpace = Site.ReservedSpace + Solar.SpaceInstallation;
-                            _dbContext.SaveChanges();
+
+                            TLIotherInSite OtherInSite = _unitOfWork.OtherInSiteRepository
+                                .GetIncludeWhereFirst(x => !x.Dismantle &&
+                                x.allOtherInventoryInst.solarId == SolarModel.installationAttributes.Id,
+                                x => x.allOtherInventoryInst, x => x.Site);
+
+                            var CheckName = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x =>
+                            !x.Dismantle &&
+                             x.Id != Solar.Id &&
+                             x.Name.ToLower() == Solar.Name.ToLower() &&
+                             x.SITECODE.ToLower() == OtherInSite.SiteCode.ToLower());
+
+                            if (CheckName != null)
+                                return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Solar.Name} is already exists", (int)ApiReturnCode.fail);
+
+
+                            if (OtherInSite.ReservedSpace == true && SolarModel.OtherInSite.ReservedSpace == true)
+                            {
+                                if (Solar.SpaceInstallation != SolarInst.allOtherInventoryInst.solar.SpaceInstallation)
+                                {
+
+                                    var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == OtherInSite.SiteCode);
+                                    var tLIsite = OldValueSite;
+                                    OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace - SolarInst.allOtherInventoryInst.solar.SpaceInstallation;
+                                    OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace + Solar.SpaceInstallation;
+                                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, tLIsite, OtherInSite.Site);
+                                    _dbContext.SaveChanges();
+                                }
+                            }
+                            else if (OtherInSite.ReservedSpace == true && SolarModel.OtherInSite.ReservedSpace == false)
+                            {
+                                var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking()
+                                     .FirstOrDefault(x => x.SiteCode.ToLower() == OtherInSite.SiteCode.ToLower());
+                                OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace - SolarInst.allOtherInventoryInst.solar.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSite, OtherInSite.Site);
+                                _dbContext.SaveChanges();
+                            }
+                            else if (OtherInSite.ReservedSpace == false && SolarModel.OtherInSite.ReservedSpace == true)
+                            {
+                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, OtherInSite.SiteCode, "TLIcivilWithLegs", SolarModel.SolarType.SolarLibraryId, Solar.SpaceInstallation, null).Message;
+                                if (CheckSpace != "Success")
+                                {
+                                    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+
+                            }
+                            //string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(SolarModel.DynamicInstAttsValue, TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                            //string CheckDependencyValidation = CheckDependencyValidationEditVersion(model, SiteCode, TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                            Solar.SolarLibraryId = SolarModel.SolarType.SolarLibraryId;
+                            _unitOfWork.SolarRepository.UpdateWithHistory(UserId, SolarInst.allOtherInventoryInst.solar, Solar);
+                            _unitOfWork.SaveChanges();
+                            //----------------------------------------------------------------------------------//
+                            //----------------------OtherOnSite-------------------------------------------------//
+                            var OldOtherinsite = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking()
+                              .Include(x => x.allOtherInventoryInst.otherInventoryDistances).FirstOrDefault(x => x.allOtherInventoryInst.solarId == Solar.Id);
+
+                            OtherInSite.OtherInSiteStatus = SolarModel.OtherInSite.OtherInSiteStatus;
+                            OtherInSite.InstallationDate = SolarModel.OtherInSite.InstallationDate;
+                            OtherInSite.ReservedSpace = SolarModel.OtherInSite.ReservedSpace;
+                            OtherInSite.Dismantle = SolarModel.OtherInSite.Dismantle;
+                            OtherInSite.OtherInventoryStatus = SolarModel.OtherInSite.OtherInventoryStatus;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldOtherinsite, OtherInSite);
+                            _unitOfWork.SaveChanges();
+
+                            //----------------------------------------------------------------------------------//
+                            //----------------------OtherInventoryDistance-------------------------------------------------//
+
+                            var Otherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetIncludeWhereFirst
+                                (x => x.allOtherInventoryInst.solarId == Solar.Id, x => x.allOtherInventoryInst);
+
+                            var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
+                              .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.solarId
+                              == Solar.Id);
+
+                            Otherinventorydistance.Azimuth = SolarModel.OtherInventoryDistance.Azimuth.Value;
+                            Otherinventorydistance.Distance = SolarModel.OtherInventoryDistance.Distance.Value;
+                            Otherinventorydistance.ReferenceOtherInventoryId = SolarModel.OtherInventoryDistance.ReferenceOtherInventoryId;
+
+                            _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
+                            _unitOfWork.SaveChanges();
+
+                            if (SolarModel.dynamicAttribute.Count > 0)
+                            {
+                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, SolarModel.dynamicAttribute, TableEntity.Id, Solar.Id, connectionString);
+                            }
+                            await _unitOfWork.SaveChangesAsync();
+
                         }
-                        string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(SolarModel.DynamicInstAttsValue, TableName);
-
-                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationEditVersion(model, SiteCode, TableName);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                        _unitOfWork.SolarRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, SolarInst, Solar);
-
-                        var otherinsite = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => x.allOtherInventoryInst.solarId == SolarModel.Id);
-                        otherinsite.OtherInSiteStatus = SolarModel.TLIotherInSite.OtherInSiteStatus;
-                        otherinsite.InstallationDate = SolarModel.TLIotherInSite.InstallationDate;
-                        otherinsite.ReservedSpace = SolarModel.TLIotherInSite.ReservedSpace;
-                        otherinsite.Dismantle = SolarModel.TLIotherInSite.Dismantle;
-                        otherinsite.OtherInventoryStatus = SolarModel.TLIotherInSite.OtherInventoryStatus;
-                        _unitOfWork.SaveChanges();
-                        var allotherinventoryinsId = _unitOfWork.AllOtherInventoryInstRepository.GetWhereFirst(x => x.solarId == SolarModel.Id).Id;
-                        var otherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhereFirst(x => x.allOtherInventoryInstId == allotherinventoryinsId);
-                        otherinventorydistance.Azimuth = SolarModel.TLIotherInventoryDistance.Azimuth.Value;
-                        otherinventorydistance.Distance = SolarModel.TLIotherInventoryDistance.Distance.Value;
-                        otherinventorydistance.ReferenceOtherInventoryId = SolarModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value;
-                        _unitOfWork.SaveChanges();
-                        if (SolarModel.DynamicInstAttsValue != null ? SolarModel.DynamicInstAttsValue.Count > 0 : false)
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(SolarModel.DynamicInstAttsValue, TableEntity.Id, Solar.Id);
-
-                        await _unitOfWork.SaveChangesAsync();
+                        else
+                        {
+                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, " The Solar is not found", (int)ApiReturnCode.fail);
+                        }
 
                     }
                     if (TaskId != null)
@@ -4673,6 +4720,269 @@ namespace TLIS_Service.Services
                      .GetIncludeWhereFirst(
                          x => x.allOtherInventoryInst.generator.Id == GeneratorId && !x.Dismantle && !x.allOtherInventoryInst.Draft,
                          x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
+                     )?.SiteCode;
+                    objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
+                    if (siteCode != null)
+                    {
+                        var listAttributes = objectInst.OtherInventoryDistance
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
+                            .Select(attr =>
+                            {
+                                var options = new List<SupportTypeImplementedViewModel>();
+                                var Value = new SupportTypeImplementedViewModel();
+                                var support = _unitOfWork.OtherInventoryDistanceRepository
+                                    .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
+
+                                if (support != null && support.ReferenceOtherInventoryId != null)
+                                {
+                                    var supportReferenceAllCivilInst = _unitOfWork.AllOtherInventoryInstRepository
+                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceOtherInventoryId,
+                                            x => x.generator,
+                                            x => x.solar,
+                                            x => x.cabinet);
+                                    object referencesValue = new object[0];
+                                    if (supportReferenceAllCivilInst != null)
+                                    {
+                                        if (supportReferenceAllCivilInst.generatorId != null)
+                                        {
+
+                                            referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
+                                        }
+                                        //else if (supportReferenceAllCivilInst.solarId != null)
+                                        //{
+                                        //    referencesValue = _dbContext..FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
+                                        //}
+                                        //else
+                                        //{
+                                        //    referencesValue = _dbContext.MV_CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;
+                                        //}
+                                    }
+
+                                    if (referencesValue != null && support.ReferenceOtherInventoryId != null && support.ReferenceOtherInventoryId.HasValue)
+                                    {
+                                        SupportTypeImplementedViewModel views = new SupportTypeImplementedViewModel()
+                                        {
+                                            Id = support.ReferenceOtherInventoryId.Value,
+                                            Name = referencesValue.ToString()
+                                        };
+                                        attr.Value = views;
+                                    }
+                                    if (referencesValue == null)
+                                    {
+                                        attr.Value = new object[0];
+                                    }
+                                    var AllOther = _unitOfWork.OtherInSiteRepository
+                                            .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                                x => x.allOtherInventoryInst,
+                                                x => x.allOtherInventoryInst.generator,
+                                                x => x.allOtherInventoryInst.solar,
+                                                x => x.allOtherInventoryInst.cabinet)?.ToList();
+
+
+                                    if (AllOther != null && AllOther.Any())
+                                    {
+                                        options = AllOther.SelectMany(item =>
+                                        {
+                                            var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                            if (item.allOtherInventoryInst.generator != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.generator?.Name
+                                                };
+
+                                                innerOptions.Add(civilWithLegsOption);
+                                            }
+
+                                            if (item.allOtherInventoryInst.solar != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.solar?.Name
+                                                };
+                                                innerOptions.Add(civilWithoutLegOption);
+                                            }
+
+                                            if (item.allOtherInventoryInst.cabinet != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.cabinet?.Name
+                                                };
+                                                innerOptions.Add(civilNonSteelOption);
+                                            }
+
+                                            return innerOptions;
+                                        }).ToList();
+                                    }
+                                }
+                                else
+                                {
+                                    var allOther = _unitOfWork.OtherInSiteRepository
+                                        .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                            x => x.allOtherInventoryInst,
+                                            x => x.allOtherInventoryInst.generator,
+                                            x => x.allOtherInventoryInst.solar,
+                                            x => x.allOtherInventoryInst.cabinet)?.ToList();
+                                    options = allOther.SelectMany(item =>
+                                    {
+                                        var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                        if (item.allOtherInventoryInst.generator != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.generator?.Name
+                                            };
+
+                                            innerOptions.Add(civilWithLegsOption);
+                                        }
+
+                                        if (item.allOtherInventoryInst.solar != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.solar?.Name
+                                            };
+                                            innerOptions.Add(civilWithoutLegOption);
+                                        }
+
+                                        if (item.allOtherInventoryInst.cabinet != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.cabinet?.Name
+                                            };
+                                            innerOptions.Add(civilNonSteelOption);
+                                        }
+
+                                        return innerOptions;
+                                    }).ToList();
+                                }
+                                attr.Options = options;
+
+                                return attr;
+                            })
+                            .ToList();
+                    }
+
+                    return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                else
+                {
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this civilwithlegs is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+            catch (Exception err)
+            {
+                return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public Response<GetForAddOtherInventoryInstallationObject> GetSolarInstallationById(int SolarId, string TableName)
+        {
+            try
+            {
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
+                    .GetWhereFirst(c => c.TableName.ToLower() == TableName.ToLower());
+
+                GetForAddOtherInventoryInstallationObject objectInst = new GetForAddOtherInventoryInstallationObject();
+
+
+                TLIotherInSite GeneratorInst = _unitOfWork.OtherInSiteRepository
+                    .GetIncludeWhereFirst(x => x.allOtherInventoryInst.solarId == SolarId && !x.Dismantle, x => x.allOtherInventoryInst.solar.Cabinet);
+                if (GeneratorInst != null)
+                {
+                    EditSolarLibraryAttributes SolarLibrary = _mapper.Map<EditSolarLibraryAttributes>(_unitOfWork.SolarLibraryRepository
+                        .GetIncludeWhereFirst(x => x.Id == GeneratorInst.allOtherInventoryInst.solar.SolarLibraryId));
+
+                    List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(), SolarLibrary, null).ToList();
+
+
+                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                            .GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(), SolarLibrary.Id).ToList());
+
+                    LibraryAttributes.AddRange(LogisticalAttributes);
+
+                    objectInst.LibraryAttribute = LibraryAttributes;
+
+                    List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIsolar.ToString(), GeneratorInst.allOtherInventoryInst.solar, "SolarLibraryId").ToList();
+
+                    BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = ListAttributesActivated[0];
+                        ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                        ListAttributesActivated[0] = NameAttribute;
+                        NameAttribute.Value = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == SolarId)?.Name;
+                    }
+
+                    var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
+                    {
+                        switch (FKitem.Label.ToLower())
+                        {
+                            case "cabinet_name":
+                                FKitem.Value = _mapper.Map<BaseGeneratorTypeViewModel>(GeneratorInst.allOtherInventoryInst.solar.Cabinet);
+                                FKitem.Options = _mapper.Map<List<BaseGeneratorTypeViewModel>>(_unitOfWork.
+                                    OtherInSiteRepository.GetWhere(x => !x.Dismantle && x.SiteCode.ToLower()== GeneratorInst.SiteCode.ToLower())
+                                    .Select(x=>x.allOtherInventoryInst.cabinet).ToList());
+                                break;
+
+                        }
+                        return FKitem;
+                    }).ToList();
+
+                    ListAttributesActivated = ListAttributesActivated.Select(x =>
+                    {
+                        if (x.Label.ToLower() == "baseexisting" && (x.Value as bool?) == false)
+                        {
+                            ListAttributesActivated.ForEach(y =>
+                            {
+                                if (y.Label.ToLower() == "basegeneratortype_name")
+                                {
+                                    y.visible = false;
+                                }
+                            });
+                        }
+                        return x;
+                    }).ToList();
+
+
+
+                    objectInst.InstallationAttributes = ListAttributesActivated;
+
+                    objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
+                        GetDynamicInstAtt(TableNameEntity.Id, SolarId, null);
+
+                    TLIallOtherInventoryInst allOtherInventoryInst = _unitOfWork.AllOtherInventoryInstRepository
+                            .GetWhereFirst(x => x.generatorId == SolarId);
+                    TLIotherInSite otherInSiteInfo = _dbContext.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
+
+                    List<BaseInstAttViews> otherInSiteAttributes = _unitOfWork.AttributeActivatedRepository
+                         .GetAttributeActivatedGetForAdd(TablesNames.TLIotherInSite.ToString(), otherInSiteInfo, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
+
+                    objectInst.OtherInSite = _mapper.Map<IEnumerable<BaseInstAttViews>>(otherInSiteAttributes);
+
+                    TLIotherInventoryDistance otherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhereFirst(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
+
+                    List<BaseInstAttViews> otherInventorytDistanceAttributes = _unitOfWork.AttributeActivatedRepository
+                        .GetAttributeActivatedGetForAdd(TablesNames.TLIotherInventoryDistance.ToString(), otherInventoryDistance, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
+
+                    string siteCode = _unitOfWork.OtherInSiteRepository
+                     .GetIncludeWhereFirst(
+                         x => x.allOtherInventoryInst.solar.Id == SolarId && !x.Dismantle && !x.allOtherInventoryInst.Draft,
+                         x => x.allOtherInventoryInst, 
+                         x => x.allOtherInventoryInst.generator, 
+                         x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
                      )?.SiteCode;
                     objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
                     if (siteCode != null)

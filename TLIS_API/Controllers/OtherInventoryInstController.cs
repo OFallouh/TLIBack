@@ -44,12 +44,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAdd(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetLibraryType, OtherInventoryId, SiteCode);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddSolar")]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAttForAddSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddSolar(string CabinetLibraryType, int OtherInventoryId, string SiteCode)
+        public IActionResult GetAttForAddSolarInstallation( int SolarLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAdd(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), CabinetLibraryType, OtherInventoryId, SiteCode);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddSolarInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SolarLibraryId, SiteCode);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -102,9 +102,9 @@ namespace TLIS_API.Controllers
 
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddSolar")]
-        [ProducesResponseType(200, Type = typeof(AddSolarViewModel))]
-        public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode, int? TaskId)
+        [HttpPost("AddSolarInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddSolarInstallationObject))]
+        public IActionResult AddSolarInstallation([FromBody] AddSolarInstallationObject addSolarViewModel, string SiteCode, int? TaskId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -126,9 +126,9 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
 
-            if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
+            if (TryValidateModel(addSolarViewModel, nameof(AddSolarInstallationObject)))
             {
-                var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                var response = _unitOfWorkService.OtherInventoryInstService.AddSolarInstallation(addSolarViewModel, SiteCode, ConnectionString, TaskId, userId);
                 return Ok(response);
             }
             else
@@ -136,7 +136,7 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddSolarInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         
 
@@ -189,11 +189,11 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetSolarById")]
+        [HttpGet("GetSolarInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetSolarById(int OtherInventoryInstId)
+        public IActionResult GetSolarInstallationById(int SolarId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
+            var response = _unitOfWorkService.OtherInventoryInstService.GetSolarInstallationById(SolarId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -222,24 +222,44 @@ namespace TLIS_API.Controllers
         //        return Ok(new Response<EditCabinetViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
         //    }
         //}
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("EditSolar")]
-        //[ProducesResponseType(200, Type = typeof(EditSolarViewModel))]
-        //public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int ?TaskId)
-        //{
-        //    if (TryValidateModel(editSolarViewModel, nameof(EditSolarViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("EditSolarInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditSolarInstallationObject))]
+        public async Task<IActionResult> EditSolarInstallation([FromBody] EditSolarInstallationObject editSolarViewModel, int? TaskId)
+        {
+            if (TryValidateModel(editSolarViewModel, nameof(EditSolarInstallationObject)))
+            {
+
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, userId, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditSolarInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorInstallationObject))]
