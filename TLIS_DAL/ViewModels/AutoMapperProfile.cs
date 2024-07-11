@@ -182,6 +182,7 @@ using static TLIS_DAL.ViewModels.GeneratorLibraryDTOs.AddGeneratorLibraryObject;
 using static TLIS_DAL.ViewModels.GeneratorDTOs.AddGeneratorInstallationObject;
 using static TLIS_DAL.ViewModels.SolarLibraryDTOs.AddSolarLibraryObject;
 using static TLIS_DAL.ViewModels.SolarLibraryDTOs.EditSolarLibraryObject;
+using static TLIS_DAL.ViewModels.SolarDTOs.AddSolarInstallationObject;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -231,6 +232,9 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditSolarLibraryAttributes, TLIsolarLibrary>().ReverseMap();
             CreateMap<BaseGeneratorTypeViewModel, TLIcabinet>().ReverseMap();
             CreateMap<AddGeneratorLibraryObject, TLIgeneratorLibrary>().ReverseMap();
+            CreateMap<installationAttributesSolar, TLIsolar>().ReverseMap();
+            CreateMap<EditinstallationAttributesSolar, TLIsolar>().ReverseMap();
+            CreateMap<AddSolarInstallationObject, TLIsolar>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

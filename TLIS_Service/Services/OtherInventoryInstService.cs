@@ -2552,12 +2552,12 @@ namespace TLIS_Service.Services
                         try
                         {
                             string ErrorMessage = string.Empty;
-                            var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName == "TLISolar");
+                            var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName == "TLIsolar");
 
                             var Solar = _mapper.Map<TLIsolar>(addSolarInstallationObject.installationAttributes);
                             if (addSolarInstallationObject.OtherInSite.ReservedSpace == true)
                             {
-                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, "TLISolar", addSolarInstallationObject.SolarType.SolarLibraryId, addSolarInstallationObject.installationAttributes.SpaceInstallation, null).Message;
+                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableNameEntity.TableName, addSolarInstallationObject.SolarType.SolarLibraryId, addSolarInstallationObject.installationAttributes.SpaceInstallation, null).Message;
                                 if (CheckSpace != "Success")
                                 {
                                     return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
