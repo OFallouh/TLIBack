@@ -3142,27 +3142,27 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if (AddPower.installationAttributes.HeightBase <= 0)
+                                                    if (AddPower.installationAttributes.Height <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                             x.LEGID == AddPower.installationConfig.legId
-                                                            && x.Azimuth == Power.Azimuth && x.HeightBase == Power.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                            && x.Azimuth == Power.Azimuth && x.Height == Power.Height && !x.Dismantle)
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.Height })
                                                             .Select(g => g.First())
                                                             .ToList();
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    if (CheckAzimuthAndHeight.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddPower.installationConfig.legId);
-                                                    if (legname != null && Power.Azimuth > 0 && Power.HeightBase > 0)
+                                                    if (legname != null && Power.Azimuth > 0 && Power.Height > 0)
                                                     {
-                                                        Power.Name = legname?.CiviLegName + " " + Power.HeightBase + "HE";
+                                                        Power.Name = legname?.CiviLegName + " " + Power.Height + "HE";
 
                                                     }
 
@@ -3261,26 +3261,26 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if (AddPower.installationAttributes.HeightBase <= 0)
+                                                    if (AddPower.installationAttributes.Height <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                             x.LEGID == AddPower.installationConfig.legId
-                                                            && x.Azimuth == Power.Azimuth && x.HeightBase == Power.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                            && x.Azimuth == Power.Azimuth && x.Height == Power.Height && !x.Dismantle)
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.Height })
                                                             .Select(g => g.First())
                                                             .ToList();
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    if (CheckAzimuthAndHeight.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddPower.installationConfig.legId);
-                                                    if (legname != null && Power.Azimuth > 0 && Power.HeightBase > 0)
+                                                    if (legname != null && Power.Azimuth > 0 && Power.Height > 0)
                                                     {
-                                                        Power.Name = legname?.CiviLegName + " " + Power.HeightBase + "HE";
+                                                        Power.Name = legname?.CiviLegName + " " + Power.Height + "HE";
 
                                                     }
 
@@ -3420,27 +3420,27 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
-                                                                if (AddPower.installationAttributes.HeightBase <= 0)
+                                                                if (AddPower.installationAttributes.Height <= 0)
                                                                 {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
-                                                                var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                                var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                         x.SIDEARM_ID == AddPower.installationConfig.sideArmId
-                                                                        && x.Azimuth == Power.Azimuth && x.HeightBase ==
-                                                                        Power.HeightBase && !x.Dismantle).
-                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                        && x.Azimuth == Power.Azimuth && x.Height ==
+                                                                        Power.Height && !x.Dismantle).
+                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                                         .Select(g => g.First())
                                                                         .ToList();
 
-                                                                if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                if (CheckAzimuthAndHeight.Count > 0)
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
-                                                                if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
+                                                                if (SideArmName1 != null && Power.Azimuth > 0 && Power.Height > 0)
                                                                 {
-                                                                    Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
+                                                                    Power.Name = SideArmName1?.Name + " " + Power.Height + "HE";
                                                                 }
 
 
@@ -3538,27 +3538,27 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
-                                                                if (AddPower.installationAttributes.HeightBase <= 0)
+                                                                if (AddPower.installationAttributes.Height <= 0)
                                                                 {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
-                                                                var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                                var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                         x.SIDEARM_ID == AddPower.installationConfig.sideArmId
-                                                                        && x.Azimuth == Power.Azimuth && x.HeightBase ==
-                                                                        Power.HeightBase && !x.Dismantle).
-                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                        && x.Azimuth == Power.Azimuth && x.Height ==
+                                                                        Power.Height && !x.Dismantle).
+                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                                         .Select(g => g.First())
                                                                         .ToList();
 
 
-                                                                if (CheckAzimuthAndHeightBase.Count > 0)
+                                                                if (CheckAzimuthAndHeight.Count > 0)
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
-                                                                if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
+                                                                if (SideArmName1 != null && Power.Azimuth > 0 && Power.Height > 0)
                                                                 {
-                                                                    Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
+                                                                    Power.Name = SideArmName1?.Name + " " + Power.Height + "HE";
                                                                 }
 
 
@@ -3693,28 +3693,28 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        if (AddPower.installationAttributes.HeightBase <= 0)
+                                                        if (AddPower.installationAttributes.Height <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                        var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                         x.SIDEARM_ID == AddPower.installationConfig.sideArmId
-                                                                        && x.Azimuth == Power.Azimuth && x.HeightBase ==
-                                                                        Power.HeightBase && !x.Dismantle).
-                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                        && x.Azimuth == Power.Azimuth && x.Height ==
+                                                                        Power.Height && !x.Dismantle).
+                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                                         .Select(g => g.First())
                                                                         .ToList();
 
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                                        if (CheckAzimuthAndHeight.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
-                                                        if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
+                                                        if (SideArmName1 != null && Power.Azimuth > 0 && Power.Height > 0)
                                                         {
-                                                            Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
+                                                            Power.Name = SideArmName1?.Name + " " + Power.Height + "HE";
                                                         }
 
 
@@ -3813,28 +3813,28 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        if (AddPower.installationAttributes.HeightBase <= 0)
+                                                        if (AddPower.installationAttributes.Height <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                        var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                     x.SIDEARM_ID == AddPower.installationConfig.sideArmId
-                                                                    && x.Azimuth == Power.Azimuth && x.HeightBase ==
-                                                                    Power.HeightBase && !x.Dismantle).
-                                                                    GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                    && x.Azimuth == Power.Azimuth && x.Height ==
+                                                                    Power.Height && !x.Dismantle).
+                                                                    GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                                         .Select(g => g.First())
                                                                         .ToList();
 
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                                        if (CheckAzimuthAndHeight.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
-                                                        if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
+                                                        if (SideArmName1 != null && Power.Azimuth > 0 && Power.Height > 0)
                                                         {
-                                                            Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
+                                                            Power.Name = SideArmName1?.Name + " " + Power.Height + "HE";
                                                         }
 
 
@@ -3965,28 +3965,28 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if (AddPower.installationAttributes.HeightBase <= 0)
+                                                    if (AddPower.installationAttributes.Height <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                         x.SIDEARM_ID == AddPower.installationConfig.sideArmId
-                                                                        && x.Azimuth == Power.Azimuth && x.HeightBase ==
-                                                                        Power.HeightBase && !x.Dismantle).
-                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                        && x.Azimuth == Power.Azimuth && x.Height ==
+                                                                        Power.Height && !x.Dismantle).
+                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                                         .Select(g => g.First())
                                                                         .ToList();
 
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    if (CheckAzimuthAndHeight.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
-                                                    if (SideArmName1 != null && Power.Azimuth > 0 && Power.HeightBase > 0)
+                                                    if (SideArmName1 != null && Power.Azimuth > 0 && Power.Height > 0)
                                                     {
-                                                        Power.Name = SideArmName1?.Name + " " + Power.HeightBase + "HE";
+                                                        Power.Name = SideArmName1?.Name + " " + Power.Height + "HE";
                                                     }
 
 
@@ -4170,27 +4170,27 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            if (Editpower.installationAttributes.Height <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                             }
 
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                            var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                     x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
-                                                    && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                    && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.Height })
                                                                         .Select(g => g.First())
                                                                         .ToList();
 
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            if (CheckAzimuthAndHeight.Count > 0)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
-                                            if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            if (legname != null && power.Azimuth > 0 && power.Height > 0)
                                             {
-                                                power.Name = legname?.CiviLegName + " " + power.HeightBase + "HE";
+                                                power.Name = legname?.CiviLegName + " " + power.Height + "HE";
 
                                             }
                                             var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -4283,26 +4283,26 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            if (Editpower.installationAttributes.Height <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                            var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                             x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
-                                            && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                            && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.Height })
                                                                 .Select(g => g.First())
                                                                 .ToList();
 
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            if (CheckAzimuthAndHeight.Count > 0)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
-                                            if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            if (legname != null && power.Azimuth > 0 && power.Height > 0)
                                             {
-                                                power.Name = legname?.CiviLegName + " " + power.HeightBase + "HE";
+                                                power.Name = legname?.CiviLegName + " " + power.Height + "HE";
 
                                             }
 
@@ -4383,27 +4383,27 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            if (Editpower.installationAttributes.Height <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                             }
 
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                            var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                     x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
-                                                    && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                    && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.Height })
                                                                 .Select(g => g.First())
                                                                 .ToList();
 
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            if (CheckAzimuthAndHeight.Count > 0)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
-                                            if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            if (legname != null && power.Azimuth > 0 && power.Height > 0)
                                             {
-                                                power.Name = legname?.CiviLegName + " " + power.HeightBase + "HE";
+                                                power.Name = legname?.CiviLegName + " " + power.Height + "HE";
 
                                             }
 
@@ -4499,27 +4499,27 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            if (Editpower.installationAttributes.Height <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                             }
 
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                            var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                     x.LEGID == Editpower.installationConfig.legId && x.Id != power.Id
-                                                    && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                             .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                    && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                             .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.Height })
                                                                 .Select(g => g.First())
                                                                 .ToList();
 
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            if (CheckAzimuthAndHeight.Count > 0)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == Editpower.installationConfig.legId);
-                                            if (legname != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            if (legname != null && power.Azimuth > 0 && power.Height > 0)
                                             {
-                                                power.Name = legname?.CiviLegName + " " + power.HeightBase + "HE";
+                                                power.Name = legname?.CiviLegName + " " + power.Height + "HE";
 
                                             }
 
@@ -4659,26 +4659,26 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if (Editpower.installationAttributes.HeightBase <= 0)
+                                                    if (Editpower.installationAttributes.Height <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                             x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                            && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                            && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    if (CheckAzimuthAndHeight.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                    if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                                     {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                        power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                                     }
 
                                                     var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -4771,26 +4771,26 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if (Editpower.installationAttributes.HeightBase <= 0)
+                                                    if (Editpower.installationAttributes.Height <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                            x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                           && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                           && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    if (CheckAzimuthAndHeight.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                    if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                                     {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                        power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                                     }
 
                                                     var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -4871,25 +4871,25 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if (Editpower.installationAttributes.HeightBase <= 0)
+                                                    if (Editpower.installationAttributes.Height <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                               && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                               && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    if (CheckAzimuthAndHeight.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                    if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                                     {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                        power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                                     }
 
 
@@ -4984,24 +4984,24 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if (Editpower.installationAttributes.HeightBase <= 0)
+                                                    if (Editpower.installationAttributes.Height <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                    var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                       x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                      && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                      && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    if (CheckAzimuthAndHeight.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                    if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                    if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                                     {
-                                                        power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                        power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                                     }
 
                                                     var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -5137,26 +5137,26 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                if (Editpower.installationAttributes.HeightBase <= 0)
+                                                if (Editpower.installationAttributes.Height <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                      x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                     && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                     && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
+                                                if (CheckAzimuthAndHeight.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
                                                 var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                                 {
-                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                    power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                                 }
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != power.Id &&
@@ -5249,26 +5249,26 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                if (Editpower.installationAttributes.HeightBase <= 0)
+                                                if (Editpower.installationAttributes.Height <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                    x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                   && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                   && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
+                                                if (CheckAzimuthAndHeight.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                                 var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                                 {
-                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                    power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                                 }
 
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -5348,26 +5348,26 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                if (Editpower.installationAttributes.HeightBase <= 0)
+                                                if (Editpower.installationAttributes.Height <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                      x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                     && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                     && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
+                                                if (CheckAzimuthAndHeight.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                                 var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                                 {
-                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                    power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                                 }
 
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -5461,26 +5461,26 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                if (Editpower.installationAttributes.HeightBase <= 0)
+                                                if (Editpower.installationAttributes.Height <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                                var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                    x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                   && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                   && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
+                                                if (CheckAzimuthAndHeight.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                                 var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                                if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                                if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                                 {
-                                                    power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                    power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                                 }
 
                                                 var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>
@@ -5608,25 +5608,25 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            if (Editpower.installationAttributes.HeightBase <= 0)
+                                            if (Editpower.installationAttributes.Height <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_POWER_VIEW.Where(
+                                            var CheckAzimuthAndHeight = _dbContext.MV_POWER_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                     x.SIDEARM_ID == Editpower.installationConfig.sideArmId && x.Id != power.Id
-                                                    && x.Azimuth == power.Azimuth && x.HeightBase == power.HeightBase && !x.Dismantle)
-                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                    && x.Azimuth == power.Azimuth && x.Height == power.Height && !x.Dismantle)
+                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
                                                           .Select(g => g.First())
                                                           .ToList();
 
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            if (CheckAzimuthAndHeight.Count > 0)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
                                             var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == Editpower.installationConfig.sideArmId);
-                                            if (SideArmName != null && power.Azimuth > 0 && power.HeightBase > 0)
+                                            if (SideArmName != null && power.Azimuth > 0 && power.Height > 0)
                                             {
-                                                power.Name = SideArmName?.Name + " " + power.HeightBase + "HE";
+                                                power.Name = SideArmName?.Name + " " + power.Height + "HE";
                                             }
 
                                             var CheckName = _dbContext.MV_POWER_VIEW.FirstOrDefault(x =>

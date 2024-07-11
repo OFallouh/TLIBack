@@ -521,7 +521,9 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "cabinet_name", () => _mapper.Map<List<BaseGeneratorTypeViewModel>>(_unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x => !x.Dismantle && 
-                        x.SiteCode.ToLower()==SiteCode.ToLower()&& x.allOtherInventoryInst.cabinetId !=null,x=>x.allOtherInventoryInst).Select(x=>x.allOtherInventoryInst.cabinet).ToList())},
+                        x.SiteCode.ToLower()==SiteCode.ToLower()&& x.allOtherInventoryInst.cabinetId !=null
+                        && x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId !=null,x=>x.allOtherInventoryInst,
+                        x=>x.allOtherInventoryInst.cabinet).Select(x=>x.allOtherInventoryInst.cabinet).ToList())},
 
                     };
                   

@@ -692,14 +692,13 @@ namespace TLIS_Service.Services
             {
                 TLIattributeActivated AttributeActivatedTest = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(x => x.Id == AttributeActivatedId);
 
-                if (AttributeActivatedTest.Manage==false)
-                    return new Response<AttributeActivatedViewModel>(true, null, null, $"{AttributeActivatedTest.Key} attribute is included in space calculation and can't be disabled", (int)Helpers.Constants.ApiReturnCode.fail);
-
                 if (CivilWithoutLegCategoryId == null)
                 {
                     TLIattributeActivated AttributeActivated = _unitOfWork.AttributeActivatedRepository.GetByID(AttributeActivatedId);
                     if (AttributeActivated.Key.ToLower() == "length" || AttributeActivated.Key.ToLower() == "width" ||
-                        AttributeActivated.Key.ToLower() == "diameter" || AttributeActivated.Key.ToLower() == "height")
+                       AttributeActivated.Key.ToLower() == "diameter" || AttributeActivated.Key.ToLower() == "height"
+                       || AttributeActivated.Key.ToLower() == "azimuth" || AttributeActivated.Key.ToLower() == "hbasurface"
+                       || AttributeActivated.Key.ToLower() == "hba" || AttributeActivated.Key.ToLower() == "heightbase")
                     {
                         return new Response<AttributeActivatedViewModel>(true, null, null, "This Attribute is Engaged in Space Calculation Formula So Its Enable Status Can't Be Updated", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
@@ -726,7 +725,9 @@ namespace TLIS_Service.Services
                         x.civilWithoutLegCategoryId == CivilWithoutLegCategoryId.Value && x.attributeActivatedId == AttributeActivatedId, x => x.attributeActivated);
 
                     if (AttributeActivatedCategory.attributeActivated.Key.ToLower() == "length" || AttributeActivatedCategory.attributeActivated.Key.ToLower() == "width" ||
-                        AttributeActivatedCategory.attributeActivated.Key.ToLower() == "diameter" || AttributeActivatedCategory.attributeActivated.Key.ToLower() == "height")
+                        AttributeActivatedCategory.attributeActivated.Key.ToLower() == "diameter" || AttributeActivatedCategory.attributeActivated.Key.ToLower() == "height"
+                        || AttributeActivatedCategory.attributeActivated.Key.ToLower() == "azimuth" || AttributeActivatedCategory.attributeActivated.Key.ToLower() == "hbasurface"
+                         || AttributeActivatedCategory.attributeActivated.Key.ToLower() == "hba" || AttributeActivatedCategory.attributeActivated.Key.ToLower() == "heightbase")
                     {
                         return new Response<AttributeActivatedViewModel>(true, null, null, "This Attribute is Engaged in Space Calculation Formula So Its Enable Status Can't Be Updated", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
