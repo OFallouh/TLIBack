@@ -2808,7 +2808,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "GeneratorInstallation" &&
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "SolarInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
@@ -2861,7 +2861,6 @@ namespace TLIS_Service.Services
                               !x.Dismantle).AsEnumerable()
                         .GroupBy(x => new
                         {
-
                             Id = x.Id,
                             Name = x.Name,
                             SITECODE = x.SITECODE,
@@ -2881,6 +2880,7 @@ namespace TLIS_Service.Services
                             SOLARLIBRARY = x.SOLARLIBRARY,
                             CABINET = x.CABINET,
                             Dismantle = x.Dismantle,
+
                         }).OrderBy(x => x.Key.Name)
                         .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                         .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
@@ -2891,7 +2891,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = _dbContext.MV_GENERATOR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
                         && !x.Dismantle).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
@@ -2901,22 +2901,30 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = _dbContext.MV_GENERATOR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
                          && !x.Dismantle).AsEnumerable()
                     .GroupBy(x => new
                     {
-
                         Id = x.Id,
                         Name = x.Name,
                         SITECODE = x.SITECODE,
-                        SerialNumber = x.SerialNumber,
-                        NumberOfFuelTanks = x.NumberOfFuelTanks,
-                        BaseExisting = x.BaseExisting,
+                        PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
+                        PVArrayAzimuth = x.PVArrayAzimuth,
+                        PVArrayAngel = x.PVArrayAngel,
                         SpaceInstallation = x.SpaceInstallation,
                         VisibleStatus = x.VisibleStatus,
-                        BASEGENERATORTYPE = x.BASEGENERATORTYPE,
-                        GENERATORLIBRARY = x.GENERATORLIBRARY,
+                        Prefix = x.Prefix,
+                        PowerLossRatio = x.PowerLossRatio,
+                        NumberOfSSU = x.NumberOfSSU,
+                        NumberOfLightingRod = x.NumberOfLightingRod,
+                        NumberOfInstallPVs = x.NumberOfInstallPVs,
+                        LocationDescription = x.LocationDescription,
+                        ExtenstionDimension = x.ExtenstionDimension,
+                        Extension = x.Extension,
+                        SOLARLIBRARY = x.SOLARLIBRARY,
+                        CABINET = x.CABINET,
                         Dismantle = x.Dismantle,
+
                     }).OrderBy(x => x.Key.Name)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));

@@ -30,6 +30,7 @@ namespace TLIS_Service.IService
         Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode);
         Response<ObjectInstAtts> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId);
         Response<ObjectInstAtts> GetById(int OtherInventoryInsId, string TableName);
+        Response<GetEnableAttribute> GetSolarWithEnableAtt(string? SiteCode, string ConnectionString);
         Response<GetForAddOtherInventoryInstallationObject> GetAttForAddSolarInstallation(string TableName, int LibraryID, string SiteCode);
         Response<GetForAddOtherInventoryInstallationObject> GetSolarInstallationById(int SolarId, string TableName);
         Response<ObjectInstAtts> AddSolarInstallation(AddSolarInstallationObject addSolarInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId);
