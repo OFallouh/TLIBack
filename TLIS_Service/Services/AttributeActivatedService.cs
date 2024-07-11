@@ -276,20 +276,7 @@ namespace TLIS_Service.Services
 
                 foreach (TLIattributeActivated Attribute in Attributes)
                 {
-                    if (Attribute.Key.ToLower() == "length" || Attribute.Key.ToLower() == "width" ||
-                        Attribute.Key.ToLower() == "diameter" || Attribute.Key.ToLower() == "height")
-                    {
-                        Attribute.Manage = true;
-                        Attribute.enable = true;
-                        Attribute.Required = true;
-                    }
-
-                    else if (Attribute.Key.ToLower() == "model")
-                    {
-                        Attribute.enable = true;
-                        Attribute.Required = true;
-                    }
-
+                    
                     if (CivilWithoutLegCategoryId != null)
                     {
                         TLIattActivatedCategory AttributeActivatedCategory = AttrbiuteViewManagment.FirstOrDefault(x =>

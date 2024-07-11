@@ -2060,363 +2060,363 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion
-        public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId)
-        {
-            int allOtherInventoryInstId = 0;
-            using (var con = new OracleConnection(ConnectionString))
-            {
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                {
-                    using (TransactionScope transaction = new TransactionScope())
-                    {
-                        try
-                        {
-                            string ErrorMessage = string.Empty;
-                            var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName == TableName);
+        //public Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        //{
+        //    int allOtherInventoryInstId = 0;
+        //    using (var con = new OracleConnection(ConnectionString))
+        //    {
+        //        con.Open();
+        //        using (var tran = con.BeginTransaction())
+        //        {
+        //            using (TransactionScope transaction = new TransactionScope())
+        //            {
+        //                try
+        //                {
+        //                    string ErrorMessage = string.Empty;
+        //                    var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(o => o.TableName == TableName);
 
-                            if (OtherInventoryType.TLIcabinet.ToString().ToLower() == TableName.ToLower())
-                            {
-                                bool IsCabinetPowerLibraryType = false;
-                                //Add Cabinet
-                                var addCabinetViewModel = _mapper.Map<AddCabinetViewModel>(model);
-                                var Cabinet = _mapper.Map<TLIcabinet>(addCabinetViewModel);
-                                if (addCabinetViewModel.CabinetPowerLibraryId != null)
-                                {
-                                    IsCabinetPowerLibraryType = true;
-                                    if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
-                                    {
-                                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCabinetViewModel.CabinetPowerLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Power").Message;
-                                        if (CheckSpace != "Success")
-                                        {
-                                            return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                                        }
-                                    }
-                                }
-                                else if (addCabinetViewModel.CabinetTelecomLibraryId != null)
-                                {
-                                    if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
-                                    {
+        //                    if (OtherInventoryType.TLIcabinet.ToString().ToLower() == TableName.ToLower())
+        //                    {
+        //                        bool IsCabinetPowerLibraryType = false;
+        //                        //Add Cabinet
+        //                        var addCabinetViewModel = _mapper.Map<AddCabinetViewModel>(model);
+        //                        var Cabinet = _mapper.Map<TLIcabinet>(addCabinetViewModel);
+        //                        if (addCabinetViewModel.CabinetPowerLibraryId != null)
+        //                        {
+        //                            IsCabinetPowerLibraryType = true;
+        //                            if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
+        //                            {
+        //                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCabinetViewModel.CabinetPowerLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Power").Message;
+        //                                if (CheckSpace != "Success")
+        //                                {
+        //                                    return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+        //                                }
+        //                            }
+        //                        }
+        //                        else if (addCabinetViewModel.CabinetTelecomLibraryId != null)
+        //                        {
+        //                            if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
+        //                            {
 
-                                        var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCabinetViewModel.CabinetTelecomLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Telecom").Message;
-                                        if (CheckSpace != "Success")
-                                        {
-                                            return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                                        }
-                                    }
-                                }
+        //                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addCabinetViewModel.CabinetTelecomLibraryId.Value, addCabinetViewModel.SpaceInstallation, "Telecom").Message;
+        //                                if (CheckSpace != "Success")
+        //                                {
+        //                                    return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+        //                                }
+        //                            }
+        //                        }
 
-                                if (addCabinetViewModel.CabinetPowerLibraryId != null)
-                                {
-                                    if (addCabinetViewModel.NUmberOfPSU == null)
-                                    {
-                                        return new Response<ObjectInstAtts>(true, null, null, "The numberofpsu can't be null in case cabinet library type is power", (int)ApiReturnCode.fail);
-                                    }
-                                    //if (addCabinetViewModel.RenewableCabinetTypeId == 0)
-                                    //{
-                                    //    return new Response<ObjectInstAtts>(true, null, null, "The renewable cabinet type can't be null in case cabinet library type is power", (int)ApiReturnCode.fail);
-                                    //}
-                                }
-                                TLIrenewableCabinetType CabinetEntity = new TLIrenewableCabinetType();
-                                if (addCabinetViewModel.RenewableCabinetTypeId != null)
-                                {
-                                    CabinetEntity = _unitOfWork.RenewableCabinetTypeRepository.GetByID(addCabinetViewModel.RenewableCabinetTypeId.Value);
+        //                        if (addCabinetViewModel.CabinetPowerLibraryId != null)
+        //                        {
+        //                            if (addCabinetViewModel.NUmberOfPSU == null)
+        //                            {
+        //                                return new Response<ObjectInstAtts>(true, null, null, "The numberofpsu can't be null in case cabinet library type is power", (int)ApiReturnCode.fail);
+        //                            }
+        //                            //if (addCabinetViewModel.RenewableCabinetTypeId == 0)
+        //                            //{
+        //                            //    return new Response<ObjectInstAtts>(true, null, null, "The renewable cabinet type can't be null in case cabinet library type is power", (int)ApiReturnCode.fail);
+        //                            //}
+        //                        }
+        //                        TLIrenewableCabinetType CabinetEntity = new TLIrenewableCabinetType();
+        //                        if (addCabinetViewModel.RenewableCabinetTypeId != null)
+        //                        {
+        //                            CabinetEntity = _unitOfWork.RenewableCabinetTypeRepository.GetByID(addCabinetViewModel.RenewableCabinetTypeId.Value);
 
-                                    if (CabinetEntity != null)
-                                    {
-                                        if (CabinetEntity.Name.ToLower() == "controller with batteries")
-                                        {
-                                            if (addCabinetViewModel.RenewableCabinetNumberOfBatteries == null)
-                                            {
-                                                return new Response<ObjectInstAtts>(true, null, null, "The Renewable Cabinet Number Of Batteries Can't Be Null  in case Renewable  Cabinet type is controller with batteries ", (int)ApiReturnCode.fail);
-                                            }
+        //                            if (CabinetEntity != null)
+        //                            {
+        //                                if (CabinetEntity.Name.ToLower() == "controller with batteries")
+        //                                {
+        //                                    if (addCabinetViewModel.RenewableCabinetNumberOfBatteries == null)
+        //                                    {
+        //                                        return new Response<ObjectInstAtts>(true, null, null, "The Renewable Cabinet Number Of Batteries Can't Be Null  in case Renewable  Cabinet type is controller with batteries ", (int)ApiReturnCode.fail);
+        //                                    }
 
-                                        }
-                                    }
-                                }
+        //                                }
+        //                            }
+        //                        }
 
-                                //Check Validations
-                                bool test = false;
-                                string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
+        //                        //Check Validations
+        //                        bool test = false;
+        //                        string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
 
-                                if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+        //                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                                string CheckGeneralValidation = CheckGeneralValidationFunction(addCabinetViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
+        //                        string CheckGeneralValidation = CheckGeneralValidationFunction(addCabinetViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
 
-                                if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+        //                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                                test = true;
-                                if (test == true)
-                                {
-                                    TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
-                                        ((x.allOtherInventoryInst.cabinetId != null) ? (x.allOtherInventoryInst.cabinet.Name.ToLower() == Cabinet.Name.ToLower()) : (false)) &&
-                                        ((IsCabinetPowerLibraryType) ? (x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId == Cabinet.CabinetPowerLibraryId) :
-                                            (x.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId == Cabinet.CabinetTelecomLibraryId)) &&
-                                             x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                             x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
+        //                        test = true;
+        //                        if (test == true)
+        //                        {
+        //                            TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
+        //                                ((x.allOtherInventoryInst.cabinetId != null) ? (x.allOtherInventoryInst.cabinet.Name.ToLower() == Cabinet.Name.ToLower()) : (false)) &&
+        //                                ((IsCabinetPowerLibraryType) ? (x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId == Cabinet.CabinetPowerLibraryId) :
+        //                                    (x.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId == Cabinet.CabinetTelecomLibraryId)) &&
+        //                                     x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                                     x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
 
-                                    if (CheckName != null)
-                                        return new Response<ObjectInstAtts>(true, null, null, $"This name {Cabinet.Name} is already exists", (int)ApiReturnCode.fail);
+        //                            if (CheckName != null)
+        //                                return new Response<ObjectInstAtts>(true, null, null, $"This name {Cabinet.Name} is already exists", (int)ApiReturnCode.fail);
 
-                                    _unitOfWork.CabinetRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, Cabinet);
-                                    _unitOfWork.SaveChanges();
-                                    //Add to Civil_Site_Date if there is free space
-                                    TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
-                                    allOtherInventoryInst.cabinetId = Cabinet.Id;
-                                    _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
-                                    _unitOfWork.SaveChanges();
-                                    allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                    if (addCabinetViewModel.TLIotherInSite != null && String.IsNullOrEmpty(SiteCode) == false)
-                                    {
-                                        TLIotherInSite otherInSite = new TLIotherInSite();
-                                        otherInSite.SiteCode = SiteCode;
-                                        otherInSite.OtherInSiteStatus = addCabinetViewModel.TLIotherInSite.OtherInSiteStatus;
-                                        otherInSite.OtherInventoryStatus = addCabinetViewModel.TLIotherInSite.OtherInventoryStatus;
-                                        otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                        otherInSite.InstallationDate = addCabinetViewModel.TLIotherInSite.InstallationDate;
-                                        otherInSite.ReservedSpace = addCabinetViewModel.TLIotherInSite.ReservedSpace;
-                                        _unitOfWork.OtherInSiteRepository.Add(otherInSite);
-                                        _unitOfWork.SaveChanges();
-                                    }
-                                    var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
-                                    if (addCabinetViewModel.TLIotherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
-                                    {
-                                        TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
-                                        otherInventoryDistance.Distance = addCabinetViewModel.TLIotherInventoryDistance.Distance != null ?
-                                            addCabinetViewModel.TLIotherInventoryDistance.Distance.Value : 0;
-                                        otherInventoryDistance.Azimuth = addCabinetViewModel.TLIotherInventoryDistance.Azimuth != null ?
-                                            addCabinetViewModel.TLIotherInventoryDistance.Azimuth.Value : 0;
-                                        otherInventoryDistance.SiteCode = SiteCode;
-                                        otherInventoryDistance.ReferenceOtherInventoryId = addCabinetViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId != null ?
-                                            addCabinetViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
-                                        otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                        _unitOfWork.OtherInventoryDistanceRepository.Add(otherInventoryDistance);
-                                        _unitOfWork.SaveChanges();
-                                    }
-                                    //if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
-                                    //{
-                                    //    _unitOfWork.SiteRepository.UpdateReservedSpace(SiteCode, addCabinetViewModel.SpaceInstallation);
-                                    //}
-                                    if (addCabinetViewModel.TLIdynamicAttInstValue != null ? addCabinetViewModel.TLIdynamicAttInstValue.Count > 0 : false)
-                                    {
-                                        foreach (var DynamicAttInstValue in addCabinetViewModel.TLIdynamicAttInstValue)
-                                        {
-                                            _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, Cabinet.Id);
-                                        }
-                                    }
-                                    //AddHistory(addCabinetViewModel.ticketAtt, allOtherInventoryInstId, "Insert");
-                                }
-                                else
-                                {
-                                    return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
-                                }
+        //                            _unitOfWork.CabinetRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, Cabinet);
+        //                            _unitOfWork.SaveChanges();
+        //                            //Add to Civil_Site_Date if there is free space
+        //                            TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
+        //                            allOtherInventoryInst.cabinetId = Cabinet.Id;
+        //                            _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
+        //                            _unitOfWork.SaveChanges();
+        //                            allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                            if (addCabinetViewModel.TLIotherInSite != null && String.IsNullOrEmpty(SiteCode) == false)
+        //                            {
+        //                                TLIotherInSite otherInSite = new TLIotherInSite();
+        //                                otherInSite.SiteCode = SiteCode;
+        //                                otherInSite.OtherInSiteStatus = addCabinetViewModel.TLIotherInSite.OtherInSiteStatus;
+        //                                otherInSite.OtherInventoryStatus = addCabinetViewModel.TLIotherInSite.OtherInventoryStatus;
+        //                                otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                                otherInSite.InstallationDate = addCabinetViewModel.TLIotherInSite.InstallationDate;
+        //                                otherInSite.ReservedSpace = addCabinetViewModel.TLIotherInSite.ReservedSpace;
+        //                                _unitOfWork.OtherInSiteRepository.Add(otherInSite);
+        //                                _unitOfWork.SaveChanges();
+        //                            }
+        //                            var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
+        //                            if (addCabinetViewModel.TLIotherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+        //                            {
+        //                                TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
+        //                                otherInventoryDistance.Distance = addCabinetViewModel.TLIotherInventoryDistance.Distance != null ?
+        //                                    addCabinetViewModel.TLIotherInventoryDistance.Distance.Value : 0;
+        //                                otherInventoryDistance.Azimuth = addCabinetViewModel.TLIotherInventoryDistance.Azimuth != null ?
+        //                                    addCabinetViewModel.TLIotherInventoryDistance.Azimuth.Value : 0;
+        //                                otherInventoryDistance.SiteCode = SiteCode;
+        //                                otherInventoryDistance.ReferenceOtherInventoryId = addCabinetViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId != null ?
+        //                                    addCabinetViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
+        //                                otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                                _unitOfWork.OtherInventoryDistanceRepository.Add(otherInventoryDistance);
+        //                                _unitOfWork.SaveChanges();
+        //                            }
+        //                            //if (addCabinetViewModel.TLIotherInSite.ReservedSpace == true)
+        //                            //{
+        //                            //    _unitOfWork.SiteRepository.UpdateReservedSpace(SiteCode, addCabinetViewModel.SpaceInstallation);
+        //                            //}
+        //                            if (addCabinetViewModel.TLIdynamicAttInstValue != null ? addCabinetViewModel.TLIdynamicAttInstValue.Count > 0 : false)
+        //                            {
+        //                                foreach (var DynamicAttInstValue in addCabinetViewModel.TLIdynamicAttInstValue)
+        //                                {
+        //                                    _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, Cabinet.Id);
+        //                                }
+        //                            }
+        //                            //AddHistory(addCabinetViewModel.ticketAtt, allOtherInventoryInstId, "Insert");
+        //                        }
+        //                        else
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
+        //                        }
 
-                            }
-                            else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
-                            {
-                                var addGeneratorViewModel = _mapper.Map<AddGeneratorInstallationObject>(model);
-                                var Generator = _mapper.Map<TLIgenerator>(addGeneratorViewModel);
-                                if (addGeneratorViewModel.OtherInSite.ReservedSpace == true)
-                                {
-                                    var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addGeneratorViewModel.GeneratorType.GeneratorLibraryId, addGeneratorViewModel.installationAttributes.SpaceInstallation, null).Message;
-                                    if (CheckSpace != "Success")
-                                    {
-                                        return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                                    }
-                                }
+        //                    }
+        //                    else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
+        //                    {
+        //                        var addGeneratorViewModel = _mapper.Map<AddGeneratorInstallationObject>(model);
+        //                        var Generator = _mapper.Map<TLIgenerator>(addGeneratorViewModel);
+        //                        if (addGeneratorViewModel.OtherInSite.ReservedSpace == true)
+        //                        {
+        //                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addGeneratorViewModel.GeneratorType.GeneratorLibraryId, addGeneratorViewModel.installationAttributes.SpaceInstallation, null).Message;
+        //                            if (CheckSpace != "Success")
+        //                            {
+        //                                return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+        //                            }
+        //                        }
 
-                                //string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
+        //                        //string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
 
-                                //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                //    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+        //                        //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                        //    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                                //string CheckGeneralValidation = CheckGeneralValidationFunction(addGeneratorViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
+        //                        //string CheckGeneralValidation = CheckGeneralValidationFunction(addGeneratorViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
 
-                                //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
-
-                                TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
-                                    (x.allOtherInventoryInst.generatorId != null ? x.allOtherInventoryInst.generator.Name.ToLower() == Generator.Name.ToLower() : false) &&
-                                    x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
-
-                                if (CheckName != null)
-                                    return new Response<ObjectInstAtts>(true, null, null, $"This name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
-
-                                var CheckSerialNumber = _unitOfWork.GeneratorRepository.GetWhereFirst(x => x.SerialNumber == Generator.SerialNumber);
-                                if (CheckSerialNumber != null)
-                                {
-                                    return new Response<ObjectInstAtts>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
-                                }
-                                _unitOfWork.GeneratorRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, Generator);
-                                _unitOfWork.SaveChanges();
-                                //Add to Civil_Site_Date if there is free space
-                                TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
-                                allOtherInventoryInst.generatorId = Generator.Id;
-                                _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
-                                _unitOfWork.SaveChanges();
-                                allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                if (addGeneratorViewModel.OtherInSite != null && string.IsNullOrEmpty(SiteCode) == false)
-                                {
-                                    TLIotherInSite otherInSite = new TLIotherInSite();
-                                    otherInSite.SiteCode = SiteCode;
-                                    otherInSite.OtherInSiteStatus = addGeneratorViewModel.OtherInSite.OtherInSiteStatus;
-                                    otherInSite.OtherInventoryStatus = !string.IsNullOrEmpty(addGeneratorViewModel.OtherInSite.OtherInventoryStatus) ?
-                                        addGeneratorViewModel.OtherInSite.OtherInventoryStatus : string.Empty;
-                                    otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                    otherInSite.InstallationDate = addGeneratorViewModel.OtherInSite.InstallationDate;
-                                    otherInSite.ReservedSpace = addGeneratorViewModel.OtherInSite.ReservedSpace;
-                                    _unitOfWork.OtherInSiteRepository.Add(otherInSite);
-                                    _unitOfWork.SaveChanges();
-                                }
-                                var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
-                                if (addGeneratorViewModel.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
-                                {
-                                    TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
-                                    otherInventoryDistance.Distance = addGeneratorViewModel.OtherInventoryDistance.Distance != null ?
-                                        addGeneratorViewModel.OtherInventoryDistance.Distance.Value : 0;
-                                    otherInventoryDistance.Azimuth = addGeneratorViewModel.OtherInventoryDistance.Azimuth != null ?
-                                        addGeneratorViewModel.OtherInventoryDistance.Azimuth.Value : 0;
-                                    otherInventoryDistance.SiteCode = SiteCode;
-                                    otherInventoryDistance.ReferenceOtherInventoryId = addGeneratorViewModel.OtherInventoryDistance.ReferenceOtherInventoryId != null ?
-                                        addGeneratorViewModel.OtherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
-                                    otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                    _unitOfWork.OtherInventoryDistanceRepository.Add(otherInventoryDistance);
-                                    _unitOfWork.SaveChanges();
-                                }
-                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addGeneratorViewModel.dynamicAttribute, TableNameEntity.Id, Generator.Id, ConnectionString);
+        //                        //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                        //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
 
+        //                        TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
+        //                            (x.allOtherInventoryInst.generatorId != null ? x.allOtherInventoryInst.generator.Name.ToLower() == Generator.Name.ToLower() : false) &&
+        //                            x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                                x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
 
-                            }
+        //                        if (CheckName != null)
+        //                            return new Response<ObjectInstAtts>(true, null, null, $"This name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
+
+        //                        var CheckSerialNumber = _unitOfWork.GeneratorRepository.GetWhereFirst(x => x.SerialNumber == Generator.SerialNumber);
+        //                        if (CheckSerialNumber != null)
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+        //                        }
+        //                        _unitOfWork.GeneratorRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, Generator);
+        //                        _unitOfWork.SaveChanges();
+        //                        //Add to Civil_Site_Date if there is free space
+        //                        TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
+        //                        allOtherInventoryInst.generatorId = Generator.Id;
+        //                        _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
+        //                        _unitOfWork.SaveChanges();
+        //                        allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                        if (addGeneratorViewModel.OtherInSite != null && string.IsNullOrEmpty(SiteCode) == false)
+        //                        {
+        //                            TLIotherInSite otherInSite = new TLIotherInSite();
+        //                            otherInSite.SiteCode = SiteCode;
+        //                            otherInSite.OtherInSiteStatus = addGeneratorViewModel.OtherInSite.OtherInSiteStatus;
+        //                            otherInSite.OtherInventoryStatus = !string.IsNullOrEmpty(addGeneratorViewModel.OtherInSite.OtherInventoryStatus) ?
+        //                                addGeneratorViewModel.OtherInSite.OtherInventoryStatus : string.Empty;
+        //                            otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                            otherInSite.InstallationDate = addGeneratorViewModel.OtherInSite.InstallationDate;
+        //                            otherInSite.ReservedSpace = addGeneratorViewModel.OtherInSite.ReservedSpace;
+        //                            _unitOfWork.OtherInSiteRepository.Add(otherInSite);
+        //                            _unitOfWork.SaveChanges();
+        //                        }
+        //                        var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
+        //                        if (addGeneratorViewModel.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+        //                        {
+        //                            TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
+        //                            otherInventoryDistance.Distance = addGeneratorViewModel.OtherInventoryDistance.Distance != null ?
+        //                                addGeneratorViewModel.OtherInventoryDistance.Distance.Value : 0;
+        //                            otherInventoryDistance.Azimuth = addGeneratorViewModel.OtherInventoryDistance.Azimuth != null ?
+        //                                addGeneratorViewModel.OtherInventoryDistance.Azimuth.Value : 0;
+        //                            otherInventoryDistance.SiteCode = SiteCode;
+        //                            otherInventoryDistance.ReferenceOtherInventoryId = addGeneratorViewModel.OtherInventoryDistance.ReferenceOtherInventoryId != null ?
+        //                                addGeneratorViewModel.OtherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
+        //                            otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                            _unitOfWork.OtherInventoryDistanceRepository.Add(otherInventoryDistance);
+        //                            _unitOfWork.SaveChanges();
+        //                        }
+        //                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addGeneratorViewModel.dynamicAttribute, TableNameEntity.Id, Generator.Id, ConnectionString);
 
 
-                            else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
-                            {
-                                //Add Solar
-                                var addSolarViewModel = _mapper.Map<AddSolarViewModel>(model);
-                                var Solar = _mapper.Map<TLIsolar>(addSolarViewModel);
-                                if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
-                                {
-                                    var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addSolarViewModel.SolarLibraryId, addSolarViewModel.SpaceInstallation, null).Message;
-                                    if (CheckSpace != "Success")
-                                    {
-                                        return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
-                                    }
-                                }
 
-                                TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
-                                    (x.allOtherInventoryInst.solarId != null ? x.allOtherInventoryInst.solar.Name.ToLower() == Solar.Name.ToLower() : false) &&
-                                    x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar);
+        //                    }
 
-                                if (CheckName != null)
-                                    return new Response<ObjectInstAtts>(true, null, null, $"This name {Solar.Name} is already exists", (int)ApiReturnCode.fail);
 
-                                //Check Validations
-                                bool test = false;
-                                string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
+        //                    else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
+        //                    {
+        //                        //Add Solar
+        //                        var addSolarViewModel = _mapper.Map<AddSolarViewModel>(model);
+        //                        var Solar = _mapper.Map<TLIsolar>(addSolarViewModel);
+        //                        if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
+        //                        {
+        //                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, TableName, addSolarViewModel.SolarLibraryId, addSolarViewModel.SpaceInstallation, null).Message;
+        //                            if (CheckSpace != "Success")
+        //                            {
+        //                                return new Response<ObjectInstAtts>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+        //                            }
+        //                        }
 
-                                if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+        //                        TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle && !x.allOtherInventoryInst.Draft &&
+        //                            (x.allOtherInventoryInst.solarId != null ? x.allOtherInventoryInst.solar.Name.ToLower() == Solar.Name.ToLower() : false) &&
+        //                            x.SiteCode.ToLower() == SiteCode.ToLower(),
+        //                                x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar);
 
-                                string CheckGeneralValidation = CheckGeneralValidationFunction(addSolarViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
+        //                        if (CheckName != null)
+        //                            return new Response<ObjectInstAtts>(true, null, null, $"This name {Solar.Name} is already exists", (int)ApiReturnCode.fail);
 
-                                if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+        //                        //Check Validations
+        //                        bool test = false;
+        //                        string CheckDependencyValidation = this.CheckDependencyValidation(model, TableName, SiteCode);
 
-                                test = true;
-                                if (test == true)
-                                {
-                                    _unitOfWork.SolarRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, Solar);
-                                    _unitOfWork.SaveChanges();
-                                    //Add to Civil_Site_Date if there is free space
-                                    TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
-                                    allOtherInventoryInst.solarId = Solar.Id;
-                                    _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
-                                    _unitOfWork.SaveChanges();
-                                    allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                    if (addSolarViewModel.TLIotherInSite != null && string.IsNullOrEmpty(SiteCode) == false)
-                                    {
-                                        TLIotherInSite otherInSite = new TLIotherInSite();
-                                        otherInSite.SiteCode = SiteCode;
-                                        otherInSite.OtherInSiteStatus = addSolarViewModel.TLIotherInSite.OtherInSiteStatus;
-                                        otherInSite.OtherInventoryStatus = addSolarViewModel.TLIotherInSite.OtherInventoryStatus;
-                                        otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                        otherInSite.InstallationDate = addSolarViewModel.TLIotherInSite.InstallationDate;
-                                        otherInSite.ReservedSpace = addSolarViewModel.TLIotherInSite.ReservedSpace;
-                                        _unitOfWork.OtherInSiteRepository.Add(otherInSite);
-                                        _unitOfWork.SaveChanges();
-                                    }
-                                    var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
-                                    if (addSolarViewModel.TLIotherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
-                                    {
-                                        TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
-                                        otherInventoryDistance.Distance = addSolarViewModel.TLIotherInventoryDistance.Distance != null ?
-                                            addSolarViewModel.TLIotherInventoryDistance.Distance.Value : 0;
-                                        otherInventoryDistance.Azimuth = addSolarViewModel.TLIotherInventoryDistance.Azimuth != null ?
-                                            addSolarViewModel.TLIotherInventoryDistance.Azimuth.Value : 0;
-                                        otherInventoryDistance.SiteCode = SiteCode;
-                                        otherInventoryDistance.ReferenceOtherInventoryId = addSolarViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId != null ?
-                                            addSolarViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
-                                        otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                        _unitOfWork.OtherInventoryDistanceRepository.Add(otherInventoryDistance);
-                                        _unitOfWork.SaveChanges();
-                                    }
-                                    //if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
-                                    //{
-                                    //    _unitOfWork.SiteRepository.UpdateReservedSpace(SiteCode, addSolarViewModel.SpaceInstallation);
-                                    //}
-                                    //Add Dynamic Attributes
-                                    if (addSolarViewModel.TLIdynamicAttInstValue != null ? addSolarViewModel.TLIdynamicAttInstValue.Count > 0 : false)
-                                    {
-                                        foreach (var DynamicAttInstValue in addSolarViewModel.TLIdynamicAttInstValue)
-                                        {
-                                            _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, Solar.Id);
-                                        }
-                                    }
-                                    //AddHistory(addSolarViewModel.ticketAtt, allOtherInventoryInstId, "Insert");
-                                }
-                                else
-                                {
-                                    return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
-                                }
+        //                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                            }
-                            if (TaskId != null)
-                            {
-                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
-                                var result = Submit.Result;
-                                if (result.result == true && result.errorMessage == null)
-                                {
-                                    _unitOfWork.SaveChanges();
-                                    transaction.Complete();
-                                }
-                                else
-                                {
-                                    transaction.Dispose();
-                                    return new Response<ObjectInstAtts>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
-                                }
-                            }
-                            else
-                            {
-                                _unitOfWork.SaveChanges();
-                                transaction.Complete();
-                            }
-                            return new Response<ObjectInstAtts>();
-                        }
-                        catch (Exception err)
-                        {
-                            tran.Rollback();
-                            return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
-                        }
-                    }
-                }
-            }
-        }
+        //                        string CheckGeneralValidation = CheckGeneralValidationFunction(addSolarViewModel.TLIdynamicAttInstValue, TableNameEntity.TableName);
+
+        //                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
+        //                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+        //                        test = true;
+        //                        if (test == true)
+        //                        {
+        //                            _unitOfWork.SolarRepository.AddWithHistory(Helpers.LogFilterAttribute.UserId, Solar);
+        //                            _unitOfWork.SaveChanges();
+        //                            //Add to Civil_Site_Date if there is free space
+        //                            TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
+        //                            allOtherInventoryInst.solarId = Solar.Id;
+        //                            _unitOfWork.AllOtherInventoryInstRepository.Add(allOtherInventoryInst);
+        //                            _unitOfWork.SaveChanges();
+        //                            allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                            if (addSolarViewModel.TLIotherInSite != null && string.IsNullOrEmpty(SiteCode) == false)
+        //                            {
+        //                                TLIotherInSite otherInSite = new TLIotherInSite();
+        //                                otherInSite.SiteCode = SiteCode;
+        //                                otherInSite.OtherInSiteStatus = addSolarViewModel.TLIotherInSite.OtherInSiteStatus;
+        //                                otherInSite.OtherInventoryStatus = addSolarViewModel.TLIotherInSite.OtherInventoryStatus;
+        //                                otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                                otherInSite.InstallationDate = addSolarViewModel.TLIotherInSite.InstallationDate;
+        //                                otherInSite.ReservedSpace = addSolarViewModel.TLIotherInSite.ReservedSpace;
+        //                                _unitOfWork.OtherInSiteRepository.Add(otherInSite);
+        //                                _unitOfWork.SaveChanges();
+        //                            }
+        //                            var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
+        //                            if (addSolarViewModel.TLIotherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+        //                            {
+        //                                TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
+        //                                otherInventoryDistance.Distance = addSolarViewModel.TLIotherInventoryDistance.Distance != null ?
+        //                                    addSolarViewModel.TLIotherInventoryDistance.Distance.Value : 0;
+        //                                otherInventoryDistance.Azimuth = addSolarViewModel.TLIotherInventoryDistance.Azimuth != null ?
+        //                                    addSolarViewModel.TLIotherInventoryDistance.Azimuth.Value : 0;
+        //                                otherInventoryDistance.SiteCode = SiteCode;
+        //                                otherInventoryDistance.ReferenceOtherInventoryId = addSolarViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId != null ?
+        //                                    addSolarViewModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
+        //                                otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
+        //                                _unitOfWork.OtherInventoryDistanceRepository.Add(otherInventoryDistance);
+        //                                _unitOfWork.SaveChanges();
+        //                            }
+        //                            //if (addSolarViewModel.TLIotherInSite.ReservedSpace == true)
+        //                            //{
+        //                            //    _unitOfWork.SiteRepository.UpdateReservedSpace(SiteCode, addSolarViewModel.SpaceInstallation);
+        //                            //}
+        //                            //Add Dynamic Attributes
+        //                            if (addSolarViewModel.TLIdynamicAttInstValue != null ? addSolarViewModel.TLIdynamicAttInstValue.Count > 0 : false)
+        //                            {
+        //                                foreach (var DynamicAttInstValue in addSolarViewModel.TLIdynamicAttInstValue)
+        //                                {
+        //                                    _unitOfWork.DynamicAttInstValueRepository.AddDynamicInstAtts(DynamicAttInstValue, TableNameEntity.Id, Solar.Id);
+        //                                }
+        //                            }
+        //                            //AddHistory(addSolarViewModel.ticketAtt, allOtherInventoryInstId, "Insert");
+        //                        }
+        //                        else
+        //                        {
+        //                            return new Response<ObjectInstAtts>(true, null, null, ErrorMessage, (int)ApiReturnCode.fail);
+        //                        }
+
+        //                    }
+        //                    if (TaskId != null)
+        //                    {
+        //                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+        //                        var result = Submit.Result;
+        //                        if (result.result == true && result.errorMessage == null)
+        //                        {
+        //                            _unitOfWork.SaveChanges();
+        //                            transaction.Complete();
+        //                        }
+        //                        else
+        //                        {
+        //                            transaction.Dispose();
+        //                            return new Response<ObjectInstAtts>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        _unitOfWork.SaveChanges();
+        //                        transaction.Complete();
+        //                    }
+        //                    return new Response<ObjectInstAtts>();
+        //                }
+        //                catch (Exception err)
+        //                {
+        //                    tran.Rollback();
+        //                    return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
         public Response<ObjectInstAtts> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId)
         {
             int allOtherInventoryInstId = 0;
@@ -2481,9 +2481,8 @@ namespace TLIS_Service.Services
                             {
                                 TLIotherInSite otherInSite = new TLIotherInSite();
                                 otherInSite.SiteCode = SiteCode;
-                                otherInSite.OtherInSiteStatus = addGeneratorInstallationObject.OtherInSite.OtherInSiteStatus;
-                                otherInSite.OtherInventoryStatus = !string.IsNullOrEmpty(addGeneratorInstallationObject.OtherInSite.OtherInventoryStatus) ?
-                                    addGeneratorInstallationObject.OtherInSite.OtherInventoryStatus : string.Empty;
+                                otherInSite.OtherInSiteStatus = addGeneratorInstallationObject.OtherInSite?.OtherInSiteStatus;
+                                otherInSite.OtherInventoryStatus = addGeneratorInstallationObject.OtherInSite?.OtherInventoryStatus;
                                 otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
                                 otherInSite.InstallationDate = addGeneratorInstallationObject.OtherInSite.InstallationDate;
                                 otherInSite.ReservedSpace = addGeneratorInstallationObject.OtherInSite.ReservedSpace;
@@ -2494,13 +2493,10 @@ namespace TLIS_Service.Services
                             if (addGeneratorInstallationObject.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
                             {
                                 TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
-                                otherInventoryDistance.Distance = addGeneratorInstallationObject.OtherInventoryDistance.Distance != null ?
-                                    addGeneratorInstallationObject.OtherInventoryDistance.Distance.Value : 0;
-                                otherInventoryDistance.Azimuth = addGeneratorInstallationObject.OtherInventoryDistance.Azimuth != null ?
-                                    addGeneratorInstallationObject.OtherInventoryDistance.Azimuth.Value : 0;
+                                otherInventoryDistance.Distance = addGeneratorInstallationObject.OtherInventoryDistance.Distance;
+                                otherInventoryDistance.Azimuth = addGeneratorInstallationObject.OtherInventoryDistance.Azimuth;
                                 otherInventoryDistance.SiteCode = SiteCode;
-                                otherInventoryDistance.ReferenceOtherInventoryId = addGeneratorInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId != null ?
-                                    addGeneratorInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
+                                otherInventoryDistance.ReferenceOtherInventoryId = addGeneratorInstallationObject.OtherInventoryDistance?.ReferenceOtherInventoryId;
                                 otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
                                 _unitOfWork.OtherInventoryDistanceRepository.AddWithHistory(UserId, otherInventoryDistance);
                                 _unitOfWork.SaveChanges();
@@ -2598,9 +2594,8 @@ namespace TLIS_Service.Services
                             {
                                 TLIotherInSite otherInSite = new TLIotherInSite();
                                 otherInSite.SiteCode = SiteCode;
-                                otherInSite.OtherInSiteStatus = addSolarInstallationObject.OtherInSite.OtherInSiteStatus;
-                                otherInSite.OtherInventoryStatus = !string.IsNullOrEmpty(addSolarInstallationObject.OtherInSite.OtherInventoryStatus) ?
-                                    addSolarInstallationObject.OtherInSite.OtherInventoryStatus : string.Empty;
+                                otherInSite.OtherInSiteStatus = addSolarInstallationObject.OtherInSite?.OtherInSiteStatus;
+                                otherInSite.OtherInventoryStatus = addSolarInstallationObject.OtherInSite?.OtherInventoryStatus;
                                 otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
                                 otherInSite.InstallationDate = addSolarInstallationObject.OtherInSite.InstallationDate;
                                 otherInSite.ReservedSpace = addSolarInstallationObject.OtherInSite.ReservedSpace;
@@ -2611,13 +2606,10 @@ namespace TLIS_Service.Services
                             if (addSolarInstallationObject.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
                             {
                                 TLIotherInventoryDistance otherInventoryDistance = new TLIotherInventoryDistance();
-                                otherInventoryDistance.Distance = addSolarInstallationObject.OtherInventoryDistance.Distance != null ?
-                                    addSolarInstallationObject.OtherInventoryDistance.Distance.Value : 0;
-                                otherInventoryDistance.Azimuth = addSolarInstallationObject.OtherInventoryDistance.Azimuth != null ?
-                                    addSolarInstallationObject.OtherInventoryDistance.Azimuth.Value : 0;
+                                otherInventoryDistance.Distance = addSolarInstallationObject.OtherInventoryDistance.Distance;
+                                otherInventoryDistance.Azimuth = addSolarInstallationObject.OtherInventoryDistance.Azimuth;
                                 otherInventoryDistance.SiteCode = SiteCode;
-                                otherInventoryDistance.ReferenceOtherInventoryId = addSolarInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId != null ?
-                                    addSolarInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
+                                otherInventoryDistance.ReferenceOtherInventoryId = addSolarInstallationObject.OtherInventoryDistance?.ReferenceOtherInventoryId;
                                 otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
                                 _unitOfWork.OtherInventoryDistanceRepository.AddWithHistory(UserId, otherInventoryDistance);
                                 _unitOfWork.SaveChanges();
@@ -2948,96 +2940,96 @@ namespace TLIS_Service.Services
         //Map ViewModel to Entity
         //Update Entity
         #endregion
-        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId,int UserId,string connectionString)
+        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId, int UserId, string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
                     TLItablesNames TableEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TableName.ToLower());
-                    if (OtherInventoryType.TLIcabinet.ToString().ToLower() == TableName.ToLower())
-                    {
-                        EditCabinetViewModel CabinetModel = _mapper.Map<EditCabinetViewModel>(model);
+                    //if (OtherInventoryType.TLIcabinet.ToString().ToLower() == TableName.ToLower())
+                    //{
+                    //    EditCabinetViewModel CabinetModel = _mapper.Map<EditCabinetViewModel>(model);
 
-                        TLIcabinet Cabinet = _mapper.Map<TLIcabinet>(CabinetModel);
-                        TLIcabinet OldCabinet = _unitOfWork.CabinetRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CabinetModel.Id);
+                    //    TLIcabinet Cabinet = _mapper.Map<TLIcabinet>(CabinetModel);
+                    //    TLIcabinet OldCabinet = _unitOfWork.CabinetRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CabinetModel.Id);
 
-                        TLIotherInSite OtherInSite = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle &&
-                            x.allOtherInventoryInst.cabinetId == CabinetModel.Id, x => x.allOtherInventoryInst);
+                    //    TLIotherInSite OtherInSite = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => !x.Dismantle &&
+                    //        x.allOtherInventoryInst.cabinetId == CabinetModel.Id, x => x.allOtherInventoryInst);
 
-                        string SiteCode = "";
+                    //    string SiteCode = "";
 
-                        if (OtherInSite != null)
-                            SiteCode = OtherInSite.SiteCode;
+                    //    if (OtherInSite != null)
+                    //        SiteCode = OtherInSite.SiteCode;
 
-                        else
-                            SiteCode = null;
+                    //    else
+                    //        SiteCode = null;
 
-                        TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository
-                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinetId != Cabinet.Id && !x.allOtherInventoryInst.Draft &&
-                                !x.Dismantle && x.allOtherInventoryInst.cabinet.Name.ToLower() == Cabinet.Name.ToLower() &&
-                                (Cabinet.CabinetPowerLibraryId != null ? x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId == Cabinet.CabinetPowerLibraryId :
-                                    x.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId == Cabinet.CabinetTelecomLibraryId) &&
-                                (CabinetModel.CabinetPowerLibraryId != null ? x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId == CabinetModel.CabinetPowerLibraryId :
-                                    CabinetModel.CabinetTelecomLibraryId == x.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId) &&
-                                    x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
+                    //    TLIotherInSite CheckName = _unitOfWork.OtherInSiteRepository
+                    //        .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinetId != Cabinet.Id && !x.allOtherInventoryInst.Draft &&
+                    //            !x.Dismantle && x.allOtherInventoryInst.cabinet.Name.ToLower() == Cabinet.Name.ToLower() &&
+                    //            (Cabinet.CabinetPowerLibraryId != null ? x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId == Cabinet.CabinetPowerLibraryId :
+                    //                x.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId == Cabinet.CabinetTelecomLibraryId) &&
+                    //            (CabinetModel.CabinetPowerLibraryId != null ? x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId == CabinetModel.CabinetPowerLibraryId :
+                    //                CabinetModel.CabinetTelecomLibraryId == x.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId) &&
+                    //                x.SiteCode.ToLower() == SiteCode.ToLower(),
+                    //                    x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
 
-                        if (CheckName != null)
-                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Cabinet.Name} is already exists", (int)ApiReturnCode.fail);
+                    //    if (CheckName != null)
+                    //        return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Cabinet.Name} is already exists", (int)ApiReturnCode.fail);
 
-                        if (Cabinet.SpaceInstallation != OldCabinet.SpaceInstallation && CabinetModel.TLIotherInSite.ReservedSpace == true)
-                        {
-                            var allother = _dbContext.TLIallOtherInventoryInst.Where(x => x.cabinetId == OldCabinet.Id).Select(x => x.Id).FirstOrDefault();
-                            var sitescode = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == allother).Select(x => x.SiteCode).FirstOrDefault();
-                            var Site = _dbContext.TLIsite.Where(x => x.SiteCode == sitescode).FirstOrDefault();
-                            Site.ReservedSpace = Site.ReservedSpace - OldCabinet.SpaceInstallation;
-                            Site.ReservedSpace = Site.ReservedSpace + Cabinet.SpaceInstallation;
-                            _dbContext.SaveChanges();
-                        }
-                        string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(CabinetModel.DynamicInstAttsValue, TableName);
+                    //    if (Cabinet.SpaceInstallation != OldCabinet.SpaceInstallation && CabinetModel.TLIotherInSite.ReservedSpace == true)
+                    //    {
+                    //        var allother = _dbContext.TLIallOtherInventoryInst.Where(x => x.cabinetId == OldCabinet.Id).Select(x => x.Id).FirstOrDefault();
+                    //        var sitescode = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == allother).Select(x => x.SiteCode).FirstOrDefault();
+                    //        var Site = _dbContext.TLIsite.Where(x => x.SiteCode == sitescode).FirstOrDefault();
+                    //        Site.ReservedSpace = Site.ReservedSpace - OldCabinet.SpaceInstallation;
+                    //        Site.ReservedSpace = Site.ReservedSpace + Cabinet.SpaceInstallation;
+                    //        _dbContext.SaveChanges();
+                    //    }
+                    //    string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(CabinetModel.DynamicInstAttsValue, TableName);
 
-                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+                    //    if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                    //        return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
-                        string CheckDependencyValidation = CheckDependencyValidationEditVersion(model, SiteCode, TableName);
+                    //    string CheckDependencyValidation = CheckDependencyValidationEditVersion(model, SiteCode, TableName);
 
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+                    //    if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //        return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
-                        _unitOfWork.CabinetRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCabinet, Cabinet);
-                        var otherinsite = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinetId == CabinetModel.Id);
-                        otherinsite.OtherInSiteStatus = CabinetModel.TLIotherInSite.OtherInSiteStatus;
-                        otherinsite.InstallationDate = CabinetModel.TLIotherInSite.InstallationDate;
-                        otherinsite.ReservedSpace = CabinetModel.TLIotherInSite.ReservedSpace;
-                        otherinsite.Dismantle = CabinetModel.TLIotherInSite.Dismantle;
-                        otherinsite.OtherInventoryStatus = CabinetModel.TLIotherInSite.OtherInventoryStatus;
-                        _unitOfWork.SaveChanges();
-                        var allotherinventoryinsId = _unitOfWork.AllOtherInventoryInstRepository.GetWhereFirst(x => x.cabinetId == CabinetModel.Id).Id;
-                        var otherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhereFirst(x => x.allOtherInventoryInstId == allotherinventoryinsId);
-                        otherinventorydistance.Azimuth = CabinetModel.TLIotherInventoryDistance != null ? CabinetModel.TLIotherInventoryDistance.Azimuth.Value : 0;
-                        otherinventorydistance.Distance = CabinetModel.TLIotherInventoryDistance != null ? CabinetModel.TLIotherInventoryDistance.Distance.Value : 0;
-                        otherinventorydistance.ReferenceOtherInventoryId = CabinetModel.TLIotherInventoryDistance != null ? CabinetModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
-                        _unitOfWork.SaveChanges();
-                        if (CabinetModel.DynamicInstAttsValue != null ? CabinetModel.DynamicInstAttsValue.Count > 0 : false)
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(CabinetModel.DynamicInstAttsValue, TableEntity.Id, Cabinet.Id);
+                    //    _unitOfWork.CabinetRepository.UpdateWithHistory(Helpers.LogFilterAttribute.UserId, OldCabinet, Cabinet);
+                    //    var otherinsite = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinetId == CabinetModel.Id);
+                    //    otherinsite.OtherInSiteStatus = CabinetModel.TLIotherInSite.OtherInSiteStatus;
+                    //    otherinsite.InstallationDate = CabinetModel.TLIotherInSite.InstallationDate;
+                    //    otherinsite.ReservedSpace = CabinetModel.TLIotherInSite.ReservedSpace;
+                    //    otherinsite.Dismantle = CabinetModel.TLIotherInSite.Dismantle;
+                    //    otherinsite.OtherInventoryStatus = CabinetModel.TLIotherInSite.OtherInventoryStatus;
+                    //    _unitOfWork.SaveChanges();
+                    //    var allotherinventoryinsId = _unitOfWork.AllOtherInventoryInstRepository.GetWhereFirst(x => x.cabinetId == CabinetModel.Id).Id;
+                    //    var otherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhereFirst(x => x.allOtherInventoryInstId == allotherinventoryinsId);
+                    //    otherinventorydistance.Azimuth = CabinetModel.TLIotherInventoryDistance != null ? CabinetModel.TLIotherInventoryDistance.Azimuth.Value : 0;
+                    //    otherinventorydistance.Distance = CabinetModel.TLIotherInventoryDistance != null ? CabinetModel.TLIotherInventoryDistance.Distance.Value : 0;
+                    //    otherinventorydistance.ReferenceOtherInventoryId = CabinetModel.TLIotherInventoryDistance != null ? CabinetModel.TLIotherInventoryDistance.ReferenceOtherInventoryId.Value : 0;
+                    //    _unitOfWork.SaveChanges();
+                    //    if (CabinetModel.DynamicInstAttsValue != null ? CabinetModel.DynamicInstAttsValue.Count > 0 : false)
+                    //        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValue(CabinetModel.DynamicInstAttsValue, TableEntity.Id, Cabinet.Id);
 
-                        await _unitOfWork.SaveChangesAsync();
+                    //    await _unitOfWork.SaveChangesAsync();
 
-                    }
-                    else if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
+                    //}
+                    if (OtherInventoryType.TLIgenerator.ToString().ToLower() == TableName.ToLower())
                     {
                         EditGeneratorInstallationObject GeneratorModel = _mapper.Map<EditGeneratorInstallationObject>(model);
                         TLIgenerator Generator = _mapper.Map<TLIgenerator>(GeneratorModel.installationAttributes);
 
                         TLIotherInSite GeneratorInst =
                            _unitOfWork.OtherInSiteRepository
-                           .GetAllAsQueryable().AsNoTracking().Include(x=>x.allOtherInventoryInst).ThenInclude(x=>x.generator).FirstOrDefault(x => x.allOtherInventoryInst
+                           .GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst).ThenInclude(x => x.generator).FirstOrDefault(x => x.allOtherInventoryInst
                            .generatorId == Generator.Id
                            && !x.Dismantle);
                         if (GeneratorInst != null)
                         {
-                         
+
                             TLIotherInSite OtherInSite = _unitOfWork.OtherInSiteRepository
                                 .GetIncludeWhereFirst(x => !x.Dismantle &&
                                 x.allOtherInventoryInst.generatorId == GeneratorModel.installationAttributes.Id,
@@ -3098,7 +3090,7 @@ namespace TLIS_Service.Services
                             //----------------------------------------------------------------------------------//
                             //----------------------OtherOnSite-------------------------------------------------//
                             var OldOtherinsite = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking()
-                              .Include(x=>x.allOtherInventoryInst.otherInventoryDistances).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == Generator.Id);
+                              .Include(x => x.allOtherInventoryInst.otherInventoryDistances).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == Generator.Id);
 
                             OtherInSite.OtherInSiteStatus = GeneratorModel.OtherInSite.OtherInSiteStatus;
                             OtherInSite.InstallationDate = GeneratorModel.OtherInSite.InstallationDate;
@@ -3115,11 +3107,11 @@ namespace TLIS_Service.Services
                                 (x => x.allOtherInventoryInst.generatorId == Generator.Id, x => x.allOtherInventoryInst);
 
                             var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
-                              .Include(x=>x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.generatorId 
+                              .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.generatorId
                               == Generator.Id);
 
-                            Otherinventorydistance.Azimuth = GeneratorModel.OtherInventoryDistance.Azimuth.Value;
-                            Otherinventorydistance.Distance = GeneratorModel.OtherInventoryDistance.Distance.Value;
+                            Otherinventorydistance.Azimuth = GeneratorModel.OtherInventoryDistance.Azimuth;
+                            Otherinventorydistance.Distance = GeneratorModel.OtherInventoryDistance.Distance;
                             Otherinventorydistance.ReferenceOtherInventoryId = GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId;
 
                             _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
@@ -3232,8 +3224,8 @@ namespace TLIS_Service.Services
                               .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.solarId
                               == Solar.Id);
 
-                            Otherinventorydistance.Azimuth = SolarModel.OtherInventoryDistance.Azimuth.Value;
-                            Otherinventorydistance.Distance = SolarModel.OtherInventoryDistance.Distance.Value;
+                            Otherinventorydistance.Azimuth = SolarModel.OtherInventoryDistance.Azimuth;
+                            Otherinventorydistance.Distance = SolarModel.OtherInventoryDistance.Distance;
                             Otherinventorydistance.ReferenceOtherInventoryId = SolarModel.OtherInventoryDistance.ReferenceOtherInventoryId;
 
                             _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
@@ -4760,10 +4752,10 @@ namespace TLIS_Service.Services
 
                                             referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
                                         }
-                                        //else if (supportReferenceAllCivilInst.solarId != null)
-                                        //{
-                                        //    referencesValue = _dbContext..FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
-                                        //}
+                                        else if (supportReferenceAllCivilInst.solarId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId)?.Name;
+                                        }
                                         //else
                                         //{
                                         //    referencesValue = _dbContext.MV_CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;
@@ -4945,7 +4937,9 @@ namespace TLIS_Service.Services
                             case "cabinet_name":
                                 FKitem.Value = _mapper.Map<BaseGeneratorTypeViewModel>(GeneratorInst.allOtherInventoryInst.solar.Cabinet);
                                 FKitem.Options = _mapper.Map<List<BaseGeneratorTypeViewModel>>(_unitOfWork.
-                                    OtherInSiteRepository.GetWhere(x => !x.Dismantle && x.SiteCode.ToLower()== GeneratorInst.SiteCode.ToLower())
+                                    OtherInSiteRepository.GetWhereAndInclude(x => !x.Dismantle && x.SiteCode.ToLower()== GeneratorInst.SiteCode.ToLower()
+                                    && x.allOtherInventoryInst.cabinetId !=null && x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId !=null,
+                                    x=>x.allOtherInventoryInst,x=>x.allOtherInventoryInst.cabinet)
                                     .Select(x=>x.allOtherInventoryInst.cabinet).ToList());
                                 break;
 
@@ -4953,30 +4947,14 @@ namespace TLIS_Service.Services
                         return FKitem;
                     }).ToList();
 
-                    ListAttributesActivated = ListAttributesActivated.Select(x =>
-                    {
-                        if (x.Label.ToLower() == "baseexisting" && (x.Value as bool?) == false)
-                        {
-                            ListAttributesActivated.ForEach(y =>
-                            {
-                                if (y.Label.ToLower() == "basegeneratortype_name")
-                                {
-                                    y.visible = false;
-                                }
-                            });
-                        }
-                        return x;
-                    }).ToList();
-
-
-
+                  
                     objectInst.InstallationAttributes = ListAttributesActivated;
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, SolarId, null);
 
                     TLIallOtherInventoryInst allOtherInventoryInst = _unitOfWork.AllOtherInventoryInstRepository
-                            .GetWhereFirst(x => x.generatorId == SolarId);
+                            .GetWhereFirst(x => x.solarId == SolarId);
                     TLIotherInSite otherInSiteInfo = _dbContext.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
 
                     List<BaseInstAttViews> otherInSiteAttributes = _unitOfWork.AttributeActivatedRepository
@@ -4997,7 +4975,7 @@ namespace TLIS_Service.Services
                          x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
                      )?.SiteCode;
                     objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
-                    if (siteCode != null)
+                   if (siteCode != null)
                     {
                         var listAttributes = objectInst.OtherInventoryDistance
                             .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
@@ -5023,10 +5001,10 @@ namespace TLIS_Service.Services
 
                                             referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
                                         }
-                                        //else if (supportReferenceAllCivilInst.solarId != null)
-                                        //{
-                                        //    referencesValue = _dbContext..FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilWithoutLegId)?.Name;
-                                        //}
+                                        else if (supportReferenceAllCivilInst.solarId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId)?.Name;
+                                        }
                                         //else
                                         //{
                                         //    referencesValue = _dbContext.MV_CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;

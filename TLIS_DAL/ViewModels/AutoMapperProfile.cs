@@ -235,6 +235,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<installationAttributesSolar, TLIsolar>().ReverseMap();
             CreateMap<EditinstallationAttributesSolar, TLIsolar>().ReverseMap();
             CreateMap<AddSolarInstallationObject, TLIsolar>().ReverseMap();
+            CreateMap<EditSolarInstallationObject, TLIsolar>().ReverseMap();
+            CreateMap<EditinstallationAttributesSolar, TLIsolar>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
