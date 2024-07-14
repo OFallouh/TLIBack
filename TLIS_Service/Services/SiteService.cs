@@ -1096,9 +1096,11 @@ namespace TLIS_Service.Services
                 TLIsite site = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode.ToLower() == SiteCode.ToLower());
                 TLIsite Oldsite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower());
                 if (ReservedSpace != site.ReservedSpace)
-                {
                     return new Response<bool>(false, true, null, "You cannot modify the value of reservedspace ", (int)Helpers.Constants.ApiReturnCode.fail);
-                }
+                
+                if(site.RentedSpace < site.ReservedSpace)
+                    return new Response<bool>(false, true, null, "RentedSpace can not be smaller of ReservedSpace", (int)Helpers.Constants.ApiReturnCode.fail);
+
                 else
                 {
                     site.RentedSpace = RentedSpace;

@@ -28,7 +28,7 @@ namespace TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs
         public bool Active { get; set; }
         public bool Deleted { get; set; }
         public bool PowerIntegrated { get; set; }
-        public int IntegratedWith { get; set; }
+        public int? IntegratedWith { get; set; }
 
         public Dictionary<string, object> GenerateOutputData()
         {

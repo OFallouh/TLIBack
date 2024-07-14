@@ -2809,7 +2809,7 @@ namespace TLIS_Service.Services
                             Test[Test.IndexOf(NameAttribute)] = Swap;
                             Test[0] = NameAttribute;
                             attributes.AttributesActivatedLibrary = Test;
-                            NameAttribute.Value = db.MV_CABINETPOWER_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                            NameAttribute.Value = db.MV_CABINET_POWER_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
                         }
                     }
                     else
@@ -2849,7 +2849,7 @@ namespace TLIS_Service.Services
                             Test[Test.IndexOf(NameAttribute)] = Swap;
                             Test[0] = NameAttribute;
                             attributes.AttributesActivatedLibrary = Test;
-                            NameAttribute.Value = db.MV_CABINETTELECOM_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                            NameAttribute.Value = db.MV_CABINET_TELECOM_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
                         }
                     }
                     else
@@ -3161,7 +3161,7 @@ namespace TLIS_Service.Services
                             CabinetPowerLibraryEntites.SpaceLibrary = CabinetPowerLibraryEntites.Height * CabinetPowerLibraryEntites.Width;
                         }
                     }
-                    var CheckModel = db.MV_CABINETPOWER_LIBRARY_VIEW
+                    var CheckModel = db.MV_CABINET_POWER_LIBRARY_VIEW
                              .FirstOrDefault(x => x.Model != null &&
                                          x.Model.ToLower() == CabinetPowerLibraryEntites.Model.ToLower() &&
                                          x.Id != CabinetPowerLibraryEntites.Id && !x.Deleted);
@@ -3296,7 +3296,7 @@ namespace TLIS_Service.Services
                             CabinetTelecomLibraryEntites.SpaceLibrary = CabinetTelecomLibraryEntites.Height * CabinetTelecomLibraryEntites.Width;
                         }
                     }
-                    var CheckModel = db.MV_CABINETTELECOM_LIBRARY_VIEW
+                    var CheckModel = db.MV_CABINET_TELECOM_LIBRARY_VIEW
                              .FirstOrDefault(x => x.Model != null &&
                                          x.Model.ToLower() == CabinetTelecomLibraryEntites.Model.ToLower() &&
                                          x.Id != CabinetTelecomLibraryEntites.Id && !x.Deleted);
@@ -6370,7 +6370,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.MV_CABINETPOWER_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.MV_CABINET_POWER_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
 
@@ -6379,7 +6379,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.MV_CABINETPOWER_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.MV_CABINET_POWER_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -6472,7 +6472,7 @@ namespace TLIS_Service.Services
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.MV_CABINETTELECOM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.MV_CABINET_TELECOM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
 
@@ -6481,7 +6481,7 @@ namespace TLIS_Service.Services
                     }
                     else
                     {
-                        var query = db.MV_CABINETTELECOM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                        var query = db.MV_CABINET_TELECOM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
                     .GroupBy(x => new
                     {
                         Id = x.Id,
@@ -6796,7 +6796,7 @@ namespace TLIS_Service.Services
 
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                            var CheckModel = db.MV_CABINETPOWER_LIBRARY_VIEW
+                            var CheckModel = db.MV_CABINET_POWER_LIBRARY_VIEW
                               .FirstOrDefault(x => x.Model != null &&
                                x.Model.ToLower() == CabinetPowerLibraryEntity.Model.ToLower()
                                && !x.Deleted);
@@ -6873,7 +6873,7 @@ namespace TLIS_Service.Services
 
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                            var CheckModel = db.MV_CABINETTELECOM_LIBRARY_VIEW
+                            var CheckModel = db.MV_CABINET_TELECOM_LIBRARY_VIEW
                               .FirstOrDefault(x => x.Model != null &&
                                x.Model.ToLower() == CabinetPowerLibraryEntity.Model.ToLower()
                                && !x.Deleted);
