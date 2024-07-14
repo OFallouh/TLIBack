@@ -3039,7 +3039,7 @@ namespace TLIS_Service.Services
                             !x.Dismantle &&
                              x.Id != Generator.Id &&
                              x.Name.ToLower() == Generator.Name.ToLower() &&
-                             x.SITECODE.ToLower() == OtherInSite.SiteCode.ToLower());
+                             x.SITECODE.ToLower() == GeneratorInst.SiteCode.ToLower());
 
                             if (CheckName != null)
                                 return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
@@ -3051,10 +3051,9 @@ namespace TLIS_Service.Services
                                 {
 
                                     var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == OtherInSite.SiteCode);
-                                    var tLIsite = OldValueSite;
                                     OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace - GeneratorInst.allOtherInventoryInst.generator.SpaceInstallation;
                                     OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace + Generator.SpaceInstallation;
-                                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, tLIsite, OtherInSite.Site);
+                                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldValueSite, OtherInSite.Site);
                                     _dbContext.SaveChanges();
                                 }
                             }
@@ -3068,7 +3067,12 @@ namespace TLIS_Service.Services
                             }
                             else if (OtherInSite.ReservedSpace == false && GeneratorModel.OtherInSite.ReservedSpace == true)
                             {
-                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, OtherInSite.SiteCode, "TLIcivilWithLegs", GeneratorModel.GeneratorType.GeneratorLibraryId, Generator.SpaceInstallation, null).Message;
+                                TLIotherInSite OldGeneratorInst =
+                                 _unitOfWork.OtherInSiteRepository
+                                 .GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst).ThenInclude(x => x.generator).FirstOrDefault(x => x.allOtherInventoryInst
+                                 .generatorId == Generator.Id
+                                 && !x.Dismantle);
+                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, OldGeneratorInst.SiteCode, TableEntity.TableName, GeneratorModel.GeneratorType.GeneratorLibraryId, Generator.SpaceInstallation, null).Message;
                                 if (CheckSpace != "Success")
                                 {
                                     return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3132,57 +3136,62 @@ namespace TLIS_Service.Services
                     }
                     else if (OtherInventoryType.TLIsolar.ToString().ToLower() == TableName.ToLower())
                     {
+                        TLIsite OldSite = new TLIsite();
                         EditSolarInstallationObject SolarModel = _mapper.Map<EditSolarInstallationObject>(model);
                         TLIsolar Solar = _mapper.Map<TLIsolar>(SolarModel.installationAttributes);
 
                         TLIotherInSite SolarInst =
-                           _unitOfWork.OtherInSiteRepository
-                           .GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst).
-                           ThenInclude(x => x.solar).FirstOrDefault(x => x.allOtherInventoryInst
+                           _dbContext.TLIotherInSite.AsNoTracking()
+                          .Include(x => x.allOtherInventoryInst).
+                           ThenInclude(x => x.solar).Include(x=>x.Site).FirstOrDefault(x => x.allOtherInventoryInst
                            .solarId == Solar.Id
                            && !x.Dismantle);
+
                         if (SolarInst != null)
                         {
-
-                            TLIotherInSite OtherInSite = _unitOfWork.OtherInSiteRepository
-                                .GetIncludeWhereFirst(x => !x.Dismantle &&
-                                x.allOtherInventoryInst.solarId == SolarModel.installationAttributes.Id,
-                                x => x.allOtherInventoryInst, x => x.Site);
-
+                          
                             var CheckName = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x =>
                             !x.Dismantle &&
                              x.Id != Solar.Id &&
                              x.Name.ToLower() == Solar.Name.ToLower() &&
-                             x.SITECODE.ToLower() == OtherInSite.SiteCode.ToLower());
+                             x.SITECODE.ToLower() == SolarInst.SiteCode.ToLower());
 
                             if (CheckName != null)
                                 return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Solar.Name} is already exists", (int)ApiReturnCode.fail);
 
-
-                            if (OtherInSite.ReservedSpace == true && SolarModel.OtherInSite.ReservedSpace == true)
+                            if (SolarInst.ReservedSpace == true && SolarModel.OtherInSite.ReservedSpace == true)
                             {
                                 if (Solar.SpaceInstallation != SolarInst.allOtherInventoryInst.solar.SpaceInstallation)
                                 {
-
-                                    var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == OtherInSite.SiteCode);
-                                    var tLIsite = OldValueSite;
-                                    OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace - SolarInst.allOtherInventoryInst.solar.SpaceInstallation;
-                                    OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace + Solar.SpaceInstallation;
-                                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, tLIsite, OtherInSite.Site);
+                                    TLIotherInSite NewSolarInstS =
+                                       _dbContext.TLIotherInSite
+                                      .Include(x => x.allOtherInventoryInst).
+                                       ThenInclude(x => x.solar).Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst
+                                       .solarId == Solar.Id
+                                       && !x.Dismantle);
+                                    SolarInst.Site.ReservedSpace = SolarInst.Site.ReservedSpace - SolarInst.allOtherInventoryInst.solar.SpaceInstallation;
+                                    SolarInst.Site.ReservedSpace = SolarInst.Site.ReservedSpace + Solar.SpaceInstallation;
+                                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, SolarInst.Site, NewSolarInstS.Site);
                                     _dbContext.SaveChanges();
                                 }
                             }
-                            else if (OtherInSite.ReservedSpace == true && SolarModel.OtherInSite.ReservedSpace == false)
+                            else if (SolarInst.ReservedSpace == true && SolarModel.OtherInSite.ReservedSpace == false)
                             {
-                                var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking()
-                                     .FirstOrDefault(x => x.SiteCode.ToLower() == OtherInSite.SiteCode.ToLower());
-                                OtherInSite.Site.ReservedSpace = OtherInSite.Site.ReservedSpace - SolarInst.allOtherInventoryInst.solar.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSite, OtherInSite.Site);
+                              TLIotherInSite NewSolarInstSS =
+                                       _dbContext.TLIotherInSite
+                                      .Include(x => x.allOtherInventoryInst).
+                                       ThenInclude(x => x.solar).Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst
+                                       .solarId == Solar.Id
+                                       && !x.Dismantle);
+                                SolarInst.Site.ReservedSpace = SolarInst.Site.ReservedSpace - SolarInst.allOtherInventoryInst.solar.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, SolarInst.Site, NewSolarInstSS.Site);
                                 _dbContext.SaveChanges();
                             }
-                            else if (OtherInSite.ReservedSpace == false && SolarModel.OtherInSite.ReservedSpace == true)
+                            if (SolarInst.ReservedSpace == false && SolarModel.OtherInSite.ReservedSpace == true)
                             {
-                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, OtherInSite.SiteCode, "TLIcivilWithLegs", SolarModel.SolarType.SolarLibraryId, Solar.SpaceInstallation, null).Message;
+                               
+
+                                var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SolarInst.SiteCode, TableEntity.TableName, SolarModel.SolarType.SolarLibraryId, Solar.SpaceInstallation, null).Message;
                                 if (CheckSpace != "Success")
                                 {
                                     return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3203,15 +3212,18 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             //----------------------------------------------------------------------------------//
                             //----------------------OtherOnSite-------------------------------------------------//
-                            var OldOtherinsite = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking()
-                              .Include(x => x.allOtherInventoryInst.otherInventoryDistances).FirstOrDefault(x => x.allOtherInventoryInst.solarId == Solar.Id);
-
-                            OtherInSite.OtherInSiteStatus = SolarModel.OtherInSite.OtherInSiteStatus;
-                            OtherInSite.InstallationDate = SolarModel.OtherInSite.InstallationDate;
-                            OtherInSite.ReservedSpace = SolarModel.OtherInSite.ReservedSpace;
-                            OtherInSite.Dismantle = SolarModel.OtherInSite.Dismantle;
-                            OtherInSite.OtherInventoryStatus = SolarModel.OtherInSite.OtherInventoryStatus;
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldOtherinsite, OtherInSite);
+                            TLIotherInSite NewSolarInst =
+                             _dbContext.TLIotherInSite
+                            .Include(x => x.allOtherInventoryInst).
+                             ThenInclude(x => x.solar).Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst
+                             .solarId == Solar.Id
+                             && !x.Dismantle);
+                            NewSolarInst.OtherInSiteStatus = SolarModel.OtherInSite.OtherInSiteStatus;
+                            NewSolarInst.InstallationDate = SolarModel.OtherInSite.InstallationDate;
+                            NewSolarInst.ReservedSpace = SolarModel.OtherInSite.ReservedSpace;
+                            NewSolarInst.Dismantle = SolarModel.OtherInSite.Dismantle;
+                            NewSolarInst.OtherInventoryStatus = SolarModel.OtherInSite.OtherInventoryStatus;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, SolarInst, NewSolarInst);
                             _unitOfWork.SaveChanges();
 
                             //----------------------------------------------------------------------------------//

@@ -3375,10 +3375,9 @@ namespace TLIS_Service.Services
                             {
 
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
-                                var tLIsite = OldValueSite;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithLegInst.SpaceInstallation;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilWithLegsEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, SiteCode.Site);
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, OldValueSite, SiteCode.Site);
                                 _dbContext.SaveChanges();
                             }
                         }
@@ -3795,10 +3794,9 @@ namespace TLIS_Service.Services
                             {
 
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
-                                var tLIsite = OldValueSite;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithoutLegInst.SpaceInstallation;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilWithoutLegsEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, SiteCode.Site);
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, OldValueSite, SiteCode.Site);
                                 _dbContext.SaveChanges();
                             }
                         }

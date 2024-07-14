@@ -618,7 +618,7 @@ namespace TLIS_Repository.Base
                 OldValueSite = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
                 tLIsite = OldValueSite;
                 Oldentity = _mapper.Map<TEntity>(tLIsite);
-                Site = _context.TLIsite.Where(x => x.SiteCode == SiteCode).AsNoTracking().FirstOrDefault();
+                Site = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode);
                 if (SpaceInstallation != 0)
                 {
                     var space = Site.ReservedSpace + SpaceInstallation;
