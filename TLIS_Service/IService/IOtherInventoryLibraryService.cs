@@ -39,5 +39,11 @@ namespace TLIS_Service.IService
         Task<Response<EditSolarLibraryObject>> EditSolarLibrary(int userId, EditSolarLibraryObject editSolarLibraryObject, string TableName, string connectionString);
         Response<AddSolarLibraryObject> AddSolarLibrary(int UserId, string TableName, AddSolarLibraryObject addSolarLibraryObject, string connectionString);
         Response<GetEnableAttribute> GetSolarLibrariesEnabledAtt(string ConnectionString);
+        Response<AddCabinetPowerLibraryObject> AddCabinetPowerLibrary(int UserId, string TableName, AddCabinetPowerLibraryObject addCabinetPowerLibraryObject, string connectionString);
+        Response<AddCabinetTelecomLibraryObject> AddCabinetTelecomLibrary(int UserId, string TableName, AddCabinetTelecomLibraryObject addCabinetTelecomLibraryObject, string connectionString);
+        Task<Response<EditCabinetPowerLibraryObject>> EditCabinetPowerLibrary(int userId, EditCabinetPowerLibraryObject editCabinetPowerLibraryObject, string TableName, string connectionString);
+        Task<Response<EditCabinetTelecomLibraryObject>> EditCabinetTelecomLibrary(int userId, EditCabinetTelecomLibraryObject editCabinetTelecomLibraryObject, string TableName, string connectionString);
+        Response<GetEnableAttribute> GetCabinetPowerLibrariesEnabledAtt(string ConnectionString);
+        Response<GetEnableAttribute> GetCabinetTelecomLibrariesEnabledAtt(string ConnectionString);
     }
 }

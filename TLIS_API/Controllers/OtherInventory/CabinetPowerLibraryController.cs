@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +12,7 @@ using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 
@@ -47,18 +49,19 @@ namespace TLIS_API.Controllers.OtherInventory
             var response = _unitOfWorkService.OtherInventoryLibraryService.RadioRRULibrarySeedDataForTest();
             return Ok(response);
         }
-        [HttpPost("GetCabinetPowerLibraries")]
-        [ProducesResponseType(200, Type = typeof(List<CabinetPowerLibraryViewModel>))]
-        public IActionResult GetCabinetPowerLibraries([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        [HttpGet("GetForAddCabinetPowerLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddPGetForAddGeneratorLibraryowerLibrary()
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetPowerLibraries(filters, WithFilterData, parameters);
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetForAdd(Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
             return Ok(response);
         }
-        [HttpPost("GetCabinetPowerLibraryEnabledAtt")]
+        [HttpPost("GetCabinetPowerLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCabinetPowerLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters )
+        public IActionResult GetCabinetPowerLibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetPowerLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetCabinetPowerLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetCabinetPowerLibraryById/{id}")]
@@ -70,12 +73,30 @@ namespace TLIS_API.Controllers.OtherInventory
         }
         [HttpPost("AddCabinetPowerLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult AddCabinetPowerLibrary([FromBody]AddCabinetPowerLibraryViewModel addCabinetPowerLibrary)
+        public IActionResult AddCabinetPowerLibrary([FromBody]AddCabinetPowerLibraryObject addCabinetPowerLibrary)
         {
-            if (TryValidateModel(addCabinetPowerLibrary, nameof(AddCabinetPowerLibraryViewModel)))
+            if (TryValidateModel(addCabinetPowerLibrary, nameof(AddCabinetPowerLibraryObject)))
             {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.OtherInventoryLibraryService.AddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), addCabinetPowerLibrary, ConnectionString);
+                var response = _unitOfWorkService.OtherInventoryLibraryService.AddCabinetPowerLibrary(userId,Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), addCabinetPowerLibrary, ConnectionString);
                 return Ok(response);
             }
             else
@@ -83,39 +104,60 @@ namespace TLIS_API.Controllers.OtherInventory
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddCabinetPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddCabinetPowerLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        //[HttpPost("UpdateCabinetPowerLibrary")]
-        //[ProducesResponseType(200, Type = typeof(Nullable))]
-        //public async Task<IActionResult> UpdateCabinetPowerLibrary([FromBody]EditCabinetPowerLibraryViewModel editCabinetPowerLibrary)
-        //{
-        //    if (TryValidateModel(editCabinetPowerLibrary, nameof(EditCabinetPowerLibraryViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.OtherInventoryLibraryService.EditOtherInventoryLibrary(editCabinetPowerLibrary, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditCabinetPowerLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
-        //[HttpPost("DisableCabinetPowerLibrary/{Id}")]
-        //[ProducesResponseType(200, Type = typeof(Nullable))]
-        //public async Task<IActionResult> DisableCabinetPowerLibrary(int Id)
-        //{
-        //    var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
-        //    return Ok(response);
-        //}
-        //[HttpPost("DeleteCabinetPowerLibrary/{Id}")]
-        //[ProducesResponseType(200, Type = typeof(Nullable))]
-        //public async Task<IActionResult> DeleteCabinetPowerLibrary(int Id)
-        //{
-        //    var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString());
-        //    return Ok(response);
-        //}
+        [HttpPost("EditCabinetPowerLibrary")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public async Task<IActionResult> EditCabinetPowerLibrary([FromBody] EditCabinetPowerLibraryObject editCabinetPowerLibrary)
+        {
+            if (TryValidateModel(editCabinetPowerLibrary, nameof(EditCabinetPowerLibraryObject)))
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.OtherInventoryLibraryService.EditCabinetPowerLibrary(userId, editCabinetPowerLibrary, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditCabinetPowerLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("DisableCabinetPowerLibrary/{Id}")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public async Task<IActionResult> DisableCabinetPowerLibrary(int Id)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("DeleteCabinetPowerLibrary/{Id}")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public async Task<IActionResult> DeleteCabinetPowerLibrary(int Id)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), ConnectionString);
+            return Ok(response);
+        }
     }
 }

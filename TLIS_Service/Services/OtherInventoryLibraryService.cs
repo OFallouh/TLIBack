@@ -40,6 +40,15 @@ using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using TLIS_DAL;
 using System.Reflection.Emit;
+using TLIS_DAL.ViewModels.BaseCivilWithLegsTypeDTOs;
+using TLIS_DAL.ViewModels.BaseTypeDTOs;
+using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
+using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
+using TLIS_DAL.ViewModels.LocationTypeDTOs;
+using TLIS_DAL.ViewModels.OwnerDTOs;
+using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
+using TLIS_DAL.ViewModels.CabinetPowerTypeDTOs;
+using TLIS_DAL.ViewModels.TelecomTypeDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -2757,8 +2766,98 @@ namespace TLIS_Service.Services
                     }
                     
                 }
+                else if (OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TableName)
+                {
+                    TLIcabinetPowerLibrary CabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetIncludeWhereFirst(x =>
+                        x.Id == Id && !x.Deleted,x=>x.PowerIntegrated,x=>x.CabinetPowerType);
+                    if (CabinetPowerLibrary != null)
+                    {
+                        List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CabinetPowerLibrary, null).ToList();
+                        var foreignKeyAttributes = listofAttributesActivated.Select(FKitem =>
+                        {
+                            switch (FKitem.Label.ToLower())
+                            {
+                                case "cabinetpowertype_name":
+                                    FKitem.Value = _mapper.Map<CabinetPowerTypeViewModel>(CabinetPowerLibrary.CabinetPowerType);
+                                    FKitem.Options = _mapper.Map<List<CabinetPowerTypeViewModel>>(_unitOfWork.CabinetPowerTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                                    break;
 
+                                case "integratedwith":
+                                    List<EnumOutPut> IntegratedWithitem = new List<EnumOutPut>
+                                {
+                                    new EnumOutPut { Id = (int)IntegratedWith.Solar, Name = IntegratedWith.Solar.ToString() },
+                                    new EnumOutPut { Id = (int)IntegratedWith.Wind, Name = IntegratedWith.Wind.ToString() },
+                                   
+                                };
 
+                                    FKitem.Options = IntegratedWithitem;
+                                    FKitem.Value = IntegratedWithitem.FirstOrDefault(x => x.Id == (int)CabinetPowerLibrary?.IntegratedWith);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            return FKitem;
+                        }).ToList();
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
+                        attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                        attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                        List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                        BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                        if (NameAttribute != null)
+                        {
+                            BaseInstAttViews Swap = Test.ToList()[0];
+                            Test[Test.IndexOf(NameAttribute)] = Swap;
+                            Test[0] = NameAttribute;
+                            attributes.AttributesActivatedLibrary = Test;
+                            NameAttribute.Value = db.MV_CABINETPOWER_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                        }
+                    }
+                    else
+                    {
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this Solar is not  found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                }
+
+                else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
+                {
+                    TLIcabinetTelecomLibrary CabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository.GetIncludeWhereFirst(x =>
+                        x.Id == Id && !x.Deleted, x => x.TelecomType);
+                    if (CabinetTelecomLibrary != null)
+                    {
+                        List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CabinetTelecomLibrary, null).ToList();
+                        var foreignKeyAttributes = listofAttributesActivated.Select(FKitem =>
+                        {
+                            switch (FKitem.Label.ToLower())
+                            {
+                                case "telecomtype_name":
+                                    FKitem.Value = _mapper.Map<TelecomTypeViewModel>(CabinetTelecomLibrary.TelecomType);
+                                    FKitem.Options = _mapper.Map<List<TelecomTypeViewModel>>(_unitOfWork.TelecomTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                    break;
+
+                            }
+                            return FKitem;
+                        }).ToList();
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
+                        attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                        attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                        List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                        BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                        if (NameAttribute != null)
+                        {
+                            BaseInstAttViews Swap = Test.ToList()[0];
+                            Test[Test.IndexOf(NameAttribute)] = Swap;
+                            Test[0] = NameAttribute;
+                            attributes.AttributesActivatedLibrary = Test;
+                            NameAttribute.Value = db.MV_CABINETTELECOM_LIBRARY_VIEW.FirstOrDefault(x => x.Id == Id)?.Model;
+                        }
+                    }
+                    else
+                    {
+                        return new Response<GetForAddCivilLibrarybject>(false, null, null, "this Solar is not  found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                }
 
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)ApiReturnCode.success);
             }
@@ -3025,6 +3124,276 @@ namespace TLIS_Service.Services
                 catch (Exception err)
                 {
                     return new Response<EditSolarLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+        }
+        public async Task<Response<EditCabinetPowerLibraryObject>> EditCabinetPowerLibrary(int userId, EditCabinetPowerLibraryObject editCabinetPowerLibraryObject, string TableName, string connectionString)
+        {
+            using (TransactionScope transaction =
+                new TransactionScope(TransactionScopeOption.Required,
+                                   new System.TimeSpan(0, 15, 0)))
+            {
+                try
+                {
+
+                    int resultId = 0;
+
+                    TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
+
+                    TLIcabinetPowerLibrary CabinetPowerLibraryEntites = _mapper.Map<TLIcabinetPowerLibrary>(editCabinetPowerLibraryObject.AttributesActivatedLibrary);
+
+                    TLIcabinetPowerLibrary CabinetPowerLegLib = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CabinetPowerLibraryEntites.Id);
+
+
+                    if (CabinetPowerLibraryEntites.SpaceLibrary <= 0)
+                    {
+                        if (CabinetPowerLibraryEntites.Height <= 0)
+                        {
+                            return new Response<EditCabinetPowerLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        else if (CabinetPowerLibraryEntites.Width <= 0)
+                        {
+                            return new Response<EditCabinetPowerLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        else
+                        {
+                            CabinetPowerLibraryEntites.SpaceLibrary = CabinetPowerLibraryEntites.Height * CabinetPowerLibraryEntites.Width;
+                        }
+                    }
+                    var CheckModel = db.MV_CABINETPOWER_LIBRARY_VIEW
+                             .FirstOrDefault(x => x.Model != null &&
+                                         x.Model.ToLower() == CabinetPowerLibraryEntites.Model.ToLower() &&
+                                         x.Id != CabinetPowerLibraryEntites.Id && !x.Deleted);
+                    if (CheckModel != null)
+                    {
+                        return new Response<EditCabinetPowerLibraryObject>(false, null, null, $"This model {CabinetPowerLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    CabinetPowerLibraryEntites.Active = CabinetPowerLegLib.Active;
+                    CabinetPowerLibraryEntites.Deleted = CabinetPowerLegLib.Deleted;
+
+                    _unitOfWork.CabinetPowerLibraryRepository.UpdateWithHistory(userId, CabinetPowerLegLib, CabinetPowerLibraryEntites);
+
+
+                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
+                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //{
+                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
+                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                    //{
+                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+                    var CheckVendorId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckVendorId != null)
+                        OldLogisticalItemIds.Vendor = Convert.ToInt32(CheckVendorId.logisticalId);
+
+                    var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckSupplierId != null)
+                        OldLogisticalItemIds.Supplier = CheckSupplierId.logisticalId;
+
+                    var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckDesignerId != null)
+                        OldLogisticalItemIds.Designer = CheckDesignerId.logisticalId;
+
+
+                    var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckManufacturerId != null)
+                        OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
+
+
+                    var CheckContractorId = _unitOfWork.LogisticalitemRepository
+                 .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
+                     x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntites.Id, x => x.logistical,
+                         x => x.logistical.logisticalType);
+
+                    if (CheckContractorId != null)
+                        OldLogisticalItemIds.Contractor = CheckContractorId.logisticalId;
+
+
+                    var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                       .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetPowerLibraryEntites.Id, x => x.logistical,
+                               x => x.logistical.logisticalType);
+
+                    if (CheckConsultantId != null)
+                        OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
+
+
+                    EditLogisticalItemss(userId, editCabinetPowerLibraryObject.LogisticalItems, CabinetPowerLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
+
+                    if (editCabinetPowerLibraryObject.DynamicAttributes != null ? editCabinetPowerLibraryObject.DynamicAttributes.Count > 0 : false)
+                    {
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCabinetPowerLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, CabinetPowerLibraryEntites.Id, userId, resultId, CabinetPowerLegLib.Id);
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
+
+
+                    transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+                    return new Response<EditCabinetPowerLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                catch (Exception err)
+                {
+                    return new Response<EditCabinetPowerLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+        }
+        public async Task<Response<EditCabinetTelecomLibraryObject>> EditCabinetTelecomLibrary(int userId, EditCabinetTelecomLibraryObject editCabinetTelecomLibraryObject, string TableName, string connectionString)
+        {
+            using (TransactionScope transaction =
+                new TransactionScope(TransactionScopeOption.Required,
+                                   new System.TimeSpan(0, 15, 0)))
+            {
+                try
+                {
+
+                    int resultId = 0;
+
+                    TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
+
+                    TLIcabinetTelecomLibrary CabinetTelecomLibraryEntites = _mapper.Map<TLIcabinetTelecomLibrary>(editCabinetTelecomLibraryObject.AttributesActivatedLibrary);
+
+                    TLIcabinetTelecomLibrary CabinetTelecomLegLib = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CabinetTelecomLibraryEntites.Id);
+
+
+                    if (CabinetTelecomLibraryEntites.SpaceLibrary <= 0)
+                    {
+                        if (CabinetTelecomLibraryEntites.Height <= 0)
+                        {
+                            return new Response<EditCabinetTelecomLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        else if (CabinetTelecomLibraryEntites.Width <= 0)
+                        {
+                            return new Response<EditCabinetTelecomLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        else
+                        {
+                            CabinetTelecomLibraryEntites.SpaceLibrary = CabinetTelecomLibraryEntites.Height * CabinetTelecomLibraryEntites.Width;
+                        }
+                    }
+                    var CheckModel = db.MV_CABINETTELECOM_LIBRARY_VIEW
+                             .FirstOrDefault(x => x.Model != null &&
+                                         x.Model.ToLower() == CabinetTelecomLibraryEntites.Model.ToLower() &&
+                                         x.Id != CabinetTelecomLibraryEntites.Id && !x.Deleted);
+                    if (CheckModel != null)
+                    {
+                        return new Response<EditCabinetTelecomLibraryObject>(false, null, null, $"This model {CabinetTelecomLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    CabinetTelecomLibraryEntites.Active = CabinetTelecomLegLib.Active;
+                    CabinetTelecomLibraryEntites.Deleted = CabinetTelecomLegLib.Deleted;
+
+                    _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithHistory(userId, CabinetTelecomLegLib, CabinetTelecomLibraryEntites);
+
+
+                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
+                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //{
+                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
+                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                    //{
+                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+
+                    var CheckVendorId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckVendorId != null)
+                        OldLogisticalItemIds.Vendor = Convert.ToInt32(CheckVendorId.logisticalId);
+
+                    var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckSupplierId != null)
+                        OldLogisticalItemIds.Supplier = CheckSupplierId.logisticalId;
+
+                    var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckDesignerId != null)
+                        OldLogisticalItemIds.Designer = CheckDesignerId.logisticalId;
+
+
+                    var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckManufacturerId != null)
+                        OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
+
+
+                    var CheckContractorId = _unitOfWork.LogisticalitemRepository
+                 .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
+                     x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntites.Id, x => x.logistical,
+                         x => x.logistical.logisticalType);
+
+                    if (CheckContractorId != null)
+                        OldLogisticalItemIds.Contractor = CheckContractorId.logisticalId;
+
+
+                    var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                       .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CabinetTelecomLibraryEntites.Id, x => x.logistical,
+                               x => x.logistical.logisticalType);
+
+                    if (CheckConsultantId != null)
+                        OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
+
+
+                    EditLogisticalItemss(userId, editCabinetTelecomLibraryObject.LogisticalItems, CabinetTelecomLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
+
+                    if (editCabinetTelecomLibraryObject.DynamicAttributes != null ? editCabinetTelecomLibraryObject.DynamicAttributes.Count > 0 : false)
+                    {
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCabinetTelecomLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, CabinetTelecomLibraryEntites.Id, userId, resultId, CabinetTelecomLegLib.Id);
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
+
+
+                    transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+                    return new Response<EditCabinetTelecomLibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                catch (Exception err)
+                {
+                    return new Response<EditCabinetTelecomLibraryObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
 
@@ -3598,22 +3967,155 @@ namespace TLIS_Service.Services
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
                 }
-                //else if (OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TableName)
-                //{
-                //    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-                //    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("MW"));
-                //    attributes.AttributesActivated = ListAttributesActivated;
-                //    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                //    attributes.DynamicAttInst = null;
-                //}
-                //else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
-                //{
-                //    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-                //    ListAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical("MW"));
-                //    attributes.AttributesActivated = ListAttributesActivated;
-                //    attributes.DynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, null);
-                //    attributes.DynamicAttInst = null;
-                //}
+                else if (OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TableName)
+                {
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIcabinetTelecomLibrary.ToString(), null, null)
+                      .ToList();
+                    Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                        { "telecomtype_name", () => _mapper.Map<List<TelecomTypeViewModel>>(_unitOfWork.TelecomTypeRepository
+                         .GetWhere(x => !x.Deleted && !x.Disable).ToList())},
+
+                    };
+                    ListAttributesActivated = ListAttributesActivated
+                       .Select(FKitem =>
+                       {
+                           if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                           {
+                               FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                           }
+                           else
+                           {
+                               FKitem.Options = new object[0];
+                           }
+                           return FKitem;
+                       })
+                       .ToList();
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("OtherInventory");
+                    attributes.LogisticalItems = LogisticalItems;
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                   .GetDynamicLibAtt(TableNameEntity.Id, null)
+                   .Select(DynamicAttribute =>
+                   {
+                       TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+                       if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                       {
+                           switch (DynamicAttribute.DataType.ToLower())
+                           {
+                               case "string":
+                                   DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
+                                   break;
+                               case "int":
+                                   DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "double":
+                                   DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "bool":
+                                   DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "datetime":
+                                   DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                           }
+                       }
+                       else
+                       {
+                           DynamicAttribute.Value = " ".Split(' ')[0];
+                       }
+                       return DynamicAttribute;
+                   });
+
+                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
+                }
+                else if (OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TableName)
+                {
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIcabinetPowerLibrary.ToString(), null, null)
+                      .ToList();
+                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                     {
+                        { "cabinetpowertype_name", () => _mapper.Map<List<CabinetPowerTypeViewModel>>(_unitOfWork.CabinetPowerTypeRepository
+                         .GetWhere(x => !x.Delete && !x.Disable).ToList())},
+                         { "integratedwith", () => {
+                            List<EnumOutPut> integratedwith = new List<EnumOutPut>
+                            {
+                                new EnumOutPut { Id = (int)IntegratedWith.Solar, Name = IntegratedWith.Solar.ToString() },
+                                new EnumOutPut { Id = (int)IntegratedWith.Wind, Name = IntegratedWith.Wind.ToString() }
+                            };
+                            return integratedwith;
+                        }},
+                   
+                    };
+                    ListAttributesActivated = ListAttributesActivated
+                        .Select(FKitem =>
+                        {
+                            if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                            {
+                                FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                            }
+                            else
+                            {
+                                FKitem.Options = new object[0];
+                            }
+                            if (FKitem.Key.ToLower() == "integratedwith".ToLower())
+                            {
+                                List<EnumOutPut> integratedwith = new List<EnumOutPut>();
+                                integratedwith.Add(new EnumOutPut
+                                {
+                                    Id = (int)IntegratedWith.Solar,
+                                    Name = IntegratedWith.Solar.ToString()
+                                });
+                                integratedwith.Add(new EnumOutPut
+                                {
+                                    Id = (int)IntegratedWith.Wind,
+                                    Name = IntegratedWith.Wind.ToString()
+                                });
+                              
+                                FKitem.Options = integratedwith;
+
+                            }
+                            return FKitem;
+                        })
+                        .ToList();
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("OtherInventory");
+                    attributes.LogisticalItems = LogisticalItems;
+                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+                   .GetDynamicLibAtt(TableNameEntity.Id, null)
+                   .Select(DynamicAttribute =>
+                   {
+                       TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+                       if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                       {
+                           switch (DynamicAttribute.DataType.ToLower())
+                           {
+                               case "string":
+                                   DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
+                                   break;
+                               case "int":
+                                   DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "double":
+                                   DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "bool":
+                                   DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                               case "datetime":
+                                   DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                                   break;
+                           }
+                       }
+                       else
+                       {
+                           DynamicAttribute.Value = " ".Split(' ')[0];
+                       }
+                       return DynamicAttribute;
+                   });
+
+                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)ApiReturnCode.success);
             }
             catch (Exception err)
@@ -5814,6 +6316,204 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public Response<GetEnableAttribute> GetCabinetPowerLibrariesEnabledAtt(string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    //string storedProcedureName = "create_dynamic_pivot_withleg_library ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
+                    var attActivated = db.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CabinetPowerLibrary"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = db.MV_CABINETPOWER_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = db.MV_CABINETPOWER_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Model = x.Model,
+                        Width = x.Width,
+                        Weight = x.Weight,
+                        NumberOfBatteries = x.NumberOfBatteries,
+                        LayoutCode = x.LayoutCode,
+                        Height = x.Height,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        SpaceLibrary = x.SpaceLibrary,
+                        Dimension_W_D_H = x.Dimension_W_D_H,
+                        BatteryWeight = x.BatteryWeight,
+                        BatteryType = x.BatteryType,
+                        BatteryDimension_W_D_H = x.BatteryDimension_W_D_H,
+                        Depth = x.Depth,
+                        PowerIntegrated = x.PowerIntegrated,
+                        CABINETPOWERTYPE = x.CABINETPOWERTYPE,
+                        IntegratedWith = x.IntegratedWith,
+
+
+                    }).OrderBy(x => x.Key.Model)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+        public Response<GetEnableAttribute> GetCabinetTelecomLibrariesEnabledAtt(string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    //string storedProcedureName = "create_dynamic_pivot_withleg_library ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
+                    var attActivated = db.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CabinetTelecomLibrary"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = db.MV_CABINETTELECOM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = db.MV_CABINETTELECOM_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Model = x.Model,
+                        Width = x.Width,
+                        MaxWeight = x.MaxWeight,
+                        LayoutCode = x.LayoutCode,
+                        Height = x.Height,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        SpaceLibrary = x.SpaceLibrary,
+                        Dimension_W_D_H = x.Dimension_W_D_H,
+                        TELECOMTYPE = x.TELECOMTYPE
+
+
+
+                    }).OrderBy(x => x.Key.Model)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
         public Response<GetEnableAttribute> GetSolarLibrariesEnabledAtt(string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
@@ -5974,7 +6674,7 @@ namespace TLIS_Service.Services
                             {
                                 _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addGeneratorLibraryObject.DynamicAttributes, TableNameEntity.Id, GeneratorLibraryEntity.Id, connectionString);
                             }
-                            _unitOfWork.TablesHistoryRepository.AddHistory(GeneratorLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
+                            _unitOfWork.TablesHistoryRepository.AddHistory(GeneratorLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIgeneratorLibrary.ToString().ToLower());
 
 
 
@@ -6041,7 +6741,7 @@ namespace TLIS_Service.Services
                             {
                                 _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addSolarLibraryObject.DynamicAttributes, TableNameEntity.Id, SolarLibraryEntity.Id, connectionString);
                             }
-                            _unitOfWork.TablesHistoryRepository.AddHistory(SolarLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
+                            _unitOfWork.TablesHistoryRepository.AddHistory(SolarLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIsolarLibrary.ToString().ToLower());
 
 
 
@@ -6052,6 +6752,160 @@ namespace TLIS_Service.Services
                         catch (Exception err)
                         {
                             return new Response<AddSolarLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                }
+            }
+        }
+        public Response<AddCabinetPowerLibraryObject> AddCabinetPowerLibrary(int UserId, string TableName, AddCabinetPowerLibraryObject addCabinetPowerLibraryObject, string connectionString)
+        {
+            using (var con = new OracleConnection(connectionString))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    using (TransactionScope transaction = new TransactionScope())
+                    {
+                        try
+                        {
+                            string ErrorMessage = string.Empty;
+                            var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
+
+                            TLIcabinetPowerLibrary CabinetPowerLibraryEntity = _mapper.Map<TLIcabinetPowerLibrary>(addCabinetPowerLibraryObject.AttributesActivatedLibrary);
+                            if (CabinetPowerLibraryEntity.SpaceLibrary <= 0)
+                            {
+                                if (CabinetPowerLibraryEntity.Height <= 0)
+                                {
+                                    return new Response<AddCabinetPowerLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else if (CabinetPowerLibraryEntity.Width <= 0)
+                                {
+                                    return new Response<AddCabinetPowerLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else
+                                {
+                                    CabinetPowerLibraryEntity.SpaceLibrary = CabinetPowerLibraryEntity.Height * CabinetPowerLibraryEntity.Width;
+                                }
+                            }
+                            //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                            var CheckModel = db.MV_CABINETPOWER_LIBRARY_VIEW
+                              .FirstOrDefault(x => x.Model != null &&
+                               x.Model.ToLower() == CabinetPowerLibraryEntity.Model.ToLower()
+                               && !x.Deleted);
+
+                            if (CheckModel != null)
+                            {
+                                return new Response<AddCabinetPowerLibraryObject>(true, null, null, $"This model {CabinetPowerLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                            _unitOfWork.CabinetPowerLibraryRepository.AddWithHistory(UserId, CabinetPowerLibraryEntity);
+                            _unitOfWork.SaveChanges();
+
+                            dynamic LogisticalItemIds = new ExpandoObject();
+                            LogisticalItemIds = addCabinetPowerLibraryObject.LogisticalItems;
+
+                            AddLogisticalItemWithCivil(UserId, LogisticalItemIds, CabinetPowerLibraryEntity, TableNameEntity.Id);
+
+                            if (addCabinetPowerLibraryObject.DynamicAttributes.Count > 0)
+                            {
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addCabinetPowerLibraryObject.DynamicAttributes, TableNameEntity.Id, CabinetPowerLibraryEntity.Id, connectionString);
+                            }
+                            _unitOfWork.TablesHistoryRepository.AddHistory(CabinetPowerLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIcabinetPowerLibrary.ToString().ToLower());
+
+
+
+                            transaction.Complete();
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+                            return new Response<AddCabinetPowerLibraryObject>();
+                        }
+                        catch (Exception err)
+                        {
+                            return new Response<AddCabinetPowerLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                }
+            }
+        }
+        public Response<AddCabinetTelecomLibraryObject> AddCabinetTelecomLibrary(int UserId, string TableName, AddCabinetTelecomLibraryObject addCabinetTelecomLibraryObject, string connectionString)
+        {
+            using (var con = new OracleConnection(connectionString))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    using (TransactionScope transaction = new TransactionScope())
+                    {
+                        try
+                        {
+                            string ErrorMessage = string.Empty;
+                            var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
+
+                            TLIcabinetPowerLibrary CabinetPowerLibraryEntity = _mapper.Map<TLIcabinetPowerLibrary>(addCabinetTelecomLibraryObject.AttributesActivatedLibrary);
+                            if (CabinetPowerLibraryEntity.SpaceLibrary <= 0)
+                            {
+                                if (CabinetPowerLibraryEntity.Height <= 0)
+                                {
+                                    return new Response<AddCabinetTelecomLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else if (CabinetPowerLibraryEntity.Width <= 0)
+                                {
+                                    return new Response<AddCabinetTelecomLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else
+                                {
+                                    CabinetPowerLibraryEntity.SpaceLibrary = CabinetPowerLibraryEntity.Height * CabinetPowerLibraryEntity.Width;
+                                }
+                            }
+                            //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
+
+                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                            var CheckModel = db.MV_CABINETTELECOM_LIBRARY_VIEW
+                              .FirstOrDefault(x => x.Model != null &&
+                               x.Model.ToLower() == CabinetPowerLibraryEntity.Model.ToLower()
+                               && !x.Deleted);
+
+                            if (CheckModel != null)
+                            {
+                                return new Response<AddCabinetTelecomLibraryObject>(true, null, null, $"This model {CabinetPowerLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                            _unitOfWork.CabinetPowerLibraryRepository.AddWithHistory(UserId, CabinetPowerLibraryEntity);
+                            _unitOfWork.SaveChanges();
+
+                            dynamic LogisticalItemIds = new ExpandoObject();
+                            LogisticalItemIds = addCabinetTelecomLibraryObject.LogisticalItems;
+
+                            AddLogisticalItemWithCivil(UserId, LogisticalItemIds, CabinetPowerLibraryEntity, TableNameEntity.Id);
+
+                            if (addCabinetTelecomLibraryObject.DynamicAttributes.Count > 0)
+                            {
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addCabinetTelecomLibraryObject.DynamicAttributes, TableNameEntity.Id, CabinetPowerLibraryEntity.Id, connectionString);
+                            }
+                            _unitOfWork.TablesHistoryRepository.AddHistory(CabinetPowerLibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIcabinetTelecomLibrary.ToString().ToLower());
+
+
+
+                            transaction.Complete();
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+                            return new Response<AddCabinetTelecomLibraryObject>();
+                        }
+                        catch (Exception err)
+                        {
+                            return new Response<AddCabinetTelecomLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                 }
