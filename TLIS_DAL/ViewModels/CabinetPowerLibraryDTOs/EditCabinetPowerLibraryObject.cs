@@ -33,7 +33,7 @@ namespace TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs
             public bool Active { get; set; } = true;
             public bool Deleted { get; set; } = false;
             public bool PowerIntegrated { get; set; }
-            public IntegratedWith IntegratedWith { get; set; }
+            public IntegratedWith? IntegratedWith { get; set; }
 
         }
     }

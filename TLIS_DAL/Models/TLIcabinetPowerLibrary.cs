@@ -36,7 +36,7 @@ namespace TLIS_DAL.Models
         public bool Active { get; set; }
         public bool Deleted { get; set; }
         public bool PowerIntegrated { get; set; }
-        public IntegratedWith IntegratedWith { get; set; }
+        public IntegratedWith? IntegratedWith { get; set; }
         public IEnumerable<TLIcabinet> Cabinets { get; set; }
     }
 }

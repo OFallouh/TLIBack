@@ -2769,7 +2769,7 @@ namespace TLIS_Service.Services
                 else if (OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TableName)
                 {
                     TLIcabinetPowerLibrary CabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id && !x.Deleted,x=>x.PowerIntegrated,x=>x.CabinetPowerType);
+                        x.Id == Id && !x.Deleted,x=>x.CabinetPowerType);
                     if (CabinetPowerLibrary != null)
                     {
                         List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, CabinetPowerLibrary, null).ToList();
@@ -2789,9 +2789,16 @@ namespace TLIS_Service.Services
                                     new EnumOutPut { Id = (int)IntegratedWith.Wind, Name = IntegratedWith.Wind.ToString() },
                                    
                                 };
-
-                                    FKitem.Options = IntegratedWithitem;
-                                    FKitem.Value = IntegratedWithitem.FirstOrDefault(x => x.Id == (int)CabinetPowerLibrary?.IntegratedWith);
+                                    if (CabinetPowerLibrary?.IntegratedWith != null)
+                                    {
+                                        FKitem.Options = IntegratedWithitem;
+                                        FKitem.Value = IntegratedWithitem.FirstOrDefault(x => x.Id == (int)CabinetPowerLibrary?.IntegratedWith);
+                                    }
+                                    else
+                                    {
+                                        FKitem.Options = IntegratedWithitem;
+                                        FKitem.Value = null;
+                                    }
                                     break;
                                 default:
                                     break;
