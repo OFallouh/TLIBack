@@ -47,9 +47,9 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddCabinetTelecomInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddCabinetTelecomInstallation(int CabinetPowerLibraryId, string SiteCode)
+        public IActionResult GetAttForAddCabinetTelecomInstallation(int CabinetTelecomLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetTelecomInstallation(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetPowerLibraryId, SiteCode);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetTelecomInstallation(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetTelecomLibraryId, SiteCode);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

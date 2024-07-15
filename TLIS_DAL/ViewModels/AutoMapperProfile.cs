@@ -187,6 +187,8 @@ using static TLIS_DAL.ViewModels.CabinetTelecomLibraryDTOs.AddCabinetTelecomLibr
 using static TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs.AddCabinetPowerLibraryObject;
 using static TLIS_DAL.ViewModels.CabinetTelecomLibraryDTOs.EditCabinetTelecomLibraryObject;
 using static TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs.EditCabinetPowerLibraryObject;
+using static TLIS_DAL.ViewModels.CabinetDTOs.AddCabinetTelecomInstallationObject;
+using static TLIS_DAL.ViewModels.CabinetDTOs.AddCabinetPowerInstallation;
 
 namespace TLIS_DAL.ViewModels
 {
@@ -245,6 +247,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<CabinetPowerLibraryAttributes, TLIcabinetPowerLibrary>().ReverseMap();
             CreateMap<EditCabinetTelecomLibraryAttributes, TLIcabinetTelecomLibrary>().ReverseMap();
             CreateMap<EditCabinetPowerLibraryAttributes, TLIcabinetPowerLibrary>().ReverseMap();
+            CreateMap<installationAttributesCabinetTelecom, TLIcabinet>().ReverseMap();
+            CreateMap<installationAttributesCabinetPower, TLIcabinet>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

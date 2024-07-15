@@ -59,6 +59,9 @@ using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using static TLIS_DAL.ViewModels.SolarLibraryDTOs.EditSolarLibraryObject;
 using static TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs.EditCabinetPowerLibraryObject;
 using static TLIS_DAL.ViewModels.CabinetTelecomLibraryDTOs.EditCabinetTelecomLibraryObject;
+using TLIS_DAL.ViewModels.CabinetPowerTypeDTOs;
+using TLIS_DAL.ViewModels.TelecomTypeDTOs;
+using TLIS_DAL.ViewModels.ParityDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -605,7 +608,14 @@ namespace TLIS_Service.Services
                 {
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivatedGetForAdd(TablesNames.TLIcabinetTelecomLibrary.ToString(), CabinetTelecomLibrary, null).ToList();
-
+                    var telecomtype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "telecomtype_name");
+                    if (telecomtype_name != null)
+                    {
+                        telecomtype_name.Options = _mapper.Map<List<TelecomTypeViewModel>>(_unitOfWork.TelecomTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                        telecomtype_name.Value = _unitOfWork.TelecomTypeRepository != null && CabinetTelecomLibrary.TelecomTypeId != null ?
+                            _mapper.Map<TelecomTypeViewModel>(_unitOfWork.TelecomTypeRepository.GetWhereFirst(x => x.Id == CabinetTelecomLibrary.TelecomTypeId)) :
+                            null;
+                    }
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                         .GetLogisticals(TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString(), CabinetTelecomLibrary.Id).ToList());
 
@@ -707,6 +717,35 @@ namespace TLIS_Service.Services
                 {
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivatedGetForAdd(TablesNames.TLIcabinetPowerLibrary.ToString(), CabinetPowerLibrary, null).ToList();
+                    var cabinetpowertype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "cabinetpowertype_name");
+                    if (cabinetpowertype_name != null)
+                    {
+                        cabinetpowertype_name.Options = _mapper.Map<List<CabinetPowerTypeViewModel>>(_unitOfWork.CabinetPowerTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                        cabinetpowertype_name.Value = _unitOfWork.CabinetPowerTypeRepository != null && CabinetPowerLibrary.CabinetPowerTypeId != null ?
+                            _mapper.Map<CabinetPowerTypeViewModel>(_unitOfWork.CabinetPowerTypeRepository.GetWhereFirst(x => x.Id == CabinetPowerLibrary.CabinetPowerTypeId)) :
+                            null;
+                    }
+                    var integratedwith = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "integratedwith");
+                    if (integratedwith != null)
+                    {
+                        List<EnumOutPut> integratedwiths = new List<EnumOutPut>();
+                        integratedwiths.Add(new EnumOutPut
+                        {
+                            Id = (int)IntegratedWith.Solar,
+                            Name = IntegratedWith.Solar.ToString()
+                        });
+                        integratedwiths.Add(new EnumOutPut
+                        {
+                            Id = (int)IntegratedWith.Wind,
+                            Name = IntegratedWith.Wind.ToString()
+                        });
+
+                        integratedwith.Options = integratedwiths;
+                        integratedwith.Value = CabinetPowerLibrary.IntegratedWith != null ?
+                            _mapper.Map<ParityViewModel>(CabinetPowerLibrary.IntegratedWith) :
+                            null;
+                    }
+
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                         .GetLogisticals(TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(), CabinetPowerLibrary.Id).ToList());
@@ -2856,7 +2895,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddCabinetPowerInstallation> AddCabinetTelecomInstallation(AddCabinetTelecomInstallationObject addCabinetTelecomInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        public Response<AddCabinetTelecomInstallationObject> AddCabinetTelecomInstallation(AddCabinetTelecomInstallationObject addCabinetTelecomInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -2877,7 +2916,7 @@ namespace TLIS_Service.Services
                                 var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, SiteCode, "TLIcabinet", addCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId, addCabinetTelecomInstallationObject.installationAttributes.SpaceInstallation, null).Message;
                                 if (CheckSpace != "Success")
                                 {
-                                    return new Response<AddCabinetPowerInstallation>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    return new Response<AddCabinetTelecomInstallationObject>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                             }
 
@@ -2949,7 +2988,7 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     transaction.Dispose();
-                                    return new Response<AddCabinetPowerInstallation>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                                    return new Response<AddCabinetTelecomInstallationObject>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
                                 }
                             }
                             else
@@ -2958,12 +2997,12 @@ namespace TLIS_Service.Services
                                 transaction.Complete();
                             }
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
-                            return new Response<AddCabinetPowerInstallation>();
+                            return new Response<AddCabinetTelecomInstallationObject>();
                         }
                         catch (Exception err)
                         {
                             tran.Rollback();
-                            return new Response<AddCabinetPowerInstallation>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                            return new Response<AddCabinetTelecomInstallationObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
                         }
                     }
                 }
