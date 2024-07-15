@@ -6855,7 +6855,7 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
-                            TLIcabinetPowerLibrary CabinetPowerLibraryEntity = _mapper.Map<TLIcabinetPowerLibrary>(addCabinetTelecomLibraryObject.AttributesActivatedLibrary);
+                            TLIcabinetTelecomLibrary CabinetPowerLibraryEntity = _mapper.Map<TLIcabinetTelecomLibrary>(addCabinetTelecomLibraryObject.AttributesActivatedLibrary);
                             if (CabinetPowerLibraryEntity.SpaceLibrary <= 0)
                             {
                                 if (CabinetPowerLibraryEntity.Height <= 0)
@@ -6890,7 +6890,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddCabinetTelecomLibraryObject>(true, null, null, $"This model {CabinetPowerLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
-                            _unitOfWork.CabinetPowerLibraryRepository.AddWithHistory(UserId, CabinetPowerLibraryEntity);
+                            _unitOfWork.CabinetTelecomLibraryRepository.AddWithHistory(UserId, CabinetPowerLibraryEntity);
                             _unitOfWork.SaveChanges();
 
                             dynamic LogisticalItemIds = new ExpandoObject();
