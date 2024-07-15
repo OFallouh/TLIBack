@@ -36,12 +36,20 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddCabinet")]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAttForAddCabinetPowerInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddCabinet(string CabinetLibraryType, int OtherInventoryId, string SiteCode)
+        public IActionResult GetAttForAddCabinetPowerInstallation(int CabinetPowerLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAdd(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetLibraryType, OtherInventoryId, SiteCode);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetPowerInstallation(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetPowerLibraryId, SiteCode);
+            return Ok(response);
+        }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAttForAddCabinetTelecomInstallation")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAddCabinetTelecomInstallation(int CabinetPowerLibraryId, string SiteCode)
+        {
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetTelecomInstallation(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetPowerLibraryId, SiteCode);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -60,47 +68,85 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode);
             return Ok(response);
         }
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("AddCabinet")]
-        //[ProducesResponseType(200, Type = typeof(AddCabinetViewModel))]
-        //public IActionResult AddCabinet([FromBody] AddCabinetViewModel addCabinetViewModel, string SiteCode, int? TaskId)
-        //{
-        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //    string authHeader = HttpContext.Request.Headers["Authorization"];
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddCabinetPowerInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddCabinetPowerInstallation))]
+        public IActionResult AddCabinetPowerInstallation([FromBody] AddCabinetPowerInstallation addCabinetViewModel, string SiteCode, int? TaskId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
 
-        //    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-        //    {
-        //        return Unauthorized();
-        //    }
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
 
-        //    var token = authHeader.Substring("Bearer ".Length).Trim();
-        //    var handler = new JwtSecurityTokenHandler();
-        //    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
-        //    if (jsonToken == null)
-        //    {
-        //        return Unauthorized();
-        //    }
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
 
-        //    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-        //    var userId = Convert.ToInt32(userInfo);
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
 
-        //    if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetViewModel)))
-        //    {
-        //        var response = _unitOfWorkService.OtherInventoryInstService.AddOtherInventoryInstallation(addCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), SiteCode, ConnectionString, TaskId, userId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddCabinetViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        
-                
+            if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetPowerInstallation)))
+            {
+                var response = _unitOfWorkService.OtherInventoryInstService.AddCabinetPowerInstallation(addCabinetViewModel, SiteCode, ConnectionString, TaskId, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddCabinetPowerInstallation>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddCabinetTelecomInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddCabinetTelecomInstallationObject))]
+        public IActionResult AddCabinetTelecomInstallation([FromBody] AddCabinetTelecomInstallationObject addCabinetViewModel, string SiteCode, int? TaskId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
 
-        //}
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+
+            if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetTelecomInstallationObject)))
+            {
+                var response = _unitOfWorkService.OtherInventoryInstService.AddCabinetTelecomInstallation(addCabinetViewModel, SiteCode, ConnectionString, TaskId, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddCabinetTelecomInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+
+
+
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(AddSolarInstallationObject))]
@@ -338,6 +384,24 @@ namespace TLIS_API.Controllers
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.OtherInventoryInstService.GetSolarWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+        }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetCabinetPowerWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCabinetPowerWithEnableAtt([FromQuery] string? SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetPowerWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+        }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetCabinetTelecomWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCabinetTelecomWithEnableAtt([FromQuery] string? SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetTelecomWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

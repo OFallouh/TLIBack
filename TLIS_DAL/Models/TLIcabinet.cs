@@ -12,18 +12,17 @@ namespace TLIS_DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
-        public string TPVersion { get; set; }
-        public int? RenewableCabinetNumberOfBatteries { get; set; }
-        public int? NUmberOfPSU { get; set; }
+        public string? TPVersion { get; set; }
+        public int RenewableCabinetNumberOfBatteries { get; set; }
+        public int NUmberOfPSU { get; set; }
         public float SpaceInstallation { get; set; }
-        public string VisibleStatus { get; set; }
+        public string? VisibleStatus { get; set; }
         public TLIcabinetPowerLibrary CabinetPowerLibrary { get; set; }
         public int? CabinetPowerLibraryId { get; set; }
         public TLIcabinetTelecomLibrary CabinetTelecomLibrary { get; set; }
         public int? CabinetTelecomLibraryId { get; set; }
         public TLIrenewableCabinetType RenewableCabinetType { get; set; }
         public int? RenewableCabinetTypeId { get; set; }
-
         public float CenterHigh { get; set; }
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
