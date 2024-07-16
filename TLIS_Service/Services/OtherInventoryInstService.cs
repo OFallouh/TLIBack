@@ -5845,7 +5845,7 @@ namespace TLIS_Service.Services
                                         {
                                             var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                            if (item.allOtherInventoryInst.generator != null)
+                                            if (item.allOtherInventoryInst.generator != null && item.allOtherInventoryInst.generator.Id != GeneratorId)
                                             {
                                                 SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -5892,7 +5892,7 @@ namespace TLIS_Service.Services
                                     {
                                         var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                        if (item.allOtherInventoryInst.generator != null)
+                                        if (item.allOtherInventoryInst.generator != null && item.allOtherInventoryInst.generator.Id != GeneratorId)
                                         {
                                             SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                             {
