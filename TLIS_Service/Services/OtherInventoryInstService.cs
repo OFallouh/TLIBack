@@ -454,16 +454,18 @@ namespace TLIS_Service.Services
                     .Where(x => x.SiteCode == SiteCode && x.allOtherInventoryInst != null && !x.Dismantle)
                     .ToList();
 
+
                     var locationTypeViewModels = query
                      .Select(item => new LocationTypeViewModel
                      {
                          Id = item.allOtherInventoryInstId,
                          Name = $"{_dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.generatorId)?.Name}" +
-                         $" {_dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}" /*+*/
-                         //$" {_dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}"
-                         //+ $" {_dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}".Trim()
+                         $" {_dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}" +
+                         $" {_dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.cabinetId)?.Name}"
+                         + $" {_dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.cabinetId)?.Name}".Trim()
                      })
                      .ToList();
+
 
                     objectInst.OtherInventoryDistance = objectInst.OtherInventoryDistance.Select(x =>
                     {
@@ -558,16 +560,18 @@ namespace TLIS_Service.Services
                     .Where(x => x.SiteCode == SiteCode && x.allOtherInventoryInst != null && !x.Dismantle)
                     .ToList();
 
+
                     var locationTypeViewModels = query
-                      .Select(item => new LocationTypeViewModel
-                      {
-                          Id = item.allOtherInventoryInstId,
-                          Name = $"{_dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.generatorId)?.Name}" +
-                          $" {_dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}" /*+*/
-                          //$" {_dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}"
-                          //+ $" {_dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}".Trim()
-                      })
-                      .ToList();
+                     .Select(item => new LocationTypeViewModel
+                     {
+                         Id = item.allOtherInventoryInstId,
+                         Name = $"{_dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.generatorId)?.Name}" +
+                         $" {_dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}" +
+                         $" {_dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.cabinetId)?.Name}"
+                         + $" {_dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.cabinetId)?.Name}".Trim()
+                     })
+                     .ToList();
+
 
                     objectInst.OtherInventoryDistance = objectInst.OtherInventoryDistance.Select(x =>
                     {
@@ -583,7 +587,7 @@ namespace TLIS_Service.Services
                 }
                 else
                 {
-                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this Generatorlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this solarlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
             }
@@ -667,16 +671,18 @@ namespace TLIS_Service.Services
                     .Where(x => x.SiteCode == SiteCode && x.allOtherInventoryInst != null && !x.Dismantle)
                     .ToList();
 
+
                     var locationTypeViewModels = query
-                      .Select(item => new LocationTypeViewModel
-                      {
-                          Id = item.allOtherInventoryInstId,
-                          Name = $"{_dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.generatorId)?.Name}" +
-                          $" {_dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}" /*+*/
-                          //$" {_dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}"
-                          //+ $" {_dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}".Trim()
-                      })
-                      .ToList();
+                     .Select(item => new LocationTypeViewModel
+                     {
+                         Id = item.allOtherInventoryInstId,
+                         Name = $"{_dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.generatorId)?.Name}" +
+                         $" {_dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}" +
+                         $" {_dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.cabinetId)?.Name}"
+                         + $" {_dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.cabinetId)?.Name}".Trim()
+                     })
+                     .ToList();
+
 
                     objectInst.OtherInventoryDistance = objectInst.OtherInventoryDistance.Select(x =>
                     {
@@ -692,7 +698,7 @@ namespace TLIS_Service.Services
                 }
                 else
                 {
-                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this Generatorlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this cabinetTelecomlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
             }
@@ -803,9 +809,9 @@ namespace TLIS_Service.Services
                      {
                          Id = item.allOtherInventoryInstId,
                          Name = $"{_dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.generatorId)?.Name}" +
-                         $" {_dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}" /*+*/
-                         //$" {_dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}"
-                         //+ $" {_dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}".Trim()
+                         $" {_dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.solarId)?.Name}" +
+                         $" {_dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.cabinetId)?.Name}"
+                         + $" {_dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == item.allOtherInventoryInst.cabinetId)?.Name}".Trim()
                      })
                      .ToList();
 
@@ -823,7 +829,7 @@ namespace TLIS_Service.Services
                 }
                 else
                 {
-                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this Generatorlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this cabinetPowerlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
             }
@@ -2818,22 +2824,22 @@ namespace TLIS_Service.Services
                             //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
 
-                            //var CheckName = _dbContext.MV_CABINET_POWER_VIEW
-                            //   .Where(x => x.Name != null &&
-                            //               x.Name.ToLower() == CabinetPower.Name.ToLower() &&
-                            //               !x.Dismantle &&
-                            //               x.SITECODE.ToLower() == SiteCode.ToLower())
-                            //   .ToList();
+                            var CheckName = _dbContext.MV_CABINET_POWER_VIEW
+                               .Where(x => x.Name != null &&
+                                           x.Name.ToLower() == CabinetPower.Name.ToLower() &&
+                                           !x.Dismantle &&
+                                           x.SITECODE.ToLower() == SiteCode.ToLower())
+                               .ToList();
 
-                            //if (CheckName.Count > 0)
-                            //    return new Response<AddCabinetPowerInstallation>(true, null, null, $"This name {CabinetPower.Name} is already exists", (int)ApiReturnCode.fail);
+                            if (CheckName.Count > 0)
+                                return new Response<AddCabinetPowerInstallation>(true, null, null, $"This name {CabinetPower.Name} is already exists", (int)ApiReturnCode.fail);
 
                             CabinetPower.CabinetPowerLibraryId = addCabinetPowerInstallation.CabinetPowerType.CabinetPowerLibraryId;
                             _unitOfWork.CabinetRepository.AddWithHistory(UserId, CabinetPower);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
-                            allOtherInventoryInst.generatorId = CabinetPower.Id;
+                            allOtherInventoryInst.cabinetId = CabinetPower.Id;
                             _unitOfWork.AllOtherInventoryInstRepository.AddWithHistory(UserId, allOtherInventoryInst);
                             _unitOfWork.SaveChanges();
                             allOtherInventoryInstId = allOtherInventoryInst.Id;
@@ -2931,22 +2937,22 @@ namespace TLIS_Service.Services
                             //    return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
 
-                            //var CheckName = _dbContext.MV_CABINET_TELECOM_VIEW
-                            //   .Where(x => x.Name != null &&
-                            //               x.Name.ToLower() == CabinetTelecom.Name.ToLower() &&
-                            //               !x.Dismantle &&
-                            //               x.SITECODE.ToLower() == SiteCode.ToLower())
-                            //   .ToList();
+                            var CheckName = _dbContext.MV_CABINET_TELECOM_VIEW
+                               .Where(x => x.Name != null &&
+                                           x.Name.ToLower() == CabinetTelecom.Name.ToLower() &&
+                                           !x.Dismantle &&
+                                           x.SITECODE.ToLower() == SiteCode.ToLower())
+                               .ToList();
 
-                            //if (CheckName.Count > 0)
-                            //    return new Response<AddCabinetPowerInstallation>(true, null, null, $"This name {CabinetTelecom.Name} is already exists", (int)ApiReturnCode.fail);
+                            if (CheckName.Count > 0)
+                                return new Response<AddCabinetTelecomInstallationObject>(true, null, null, $"This name {CabinetTelecom.Name} is already exists", (int)ApiReturnCode.fail);
 
-                            //CabinetTelecom.CabinetPowerLibraryId = addCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
+                            CabinetTelecom.CabinetPowerLibraryId = addCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
                             _unitOfWork.CabinetRepository.AddWithHistory(UserId, CabinetTelecom);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
-                            allOtherInventoryInst.generatorId = CabinetTelecom.Id;
+                            allOtherInventoryInst.cabinetId = CabinetTelecom.Id;
                             _unitOfWork.AllOtherInventoryInstRepository.AddWithHistory(UserId, allOtherInventoryInst);
                             _unitOfWork.SaveChanges();
                             allOtherInventoryInstId = allOtherInventoryInst.Id;
@@ -3438,15 +3444,16 @@ namespace TLIS_Service.Services
                         if (key.attribute != null)
                         {
                             string name = key.attribute;
-                            if (name != "Id" && name.EndsWith("Id"))
+                            if (name != "Id" && name.EndsWith("Id") )
                             {
                                 string fk = name.Remove(name.Length - 2);
                                 propertyNamesStatic.Add(fk);
                             }
-                            else
+                            else 
                             {
                                 propertyNamesStatic.Add(name);
                             }
+                           
 
                         }
                         else
@@ -3458,6 +3465,8 @@ namespace TLIS_Service.Services
 
                     }
                     propertyNamesStatic.Add("SITECODE");
+                    propertyNamesStatic.Remove("CabinetTelecomLibrary");
+                  
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)
@@ -3592,6 +3601,7 @@ namespace TLIS_Service.Services
 
                     }
                     propertyNamesStatic.Add("SITECODE");
+                    propertyNamesStatic.Remove("CabinetPowerLibrary");
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)

@@ -835,7 +835,7 @@ namespace TLIS_Service.Services
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    return new Response<SideArmLibraryViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<SideArmLibraryViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
                 }
                 catch (Exception err)
