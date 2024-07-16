@@ -23,23 +23,17 @@ namespace TLIS_DAL.ViewModels.CabinetDTOs
     public class EditinstallationAttributesCabinetPower
     {
         public int Id { get; set; }
-        public string Model { get; set; }
-        public float Weight { get; set; } = 0;
-        public int NumberOfBatteries { get; set; } = 0;
-        public string? LayoutCode { get; set; } = " ";
-        public string? Dimension_W_D_H { get; set; } = " ";
-        public float BatteryWeight { get; set; } = 0;
-        public string? BatteryType { get; set; } = " ";
-        public string? BatteryDimension_W_D_H { get; set; } = " ";
-        public float Depth { get; set; } = 0;
-        public float Width { get; set; } = 0;
-        public float Height { get; set; } = 0;
-        public float SpaceLibrary { get; set; } = 0;
-        public int CabinetPowerTypeId { get; set; }
-        public bool Active { get; set; } = true;
-        public bool Deleted { get; set; } = false;
-        public bool PowerIntegrated { get; set; }
-        public IntegratedWith? IntegratedWith { get; set; }
+        public string Name { get; set; }
+        public string? TPVersion { get; set; } = "";
+        public int RenewableCabinetNumberOfBatteries { get; set; } = 0;
+        public int NUmberOfPSU { get; set; } = 0;
+        public float SpaceInstallation { get; set; } = 0;
+        public string? VisibleStatus { get; set; } = " ";
+        public int? RenewableCabinetTypeId { get; set; }
+        public float CenterHigh { get; set; } = 0;
+        public float HBA { get; set; } = 0;
+        public float HieghFromLand { get; set; } = 0;
+        public float EquivalentSpace { get; set; } = 0;
 
     }
 }

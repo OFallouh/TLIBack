@@ -3779,6 +3779,7 @@ namespace TLIS_Service.Services
                            .GetAllAsQueryable().AsNoTracking().
                            Include(x => x.allOtherInventoryInst)
                            .ThenInclude(x => x.generator).
+                           Include(x=>x.Site).
                            FirstOrDefault(x => x.allOtherInventoryInst
                            .generatorId == Generator.Id
                            && !x.Dismantle);
@@ -5800,7 +5801,8 @@ namespace TLIS_Service.Services
                                         if (supportReferenceAllCivilInst.generatorId != null)
                                         {
 
-                                            referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
+                                            referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId
+                                            && x.Id != GeneratorId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
                                         {
@@ -6057,7 +6059,8 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
                                         {
-                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId)?.Name;
+                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId
+                                            && x.Id != SolarId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
                                         {
@@ -6320,7 +6323,8 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
                                         {
-                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId
+                                            && x.Id != CabinetTelecomId)?.Name;
                                         }
 
                                     }
@@ -6583,7 +6587,6 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.generatorId != null)
                                         {
-
                                             referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
@@ -6592,7 +6595,8 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
                                         {
-                                            referencesValue = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                            referencesValue = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId
+                                             && x.Id != CabinetPowerId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
                                         {
