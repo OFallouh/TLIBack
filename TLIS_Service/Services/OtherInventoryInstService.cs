@@ -4022,6 +4022,306 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetPowerInstallation(EditCabinetPowerInstallationObject editCabinetPowerInstallationObject, string TableName, int? TaskId, int UserId, string connectionString)
+        {
+            using (TransactionScope transaction = new TransactionScope())
+            {
+                try
+                {
+
+                    TLIsite OldSite = new TLIsite();
+                    TLItablesNames TableEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TableName.ToLower());
+
+                    TLIcabinet CabinetPower = _mapper.Map<TLIcabinet>(editCabinetPowerInstallationObject.installationAttributes);
+
+                    TLIotherInSite CabinetPowerInst =
+                           _dbContext.TLIotherInSite.AsNoTracking()
+                          .Include(x => x.allOtherInventoryInst).
+                           ThenInclude(x => x.cabinet).Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst
+                           .cabinetId == CabinetPower.Id
+                           && !x.Dismantle);
+
+                    if (CabinetPowerInst != null)
+                    {
+
+                        var CheckName = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x =>
+                        !x.Dismantle &&
+                         x.Id != CabinetPower.Id &&
+                         x.Name.ToLower() == CabinetPower.Name.ToLower() &&
+                         x.SITECODE.ToLower() == CabinetPowerInst.SiteCode.ToLower());
+
+                        if (CheckName != null)
+                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {CabinetPower.Name} is already exists", (int)ApiReturnCode.fail);
+                        TLIsite NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                CabinetPowerInst.SiteCode.ToLower());
+                        if (CabinetPowerInst.ReservedSpace == true && editCabinetPowerInstallationObject.OtherInSite.ReservedSpace == true)
+                        {
+                            if (CabinetPower.SpaceInstallation != CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation)
+                            {
+
+                                NewSite.ReservedSpace = NewSite.ReservedSpace - CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation;
+                                NewSite.ReservedSpace = NewSite.ReservedSpace + CabinetPower.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, CabinetPowerInst.Site, NewSite);
+                                _dbContext.SaveChanges();
+                            }
+                        }
+                        else if (CabinetPowerInst.ReservedSpace == true && editCabinetPowerInstallationObject.OtherInSite.ReservedSpace == false)
+                        {
+
+
+                            NewSite.ReservedSpace = NewSite.ReservedSpace - CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation;
+                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, CabinetPowerInst.Site, NewSite);
+                            _dbContext.SaveChanges();
+                        }
+                        if (CabinetPowerInst.ReservedSpace == false && editCabinetPowerInstallationObject.OtherInSite.ReservedSpace == true)
+                        {
+
+
+                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, CabinetPowerInst.SiteCode, TableEntity.TableName, editCabinetPowerInstallationObject.CabinetPowerType.CabinetPowerLibraryId, CabinetPower.SpaceInstallation, null).Message;
+                            if (CheckSpace != "Success")
+                            {
+                                return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                        }
+                        //string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(CabinetPowerModel.DynamicInstAttsValue, TableName);
+
+                        //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                        //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                        //string CheckDependencyValidation = CheckDependencyValidationEditVersion(model, SiteCode, TableName);
+
+                        //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                        //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                        CabinetPower.CabinetPowerLibraryId = editCabinetPowerInstallationObject.CabinetPowerType.CabinetPowerLibraryId;
+                        _unitOfWork.CabinetRepository.UpdateWithHistory(UserId, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetPower);
+                        _unitOfWork.SaveChanges();
+                        //----------------------------------------------------------------------------------//
+                        //----------------------OtherOnSite-------------------------------------------------//
+                        TLIotherInSite NewCabinetPowerInst =
+                         _dbContext.TLIotherInSite
+                        .Include(x => x.allOtherInventoryInst).
+                         ThenInclude(x => x.cabinet).Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst
+                         .cabinetId == CabinetPower.Id
+                         && !x.Dismantle);
+
+                        NewCabinetPowerInst.OtherInSiteStatus = editCabinetPowerInstallationObject.OtherInSite.OtherInSiteStatus;
+                        NewCabinetPowerInst.InstallationDate = editCabinetPowerInstallationObject.OtherInSite.InstallationDate;
+                        NewCabinetPowerInst.ReservedSpace = editCabinetPowerInstallationObject.OtherInSite.ReservedSpace;
+                        NewCabinetPowerInst.Dismantle = editCabinetPowerInstallationObject.OtherInSite.Dismantle;
+                        NewCabinetPowerInst.OtherInventoryStatus = editCabinetPowerInstallationObject.OtherInSite.OtherInventoryStatus;
+                        _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, CabinetPowerInst, NewCabinetPowerInst);
+                        _unitOfWork.SaveChanges();
+
+                        //----------------------------------------------------------------------------------//
+                        //----------------------OtherInventoryDistance-------------------------------------------------//
+
+                        var Otherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetIncludeWhereFirst
+                            (x => x.allOtherInventoryInst.cabinetId == CabinetPower.Id, x => x.allOtherInventoryInst);
+
+                        var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
+                          .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId
+                          == CabinetPower.Id);
+
+                        Otherinventorydistance.Azimuth = editCabinetPowerInstallationObject.OtherInventoryDistance.Azimuth;
+                        Otherinventorydistance.Distance = editCabinetPowerInstallationObject.OtherInventoryDistance.Distance;
+                        Otherinventorydistance.ReferenceOtherInventoryId = editCabinetPowerInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId;
+
+                        _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
+                        _unitOfWork.SaveChanges();
+
+                        if (editCabinetPowerInstallationObject.dynamicAttribute.Count > 0)
+                        {
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, editCabinetPowerInstallationObject.dynamicAttribute, TableEntity.Id, CabinetPower.Id, connectionString);
+                        }
+                        await _unitOfWork.SaveChangesAsync();
+
+                    }
+                    else
+                    {
+                        return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, " The CabinetPower is not found", (int)ApiReturnCode.fail);
+                    }
+
+
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transaction.Complete();
+                        }
+                        else
+                        {
+                            transaction.Dispose();
+                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transaction.Complete();
+                    }
+                    return new Response<GetForAddOtherInventoryInstallationObject>();
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                }
+            }
+        }
+        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetTelecomInstallation(EditCabinetTelecomInstallationObject editCabinetTelecomInstallationObject, string TableName, int? TaskId, int UserId, string connectionString)
+        {
+            using (TransactionScope transaction = new TransactionScope())
+            {
+                try
+                {
+
+                    TLIsite OldSite = new TLIsite();
+                    TLItablesNames TableEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TableName.ToLower());
+
+                    TLIcabinet CabinetTelecom = _mapper.Map<TLIcabinet>(editCabinetTelecomInstallationObject.installationAttributes);
+
+                    TLIotherInSite CabinetPowerInst =
+                           _dbContext.TLIotherInSite.AsNoTracking()
+                          .Include(x => x.allOtherInventoryInst).
+                           ThenInclude(x => x.cabinet).Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst
+                           .cabinetId == CabinetTelecom.Id
+                           && !x.Dismantle);
+
+                    if (CabinetPowerInst != null)
+                    {
+
+                        var CheckName = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x =>
+                        !x.Dismantle &&
+                         x.Id != CabinetTelecom.Id &&
+                         x.Name.ToLower() == CabinetTelecom.Name.ToLower() &&
+                         x.SITECODE.ToLower() == CabinetPowerInst.SiteCode.ToLower());
+
+                        if (CheckName != null)
+                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {CabinetTelecom.Name} is already exists", (int)ApiReturnCode.fail);
+                        TLIsite NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                CabinetPowerInst.SiteCode.ToLower());
+                        if (CabinetPowerInst.ReservedSpace == true && editCabinetTelecomInstallationObject.OtherInSite.ReservedSpace == true)
+                        {
+                            if (CabinetTelecom.SpaceInstallation != CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation)
+                            {
+
+                                NewSite.ReservedSpace = NewSite.ReservedSpace - CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation;
+                                NewSite.ReservedSpace = NewSite.ReservedSpace + CabinetTelecom.SpaceInstallation;
+                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, CabinetPowerInst.Site, NewSite);
+                                _dbContext.SaveChanges();
+                            }
+                        }
+                        else if (CabinetPowerInst.ReservedSpace == true && editCabinetTelecomInstallationObject.OtherInSite.ReservedSpace == false)
+                        {
+
+
+                            NewSite.ReservedSpace = NewSite.ReservedSpace - CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation;
+                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, CabinetPowerInst.Site, NewSite);
+                            _dbContext.SaveChanges();
+                        }
+                        if (CabinetPowerInst.ReservedSpace == false && editCabinetTelecomInstallationObject.OtherInSite.ReservedSpace == true)
+                        {
+
+
+                            var CheckSpace = _unitOfWork.SiteRepository.CheckSpaces(UserId, CabinetPowerInst.SiteCode, TableEntity.TableName, editCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId, CabinetTelecom.SpaceInstallation, null).Message;
+                            if (CheckSpace != "Success")
+                            {
+                                return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckSpace, (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+
+                        }
+                        //string CheckGeneralValidation = CheckGeneralValidationFunctionEditVersion(CabinetPowerModel.DynamicInstAttsValue, TableName);
+
+                        //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                        //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
+
+                        //string CheckDependencyValidation = CheckDependencyValidationEditVersion(model, SiteCode, TableName);
+
+                        //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                        //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
+
+                        CabinetTelecom.CabinetTelecomLibraryId = editCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
+                        _unitOfWork.CabinetRepository.UpdateWithHistory(UserId, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetTelecom);
+                        _unitOfWork.SaveChanges();
+                        //----------------------------------------------------------------------------------//
+                        //----------------------OtherOnSite-------------------------------------------------//
+                        TLIotherInSite NewCabinetPowerInst =
+                         _dbContext.TLIotherInSite
+                        .Include(x => x.allOtherInventoryInst).
+                         ThenInclude(x => x.cabinet).Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst
+                         .cabinetId == CabinetTelecom.Id
+                         && !x.Dismantle);
+
+                        NewCabinetPowerInst.OtherInSiteStatus = editCabinetTelecomInstallationObject.OtherInSite.OtherInSiteStatus;
+                        NewCabinetPowerInst.InstallationDate = editCabinetTelecomInstallationObject.OtherInSite.InstallationDate;
+                        NewCabinetPowerInst.ReservedSpace = editCabinetTelecomInstallationObject.OtherInSite.ReservedSpace;
+                        NewCabinetPowerInst.Dismantle = editCabinetTelecomInstallationObject.OtherInSite.Dismantle;
+                        NewCabinetPowerInst.OtherInventoryStatus = editCabinetTelecomInstallationObject.OtherInSite.OtherInventoryStatus;
+                        _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, CabinetPowerInst, NewCabinetPowerInst);
+                        _unitOfWork.SaveChanges();
+
+                        //----------------------------------------------------------------------------------//
+                        //----------------------OtherInventoryDistance-------------------------------------------------//
+
+                        var Otherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetIncludeWhereFirst
+                            (x => x.allOtherInventoryInst.cabinetId == CabinetTelecom.Id, x => x.allOtherInventoryInst);
+
+                        var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
+                          .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId
+                          == CabinetTelecom.Id);
+
+                        Otherinventorydistance.Azimuth = editCabinetTelecomInstallationObject.OtherInventoryDistance.Azimuth;
+                        Otherinventorydistance.Distance = editCabinetTelecomInstallationObject.OtherInventoryDistance.Distance;
+                        Otherinventorydistance.ReferenceOtherInventoryId = editCabinetTelecomInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId;
+
+                        _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
+                        _unitOfWork.SaveChanges();
+
+                        if (editCabinetTelecomInstallationObject.dynamicAttribute.Count > 0)
+                        {
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, editCabinetTelecomInstallationObject.dynamicAttribute, TableEntity.Id, CabinetTelecom.Id, connectionString);
+                        }
+                        await _unitOfWork.SaveChangesAsync();
+
+                    }
+                    else
+                    {
+                        return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, " The CabinetPower is not found", (int)ApiReturnCode.fail);
+                    }
+
+
+                    if (TaskId != null)
+                    {
+                        var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                        var result = Submit.Result;
+                        if (result.result == true && result.errorMessage == null)
+                        {
+                            _unitOfWork.SaveChanges();
+                            transaction.Complete();
+                        }
+                        else
+                        {
+                            transaction.Dispose();
+                            return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                        transaction.Complete();
+                    }
+                    return new Response<GetForAddOtherInventoryInstallationObject>();
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                }
+            }
+        }
         #region Helper Methods For UpdateSideArm Function..
         public string CheckDependencyValidationEditVersion(object Input, string SiteCode, string OtherInventoryType)
         {

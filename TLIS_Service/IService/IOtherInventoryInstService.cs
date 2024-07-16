@@ -45,6 +45,8 @@ namespace TLIS_Service.IService
         Response<GetForAddOtherInventoryInstallationObject> GetAttForAddCabinetPowerInstallation(string TableName, int LibraryID, string SiteCode);
         Response<GetEnableAttribute> GetCabinetTelecomWithEnableAtt(string? SiteCode, string ConnectionString);
         Response<GetEnableAttribute> GetCabinetPowerWithEnableAtt(string? SiteCode, string ConnectionString);
+        Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetPowerInstallation(EditCabinetPowerInstallationObject editCabinetPowerInstallationObject, string TableName, int? TaskId, int UserId, string connectionString);
+        Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetTelecomInstallation(EditCabinetTelecomInstallationObject editCabinetTelecomInstallationObject, string TableName, int? TaskId, int UserId, string connectionString);
         Response<AddCabinetTelecomInstallationObject> AddCabinetTelecomInstallation(AddCabinetTelecomInstallationObject addCabinetTelecomInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId);
     }
 }
