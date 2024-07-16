@@ -62,6 +62,7 @@ using static TLIS_DAL.ViewModels.CabinetTelecomLibraryDTOs.EditCabinetTelecomLib
 using TLIS_DAL.ViewModels.CabinetPowerTypeDTOs;
 using TLIS_DAL.ViewModels.TelecomTypeDTOs;
 using TLIS_DAL.ViewModels.ParityDTOs;
+using TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -2947,7 +2948,7 @@ namespace TLIS_Service.Services
                             if (CheckName.Count > 0)
                                 return new Response<AddCabinetTelecomInstallationObject>(true, null, null, $"This name {CabinetTelecom.Name} is already exists", (int)ApiReturnCode.fail);
 
-                            CabinetTelecom.CabinetPowerLibraryId = addCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
+                            CabinetTelecom.CabinetTelecomLibraryId = addCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
                             _unitOfWork.CabinetRepository.AddWithHistory(UserId, CabinetTelecom);
                             _unitOfWork.SaveChanges();
 
@@ -5505,10 +5506,14 @@ namespace TLIS_Service.Services
                                         {
                                             referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId)?.Name;
                                         }
-                                        //else
-                                        //{
-                                        //    referencesValue = _dbContext.MV_CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;
-                                        //}
+                                        else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                        }
+                                        else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                        }
                                     }
 
                                     if (referencesValue != null && support.ReferenceOtherInventoryId != null && support.ReferenceOtherInventoryId.HasValue)
@@ -5754,10 +5759,546 @@ namespace TLIS_Service.Services
                                         {
                                             referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId)?.Name;
                                         }
-                                        //else
-                                        //{
-                                        //    referencesValue = _dbContext.MV_CIVIL_NONSTEEL_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.civilNonSteelId)?.Name;
-                                        //}
+                                        else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                        }
+                                        else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                        }
+                                    }
+
+                                    if (referencesValue != null && support.ReferenceOtherInventoryId != null && support.ReferenceOtherInventoryId.HasValue)
+                                    {
+                                        SupportTypeImplementedViewModel views = new SupportTypeImplementedViewModel()
+                                        {
+                                            Id = support.ReferenceOtherInventoryId.Value,
+                                            Name = referencesValue.ToString()
+                                        };
+                                        attr.Value = views;
+                                    }
+                                    if (referencesValue == null)
+                                    {
+                                        attr.Value = new object[0];
+                                    }
+                                    var AllOther = _unitOfWork.OtherInSiteRepository
+                                            .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                                x => x.allOtherInventoryInst,
+                                                x => x.allOtherInventoryInst.generator,
+                                                x => x.allOtherInventoryInst.solar,
+                                                x => x.allOtherInventoryInst.cabinet)?.ToList();
+
+
+                                    if (AllOther != null && AllOther.Any())
+                                    {
+                                        options = AllOther.SelectMany(item =>
+                                        {
+                                            var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                            if (item.allOtherInventoryInst.generator != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.generator?.Name
+                                                };
+
+                                                innerOptions.Add(civilWithLegsOption);
+                                            }
+
+                                            if (item.allOtherInventoryInst.solar != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.solar?.Name
+                                                };
+                                                innerOptions.Add(civilWithoutLegOption);
+                                            }
+
+                                            if (item.allOtherInventoryInst.cabinet != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.cabinet?.Name
+                                                };
+                                                innerOptions.Add(civilNonSteelOption);
+                                            }
+
+                                            return innerOptions;
+                                        }).ToList();
+                                    }
+                                }
+                                else
+                                {
+                                    var allOther = _unitOfWork.OtherInSiteRepository
+                                        .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                            x => x.allOtherInventoryInst,
+                                            x => x.allOtherInventoryInst.generator,
+                                            x => x.allOtherInventoryInst.solar,
+                                            x => x.allOtherInventoryInst.cabinet)?.ToList();
+                                    options = allOther.SelectMany(item =>
+                                    {
+                                        var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                        if (item.allOtherInventoryInst.generator != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.generator?.Name
+                                            };
+
+                                            innerOptions.Add(civilWithLegsOption);
+                                        }
+
+                                        if (item.allOtherInventoryInst.solar != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.solar?.Name
+                                            };
+                                            innerOptions.Add(civilWithoutLegOption);
+                                        }
+
+                                        if (item.allOtherInventoryInst.cabinet != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.cabinet?.Name
+                                            };
+                                            innerOptions.Add(civilNonSteelOption);
+                                        }
+
+                                        return innerOptions;
+                                    }).ToList();
+                                }
+                                attr.Options = options;
+
+                                return attr;
+                            })
+                            .ToList();
+                    }
+
+                    return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                else
+                {
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this civilwithlegs is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+            catch (Exception err)
+            {
+                return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public Response<GetForAddOtherInventoryInstallationObject> GetCabinetTelecomInstallationById(int CabinetTelecomId, string TableName)
+        {
+            try
+            {
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
+                    .GetWhereFirst(c => c.TableName.ToLower() == TableName.ToLower());
+
+                GetForAddOtherInventoryInstallationObject objectInst = new GetForAddOtherInventoryInstallationObject();
+
+
+                TLIotherInSite CabinetPowerInst = _unitOfWork.OtherInSiteRepository
+                    .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinetId == CabinetTelecomId && !x.Dismantle, x => x.allOtherInventoryInst.cabinet.RenewableCabinetType);
+                if (CabinetPowerInst != null)
+                {
+                    EditCabinetTelecomLibraryAttributes CabinetTelecomLibrary = _mapper.Map<EditCabinetTelecomLibraryAttributes>(_unitOfWork.CabinetTelecomLibraryRepository
+                        .GetIncludeWhereFirst(x => x.Id == CabinetPowerInst.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId));
+
+                    List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString(), CabinetTelecomLibrary, null).ToList();
+
+                    var telecomtype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "telecomtype_name");
+                    if (telecomtype_name != null)
+                    {
+                        telecomtype_name.Options = _mapper.Map<List<TelecomTypeViewModel>>(_unitOfWork.TelecomTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                        telecomtype_name.Value = _unitOfWork.TelecomTypeRepository != null && CabinetTelecomLibrary.TelecomTypeId != 0 ?
+                            _mapper.Map<TelecomTypeViewModel>(_unitOfWork.TelecomTypeRepository.GetWhereFirst(x => x.Id == CabinetTelecomLibrary.TelecomTypeId)) :
+                            null;
+                    }
+
+                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                            .GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString(), CabinetTelecomLibrary.Id).ToList());
+
+                    LibraryAttributes.AddRange(LogisticalAttributes);
+
+                    objectInst.LibraryAttribute = LibraryAttributes;
+
+                    List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcabinet.ToString(), CabinetPowerInst.allOtherInventoryInst.cabinet, "CabinetPowerLibraryId", "CabinetTelecomLibraryId").ToList();
+
+                    BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = ListAttributesActivated[0];
+                        ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                        ListAttributesActivated[0] = NameAttribute;
+                        NameAttribute.Value = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == CabinetTelecomId)?.Name;
+                    }
+
+                    var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
+                    {
+                        switch (FKitem.Label.ToLower())
+                        {
+                            case "renewablecabinettype_name":
+                                FKitem.Value = _mapper.Map<RenewableCabinetTypeViewModel>(CabinetPowerInst.allOtherInventoryInst.cabinet.RenewableCabinetType);
+                                FKitem.Options = _mapper.Map<List<RenewableCabinetTypeViewModel>>(_unitOfWork.RenewableCabinetTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                break;
+
+                        }
+                        return FKitem;
+                    }).ToList();
+
+
+                    objectInst.InstallationAttributes = ListAttributesActivated;
+
+                    objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
+                        GetDynamicInstAtt(TableNameEntity.Id, CabinetTelecomId, null);
+
+                    TLIallOtherInventoryInst allOtherInventoryInst = _unitOfWork.AllOtherInventoryInstRepository
+                            .GetWhereFirst(x => x.cabinetId == CabinetTelecomId);
+                    TLIotherInSite otherInSiteInfo = _dbContext.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
+
+                    List<BaseInstAttViews> otherInSiteAttributes = _unitOfWork.AttributeActivatedRepository
+                         .GetAttributeActivatedGetForAdd(TablesNames.TLIotherInSite.ToString(), otherInSiteInfo, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
+
+                    objectInst.OtherInSite = _mapper.Map<IEnumerable<BaseInstAttViews>>(otherInSiteAttributes);
+
+                    TLIotherInventoryDistance otherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhereFirst(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
+
+                    List<BaseInstAttViews> otherInventorytDistanceAttributes = _unitOfWork.AttributeActivatedRepository
+                        .GetAttributeActivatedGetForAdd(TablesNames.TLIotherInventoryDistance.ToString(), otherInventoryDistance, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
+
+                    string siteCode = _unitOfWork.OtherInSiteRepository
+                     .GetIncludeWhereFirst(
+                         x => x.allOtherInventoryInst.cabinet.Id == CabinetTelecomId && !x.Dismantle && !x.allOtherInventoryInst.Draft,
+                         x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
+                     )?.SiteCode;
+                    objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
+                    if (siteCode != null)
+                    {
+                        var listAttributes = objectInst.OtherInventoryDistance
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
+                            .Select(attr =>
+                            {
+                                var options = new List<SupportTypeImplementedViewModel>();
+                                var Value = new SupportTypeImplementedViewModel();
+                                var support = _unitOfWork.OtherInventoryDistanceRepository
+                                    .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
+
+                                if (support != null && support.ReferenceOtherInventoryId != null)
+                                {
+                                    var supportReferenceAllCivilInst = _unitOfWork.AllOtherInventoryInstRepository
+                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceOtherInventoryId,
+                                            x => x.generator,
+                                            x => x.solar,
+                                            x => x.cabinet);
+                                    object referencesValue = new object[0];
+                                    if (supportReferenceAllCivilInst != null)
+                                    {
+                                        if (supportReferenceAllCivilInst.generatorId != null)
+                                        {
+
+                                            referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
+                                        }
+                                        else if (supportReferenceAllCivilInst.solarId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId)?.Name;
+                                        }
+                                        else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                        }
+                                        else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                        }
+
+                                    }
+
+                                    if (referencesValue != null && support.ReferenceOtherInventoryId != null && support.ReferenceOtherInventoryId.HasValue)
+                                    {
+                                        SupportTypeImplementedViewModel views = new SupportTypeImplementedViewModel()
+                                        {
+                                            Id = support.ReferenceOtherInventoryId.Value,
+                                            Name = referencesValue.ToString()
+                                        };
+                                        attr.Value = views;
+                                    }
+                                    if (referencesValue == null)
+                                    {
+                                        attr.Value = new object[0];
+                                    }
+                                    var AllOther = _unitOfWork.OtherInSiteRepository
+                                            .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                                x => x.allOtherInventoryInst,
+                                                x => x.allOtherInventoryInst.generator,
+                                                x => x.allOtherInventoryInst.solar,
+                                                x => x.allOtherInventoryInst.cabinet)?.ToList();
+
+
+                                    if (AllOther != null && AllOther.Any())
+                                    {
+                                        options = AllOther.SelectMany(item =>
+                                        {
+                                            var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                            if (item.allOtherInventoryInst.generator != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.generator?.Name
+                                                };
+
+                                                innerOptions.Add(civilWithLegsOption);
+                                            }
+
+                                            if (item.allOtherInventoryInst.solar != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.solar?.Name
+                                                };
+                                                innerOptions.Add(civilWithoutLegOption);
+                                            }
+
+                                            if (item.allOtherInventoryInst.cabinet != null)
+                                            {
+                                                SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                                {
+                                                    Id = item.allOtherInventoryInst.Id,
+                                                    Name = item.allOtherInventoryInst.cabinet?.Name
+                                                };
+                                                innerOptions.Add(civilNonSteelOption);
+                                            }
+
+                                            return innerOptions;
+                                        }).ToList();
+                                    }
+                                }
+                                else
+                                {
+                                    var allOther = _unitOfWork.OtherInSiteRepository
+                                        .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
+                                            x => x.allOtherInventoryInst,
+                                            x => x.allOtherInventoryInst.generator,
+                                            x => x.allOtherInventoryInst.solar,
+                                            x => x.allOtherInventoryInst.cabinet)?.ToList();
+                                    options = allOther.SelectMany(item =>
+                                    {
+                                        var innerOptions = new List<SupportTypeImplementedViewModel>();
+
+                                        if (item.allOtherInventoryInst.generator != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.generator?.Name
+                                            };
+
+                                            innerOptions.Add(civilWithLegsOption);
+                                        }
+
+                                        if (item.allOtherInventoryInst.solar != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.solar?.Name
+                                            };
+                                            innerOptions.Add(civilWithoutLegOption);
+                                        }
+
+                                        if (item.allOtherInventoryInst.cabinet != null)
+                                        {
+                                            SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
+                                            {
+                                                Id = item.allOtherInventoryInst.Id,
+                                                Name = item.allOtherInventoryInst.cabinet?.Name
+                                            };
+                                            innerOptions.Add(civilNonSteelOption);
+                                        }
+
+                                        return innerOptions;
+                                    }).ToList();
+                                }
+                                attr.Options = options;
+
+                                return attr;
+                            })
+                            .ToList();
+                    }
+
+                    return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                else
+                {
+                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "this civilwithlegs is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+            catch (Exception err)
+            {
+                return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public Response<GetForAddOtherInventoryInstallationObject> GetCabinetPowerInstallationById(int CabinetPowerId, string TableName)
+        {
+            try
+            {
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
+                    .GetWhereFirst(c => c.TableName.ToLower() == TableName.ToLower());
+
+                GetForAddOtherInventoryInstallationObject objectInst = new GetForAddOtherInventoryInstallationObject();
+
+
+                TLIotherInSite CabinetPowerInst = _unitOfWork.OtherInSiteRepository
+                    .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinetId == CabinetPowerId && !x.Dismantle, x => x.allOtherInventoryInst.cabinet.RenewableCabinetType);
+                if (CabinetPowerInst != null)
+                {
+                    EditCabinetPowerLibraryAttributes CabinetPowerLibrary = _mapper.Map<EditCabinetPowerLibraryAttributes>(_unitOfWork.CabinetPowerLibraryRepository
+                        .GetIncludeWhereFirst(x => x.Id == CabinetPowerInst.allOtherInventoryInst.cabinet.CabinetPowerLibraryId));
+
+                    List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                     .GetAttributeActivatedGetLibrary(Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(), CabinetPowerLibrary, null).ToList();
+
+                    var cabinetpowertype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "cabinetpowertype_name");
+                    if (cabinetpowertype_name != null)
+                    {
+                        cabinetpowertype_name.Options = _mapper.Map<List<CabinetPowerTypeViewModel>>(_unitOfWork.CabinetPowerTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                        cabinetpowertype_name.Value = _unitOfWork.CabinetPowerTypeRepository != null && CabinetPowerLibrary.CabinetPowerTypeId != 0 ?
+                            _mapper.Map<CabinetPowerTypeViewModel>(_unitOfWork.CabinetPowerTypeRepository.GetWhereFirst(x => x.Id == CabinetPowerLibrary.CabinetPowerTypeId)) :
+                            null;
+                    }
+                    var integratedwith = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "integratedwith");
+                    if (integratedwith != null)
+                    {
+                        List<EnumOutPut> integratedwiths = new List<EnumOutPut>();
+                        integratedwiths.Add(new EnumOutPut
+                        {
+                            Id = (int)IntegratedWith.Solar,
+                            Name = IntegratedWith.Solar.ToString()
+                        });
+                        integratedwiths.Add(new EnumOutPut
+                        {
+                            Id = (int)IntegratedWith.Wind,
+                            Name = IntegratedWith.Wind.ToString()
+                        });
+
+                        integratedwith.Options = integratedwiths;
+                        integratedwith.Value = CabinetPowerLibrary.IntegratedWith != null ?
+                            _mapper.Map<ParityViewModel>(CabinetPowerLibrary.IntegratedWith) :
+                            null;
+                    }
+
+                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                            .GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(), CabinetPowerLibrary.Id).ToList());
+
+                    LibraryAttributes.AddRange(LogisticalAttributes);
+
+                    objectInst.LibraryAttribute = LibraryAttributes;
+
+                    List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
+                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcabinet.ToString(), CabinetPowerInst.allOtherInventoryInst.cabinet, "CabinetPowerLibraryId", "CabinetTelecomLibraryId").ToList();
+
+                    BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = ListAttributesActivated[0];
+                        ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                        ListAttributesActivated[0] = NameAttribute;
+                        NameAttribute.Value = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == CabinetPowerId)?.Name;
+                    }
+
+                    var foreignKeyAttributes = ListAttributesActivated.Select(FKitem =>
+                    {
+                        switch (FKitem.Label.ToLower())
+                        {
+                            case "renewablecabinettype_name":
+                                FKitem.Value = _mapper.Map<RenewableCabinetTypeViewModel>(CabinetPowerInst.allOtherInventoryInst.cabinet.RenewableCabinetType);
+                                FKitem.Options = _mapper.Map<List<RenewableCabinetTypeViewModel>>(_unitOfWork.RenewableCabinetTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                break;
+
+                        }
+                        return FKitem;
+                    }).ToList();
+
+                  
+                    objectInst.InstallationAttributes = ListAttributesActivated;
+
+                    objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
+                        GetDynamicInstAtt(TableNameEntity.Id, CabinetPowerId, null);
+
+                    TLIallOtherInventoryInst allOtherInventoryInst = _unitOfWork.AllOtherInventoryInstRepository
+                            .GetWhereFirst(x => x.cabinetId == CabinetPowerId);
+                    TLIotherInSite otherInSiteInfo = _dbContext.TLIotherInSite.FirstOrDefault(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
+
+                    List<BaseInstAttViews> otherInSiteAttributes = _unitOfWork.AttributeActivatedRepository
+                         .GetAttributeActivatedGetForAdd(TablesNames.TLIotherInSite.ToString(), otherInSiteInfo, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
+
+                    objectInst.OtherInSite = _mapper.Map<IEnumerable<BaseInstAttViews>>(otherInSiteAttributes);
+
+                    TLIotherInventoryDistance otherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhereFirst(x => x.allOtherInventoryInstId == allOtherInventoryInst.Id);
+
+                    List<BaseInstAttViews> otherInventorytDistanceAttributes = _unitOfWork.AttributeActivatedRepository
+                        .GetAttributeActivatedGetForAdd(TablesNames.TLIotherInventoryDistance.ToString(), otherInventoryDistance, null, "allOtherInventoryInstId", "Id", "Dismantle", "SiteCode").ToList();
+
+                    string siteCode = _unitOfWork.OtherInSiteRepository
+                     .GetIncludeWhereFirst(
+                         x => x.allOtherInventoryInst.cabinet.Id == CabinetPowerId && !x.Dismantle && !x.allOtherInventoryInst.Draft,
+                         x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
+                     )?.SiteCode;
+                    objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
+                    if (siteCode != null)
+                    {
+                        var listAttributes = objectInst.OtherInventoryDistance
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
+                            .Select(attr =>
+                            {
+                                var options = new List<SupportTypeImplementedViewModel>();
+                                var Value = new SupportTypeImplementedViewModel();
+                                var support = _unitOfWork.OtherInventoryDistanceRepository
+                                    .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
+
+                                if (support != null && support.ReferenceOtherInventoryId != null)
+                                {
+                                    var supportReferenceAllCivilInst = _unitOfWork.AllOtherInventoryInstRepository
+                                        .GetIncludeWhereFirst(x => x.Id == support.ReferenceOtherInventoryId,
+                                            x => x.generator,
+                                            x => x.solar,
+                                            x => x.cabinet);
+                                    object referencesValue = new object[0];
+                                    if (supportReferenceAllCivilInst != null)
+                                    {
+                                        if (supportReferenceAllCivilInst.generatorId != null)
+                                        {
+
+                                            referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
+                                        }
+                                        else if (supportReferenceAllCivilInst.solarId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId)?.Name;
+                                        }
+                                        else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                        }
+                                        else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
+                                        {
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                        }
+                                       
                                     }
 
                                     if (referencesValue != null && support.ReferenceOtherInventoryId != null && support.ReferenceOtherInventoryId.HasValue)

@@ -226,12 +226,21 @@ namespace TLIS_API.Controllers
              
 
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetCabinetById")]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetCabinetTelecomInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCabinetById(int OtherInventoryInstId)
+        public IActionResult GetCabinetTelecomInstallationById(int OtherInventoryInstId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString());
+            var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetTelecomInstallationById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString());
+            return Ok(response);
+
+        }
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetCabinetPowerInstallationById")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetCabinetPowerInstallationById(int OtherInventoryInstId)
+        {
+            var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetPowerInstallationById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString());
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

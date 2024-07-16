@@ -12,7 +12,7 @@ namespace TLIS_DAL.ViewModels.SolarLibraryDTOs
     {
         public EditSolarLibraryAttributes AttributesActivatedLibrary { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> DynamicAttributes { get; set; }
-        public AddLogisticalViewModel LogisticalItems { get; set; }
+        public AddLogisticalViewModelSolar LogisticalItems { get; set; }
         public class EditSolarLibraryAttributes
         {
             public int Id { get; set; }

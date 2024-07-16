@@ -7961,7 +7961,7 @@ namespace TLIS_Service.Services
                                 RecalculatSpaceOnSite recalculat = new RecalculatSpaceOnSite()
                                 {
                                     AttributeName = "SpaceInstallation",
-                                    ItemOnSiteType = "civilWithoutLeg",
+                                    ItemOnSiteType = _context.MV_CIVIL_WITHOUTLEGS_VIEW.FirstOrDefault(x=>x.Id== CivilOnSiteitem.allCivilInst.civilWithoutLeg.Id)?.CIVILWITHOUTLEGCATEGORY,
                                     ItemOnSiteName = CivilOnSiteitem.allCivilInst.civilWithoutLeg.Name,
                                     SiteName = item.SiteName,
                                     Type = "Installation",
