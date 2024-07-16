@@ -346,6 +346,29 @@ namespace TLIS_Repository.Repositories
                             item.Add(name, propertyInfo.GetValue(obj));
                         }
                     }
+                    else if (name.ToLower() == "IntegratedWith")
+                    {
+                        var values = propertyInfo.GetValue(obj);
+                        if (values != null)
+                        {
+                            if (values.ToString() == "0")
+                            {
+                                values = "Solar";
+                                item.Add(name, values);
+                            }
+                            else if (values.ToString() == "1")
+                            {
+                                values = "Wind";
+                                item.Add(name, values);
+                            }
+                           
+
+                        }
+                        else
+                        {
+                            item.Add(name, propertyInfo.GetValue(obj));
+                        }
+                    }
                     else
                     {
                         var value = propertyInfo.GetValue(obj);
