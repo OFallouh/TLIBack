@@ -6059,8 +6059,7 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
                                         {
-                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId
-                                            && x.Id != SolarId)?.Name;
+                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId )?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
                                         {
@@ -6110,7 +6109,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.solar != null)
+                                            if (item.allOtherInventoryInst.solar != null && item.allOtherInventoryInst.solar.Id != SolarId)
                                             {
                                                 SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6157,7 +6156,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithLegsOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.solar != null)
+                                        if (item.allOtherInventoryInst.solar != null && item.allOtherInventoryInst.solar.Id != SolarId)
                                         {
                                             SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6595,8 +6594,7 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
                                         {
-                                            referencesValue = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId
-                                             && x.Id != CabinetPowerId)?.Name;
+                                            referencesValue = _dbContext.MV_CABINET_POWER_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId )?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
                                         {
