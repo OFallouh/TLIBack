@@ -3636,7 +3636,7 @@ namespace TLIS_Service.Services
                                                                     sideArmId = AddMW_ODU.installationConfig?.sideArmId,
                                                                     ItemOnCivilStatus = AddMW_ODU.civilLoads.ItemOnCivilStatus,
                                                                     ItemStatus = AddMW_ODU.civilLoads?.ItemStatus,
-                                                                    legId = tLImwDish?.legId,
+                                                                    legId = AddMW_ODU.installationConfig?.LegId,
                                                                     Dismantle = false,
                                                                     ReservedSpace = AddMW_ODU.civilLoads.ReservedSpace,
                                                                     SiteCode = SiteCode
@@ -3729,7 +3729,7 @@ namespace TLIS_Service.Services
                                                                     ItemOnCivilStatus = AddMW_ODU.civilLoads.ItemOnCivilStatus,
                                                                     ItemStatus = AddMW_ODU.civilLoads?.ItemStatus,
                                                                     Dismantle = false,
-                                                                    legId = tLImwDish?.legId,
+                                                                    legId = AddMW_ODU.installationConfig?.LegId,
                                                                     ReservedSpace = AddMW_ODU.civilLoads.ReservedSpace,
                                                                     SiteCode = SiteCode
 
