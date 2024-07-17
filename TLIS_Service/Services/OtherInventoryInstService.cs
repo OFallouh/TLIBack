@@ -5589,7 +5589,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldGenerator, Generator);
                             _unitOfWork.SaveChanges();
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Generator.SiteCode.ToLower());
-                            Generator.Site.ReservedSpace = Generator.Site.ReservedSpace - Generator.allOtherInventoryInst.solar.SpaceInstallation;
+                            Generator.Site.ReservedSpace = Generator.Site.ReservedSpace - Generator.allOtherInventoryInst.generator.SpaceInstallation;
                             _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldSite, Generator.Site);
                             _unitOfWork.SaveChanges();
                         }
@@ -5627,7 +5627,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldCabinet, Cabinet);
                             _unitOfWork.SaveChanges();
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Cabinet.SiteCode.ToLower());
-                            Cabinet.Site.ReservedSpace = Cabinet.Site.ReservedSpace - Cabinet.allOtherInventoryInst.solar.SpaceInstallation;
+                            Cabinet.Site.ReservedSpace = Cabinet.Site.ReservedSpace - Cabinet.allOtherInventoryInst.cabinet.SpaceInstallation;
                             _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldSite, Cabinet.Site);
                             _unitOfWork.SaveChanges();
                         }

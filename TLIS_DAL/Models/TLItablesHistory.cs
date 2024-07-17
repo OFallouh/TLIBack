@@ -23,11 +23,11 @@ namespace TLIS_DAL.Models
         //public string TableName { get; set; }
         [Required]
         public DateTime Date { get; set; }
-    
 
         public TLItablesNames TablesName { get; set; }
         public int TablesNameId { get; set; }
-
+        public int BaseRecordId { get; set; }
+        public int BaseTabeslNameId { get; set; }
         public TLItablesHistory PreviousHistory { get; set; }
         public int? PreviousHistoryId { get; set; }
         public IEnumerable<TLIhistoryDetails> historyDetails { get; set; }
