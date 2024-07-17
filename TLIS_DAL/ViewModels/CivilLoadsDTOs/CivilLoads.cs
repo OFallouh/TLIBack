@@ -61,7 +61,10 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
         [JsonPropertyName("TLIpower")]
         public List<LoadandsidearmViewDto> TLIpower { get; set; }
         [JsonPropertyName("TLIloadOther")]
+
         public List<LoadandsidearmViewDto> TLIloadOther { get; set; }
+
+        [JsonPropertyName("TLIsolar")]
         public List<LoadandsidearmViewDto> TLIsolar { get; set; }
 
         public class LoadandsidearmViewDto
