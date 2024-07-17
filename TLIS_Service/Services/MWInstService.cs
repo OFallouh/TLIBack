@@ -3517,7 +3517,8 @@ namespace TLIS_Service.Services
 
                                                         tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
                                                         && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                                        && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.legId == AddMW_ODU.installationConfig.LegId && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                        && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.sideArmId == AddMW_ODU.installationConfig.sideArmId 
+                                                        && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                         x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish,
                                                          x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.sideArm);
                                                         if (tLImwDish == null)
@@ -9294,7 +9295,7 @@ namespace TLIS_Service.Services
                                         {
                                             TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
                                             x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                            && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.legId== MWInstallationViewModel.installationConfig.LegId
+                                            && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId
                                             && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
