@@ -6807,7 +6807,7 @@ namespace TLIS_Service.Services
                                         {
                                             var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                            if (item.allCivilInst.civilWithLegs != null)
+                                            if (item.allCivilInst.civilWithLegs != null && item.allCivilInst.civilWithLegs.Id != CivilInsId)
                                             {
                                                 SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6854,7 +6854,7 @@ namespace TLIS_Service.Services
                                     {
                                         var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                        if (item.allCivilInst.civilWithLegs != null)
+                                        if (item.allCivilInst.civilWithLegs != null && item.allCivilInst.civilWithLegs.Id != CivilInsId)
                                         {
                                             SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                             {
@@ -7133,7 +7133,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
-                                            if (item.allCivilInst.civilWithoutLeg != null)
+                                            if (item.allCivilInst.civilWithoutLeg != null && item.allCivilInst.civilWithoutLeg.Id != CivilInsId)
                                             {
                                                 SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -7180,7 +7180,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithLegsOption);
                                         }
 
-                                        if (item.allCivilInst.civilWithoutLeg != null)
+                                        if (item.allCivilInst.civilWithoutLeg != null && item.allCivilInst.civilWithoutLeg.Id != CivilInsId)
                                         {
                                             SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                             {
@@ -7431,7 +7431,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
-                                            if (item.allCivilInst.civilNonSteel != null)
+                                            if (item.allCivilInst.civilNonSteel != null && item.allCivilInst.civilNonSteel.Id != CivilInsId)
                                             {
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -7478,7 +7478,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithoutLegOption);
                                         }
 
-                                        if (item.allCivilInst.civilNonSteel != null)
+                                        if (item.allCivilInst.civilNonSteel != null && item.allCivilInst.civilNonSteel.Id != CivilInsId)
                                         {
                                             SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                             {
@@ -11509,6 +11509,14 @@ namespace TLIS_Service.Services
                     ,x => x.allLoadInst,x=>x.allLoadInst.radioAntenna).Select(x=>x.allLoadInst.radioAntenna).ToList();
 
                     OutPut.TLIradioAntenna = _mapper.Map<List<LoadandsidearmViewDto>>(RadioAntenna);
+                }
+                if (Loadname == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                {
+                    var SolarReleationWithCabinet = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x => x.allOtherInventoryInst.solar.CabinetId == LoadId
+                         && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(),x=>x.allOtherInventoryInst
+                         ,x=>x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.cabinet)
+                        .Select(x=>x.allOtherInventoryInst.solar).ToList();
+                    OutPut.TLIsolar = _mapper.Map<List<LoadandsidearmViewDto>>(SolarReleationWithCabinet);
                 }
                 return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }

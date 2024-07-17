@@ -18,6 +18,7 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
 {
     using System.Collections.Generic;
     using System.Text.Json.Serialization;
+    using TLIS_DAL.Models;
 
     public class CivilLoads
     {
@@ -34,6 +35,9 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
             TLIradioOther = new List<LoadandsidearmViewDto>();
             TLIpower = new List<LoadandsidearmViewDto>();
             TLIloadOther = new List<LoadandsidearmViewDto>();
+            TLIloadOther = new List<LoadandsidearmViewDto>();
+            TLIsolar = new List<LoadandsidearmViewDto>();
+            
         }
 
         [JsonPropertyName("TLIsideArm")]
@@ -58,6 +62,7 @@ namespace TLIS_DAL.ViewModels.CivilLoadsDTOs
         public List<LoadandsidearmViewDto> TLIpower { get; set; }
         [JsonPropertyName("TLIloadOther")]
         public List<LoadandsidearmViewDto> TLIloadOther { get; set; }
+        public List<LoadandsidearmViewDto> TLIsolar { get; set; }
 
         public class LoadandsidearmViewDto
         {

@@ -410,10 +410,28 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleOtherInventory")]
-
         public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int ?TaskId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(SiteCode, OtherInventoryId , OtherInventoryName, TaskId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(userId,SiteCode, OtherInventoryId , OtherInventoryName, TaskId);
             return Ok(response);
 
         }

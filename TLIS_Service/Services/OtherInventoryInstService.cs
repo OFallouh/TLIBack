@@ -3698,6 +3698,7 @@ namespace TLIS_Service.Services
             {
                 try
                 {
+                    TLIsite NewSite = new TLIsite();
                     TLItablesNames TableEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TableName.ToLower());
                     //if (OtherInventoryType.TLIcabinet.ToString().ToLower() == TableName.ToLower())
                     //{
@@ -3795,12 +3796,13 @@ namespace TLIS_Service.Services
                             if (CheckName != null)
                                 return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
 
-                            TLIsite NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
-                                    GeneratorInst.SiteCode.ToLower());
                             if (GeneratorInst.ReservedSpace == true && GeneratorModel.OtherInSite.ReservedSpace == true)
                             {
                                 if (Generator.SpaceInstallation != GeneratorInst.allOtherInventoryInst.generator.SpaceInstallation)
                                 {
+
+                                     NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                            GeneratorInst.SiteCode.ToLower());
                                     NewSite.ReservedSpace = NewSite.ReservedSpace - GeneratorInst.allOtherInventoryInst.generator.SpaceInstallation;
                                     NewSite.ReservedSpace = NewSite.ReservedSpace + Generator.SpaceInstallation;
                                     _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, GeneratorInst.Site, NewSite);
@@ -3810,6 +3812,8 @@ namespace TLIS_Service.Services
                             else if (GeneratorInst.ReservedSpace == true && GeneratorModel.OtherInSite.ReservedSpace == false)
                             {
 
+                                  NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                        GeneratorInst.SiteCode.ToLower());
                                 NewSite.ReservedSpace = NewSite.ReservedSpace - GeneratorInst.allOtherInventoryInst.generator.SpaceInstallation;
                                 _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, GeneratorInst.Site, NewSite);
                                 _dbContext.SaveChanges();
@@ -3903,12 +3907,13 @@ namespace TLIS_Service.Services
 
                             if (CheckName != null)
                                 return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Solar.Name} is already exists", (int)ApiReturnCode.fail);
-                            TLIsite NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
-                                    SolarInst.SiteCode.ToLower());
+                        
                             if (SolarInst.ReservedSpace == true && SolarModel.OtherInSite.ReservedSpace == true)
                             {
                                 if (Solar.SpaceInstallation != SolarInst.allOtherInventoryInst.solar.SpaceInstallation)
                                 {
+                                     NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                    SolarInst.SiteCode.ToLower());
 
                                     NewSite.ReservedSpace = NewSite.ReservedSpace - SolarInst.allOtherInventoryInst.solar.SpaceInstallation;
                                     NewSite.ReservedSpace = NewSite.ReservedSpace + Solar.SpaceInstallation;
@@ -3918,7 +3923,9 @@ namespace TLIS_Service.Services
                             }
                             else if (SolarInst.ReservedSpace == true && SolarModel.OtherInSite.ReservedSpace == false)
                             {
-                                
+
+                                 NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                SolarInst.SiteCode.ToLower());
 
                                 NewSite.ReservedSpace = NewSite.ReservedSpace - SolarInst.allOtherInventoryInst.solar.SpaceInstallation;
                                 _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, SolarInst.Site, NewSite);
@@ -4031,6 +4038,7 @@ namespace TLIS_Service.Services
                 {
 
                     TLIsite OldSite = new TLIsite();
+                    TLIsite NewSite = new TLIsite();
                     TLItablesNames TableEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TableName.ToLower());
 
                     TLIcabinet CabinetPower = _mapper.Map<TLIcabinet>(editCabinetPowerInstallationObject.installationAttributes);
@@ -4053,13 +4061,14 @@ namespace TLIS_Service.Services
 
                         if (CheckName != null)
                             return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {CabinetPower.Name} is already exists", (int)ApiReturnCode.fail);
-                        TLIsite NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
-                                CabinetPowerInst.SiteCode.ToLower());
+                      
                         if (CabinetPowerInst.ReservedSpace == true && editCabinetPowerInstallationObject.OtherInSite.ReservedSpace == true)
                         {
                             if (CabinetPower.SpaceInstallation != CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation)
                             {
 
+                                 NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                        CabinetPowerInst.SiteCode.ToLower());
                                 NewSite.ReservedSpace = NewSite.ReservedSpace - CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation;
                                 NewSite.ReservedSpace = NewSite.ReservedSpace + CabinetPower.SpaceInstallation;
                                 _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, CabinetPowerInst.Site, NewSite);
@@ -4070,6 +4079,8 @@ namespace TLIS_Service.Services
                         {
 
 
+                             NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                    CabinetPowerInst.SiteCode.ToLower());
                             NewSite.ReservedSpace = NewSite.ReservedSpace - CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation;
                             _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, CabinetPowerInst.Site, NewSite);
                             _dbContext.SaveChanges();
@@ -4181,6 +4192,7 @@ namespace TLIS_Service.Services
                 {
 
                     TLIsite OldSite = new TLIsite();
+                    TLIsite  NewSite = new TLIsite();
                     TLItablesNames TableEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TableName.ToLower());
 
                     TLIcabinet CabinetTelecom = _mapper.Map<TLIcabinet>(editCabinetTelecomInstallationObject.installationAttributes);
@@ -4203,12 +4215,14 @@ namespace TLIS_Service.Services
 
                         if (CheckName != null)
                             return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {CabinetTelecom.Name} is already exists", (int)ApiReturnCode.fail);
-                        TLIsite NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
-                                CabinetPowerInst.SiteCode.ToLower());
+                     
                         if (CabinetPowerInst.ReservedSpace == true && editCabinetTelecomInstallationObject.OtherInSite.ReservedSpace == true)
                         {
                             if (CabinetTelecom.SpaceInstallation != CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation)
                             {
+
+                                 NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                        CabinetPowerInst.SiteCode.ToLower());
 
                                 NewSite.ReservedSpace = NewSite.ReservedSpace - CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation;
                                 NewSite.ReservedSpace = NewSite.ReservedSpace + CabinetTelecom.SpaceInstallation;
@@ -4220,6 +4234,8 @@ namespace TLIS_Service.Services
                         {
 
 
+                             NewSite = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() ==
+                                    CabinetPowerInst.SiteCode.ToLower());
                             NewSite.ReservedSpace = NewSite.ReservedSpace - CabinetPowerInst.allOtherInventoryInst.cabinet.SpaceInstallation;
                             _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, CabinetPowerInst.Site, NewSite);
                             _dbContext.SaveChanges();
@@ -5515,73 +5531,119 @@ namespace TLIS_Service.Services
             }
             return string.Empty;
         }
-        public Response<bool> DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId)
+        public Response<bool> DismantleOtherInventory(int UserId,string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId)
         {
             using (TransactionScope scope = new TransactionScope())
             {
                 try
                 {
-                    float FreeSpace = 0;
-                    var allOtherInventory = _dbContext.TLIallOtherInventoryInst.Where(x => x.solarId == OtherInventoryId || x.generatorId == OtherInventoryId || x.cabinetId == OtherInventoryId)
-                           .Include(x => x.cabinet).Include(x => x.generator).Include(x => x.solar).ToList();
-
-                    foreach (var item in allOtherInventory)
+                    if (OtherInventoryName.ToLower() == OtherInventoryType.TLIsolar.ToString().ToLower())
                     {
-                        if (item.cabinetId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                        var Solar = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => x.allOtherInventoryInst.solarId == OtherInventoryId && !x.Dismantle
+                        && x.SiteCode.ToLower() == SiteCode.ToLower()
+                        , x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet,
+                        x => x.allOtherInventoryInst.generator, x => x.Site);
+
+                        if (Solar.ReservedSpace == true)
                         {
-
-                            TLIcabinet tLIcabinet = item.cabinet;
-                            var Cabinet = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                            foreach (var TLICabinet in Cabinet)
-                            {
-                                TLICabinet.Dismantle = true;
-                                FreeSpace += tLIcabinet.SpaceInstallation;
-
-                            }
-                            var Cabinet1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                            foreach (var TLICabinet in Cabinet1)
-                            {
-                                TLICabinet.Dismantle = true;
-                            }
+                            var OldSolar = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst)
+                                .Include(x => x.allOtherInventoryInst.solar).Include(x => x.allOtherInventoryInst.generator).
+                                Include(x => x.allOtherInventoryInst.cabinet)
+                                .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.solarId == OtherInventoryId
+                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                            Solar.Dismantle = true;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldSolar, Solar);
+                            _unitOfWork.SaveChanges();
+                            var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Solar.SiteCode.ToLower());
+                            Solar.Site.ReservedSpace = Solar.Site.ReservedSpace - Solar.allOtherInventoryInst.solar.SpaceInstallation;
+                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldSite, Solar.Site);
+                            _unitOfWork.SaveChanges();
                         }
-                        else if (item.generatorId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIgenerator.ToString())
+                        else
                         {
-                            TLIgenerator tLIgenerator = item.generator;
-                            var Generator = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                            foreach (var TLIGenerator in Generator)
-                            {
-                                TLIGenerator.Dismantle = true;
-                                FreeSpace += tLIgenerator.SpaceInstallation;
-
-                            }
-                            var Generator1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                            foreach (var TLIGenerator in Generator1)
-                            {
-                                TLIGenerator.Dismantle = true;
-                            }
+                            var OldSolar = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst)
+                                .Include(x => x.allOtherInventoryInst.solar).Include(x => x.allOtherInventoryInst.generator).
+                                Include(x => x.allOtherInventoryInst.cabinet)
+                                .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.solarId == OtherInventoryId
+                                && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                            Solar.Dismantle = true;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldSolar, Solar);
+                            _unitOfWork.SaveChanges();
                         }
-                        else if (item.solarId != null && OtherInventoryName == Helpers.Constants.TablesNames.TLIsolar.ToString())
-                        {
-                            TLIsolar tLIsolar = item.solar;
-                            var Solar = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false).ToList();
-                            foreach (var TLISolar in Solar)
-                            {
-                                TLISolar.Dismantle = true;
-                                FreeSpace += tLIsolar.SpaceInstallation;
-
-                            }
-                            var Solar1 = _dbContext.TLIotherInSite.Where(x => x.allOtherInventoryInstId == item.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false).ToList();
-                            foreach (var TLISolar in Solar1)
-                            {
-                                TLISolar.Dismantle = true;
-                            }
-                        }
-
                     }
-                    var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
-                    Site.ReservedSpace -= FreeSpace;
-                    _dbContext.Entry(Site).State = EntityState.Modified;
-                    _dbContext.SaveChanges();
+                    else if (OtherInventoryName.ToLower() == OtherInventoryType.TLIgenerator.ToString().ToLower())
+                    {
+                        var Generator = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => x.allOtherInventoryInst.generatorId == OtherInventoryId
+                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()
+                        , x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet,
+                        x => x.allOtherInventoryInst.generator, x => x.Site);
+
+                        if (Generator.ReservedSpace == true)
+                        {
+                            var OldGenerator = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst)
+                                .Include(x => x.allOtherInventoryInst.solar).Include(x => x.allOtherInventoryInst.generator).
+                                Include(x => x.allOtherInventoryInst.cabinet)
+                                .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == OtherInventoryId
+                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                            Generator.Dismantle = true;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldGenerator, Generator);
+                            _unitOfWork.SaveChanges();
+                            var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Generator.SiteCode.ToLower());
+                            Generator.Site.ReservedSpace = Generator.Site.ReservedSpace - Generator.allOtherInventoryInst.solar.SpaceInstallation;
+                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldSite, Generator.Site);
+                            _unitOfWork.SaveChanges();
+                        }
+                        else
+                        {
+                            var OldGenerator = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst)
+                                .Include(x => x.allOtherInventoryInst.solar).Include(x => x.allOtherInventoryInst.generator).
+                                Include(x => x.allOtherInventoryInst.cabinet)
+                                .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == OtherInventoryId
+                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                            Generator.Dismantle = true;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldGenerator, Generator);
+                            _unitOfWork.SaveChanges();
+                        }
+                    }
+                    else if (OtherInventoryName.ToLower() == OtherInventoryType.TLIcabinet.ToString().ToLower())
+                    {
+                        var Cabinet = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinetId == OtherInventoryId
+                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()
+                        , x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet,
+                        x => x.allOtherInventoryInst.generator, x => x.Site);
+                        var SolarReleationWithCabinet = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x => x.allOtherInventoryInst.solar.CabinetId == OtherInventoryId
+                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allOtherInventoryInst
+                         , x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.cabinet);
+                        if (SolarReleationWithCabinet != null && SolarReleationWithCabinet.Count > 0)
+                            return new Response<bool>(false, false, null, "can not dismantle the cabinet becuase it relation with solar", (int)Helpers.Constants.ApiReturnCode.fail);
+                        if (Cabinet.ReservedSpace == true)
+                        {
+                            var OldCabinet = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst)
+                                .Include(x => x.allOtherInventoryInst.solar).Include(x => x.allOtherInventoryInst.generator).
+                                Include(x => x.allOtherInventoryInst.cabinet)
+                                .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId == OtherInventoryId
+                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                            Cabinet.Dismantle = true;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldCabinet, Cabinet);
+                            _unitOfWork.SaveChanges();
+                            var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Cabinet.SiteCode.ToLower());
+                            Cabinet.Site.ReservedSpace = Cabinet.Site.ReservedSpace - Cabinet.allOtherInventoryInst.solar.SpaceInstallation;
+                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldSite, Cabinet.Site);
+                            _unitOfWork.SaveChanges();
+                        }
+                        else
+                        {
+                            var OldCabinet = _unitOfWork.OtherInSiteRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.allOtherInventoryInst)
+                                .Include(x => x.allOtherInventoryInst.solar).Include(x => x.allOtherInventoryInst.generator).
+                                Include(x => x.allOtherInventoryInst.cabinet)
+                                .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId == OtherInventoryId
+                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
+                            Cabinet.Dismantle = true;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldCabinet, Cabinet);
+                            _unitOfWork.SaveChanges();
+                        }
+                    }
+
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -5801,8 +5863,7 @@ namespace TLIS_Service.Services
                                         if (supportReferenceAllCivilInst.generatorId != null)
                                         {
 
-                                            referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId
-                                            && x.Id != GeneratorId)?.Name;
+                                            referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
                                         {
@@ -6376,7 +6437,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.cabinet != null)
+                                            if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != CabinetTelecomId)
                                             {
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6423,7 +6484,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithoutLegOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.cabinet != null)
+                                        if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != CabinetTelecomId)
                                         {
                                             SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6651,7 +6712,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.cabinet != null)
+                                            if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != CabinetPowerId)
                                             {
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6698,7 +6759,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithoutLegOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.cabinet != null)
+                                        if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != CabinetPowerId)
                                         {
                                             SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                             {

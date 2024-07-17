@@ -252,6 +252,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<ParityViewModel, IntegratedWith>().ReverseMap();
             CreateMap<EditinstallationAttributesCabinetTelecom, TLIcabinet>().ReverseMap();
             CreateMap<EditinstallationAttributesCabinetPower, TLIcabinet>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, TLIsolar>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
