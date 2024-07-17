@@ -5556,7 +5556,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Solar.SiteCode.ToLower());
                             Solar.Site.ReservedSpace = Solar.Site.ReservedSpace - Solar.allOtherInventoryInst.solar.SpaceInstallation;
-                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldSite, Solar.Site);
+                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSite, Solar.Site);
                             _unitOfWork.SaveChanges();
                         }
                         else
@@ -5590,7 +5590,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Generator.SiteCode.ToLower());
                             Generator.Site.ReservedSpace = Generator.Site.ReservedSpace - Generator.allOtherInventoryInst.generator.SpaceInstallation;
-                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldSite, Generator.Site);
+                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSite, Generator.Site);
                             _unitOfWork.SaveChanges();
                         }
                         else
@@ -5628,7 +5628,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.SaveChanges();
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Cabinet.SiteCode.ToLower());
                             Cabinet.Site.ReservedSpace = Cabinet.Site.ReservedSpace - Cabinet.allOtherInventoryInst.cabinet.SpaceInstallation;
-                            _unitOfWork.SiteRepository.UpdateWithHistory(UserId, OldSite, Cabinet.Site);
+                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSite, Cabinet.Site);
                             _unitOfWork.SaveChanges();
                         }
                         else
