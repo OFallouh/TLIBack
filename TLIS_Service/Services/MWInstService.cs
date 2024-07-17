@@ -9295,7 +9295,8 @@ namespace TLIS_Service.Services
                                         {
                                             TLIcivilLoads SideARmFound = _unitOfWork.CivilLoadsRepository.GetWhereFirst(x => !x.Dismantle && x.sideArmId != null &&
                                             x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                            && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId
+                                            && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && (x.legId== MWInstallationViewModel.installationConfig.LegId || x.Leg2Id==
+                                            MWInstallationViewModel.installationConfig.LegId)
                                             && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                                 if (SideARmFound == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "sidearm is not found on civil", (int)ApiReturnCode.fail);
@@ -9314,7 +9315,7 @@ namespace TLIS_Service.Services
                                                .Include(x => x.sideArm).FirstOrDefault(x => x.allLoadInstId != null
                                                && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
                                                && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId ==
-                                               MWInstallationViewModel.installationConfig.mwDishId && x.legId == MWInstallationViewModel.installationConfig.LegId
+                                               MWInstallationViewModel.installationConfig.mwDishId 
                                                && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                                 if (tLImwDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
