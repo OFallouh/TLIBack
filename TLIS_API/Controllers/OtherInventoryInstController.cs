@@ -431,7 +431,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(userId,SiteCode, OtherInventoryId , OtherInventoryName, TaskId);
+            var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(userId,SiteCode, OtherInventoryId , OtherInventoryName, TaskId, ConnectionString);
             return Ok(response);
 
         }

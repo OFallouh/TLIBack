@@ -72,6 +72,8 @@ using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using TLIS_DAL.ViewModels.RadioRRUDTOs;
 using Nancy.ViewEngines;
 using AutoMapper.Execution;
+using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.EditMWBULibraryObject;
+using TLIS_DAL.ViewModels.DiversityTypeDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -158,6 +160,93 @@ namespace TLIS_Service.Services
                         { "mw_link_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.CivilLoadsRepository.GetWhereAndInclude
                         (x=>!x.Dismantle && x.SiteCode==SiteCode&& x.allLoadInstId !=null && x.allLoadInst.mwDishId !=null,x=>x.allLoadInst,x=>x.allLoadInst.mwDish).Select(x=>x.allLoadInst.mwDish).ToList()) },
 
+                    };
+
+                    ListAttributesActivated = ListAttributesActivated
+                        .Select(FKitem =>
+                        {
+                            if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                            {
+                                FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                            }
+                            else
+                            {
+                                FKitem.Options = new object[0];
+                            }
+
+                            return FKitem;
+                        })
+                        .ToList();
+
+                    objectInst.InstallationAttributes = ListAttributesActivated;
+                    objectInst.CivilLoads = _unitOfWork.AttributeActivatedRepository
+                     .GetInstAttributeActivatedGetForAdd(TablesNames.TLIcivilLoads.ToString(), null, null, "allLoadInstId", "Dismantle", "SiteCode", "legId",
+                         "Leg2Id", "sideArmId", "allCivilInstId", "civilSteelSupportCategoryId").ToList();
+
+                    objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
+                    .GetDynamicInstAttInst(TableNameEntity.Id, null);
+                    return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                else
+                {
+                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this mwdishlibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                return new Response<GetForAddMWDishInstallationObject>(false, null, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+            catch (Exception err)
+            {
+                return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
+            }
+        }
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode)
+        {
+            try
+            {
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
+                    x.TableName == TableName);
+
+                GetForAddMWDishInstallationObject objectInst = new GetForAddMWDishInstallationObject();
+                List<BaseInstAttViews> ListAttributesActivated = new List<BaseInstAttViews>();
+
+                EditMWBULibraryAttributes mwBULibrary = _mapper.Map<EditMWBULibraryAttributes>(_unitOfWork.MW_BULibraryRepository
+                    .GetIncludeWhereFirst(x => x.Id == LibraryID, x => x.diversityType));
+                if (mwBULibrary != null)
+                {
+                    List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
+                        .GetAttributeActivatedGetForAdd(TablesNames.TLImwBULibrary.ToString(), mwBULibrary, null).ToList();
+
+                    var diversitytype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "diversitytype_name");
+                    if (diversitytype_name != null)
+                    {
+                        diversitytype_name.Options = _mapper.Map<List<DiversityTypeViewModel>>(_unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                        diversitytype_name.Value = _unitOfWork.AsTypeRepository != null && mwBULibrary.diversityTypeId != null ?
+                            _mapper.Map<DiversityTypeViewModel>(_unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == mwBULibrary.diversityTypeId)) :
+                            null;
+                    }
+                 
+                    List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
+                        .GetLogisticals(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwBULibrary.ToString(), mwBULibrary.Id).ToList());
+
+                    LibraryAttributes.AddRange(LogisticalAttributes);
+
+                    objectInst.LibraryAttribute = LibraryAttributes;
+
+                    ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
+                        GetInstAttributeActivatedGetForAdd(LoadSubType.TLImwBU.ToString(), null, "Name", "PortCascadeId", "InstallationPlaceId", "MwBULibraryId", "SdDishId", "MainDishId", "EquivalentSpace").ToList();
+
+                    BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = ListAttributesActivated[0];
+                        ListAttributesActivated[ListAttributesActivated.IndexOf(NameAttribute)] = Swap;
+                        ListAttributesActivated[0] = NameAttribute;
+                    }
+
+
+                    Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                        { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                       
                     };
 
                     ListAttributesActivated = ListAttributesActivated
@@ -3143,6 +3232,177 @@ namespace TLIS_Service.Services
                            Dismantle = x.Dismantle,
                            ALLCIVILID = x.ALLCIVILID,
                            MW_DISH_ID = x.MW_DISH_ID,
+
+                       })
+                       .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+        }
+        public Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWODU";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
+                    var attActivated = _dbContext.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "MW_BUInstallation" &&
+                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                      .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    propertyNamesStatic.Add("SiteCode");
+                    propertyNamesStatic.Add("SIDEARMNAME");
+                    propertyNamesStatic.Add("CIVILNAME");
+                    propertyNamesStatic.Add("SIDEARMID");
+                    propertyNamesStatic.Add("CIVIL_ID");
+                    propertyNamesStatic.Add("ALLCIVILID");
+                    propertyNamesStatic.Add("MW_DISH_ID");
+                    if (SiteCode == null)
+                    {
+                        if (propertyNamesDynamic.Count == 0)
+                        {
+                            var query = _dbContext.MV_MWBU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                        else
+                        {
+                            var query = _dbContext.MV_MWBU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                           .GroupBy(x => new
+                           {
+                               SiteCode = x.SiteCode,
+                               Id = x.Id,
+                               Name = x.Name,
+                               Serial_Number = x.Serial_Number,
+                               Notes = x.Notes,
+                               Height = x.Height,
+                               BUNumber = x.BUNumber,
+                               Visiable_Status = x.Visiable_Status,
+                               SpaceInstallation = x.SpaceInstallation,
+                               OWNER = x.OWNER,
+                               BASEBU = x.BASEBU,
+                               MWBULIBRARY = x.MWBULIBRARY,
+                               MAINDISH = x.MAINDISH,
+                               CenterHigh = x.CenterHigh,
+                               HBA = x.HBA,
+                               HieghFromLand = x.HieghFromLand,
+                               EquivalentSpace = x.EquivalentSpace,
+                               Azimuth = x.Azimuth,
+                               SDDISH = x.SDDISH,
+                               CIVILNAME = x.CIVILNAME,
+                               CIVIL_ID = x.CIVIL_ID,
+                               SIDEARMNAME = x.SIDEARMNAME,
+                               Dismantle = x.Dismantle,
+                               PORTCASCADE = x.PORTCASCADE,
+                               SideArmSec_Name = x.SideArmSec_Name,
+                               LEG_NAME = x.LEG_NAME,
+                               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                               ALLLOAD_ID = x.ALLLOAD_ID,
+                               LEG_ID = x.LEG_ID,
+
+                           })
+                           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                            int count = query.Count();
+
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = _dbContext.MV_MWBU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = _dbContext.MV_MWBU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                       .GroupBy(x => new
+                       {
+                           SiteCode = x.SiteCode,
+                           Id = x.Id,
+                           Name = x.Name,
+                           Serial_Number = x.Serial_Number,
+                           Notes = x.Notes,
+                           Height = x.Height,
+                           BUNumber = x.BUNumber,
+                           Visiable_Status = x.Visiable_Status,
+                           SpaceInstallation = x.SpaceInstallation,
+                           OWNER = x.OWNER,
+                           BASEBU = x.BASEBU,
+                           MWBULIBRARY = x.MWBULIBRARY,
+                           MAINDISH = x.MAINDISH,
+                           CenterHigh = x.CenterHigh,
+                           HBA = x.HBA,
+                           HieghFromLand = x.HieghFromLand,
+                           EquivalentSpace = x.EquivalentSpace,
+                           Azimuth = x.Azimuth,
+                           SDDISH = x.SDDISH,
+                           CIVILNAME = x.CIVILNAME,
+                           CIVIL_ID = x.CIVIL_ID,
+                           SIDEARMNAME = x.SIDEARMNAME,
+                           Dismantle = x.Dismantle,
+                           PORTCASCADE = x.PORTCASCADE,
+                           SideArmSec_Name = x.SideArmSec_Name,
+                           LEG_NAME = x.LEG_NAME,
+                           ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                           ALLLOAD_ID = x.ALLLOAD_ID,
+                           LEG_ID = x.LEG_ID,
 
                        })
                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })

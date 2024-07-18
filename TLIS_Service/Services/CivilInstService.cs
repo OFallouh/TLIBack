@@ -11299,56 +11299,56 @@ namespace TLIS_Service.Services
             string LoadType = null;
             foreach (var l in LstLoadOnCivil)
             {
-                if (l.allLoadInst != null)
-                {
-                    LoadType = GetKeyName(l.allLoadInst);
+                //if (l.allLoadInst != null)
+                //{
+                //    //LoadType = GetKeyName(l.allLoadInst);
 
-                    //Dismantle dish related with BU AND ODU
-                    //if (LoadType == "mwDishId")
-                    //{
-                    //    var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == l.allLoadInst.mwDishId || x.SdDishId == l.allLoadInst.mwDishId).ToList();
-                    //    foreach (var b in Bu)
-                    //    {
-                    //        b.MainDishId = null;
-                    //        b.SdDishId = null;
-                    //        _dbContext.SaveChanges();
+                //    //Dismantle dish related with BU AND ODU
+                //    //if (LoadType == "mwDishId")
+                //    //{
+                //    //    var Bu = _dbContext.TLImwBU.Where(x => x.MainDishId == l.allLoadInst.mwDishId || x.SdDishId == l.allLoadInst.mwDishId).ToList();
+                //    //    foreach (var b in Bu)
+                //    //    {
+                //    //        b.MainDishId = null;
+                //    //        b.SdDishId = null;
+                //    //        _dbContext.SaveChanges();
 
-                    //    }
-                    //    var Odu = _dbContext.TLImwODU.Where(x => x.Mw_DishId == l.allLoadInst.mwDishId).ToList();
-                    //    foreach (var o in Odu)
-                    //    {
-                    //        o.Mw_DishId = null;
-                    //        _dbContext.SaveChanges();
-                    //    }
+                //    //    }
+                //    //    var Odu = _dbContext.TLImwODU.Where(x => x.Mw_DishId == l.allLoadInst.mwDishId).ToList();
+                //    //    foreach (var o in Odu)
+                //    //    {
+                //    //        o.Mw_DishId = null;
+                //    //        _dbContext.SaveChanges();
+                //    //    }
 
-                    //}
+                //    //}
 
-                    if (LoadType == "mwBUId")
-                    {
-                        var Bu = _dbContext.TLImwBU.FirstOrDefault(x => x.Id == l.allLoadInst.mwBUId);
-                        Bu.MainDishId = null;
-                        Bu.SdDishId = null;
-                        _dbContext.SaveChanges();
-                    }
-                    else if (LoadType == "radioAntennaId")
-                    {
-                        var RadioRRU = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == l.allLoadInst.radioAntennaId).ToList();
-                        foreach (var r in RadioRRU)
-                        {
-                            r.radioAntennaId = null;
-                            _dbContext.SaveChanges();
-                        }
+                //    //if (LoadType == "mwBUId")
+                //    //{
+                //    //    var Bu = _dbContext.TLImwBU.FirstOrDefault(x => x.Id == l.allLoadInst.mwBUId);
+                //    //    Bu.MainDishId = null;
+                //    //    Bu.SdDishId = null;
+                //    //    _dbContext.SaveChanges();
+                //    //}
+                //    else if (LoadType == "radioAntennaId")
+                //    {
+                //        var RadioRRU = _dbContext.TLIRadioRRU.Where(x => x.radioAntennaId == l.allLoadInst.radioAntennaId).ToList();
+                //        foreach (var r in RadioRRU)
+                //        {
+                //            r.radioAntennaId = null;
+                //            _dbContext.SaveChanges();
+                //        }
 
 
-                    }
+                //    }
 
-                    else if (LoadType == "radioRRUId")
-                    {
-                        var RadioRRU = _dbContext.TLIRadioRRU.FirstOrDefault(x => x.Id == l.allLoadInst.radioRRUId);
-                        RadioRRU.radioAntennaId = null;
-                        _dbContext.SaveChanges();
-                    }
-                }
+                //    else if (LoadType == "radioRRUId")
+                //    {
+                //        var RadioRRU = _dbContext.TLIRadioRRU.FirstOrDefault(x => x.Id == l.allLoadInst.radioRRUId);
+                //        RadioRRU.radioAntennaId = null;
+                //        _dbContext.SaveChanges();
+                //    }
+                //}
             }
             return true;
         }

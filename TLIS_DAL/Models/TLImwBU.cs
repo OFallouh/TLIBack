@@ -13,11 +13,11 @@ namespace TLIS_DAL.Models
         public string Notes { get; set; }
         public string Name { get; set; }
         public string Serial_Number { get; set; }
-        public float? Height { get; set; }
+        public float Height { get; set; }
         public float Azimuth { get; set; }
         public int BUNumber { get; set; }    
         public bool Active { get; set; }
-        public string Visiable_Status { get; set; }
+        public string? Visiable_Status { get; set; }
         public float SpaceInstallation { get; set; }
         public TLIbaseBU baseBU { get; set; }
         public int? BaseBUId { get; set; }
@@ -28,8 +28,7 @@ namespace TLIS_DAL.Models
         public TLImwBULibrary MwBULibrary { get; set; }
         public int MwBULibraryId { get; set; }
         public TLImwDish MainDish { get; set; }
-
-        public int? MainDishId { get; set; }
+        public int MainDishId { get; set; }
         public int? SdDishId { get; set; }
         public float CenterHigh { get; set; }
         public float HBA { get; set; }

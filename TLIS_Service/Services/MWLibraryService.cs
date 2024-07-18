@@ -431,14 +431,14 @@ namespace TLIS_Service.Services
                         {
                             if (FKitem.Label.ToLower() == "diversitytype_name")
                             {
-                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<LocationTypeViewModel>(MWBULibrary.diversityType);
+                                FKitem.Options = _mapper.Map<List<DiversityTypeViewModel>>(_unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                FKitem.Value = _mapper.Map<DiversityTypeViewModel>(MWBULibrary.diversityType);
                             }
 
                             return FKitem;
                         })
                         .ToList();
-                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
+                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
                     attributes.AttributesActivatedLibrary = listofAttributesActivated;
                     attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
                     List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
@@ -3865,11 +3865,11 @@ namespace TLIS_Service.Services
                             {
                                 _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addMWBULibraryObject.DynamicAttributes, TableNameEntity.Id, MW_BULibraryEntity.Id,connectionString);
                             }
-                            _unitOfWork.TablesHistoryRepository.AddHistory(MW_BULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwDishLibrary.ToString().ToLower());
-
+                            _unitOfWork.TablesHistoryRepository.AddHistory(MW_BULibraryEntity.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLImwBULibrary.ToString().ToLower());
 
 
                             transaction.Complete();
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             return new Response<AddMWBULibraryObject>();
                         }
                         catch (Exception err)
@@ -5057,6 +5057,7 @@ namespace TLIS_Service.Services
                  
                  
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<EditMWBULibraryObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)

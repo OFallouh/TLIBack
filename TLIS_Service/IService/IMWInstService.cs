@@ -23,6 +23,8 @@ namespace TLIS_Service.IService
     public interface IMWInstService
     {
         Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode);
+        Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString);
         Response<GetForAddMWDishInstallationObject> GetAttForAddMWODUInstallation(string TableName, int LibraryID, string SiteCode);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWInstallation(int UserId, object MWInstallationViewModel, string TableName, int? TaskId);

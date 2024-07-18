@@ -23,7 +23,7 @@ using TLIS_Service.ServiceBase;
 
 namespace TLIS_API.Controllers.LoadLibrary
 {
-    [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+   // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
    

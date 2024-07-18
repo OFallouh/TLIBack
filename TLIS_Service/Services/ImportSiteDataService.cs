@@ -13960,7 +13960,7 @@ namespace TLIS_Service.Services
 
                                             //continue;
 
-                                            NewMW_BUEntity.MainDishId = null;
+                                            //NewMW_BUEntity.MainDishId = null;
                                         }
                                         else
                                         {
@@ -14004,7 +14004,7 @@ namespace TLIS_Service.Services
                                                     NewMW_BUEntity.SdDishId = CheckMW_BUSecondaryDishNameIfExist.allLoadInst.mwDishId;
                                             }
                                         }
-                                        NewMW_BUEntity.MainDishId = CheckMW_BUMainDishNameIfExist.allLoadInst.mwDishId;
+                                        //NewMW_BUEntity.MainDishId = CheckMW_BUMainDishNameIfExist.allLoadInst.mwDishId;
                                     }
 
                                     string MW_BUInstallationPlaceName = MW_BUDataTable.Rows[j]["Branching Unit- installation place"].ToString();

@@ -40,12 +40,12 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddMW_BU")]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAttForAddMWBUInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddMW_BU(int LibId, string SiteCode)
+        public IActionResult GetAttForAddMWBUInstallation(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode);
+            var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -651,6 +651,14 @@ namespace TLIS_API.Controllers
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("GetMWBUInstallationWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetMWBUInstallationWithEnableAtt([FromQuery] string? SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

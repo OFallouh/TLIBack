@@ -23,7 +23,7 @@ namespace TLIS_Service.IService
     public interface IOtherInventoryInstService
     {
         Response<ObjectInstAtts> GetAttForAdd(string TableName, string OtherInventoryLibraryType, int OtherInventoryId, string SiteCode);
-        Response<bool> DismantleOtherInventory(int UserId, string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId);
+        Response<bool> DismantleOtherInventory(int UserId, string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId, string ConnectionString);
         Response<GetForAddOtherInventoryInstallationObject> GetCabinetPowerInstallationById(int CabinetPowerId, string TableName);
         Response<GetForAddOtherInventoryInstallationObject> GetCabinetTelecomInstallationById(int CabinetTelecomId, string TableName);
         Task<Response<GetForAddOtherInventoryInstallationObject>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId, int UserId, string connectionString);

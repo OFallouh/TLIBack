@@ -5531,7 +5531,7 @@ namespace TLIS_Service.Services
             }
             return string.Empty;
         }
-        public Response<bool> DismantleOtherInventory(int UserId,string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId)
+        public Response<bool> DismantleOtherInventory(int UserId,string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId,string ConnectionString)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -5664,6 +5664,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         scope.Complete();
                     }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception er)
