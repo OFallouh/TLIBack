@@ -3849,7 +3849,7 @@ namespace TLIS_Service.Services
                                 x.Model.ToLower() == MW_BULibraryEntity.Model.ToLower()
                                 && !x.Deleted);
                             if (CheckModel != null)
-                                return new Response<ADDMWODULibraryObject>(true, null, null, $"This model {MW_BULibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                return new Response<AddMWBULibraryObject>(true, null, null, $"This model {MW_BULibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
 
