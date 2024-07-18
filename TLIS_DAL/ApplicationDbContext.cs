@@ -32,6 +32,7 @@ using TLIS_DAL.ViewModels.SolarDTOs;
 using TLIS_DAL.ViewModels.CabinetTelecomLibraryDTOs;
 using TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs;
 using TLIS_DAL.ViewModels.CabinetDTOs;
+using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 
 
 namespace TLIS_DAL
@@ -215,6 +216,7 @@ namespace TLIS_DAL
         public virtual DbSet<MV_CABINET_POWER_LIBRARY_VIEW> MV_CABINET_POWER_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MV_CABINET_POWER_VIEW> MV_CABINET_POWER_VIEW { get; set; }
         public virtual DbSet<MV_CABINET_TELECOM_VIEW> MV_CABINET_TELECOM_VIEW { get; set; }
+        public virtual DbSet<MV_MWBU_LIBRARY_VIEW> MV_MWBU_LIBRARY_VIEW { get; set; }
  
       
         protected override void OnModelCreating(ModelBuilder builder)
@@ -402,6 +404,11 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("MV_CABINET_TELECOM_VIEW");
+            });
+            builder.Entity<MV_MWBU_LIBRARY_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_MWBU_LIBRARY_VIEW");
             });
             builder.Entity<TLIsession>();
 

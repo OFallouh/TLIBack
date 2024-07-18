@@ -40,6 +40,7 @@ using Org.BouncyCastle.Asn1.Cms;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using TLIS_DAL;
 using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
+using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -688,7 +689,21 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == LoadSubType.TLIpowerLibrary.ToString().ToLower());
                             TLIpowerLibrary PowerLibrary = _mapper.Map<TLIpowerLibrary>(PowerLibraryViewModel.AttributesActivatedLibrary);
-
+                            if (PowerLibrary.SpaceLibrary <= 0)
+                            {
+                                if (PowerLibrary.Length <= 0)
+                                {
+                                    return new Response<AddPowerLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                if (PowerLibrary.width <= 0)
+                                {
+                                    return new Response<AddPowerLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else
+                                {
+                                    PowerLibrary.SpaceLibrary = PowerLibrary.Length * PowerLibrary.width;
+                                }
+                            }
                             //string CheckDependencyValidation = CheckDependencyValidationForPower(PowerLibraryViewModel);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -698,7 +713,7 @@ namespace TLIS_Service.Services
 
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddPowerLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-                             var CheckModel = db.MV_POWER_LIBRARY_VIEW
+                            var CheckModel = db.MV_POWER_LIBRARY_VIEW
                               .FirstOrDefault(x => x.Model != null &&
                                x.Model.ToLower() == PowerLibrary.Model.ToLower()
                               && !x.Deleted);

@@ -41,6 +41,7 @@ using TLIS_DAL.ViewModels.PolarityTypeDTOs;
 using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
 using TLIS_DAL;
 using Nancy.Extensions;
+using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -1947,6 +1948,21 @@ namespace TLIS_Service.Services
                             TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
                           
                             TLIradioAntennaLibrary radioAntennaLibrary = _mapper.Map<TLIradioAntennaLibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
+                            if (radioAntennaLibrary.SpaceLibrary <= 0)
+                            {
+                                if (radioAntennaLibrary.Length <= 0)
+                                {
+                                    return new Response<AddRadioAntennaLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                if (radioAntennaLibrary.Width <= 0)
+                                {
+                                    return new Response<AddRadioAntennaLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else
+                                {
+                                    radioAntennaLibrary.SpaceLibrary = radioAntennaLibrary.Length * radioAntennaLibrary.Width;
+                                }
+                            }
                             //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -2011,6 +2027,21 @@ namespace TLIS_Service.Services
                             TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
 
                             TLIradioRRULibrary radioRRULibrary = _mapper.Map<TLIradioRRULibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
+                            if (radioRRULibrary.SpaceLibrary <= 0)
+                            {
+                                if (radioRRULibrary.Length <= 0)
+                                {
+                                    return new Response<AddRadioRRULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                if (radioRRULibrary.Width <= 0)
+                                {
+                                    return new Response<AddRadioRRULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else
+                                {
+                                    radioRRULibrary.SpaceLibrary = radioRRULibrary.Length * radioRRULibrary.Width;
+                                }
+                            }
                             //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))

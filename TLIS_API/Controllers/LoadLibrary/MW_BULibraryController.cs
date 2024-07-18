@@ -60,21 +60,15 @@ namespace TLIS_API.Controllers.LoadLibrary
             var response = _unitOfWorkService.MWLibraryService.MW_DishLibrarySeedDataForTest();
             return Ok(response);
         }
-        [HttpPost("getAll")]
-        [ProducesResponseType(200, Type = typeof(List<MW_BULibraryViewModel>))]
-        public IActionResult GetMW_BULibrary([FromBody]List<FilterObjectList> filters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
-        {
-            var response = _unitOfWorkService.MWLibraryService.get_MW_BU_LibrariesAsync(filters, WithFilterData, parameters);
-            return Ok(response);
-        }
-        [HttpPost("GetMW_BULibraries")]
+        [HttpPost("GetMWBULibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_BULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetMWBULibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_BULibraries(CombineFilters, WithFilterData, parameters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWBULibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
-        [HttpGet("getById/{id}")]
+        [HttpGet("GetMWBULibraryById/{id}")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetPowerLibrary(int id)
         {

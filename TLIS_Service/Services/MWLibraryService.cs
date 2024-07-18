@@ -682,6 +682,107 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public Response<GetEnableAttribute> GetMWBULibrariesEnabledAtt(string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH_LIBRARY";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
+                    var attActivated = db.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "MW_BULibrary"
+                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                          .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = db.MV_MWBU_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = db.MV_MWBU_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Model = x.Model,
+                        Note = x.Note,
+                        Type = x.Type,
+                        Weight = x.Weight,
+                        L_W_H = x.L_W_H,
+                        Length = x.Length,
+                        Active = x.Active,
+                        Deleted = x.Deleted,
+                        Width = x.Width,
+                        Height = x.Height,
+                        BUSize = x.BUSize,
+                        frequency_band = x.frequency_band,
+                        SpaceLibrary = x.SpaceLibrary,
+                        NumOfRFU = x.NumOfRFU,
+                        channel_bandwidth = x.channel_bandwidth,
+                        FreqChannel = x.FreqChannel,
+                        DIVERSITYTYPE = x.DIVERSITYTYPE
+
+                    }).OrderBy(x => x.Key.Model)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
         public Response<GetEnableAttribute> GetMWODULibrariesEnabledAtt(string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
@@ -3718,17 +3819,21 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLImwBULibrary MW_BULibraryEntity = _mapper.Map<TLImwBULibrary>(addMWBULibraryObject.AttributesActivatedLibrary);
-                            //if (MW_DishLibraryEntity.SpaceLibrary <= 0)
-                            //{
-                            //    if (MW_DishLibraryEntity.diameter <= 0)
-                            //    {
-                            //        return new Response<AddMWDishLibraryObject>(false, null, null, "diamete must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                            //    }
-                            //    else
-                            //    {
-                            //        MW_DishLibraryEntity.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MW_DishLibraryEntity.diameter / 2, 2); ;
-                            //    }
-                            //}
+                            if (MW_BULibraryEntity.SpaceLibrary <= 0)
+                            {
+                                if (MW_BULibraryEntity.Length <= 0)
+                                {
+                                    return new Response<AddMWBULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                if (MW_BULibraryEntity.Width <= 0)
+                                {
+                                    return new Response<AddMWBULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                                else
+                                {
+                                    MW_BULibraryEntity.SpaceLibrary = MW_BULibraryEntity.Length * MW_BULibraryEntity.Width;
+                                }
+                            }
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -3739,11 +3844,14 @@ namespace TLIS_Service.Services
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                            var CheckModel = _unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Model == MW_BULibraryEntity.Model && !x.Deleted);
+                            var CheckModel = db.MV_MWBU_LIBRARY_VIEW
+                               .FirstOrDefault(x => x.Model != null &&
+                                x.Model.ToLower() == MW_BULibraryEntity.Model.ToLower()
+                                && !x.Deleted);
                             if (CheckModel != null)
-                            {
-                                return new Response<AddMWBULibraryObject>(true, null, null, $"This model {MW_BULibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
+                                return new Response<ADDMWODULibraryObject>(true, null, null, $"This model {MW_BULibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
 
                             _unitOfWork.MW_BULibraryRepository.AddWithHistory(UserId, MW_BULibraryEntity);
                             _unitOfWork.SaveChanges();
@@ -4838,7 +4946,7 @@ namespace TLIS_Service.Services
                     
                         TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
 
-                    TLImwBULibrary MWBULibraryEntites = _mapper.Map<TLImwBULibrary>(editMWBULibrary.attributesActivatedLibrary);
+                    TLImwBULibrary MWBULibraryEntites = _mapper.Map<TLImwBULibrary>(editMWBULibrary.AttributesActivatedLibrary);
 
                     TLImwBULibrary MWBULegLib = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MWBULibraryEntites.Id);
 
@@ -4859,16 +4967,18 @@ namespace TLIS_Service.Services
 
                             }
                         }
-                        if (_unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Model == MWBULibraryEntites.Model && x.Id != MWBULibraryEntites.Id && !x.Deleted) != null)
-                        {
-                            return new Response<EditMWBULibraryObject>(true, null, null, $"This model {MWBULibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                    var CheckModel = db.MV_MWBU_LIBRARY_VIEW
+                     .FirstOrDefault(x => x.Model != null &&
+                       x.Model.ToLower() == MWBULibraryEntites.Model.ToLower() &&
+                       x.Id != MWBULibraryEntites.Id && !x.Deleted);
 
-                        MWBULibraryEntites.Active = MWBULegLib.Active;
-                        MWBULibraryEntites.Deleted = MWBULegLib.Deleted;
+                    if (CheckModel != null)
+                        return new Response<EditMWBULibraryObject>(false, null, null, $"This model {MWBULibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(userId, MWBULegLib, MWBULibraryEntites);
 
+
+                    _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(userId, MWBULegLib, MWBULibraryEntites);
+                    _unitOfWork.SaveChanges();
 
                     //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
                     //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -4936,11 +5046,11 @@ namespace TLIS_Service.Services
                             OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
 
 
-                        EditLogisticalItems(userId, editMWBULibrary.logisticalItems, MWBULibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
+                        EditLogisticalItems(userId, editMWBULibrary.LogisticalItems, MWBULibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
 
-                        if (editMWBULibrary.dynamicAttributes != null ? editMWBULibrary.dynamicAttributes.Count > 0 : false)
+                        if (editMWBULibrary.DynamicAttributes != null ? editMWBULibrary.DynamicAttributes.Count > 0 : false)
                         {
-                            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWBULibrary.dynamicAttributes,connectionString, TableNameEntity.Id, MWBULibraryEntites.Id, userId, resultId, MWBULegLib.Id);
+                            _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWBULibrary.DynamicAttributes,connectionString, TableNameEntity.Id, MWBULibraryEntites.Id, userId, resultId, MWBULegLib.Id);
                         }
 
                         await _unitOfWork.SaveChangesAsync();
@@ -4999,7 +5109,7 @@ namespace TLIS_Service.Services
                     MWDishLibraryEntites.Deleted = MWDishLegLib.Deleted;
 
                     _unitOfWork.MW_DishLibraryRepository.UpdateWithHistory(userId, MWDishLegLib, MWDishLibraryEntites);
-
+                    _unitOfWork.SaveChanges();
 
                     //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
                     //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -5134,7 +5244,7 @@ namespace TLIS_Service.Services
                     MWODULibraryEntites.Deleted = MWODULegLib.Deleted;
 
                     _unitOfWork.MW_ODULibraryRepository.UpdateWithHistory(userId, MWODULegLib, MWODULibraryEntites);
-
+                    _unitOfWork.SaveChanges();
 
                     //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
                     //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -7027,28 +7137,61 @@ namespace TLIS_Service.Services
                 if (LoadSubType.TLImwBULibrary.ToString() == TableName)
                 {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLImwBULibrary.ToString(), null, null)
-                     .Select(FKitem =>
-                     {
-                         if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                         {
-                             switch (FKitem.Desc.ToLower())
-                             {
-                                 case "diversitytype_name":
-                                     FKitem.Options = _unitOfWork.DiversityTypeRepository
-                                         .GetWhere(x => !x.Deleted && !x.Disable)
-                                         .Select(x => _mapper.Map<DiversityTypeViewModel>(x))
-                                         .ToList();
-                                     break;
-                             }
-                         }
-                         return FKitem;
-                     }).ToList();
-
-                    var LogisticalItems=_unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                        {
+                            switch (FKitem.Label.ToLower())
+                            {
+                                case "diversitytype_name":
+                                    FKitem.Options = _unitOfWork.PolarityTypeRepository
+                                        .GetWhere(x => !x.Delete && !x.Disable)
+                                        .Select(x => _mapper.Map<PolarityTypeViewModel>(x))
+                                        .ToList();
+                                    break;
+                               
+                            }
+                        }
+                        return FKitem;
+                    }).ToList();
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
-                
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
+               .GetDynamicLibAtt(TableNameEntity.Id, null)
+               .Select(DynamicAttribute =>
+               {
+                   TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+                   if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+                   {
+                       switch (DynamicAttribute.DataType.ToLower())
+                       {
+                           case "string":
+                               DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
+                               break;
+                           case "int":
+                               DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
+                               break;
+                           case "double":
+                               DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
+                               break;
+                           case "bool":
+                               DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
+                               break;
+                           case "datetime":
+                               DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
+                               break;
+                       }
+                   }
+                   else
+                   {
+                       DynamicAttribute.Value = " ".Split(' ')[0];
+                   }
+                   return DynamicAttribute;
+               });
+
+                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
+
                 }
                 else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
                 {
