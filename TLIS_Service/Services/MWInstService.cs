@@ -23723,7 +23723,7 @@ namespace TLIS_Service.Services
                     .ToList();
 
                     var ExeptAttributes = ListAttributesActivated
-                    .Where(x => new[] { "installationplace_name", "mwbulibrary_name" }
+                    .Where(x => new[] { "installationplace_name", "mwbulibrary_name" , "maindish_name", "sddish_name" }
                                 .Contains(x.Label.ToLower()))
                     .ToList();
                     var foreignKeyAttribute = selectedAttributes.Select(FKitem =>
