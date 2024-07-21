@@ -2805,6 +2805,21 @@ namespace TLIS_Service.Services
                             }
                             return FKitem;
                         }).ToList();
+                        listofAttributesActivated = listofAttributesActivated.Select(x =>
+                        {
+                            if (x.Label.ToLower() == "PowerIntegrated" && (x.Value as bool?) == false)
+                            {
+                                listofAttributesActivated.ForEach(y =>
+                                {
+                                    if (y.Label.ToLower() == "IntegratedWith")
+                                    {
+                                        y.visible = false;
+                                    }
+                                });
+                            }
+                            return x;
+                        }).ToList();
+
                         attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
@@ -2845,6 +2860,7 @@ namespace TLIS_Service.Services
                             }
                             return FKitem;
                         }).ToList();
+                       
                         attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);

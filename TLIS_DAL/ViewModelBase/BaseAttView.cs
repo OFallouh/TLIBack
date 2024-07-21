@@ -15,5 +15,6 @@ namespace TLIS_DAL.ViewModelBase
         public bool enable { get; set; }
         public bool AutoFill { get; set; }
         public string DataType { get; set; }
+        public bool visible { get; set; } = true;
     }
 }

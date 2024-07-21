@@ -23649,9 +23649,9 @@ namespace TLIS_Service.Services
 
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
-                                    Key = "MainDishId",
+                                    Key = "mainDishId",
                                     Value = MainDish.Id,
-                                    Label = "Select MainDish",
+                                    Label = "Select Main Mw Dish",
                                     Options = sectionsLegTypeViewModel,
                                     DataType = "list",
                                     visible = false
@@ -23676,9 +23676,9 @@ namespace TLIS_Service.Services
 
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
-                                    Key = "SdDishId",
+                                    Key = "sdDishId",
                                     Value = SdDish.Id,
-                                    Label = "Select SdDish",
+                                    Label = "Select SD Mw Dish",
                                     Options = sectionsLegTypeViewModel,
                                     DataType = "list",
                                     visible = false
@@ -23703,9 +23703,9 @@ namespace TLIS_Service.Services
 
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
-                                    Key = "PortCascadeId",
+                                    Key = "CascededBuId",
                                     Value = PortCascade.Id,
-                                    Label = "Select CascadedBU",
+                                    Label = "Select Casceded BU",
                                     Options = sectionsLegTypeViewModel,
                                     DataType = "list",
                                     visible = false
@@ -23742,9 +23742,9 @@ namespace TLIS_Service.Services
                         if (MWBU.allLoadInst.mwBU.MainDishId == null)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "MainDishId";
+                            baseInstAttViews.Key = "mainDishId";
                             baseInstAttViews.Value = null;
-                            baseInstAttViews.Label = "Select MainDish";
+                            baseInstAttViews.Label = "Select Main Mw Dish";
                             baseInstAttViews.Options = new object[0];
                             baseInstAttViews.DataType = "list";
                             baseInstAttViews.visible = false;
@@ -23754,9 +23754,9 @@ namespace TLIS_Service.Services
                         if (MWBU.allLoadInst.mwBU.SdDishId == null)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "SdDishId";
+                            baseInstAttViews.Key = "sdDishId";
                             baseInstAttViews.Value = null;
-                            baseInstAttViews.Label = "Select SdDish";
+                            baseInstAttViews.Label = "Select SD Mw Dish";
                             baseInstAttViews.Options = new object[0];
                             baseInstAttViews.DataType = "list";
                             baseInstAttViews.visible = false;
@@ -23766,9 +23766,9 @@ namespace TLIS_Service.Services
                         if (MWBU.allLoadInst.mwBU.PortCascadeId == null)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews();
-                            baseInstAttViews.Key = "PortCascadeId";
+                            baseInstAttViews.Key = "CascededBuId";
                             baseInstAttViews.Value = null;
-                            baseInstAttViews.Label = "Select CascadedBU";
+                            baseInstAttViews.Label = "Select Casceded BU";
                             baseInstAttViews.Options = new object[0];
                             baseInstAttViews.DataType = "list";
                             baseInstAttViews.visible = false;
@@ -23785,9 +23785,9 @@ namespace TLIS_Service.Services
                                     "civilnonsteel",
                                     "legid",
                                     "sidearmid",
-                                    "MainDishId",
+                                    "mainDishId",
                                     "SdDishId",
-                                    "PortCascadeId"
+                                    "CascededBuId"
 
                            };
 
