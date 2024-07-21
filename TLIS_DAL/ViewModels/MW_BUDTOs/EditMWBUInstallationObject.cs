@@ -11,9 +11,9 @@ namespace TLIS_DAL.ViewModels.MW_BUDTOs
 {
     public class EditMWBUInstallationObject
     {
-        public InstallationMWBUConfigObject installationConfig { get; set; }
-        public LibraryAttributesMWBUObject civilType { get; set; }
-        public AddCivilLoadObject civilLoads { get; set; }
+        public EditInstallationMWBUConfigObject installationConfig { get; set; }
+        public EditLibraryAttributesMWBUObject civilType { get; set; }
+        public AddCivilLoadObjectMWBU civilLoads { get; set; }
         public EditinstallationAttributesMWBUObject installationAttributes { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
         public class EditinstallationAttributesMWBUObject
@@ -36,18 +36,31 @@ namespace TLIS_DAL.ViewModels.MW_BUDTOs
             public float EquivalentSpace { get; set; } = 0;
 
         }
-        public class LibraryAttributesMWBUObject
+        public class EditLibraryAttributesMWBUObject
         {
             public int mwBuLibraryId { get; set; }
 
         }
-        public class AddCivilLoadObject
+        public class AddCivilLoadObjectMWBU
         {
             public DateTime InstallationDate { get; set; } = DateTime.Now;
             public string? ItemOnCivilStatus { get; set; } = null;
             public string? ItemStatus { get; set; } = " ";
             public bool ReservedSpace { get; set; }
 
+        }
+        public class EditInstallationMWBUConfigObject
+        {
+            public int InstallationPlaceId { get; set; }
+            public int? civilSteelType { get; set; }
+            public int? civilWithLegId { get; set; }
+            public int? civilWithoutLegId { get; set; }
+            public int? civilNonSteelId { get; set; }
+            public List<int>? sideArmId { get; set; }
+            public int? legId { get; set; }
+            public int? sdDishId { get; set; }
+            public int mainDishId { get; set; }
+            public int? CascededBuId { get; set; }
         }
     }
 }

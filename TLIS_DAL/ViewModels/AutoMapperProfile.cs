@@ -256,7 +256,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditinstallationAttributesCabinetPower, TLIcabinet>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, TLIsolar>().ReverseMap();
             CreateMap<EditinstallationAttributesMWBUObject, TLImwBU>().ReverseMap();
-            CreateMap<installationAttributesMWBU, TLImwBU>().ReverseMap();
+            CreateMap<AddinstallationAttributesMWBUObject, TLImwBU>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

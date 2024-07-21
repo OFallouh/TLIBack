@@ -242,7 +242,7 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
 
         [HttpPost("EditMW_BUInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
+        [ProducesResponseType(200, Type = typeof(EditMWBUInstallationObject))]
         public async Task<IActionResult> EditMW_BU([FromBody] EditMWBUInstallationObject MW_BU, int? TaskId)
         {
             if (TryValidateModel(MW_BU, nameof(EditMWBUInstallationObject)))
@@ -523,7 +523,7 @@ namespace TLIS_API.Controllers
         }
        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetMWBUInstallationById")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetMWBUInstallationById(int MW_BU)
         {
             var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString());

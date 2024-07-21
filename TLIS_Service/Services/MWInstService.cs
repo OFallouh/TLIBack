@@ -3302,10 +3302,9 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SiteCode");
                     propertyNamesStatic.Add("SIDEARMNAME");
                     propertyNamesStatic.Add("CIVILNAME");
-                    propertyNamesStatic.Add("SIDEARMID");
+                    propertyNamesStatic.Add("SIDEARM_ID");
                     propertyNamesStatic.Add("CIVIL_ID");
-                    propertyNamesStatic.Add("ALLCIVILID");
-                    propertyNamesStatic.Add("MW_DISH_ID");
+                    propertyNamesStatic.Add("ALLCIVILINST_ID");
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)

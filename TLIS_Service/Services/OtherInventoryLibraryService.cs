@@ -2894,18 +2894,9 @@ namespace TLIS_Service.Services
 
                     if (GeneratorLibraryEntites.SpaceLibrary <= 0)
                     {
-                        if (GeneratorLibraryEntites.Height <= 0)
-                        {
-                            return new Response<EditGeneratorLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else if (GeneratorLibraryEntites.Width <= 0)
-                        {
-                            return new Response<EditGeneratorLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else
-                        {
-                            GeneratorLibraryEntites.SpaceLibrary = GeneratorLibraryEntites.Height * GeneratorLibraryEntites.Width;
-                        }
+                        
+                            return new Response<EditGeneratorLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        
                     }
                     var CheckModel = db.MV_GENERATOR_LIBRARY_VIEW
                              .FirstOrDefault(x => x.Model != null &&
@@ -3155,18 +3146,9 @@ namespace TLIS_Service.Services
 
                     if (CabinetPowerLibraryEntites.SpaceLibrary <= 0)
                     {
-                        if (CabinetPowerLibraryEntites.Height <= 0)
-                        {
-                            return new Response<EditCabinetPowerLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else if (CabinetPowerLibraryEntites.Width <= 0)
-                        {
-                            return new Response<EditCabinetPowerLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else
-                        {
-                            CabinetPowerLibraryEntites.SpaceLibrary = CabinetPowerLibraryEntites.Height * CabinetPowerLibraryEntites.Width;
-                        }
+                        
+                        return new Response<EditCabinetPowerLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                       
                     }
                     var CheckModel = db.MV_CABINET_POWER_LIBRARY_VIEW
                              .FirstOrDefault(x => x.Model != null &&
@@ -3290,18 +3272,9 @@ namespace TLIS_Service.Services
 
                     if (CabinetTelecomLibraryEntites.SpaceLibrary <= 0)
                     {
-                        if (CabinetTelecomLibraryEntites.Height <= 0)
-                        {
-                            return new Response<EditCabinetTelecomLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else if (CabinetTelecomLibraryEntites.Width <= 0)
-                        {
-                            return new Response<EditCabinetTelecomLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else
-                        {
-                            CabinetTelecomLibraryEntites.SpaceLibrary = CabinetTelecomLibraryEntites.Height * CabinetTelecomLibraryEntites.Width;
-                        }
+                        
+                            return new Response<EditCabinetTelecomLibraryObject>(false, null, null, "v must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                       
                     }
                     var CheckModel = db.MV_CABINET_TELECOM_LIBRARY_VIEW
                              .FirstOrDefault(x => x.Model != null &&
@@ -6999,18 +6972,9 @@ namespace TLIS_Service.Services
                             TLIgeneratorLibrary GeneratorLibraryEntity = _mapper.Map<TLIgeneratorLibrary>(addGeneratorLibraryObject.AttributesActivatedLibrary);
                             if (GeneratorLibraryEntity.SpaceLibrary <= 0)
                             {
-                                if (GeneratorLibraryEntity.Height <= 0)
-                                {
-                                    return new Response<AddGeneratorLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else if (GeneratorLibraryEntity.Width <= 0)
-                                {
-                                    return new Response<AddGeneratorLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    GeneratorLibraryEntity.SpaceLibrary = GeneratorLibraryEntity.Height * GeneratorLibraryEntity.Width;
-                                }
+                                
+                                return new Response<AddGeneratorLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                               
                             }
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
@@ -7143,18 +7107,9 @@ namespace TLIS_Service.Services
                             TLIcabinetPowerLibrary CabinetPowerLibraryEntity = _mapper.Map<TLIcabinetPowerLibrary>(addCabinetPowerLibraryObject.AttributesActivatedLibrary);
                             if (CabinetPowerLibraryEntity.SpaceLibrary <= 0)
                             {
-                                if (CabinetPowerLibraryEntity.Height <= 0)
-                                {
-                                    return new Response<AddCabinetPowerLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else if (CabinetPowerLibraryEntity.Width <= 0)
-                                {
-                                    return new Response<AddCabinetPowerLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    CabinetPowerLibraryEntity.SpaceLibrary = CabinetPowerLibraryEntity.Height * CabinetPowerLibraryEntity.Width;
-                                }
+                                
+                                 return new Response<AddCabinetPowerLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                                
                             }
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
@@ -7220,18 +7175,9 @@ namespace TLIS_Service.Services
                             TLIcabinetTelecomLibrary CabinetPowerLibraryEntity = _mapper.Map<TLIcabinetTelecomLibrary>(addCabinetTelecomLibraryObject.AttributesActivatedLibrary);
                             if (CabinetPowerLibraryEntity.SpaceLibrary <= 0)
                             {
-                                if (CabinetPowerLibraryEntity.Height <= 0)
-                                {
-                                    return new Response<AddCabinetTelecomLibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else if (CabinetPowerLibraryEntity.Width <= 0)
-                                {
-                                    return new Response<AddCabinetTelecomLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    CabinetPowerLibraryEntity.SpaceLibrary = CabinetPowerLibraryEntity.Height * CabinetPowerLibraryEntity.Width;
-                                }
+                               
+                                 return new Response<AddCabinetTelecomLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                               
                             }
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 

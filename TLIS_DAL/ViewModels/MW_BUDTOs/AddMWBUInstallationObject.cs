@@ -10,11 +10,11 @@ namespace TLIS_DAL.ViewModels.MW_BUDTOs
 {
     public class AddMWBUInstallationObject
     {
-        public InstallationMWBUConfigObject installationConfig { get; set; }
+        public AddInstallationMWBUConfigObject installationConfig { get; set; }
         public AddCivilLoad civilLoads { get; set; }
-        public installationAttributesMWBU installationAttributes { get; set; }
+        public AddinstallationAttributesMWBUObject installationAttributes { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
-        public class installationAttributesMWBU
+        public class AddinstallationAttributesMWBUObject
         {
             public string? Notes { get; set; } = " ";
             public string Name { get; set; }
@@ -34,7 +34,7 @@ namespace TLIS_DAL.ViewModels.MW_BUDTOs
 
 
         }
-        public class InstallationMWBUConfigObject
+        public class AddInstallationMWBUConfigObject
         {
             public int InstallationPlaceId { get; set; }
             public int? civilSteelType { get; set; }
