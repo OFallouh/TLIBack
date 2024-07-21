@@ -4506,11 +4506,28 @@ namespace TLIS_Service.Services
                                                             var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                 x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                                && (x.legId == AddMW_BU.installationConfig.legId || x.Leg2Id == AddMW_BU.installationConfig.legId
-                                                            ));
+                                                                && (x.legId == AddMW_BU.installationConfig.legId || x.Leg2Id == AddMW_BU.installationConfig.legId)
+                                                               , x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                             if (CascededBu == null)
+                                                            {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                TLImwPort tLImwPort = new TLImwPort()
+                                                                {
+                                                                    MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                                    MwBULibraryId= CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                                    Port_Type= 1,
+                                                                    Port_Name= "CascededBU"
 
+                                                                };
+                                                                _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                                                _unitOfWork.SaveChanges();
+
+
+                                                            }
                                                         }
                                                         if (!string.IsNullOrEmpty(mwBU.Serial_Number))
                                                         {
@@ -4624,7 +4641,7 @@ namespace TLIS_Service.Services
                                                             mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                             mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                             mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                            mwBU.PortCascadeId = AddMW_BU.installationConfig?.CascededBuId ?? null;
+                                                   
                                                             mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
                                                             _unitOfWork.MW_BURepository.AddWithHistory(UserId, mwBU);
                                                             _unitOfWork.SaveChanges();
@@ -4735,7 +4752,6 @@ namespace TLIS_Service.Services
                                                             mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                             mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                             mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                            mwBU.PortCascadeId = AddMW_BU.installationConfig?.CascededBuId ?? null;
                                                             mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
                                                             _unitOfWork.MW_BURepository.AddWithHistory(UserId, mwBU);
                                                             _unitOfWork.SaveChanges();
@@ -4881,10 +4897,28 @@ namespace TLIS_Service.Services
                                                                 x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
                                                                 && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                                == AddMW_BU.installationConfig.sideArmId[0]));
+                                                                == AddMW_BU.installationConfig.sideArmId[0]),x=>x.allLoadInst,x=>x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                             if (CascededBu == null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                TLImwPort tLImwPort = new TLImwPort()
+                                                                {
+                                                                    MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                                    MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                                    Port_Type = 1,
+                                                                    Port_Name = "CascededBU"
 
+                                                                };
+                                                                _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                                                _unitOfWork.SaveChanges();
+                                                                mwBU.PortCascadeId = tLImwPort.Id;
+
+
+                                                            }
 
                                                         }
                                                         if (AddMW_BU.installationConfig.mainDishId == null)
@@ -4926,9 +4960,27 @@ namespace TLIS_Service.Services
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
                                                                 && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
                                                                 == AddMW_BU.installationConfig.sideArmId[0]) || x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                                || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                                || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1], x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                             if (CascededBu == null)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                            }
+                                                            else
+                                                            {
+                                                                TLImwPort tLImwPort = new TLImwPort()
+                                                                {
+                                                                    MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                                    MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                                    Port_Type = 1,
+                                                                    Port_Name = "CascededBU"
+
+                                                                };
+                                                                _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                                                _unitOfWork.SaveChanges();
+                                                                mwBU.PortCascadeId = tLImwPort.Id ;
+
+                                                            }
                                                         }
                                                         if (AddMW_BU.installationConfig.mainDishId == null)
                                                         {
@@ -5097,7 +5149,7 @@ namespace TLIS_Service.Services
                                                         mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                         mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                         mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                        mwBU.PortCascadeId = AddMW_BU.installationConfig?.CascededBuId ?? null;
+                                                     
                                                         mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
                                                         _unitOfWork.MW_BURepository.AddWithHistory(UserId, mwBU);
                                                         _unitOfWork.SaveChanges();
@@ -5253,11 +5305,10 @@ namespace TLIS_Service.Services
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwBU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
                                                         mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                         mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                         mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                        mwBU.PortCascadeId = AddMW_BU.installationConfig?.CascededBuId ?? null;
+                                                        
                                                         mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
                                                         _unitOfWork.MW_BURepository.AddWithHistory(UserId, mwBU);
                                                         _unitOfWork.SaveChanges();
@@ -5366,10 +5417,28 @@ namespace TLIS_Service.Services
                                                             x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                             && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
                                                             && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]));
+                                                            == AddMW_BU.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                         if (CascededBu == null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            TLImwPort tLImwPort = new TLImwPort()
+                                                            {
+                                                                MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                                MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                                Port_Type = 1,
+                                                                Port_Name = "CascededBU"
 
+                                                            };
+                                                            _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                                            _unitOfWork.SaveChanges();
+                                                            mwBU.PortCascadeId = tLImwPort.Id;
+
+
+                                                        }
 
                                                     }
                                                     if (AddMW_BU.installationConfig.mainDishId == null)
@@ -5411,9 +5480,28 @@ namespace TLIS_Service.Services
                                                             && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
                                                             && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
                                                             == AddMW_BU.installationConfig.sideArmId[0]) || x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                            || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                            || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1], x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                         if (CascededBu == null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            TLImwPort tLImwPort = new TLImwPort()
+                                                            {
+                                                                MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                                MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                                Port_Type = 1,
+                                                                Port_Name = "CascededBU"
+
+                                                            };
+                                                            _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                                            _unitOfWork.SaveChanges();
+                                                            mwBU.PortCascadeId = tLImwPort.Id;
+
+
+                                                        }
                                                     }
                                                     if (AddMW_BU.installationConfig.mainDishId == null)
                                                     {
@@ -5567,7 +5655,6 @@ namespace TLIS_Service.Services
                                                     mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                     mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                     mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                    mwBU.PortCascadeId = AddMW_BU.installationConfig?.CascededBuId ?? null;
                                                     mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
                                                     _unitOfWork.MW_BURepository.AddWithHistory(UserId, mwBU);
                                                     _unitOfWork.SaveChanges();
@@ -5724,7 +5811,6 @@ namespace TLIS_Service.Services
                                                     mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                     mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                     mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                    mwBU.PortCascadeId = AddMW_BU.installationConfig?.CascededBuId ?? null;
                                                     mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
                                                     _unitOfWork.MW_BURepository.AddWithHistory(UserId, mwBU);
                                                     _unitOfWork.SaveChanges();
@@ -5830,10 +5916,28 @@ namespace TLIS_Service.Services
                                                             x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                             && x.allCivilInst.civilNonSteelId == AddMW_BU.installationConfig.civilNonSteelId
                                                             && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]));
+                                                            == AddMW_BU.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                         if (CascededBu == null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            TLImwPort tLImwPort = new TLImwPort()
+                                                            {
+                                                                MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                                MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                                Port_Type = 1,
+                                                                Port_Name = "CascededBU"
 
+                                                            };
+                                                            _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                                            _unitOfWork.SaveChanges();
+                                                            mwBU.PortCascadeId = tLImwPort.Id;
+
+
+                                                        }
 
                                                     }
                                                     if (AddMW_BU.installationConfig.mainDishId == null)
@@ -5874,10 +5978,28 @@ namespace TLIS_Service.Services
                                                             x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                             && x.allCivilInst.civilNonSteelId == AddMW_BU.installationConfig.civilNonSteelId
                                                             && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]) || (x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                            || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]));
+                                                            == AddMW_BU.installationConfig.sideArmId[0]) || x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
+                                                            || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1], x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                         if (CascededBu == null)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                        }
+                                                        else
+                                                        {
+                                                            TLImwPort tLImwPort = new TLImwPort()
+                                                            {
+                                                                MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                                MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                                Port_Type = 1,
+                                                                Port_Name = "CascededBU"
+
+                                                            };
+                                                            _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                                            _unitOfWork.SaveChanges();
+
+                                                            mwBU.PortCascadeId = tLImwPort.Id;
+                                                        }
                                                     }
                                                     if (AddMW_BU.installationConfig.mainDishId == null)
                                                     {
@@ -6013,7 +6135,7 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                 mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                 mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                mwBU.PortCascadeId = AddMW_BU.installationConfig?.CascededBuId ?? null;
+                                       
                                                 mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
                                                 _unitOfWork.MW_BURepository.AddWithHistory(UserId, mwBU);
                                                 _unitOfWork.SaveChanges();
@@ -10751,10 +10873,26 @@ namespace TLIS_Service.Services
                                                 var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                     x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                                                    && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId
-                                                ));
+                                                    && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId)
+                                                 , x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                 if (CascededBu == null)
+                                                {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    portCascuded.MwBUId =Convert.ToInt32 (CascededBu.allLoadInst.mwBU.Id);
+                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                    _unitOfWork.SaveChanges();
+                                                    mwBU.PortCascadeId = portCascuded.Id;
+
+                                                }
 
                                             }
                                             if (!string.IsNullOrEmpty(mwBU.Serial_Number))
@@ -10869,7 +11007,7 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                                 mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                                 mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                                mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                             
                                                 mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                                 _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                                 _unitOfWork.SaveChanges();
@@ -10991,7 +11129,7 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                                 mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                                 mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                                mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                        
                                                 mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                                 _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                                 _unitOfWork.SaveChanges();
@@ -11130,7 +11268,7 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                                 mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                                 mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                                mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                          
                                                 mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                                 _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                                 _unitOfWork.SaveChanges();
@@ -11240,7 +11378,7 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                                 mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                                 mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                                mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                     
                                                 mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                                 _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                                 _unitOfWork.SaveChanges();
@@ -11397,10 +11535,25 @@ namespace TLIS_Service.Services
                                                     x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
                                                     && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                    == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                                    == MWInstallationViewModel.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                 if (CascededBu == null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                    _unitOfWork.SaveChanges();
+                                                    mwBU.PortCascadeId = portCascuded.Id;
 
+                                                }
 
                                             }
                                             if (MWInstallationViewModel.installationConfig.mainDishId == null)
@@ -11442,9 +11595,25 @@ namespace TLIS_Service.Services
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
                                                     && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
                                                     == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                    || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
+                                                    || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1], x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                                 if (CascededBu == null)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                                }
+                                                else
+                                                {
+                                                    var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                    _unitOfWork.SaveChanges();
+                                                    mwBU.PortCascadeId = portCascuded.Id;
+
+                                                }
                                             }
                                             if (MWInstallationViewModel.installationConfig.mainDishId == null)
                                             {
@@ -11598,7 +11767,7 @@ namespace TLIS_Service.Services
                                             mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                             mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                             mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                            mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                         
                                             mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                             _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                             _unitOfWork.SaveChanges();
@@ -11767,7 +11936,7 @@ namespace TLIS_Service.Services
                                             mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                             mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                             mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                            mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                   
                                             mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                             _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                             _unitOfWork.SaveChanges();
@@ -11950,7 +12119,7 @@ namespace TLIS_Service.Services
                                             mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                             mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                             mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                            mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                    
                                             mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                             _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                             _unitOfWork.SaveChanges();
@@ -12111,7 +12280,7 @@ namespace TLIS_Service.Services
                                             mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                             mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                             mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                            mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                
                                             mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                             _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                             _unitOfWork.SaveChanges();
@@ -12229,10 +12398,25 @@ namespace TLIS_Service.Services
                                                 x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
                                                 && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId
                                                 && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                                == MWInstallationViewModel.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                             if (CascededBu == null)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same sidearm", (int)ApiReturnCode.fail);
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                _unitOfWork.SaveChanges();
+                                                mwBU.PortCascadeId = portCascuded.Id;
 
+                                            }
 
                                         }
                                         if (MWInstallationViewModel.installationConfig.mainDishId == null)
@@ -12274,9 +12458,25 @@ namespace TLIS_Service.Services
                                                 && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId
                                                 && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
                                                 == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
+                                                || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1], x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                             if (CascededBu == null)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                _unitOfWork.SaveChanges();
+                                                mwBU.PortCascadeId = portCascuded.Id;
+
+                                            }
                                         }
                                         if (MWInstallationViewModel.installationConfig.mainDishId == null)
                                         {
@@ -12428,7 +12628,7 @@ namespace TLIS_Service.Services
                                         mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                         mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                         mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                        mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                   
                                         mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                         _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                         _unitOfWork.SaveChanges();
@@ -12605,7 +12805,7 @@ namespace TLIS_Service.Services
                                         mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                         mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                         mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                        mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                   
                                         mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                         _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                         _unitOfWork.SaveChanges();
@@ -12788,7 +12988,7 @@ namespace TLIS_Service.Services
                                         mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                         mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                         mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                        mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                
                                         mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                         _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                         _unitOfWork.SaveChanges();
@@ -12951,7 +13151,7 @@ namespace TLIS_Service.Services
                                         mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                         mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                         mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                        mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                                  
                                         mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                         _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                         _unitOfWork.SaveChanges();
@@ -13065,10 +13265,25 @@ namespace TLIS_Service.Services
                                                 x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
                                                 && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
                                                 && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                                == MWInstallationViewModel.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                             if (CascededBu == null)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same sidearm", (int)ApiReturnCode.fail);
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                _unitOfWork.SaveChanges();
+                                                mwBU.PortCascadeId = portCascuded.Id;
 
+                                            }
 
                                         }
                                         if (MWInstallationViewModel.installationConfig.mainDishId == null)
@@ -13097,7 +13312,8 @@ namespace TLIS_Service.Services
                                             && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
                                             && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
                                             == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                            || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
+                                            || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1], x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
                                             if (sdDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDish is not found on same sidearm", (int)ApiReturnCode.fail);
 
@@ -13112,7 +13328,22 @@ namespace TLIS_Service.Services
                                                 == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                             if (CascededBu == null)
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this CascededBu is not found on same leg", (int)ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                _unitOfWork.SaveChanges();
+                                                mwBU.PortCascadeId = portCascuded.Id;
+
+                                            }
                                         }
                                         if (MWInstallationViewModel.installationConfig.mainDishId == null)
                                         {
@@ -13241,7 +13472,7 @@ namespace TLIS_Service.Services
                                     mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                     mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                     mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                    mwBU.PortCascadeId = MWInstallationViewModel.installationConfig?.CascededBuId ?? null;
+                           
                                     mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
                                     _unitOfWork.MW_BURepository.UpdateWithHistory(UserId, mwBUInst.allLoadInst.mwBU, mwBU);
                                     _unitOfWork.SaveChanges();
@@ -23612,8 +23843,8 @@ namespace TLIS_Service.Services
                             sectionsLegTypeViewModelsidearm.Add(sectionsLegTypeViewModel);
                             var SideArmCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null && x.Id != MWBU.Id && x.allLoadInst.mwBUId == MWInsId
                             && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allLoadInst, x => x.allLoadInst.mwBU
-                            , x => x.allLoadInst.mwBU.Owner, x => x.allLoadInst.mwBU.InstallationPlace, x => x.allLoadInst.mwBU.MainDish,
-                            x => x.allLoadInst.mwBU.SdDishId, x => x.allLoadInst.mwBU.MwBULibrary);
+                            , x => x.allLoadInst.mwBU.Owner, x => x.allLoadInst.mwBU.InstallationPlace, x => x.allLoadInst.mwBU.MainDish
+                            , x => x.allLoadInst.mwBU.MwBULibrary);
 
                             if (SideArmCount != null)
                             {

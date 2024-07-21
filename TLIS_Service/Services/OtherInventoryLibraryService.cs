@@ -2807,11 +2807,11 @@ namespace TLIS_Service.Services
                         }).ToList();
                         listofAttributesActivated = listofAttributesActivated.Select(x =>
                         {
-                            if (x.Label.ToLower() == "PowerIntegrated" && (x.Value as bool?) == false)
+                            if (x.Label.ToLower() == "powerintegrated" && (x.Value as bool?) == false)
                             {
                                 listofAttributesActivated.ForEach(y =>
                                 {
-                                    if (y.Label.ToLower() == "IntegratedWith")
+                                    if (y.Label.ToLower() == "integratedwith")
                                     {
                                         y.visible = false;
                                     }
