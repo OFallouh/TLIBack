@@ -24016,9 +24016,9 @@ namespace TLIS_Service.Services
                                     "civilnonsteel",
                                     "legid",
                                     "sidearmid",
-                                    "mainDishId",
-                                    "SdDishId",
-                                    "CascededBuId"
+                                    "maindishid",
+                                    "sddishid",
+                                    "cascededbuid"
 
                            };
 
