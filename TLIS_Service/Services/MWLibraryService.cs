@@ -3834,6 +3834,8 @@ namespace TLIS_Service.Services
                                     MW_BULibraryEntity.SpaceLibrary = MW_BULibraryEntity.Length * MW_BULibraryEntity.Width;
                                 }
                             }
+                            if(MW_BULibraryEntity.NumOfRFU >4)
+                                return new Response<AddMWBULibraryObject>(false, null, null, "NumOfRFU can not be bigger from four", (int)Helpers.Constants.ApiReturnCode.fail);
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -4967,6 +4969,9 @@ namespace TLIS_Service.Services
 
                             }
                         }
+                    if (MWBULibraryEntites.NumOfRFU > 4)
+                        return new Response<EditMWBULibraryObject>(false, null, null, "NumOfRFU can not be bigger from four", (int)Helpers.Constants.ApiReturnCode.fail);
+
                     var CheckModel = db.MV_MWBU_LIBRARY_VIEW
                      .FirstOrDefault(x => x.Model != null &&
                        x.Model.ToLower() == MWBULibraryEntites.Model.ToLower() &&

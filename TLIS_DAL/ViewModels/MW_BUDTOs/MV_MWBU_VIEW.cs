@@ -43,6 +43,8 @@ namespace TLIS_DAL.ViewModels.MW_BUDTOs
         public int ALLLOAD_ID { get; set; }
         public int LEG_ID { get; set; }
         public bool Dismantle { get; set; }
+        public int? SIDEARM_ID { get; set; }
+        public int? SideArmSec_Id { get; set; }
 
         public Dictionary<string, object> GenerateOutputData()
         {
@@ -83,6 +85,8 @@ namespace TLIS_DAL.ViewModels.MW_BUDTOs
             outputData.Add("ALLLOAD_ID", ALLLOAD_ID);
             outputData.Add("LEG_ID", LEG_ID);
             outputData.Add("Dismantle", Dismantle);
+            outputData.Add("SideArmSec_Id", SideArmSec_Id);
+            outputData.Add("SIDEARM_ID", SIDEARM_ID);
             // Add dynamic property if "key" has a value
             if (!string.IsNullOrEmpty(Key))
             {

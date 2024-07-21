@@ -81,27 +81,43 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddMW_BUInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddMWBUInstallationObject))]
+        public IActionResult AddMW_BUInstallation([FromBody] AddMWBUInstallationObject AddMW_BUViewModel, string SiteCode, int? TaskId)
+        {
+            if (TryValidateModel(AddMW_BUViewModel, nameof(AddMW_BUViewModel)))
+                
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
 
-        //[HttpPost("AddMW_BU")]
-        //[ProducesResponseType(200, Type = typeof(AddMW_BUViewModel))]
-        //public IActionResult AddMW_BU([FromBody]AddMW_BUViewModel AddMW_BUViewModel, string SiteCode, int? TaskId)
-        //{
-        //    if (AddMW_BUViewModel.TLIcivilLoads.sideArmId == 0)
-        //        AddMW_BUViewModel.TLIcivilLoads.sideArmId = null;
-        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //    if (TryValidateModel(AddMW_BUViewModel, nameof(AddMW_BUViewModel)))
-        //    {
-        //        var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddMWBUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_ODUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMwODUinstallationObject))]
@@ -225,23 +241,42 @@ namespace TLIS_API.Controllers
 
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
 
-        //[HttpPost("EditMW_BU")]
-        //[ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
-        //public async Task<IActionResult> EditMW_BU([FromBody]EditMW_BUViewModel MW_BU,int? TaskId)
-        //{
-        //    if (TryValidateModel(MW_BU, nameof(EditMW_BUViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [HttpPost("EditMW_BUInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
+        public async Task<IActionResult> EditMW_BU([FromBody] EditMWBUInstallationObject MW_BU, int? TaskId)
+        {
+            if (TryValidateModel(MW_BU, nameof(EditMWBUInstallationObject)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(userId,MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditMWBUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMWDishInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWDishInstallationObject))]
@@ -486,12 +521,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, ConnectionString);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetMW_BUById")]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetMWBUInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
-        public IActionResult GetMW_BUById(int MW_BU)
+        public IActionResult GetMWBUInstallationById(int MW_BU)
         {
-            var response = _unitOfWorkService.MWInstService.GetById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString());
+            var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString());
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

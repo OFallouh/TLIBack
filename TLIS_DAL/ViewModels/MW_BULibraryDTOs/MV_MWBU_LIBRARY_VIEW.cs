@@ -23,7 +23,7 @@ namespace TLIS_DAL.ViewModels.MW_BULibraryDTOs
         public string? BUSize { get; set; }
         public int NumOfRFU { get; set; }
         public string? frequency_band { get; set; }
-        public float? channel_bandwidth { get; set; }
+        public float channel_bandwidth { get; set; }
         public string? FreqChannel { get; set; }
         public float SpaceLibrary { get; set; }
         public bool Active { get; set; }
