@@ -85,7 +85,7 @@ namespace TLIS_API.Controllers.Load
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(userId,Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
+                var response = _unitOfWorkService.MWLibraryService.AddMWRFULibrary(userId,Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
                 return Ok(response);
             }
             else
