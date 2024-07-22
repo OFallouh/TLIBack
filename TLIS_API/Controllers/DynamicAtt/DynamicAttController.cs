@@ -169,14 +169,16 @@ namespace TLIS_API.Controllers.DynamicAtt
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
         public IActionResult Disable(int RecordId)
         {
-            var response = _unitOfWorkService.DynamicAttService.Disable(RecordId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.DynamicAttService.Disable(RecordId, ConnectionString);
             return Ok(response);
         }
         [HttpPost("RequiredNOTRequired")]
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
         public IActionResult RequiredNOTRequired(int DynamicAttId)
         {
-            var response = _unitOfWorkService.DynamicAttService.RequiredNOTRequired(DynamicAttId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.DynamicAttService.RequiredNOTRequired(DynamicAttId, ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetLayers")]

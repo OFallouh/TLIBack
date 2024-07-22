@@ -746,11 +746,18 @@ namespace TLIS_Service.Services
                             Id = (int)IntegratedWith.Wind,
                             Name = IntegratedWith.Wind.ToString()
                         });
+                        if (CabinetPowerLibrary.IntegratedWith != null)
+                        {
+                            integratedwith.Options = integratedwiths;
+                            integratedwith.Value = integratedwiths.FirstOrDefault(shape => shape.Id == (int)CabinetPowerLibrary.IntegratedWith);
+                        }
+                        else
+                        {
+                            integratedwith.Options = integratedwiths;
+                            integratedwith.Value = null;
 
-                        integratedwith.Options = integratedwiths;
-                        integratedwith.Value = CabinetPowerLibrary.IntegratedWith != null ?
-                            _mapper.Map<ParityViewModel>(CabinetPowerLibrary.IntegratedWith) :
-                            null;
+                        }
+
                     }
                     LibraryAttributes = LibraryAttributes.Select(x =>
                     {
@@ -6574,10 +6581,17 @@ namespace TLIS_Service.Services
                             Name = IntegratedWith.Wind.ToString()
                         });
 
-                        integratedwith.Options = integratedwiths;
-                        integratedwith.Value = CabinetPowerLibrary.IntegratedWith != null ?
-                            _mapper.Map<ParityViewModel>(CabinetPowerLibrary.IntegratedWith) :
-                            null;
+                        if (CabinetPowerLibrary.IntegratedWith != null)
+                        {
+                            integratedwith.Options = integratedwiths;
+                            integratedwith.Value = integratedwiths.FirstOrDefault(shape => shape.Id == (int)CabinetPowerLibrary.IntegratedWith);
+                        }
+                        else
+                        {
+                            integratedwith.Options = integratedwiths;
+                            integratedwith.Value = null;
+
+                        }
                     }
                     LibraryAttributes = LibraryAttributes.Select(x =>
                     {

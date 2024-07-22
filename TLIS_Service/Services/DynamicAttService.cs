@@ -11014,7 +11014,7 @@ namespace TLIS_Service.Services
             }
             return result;
         }
-        public Response<DynamicAttViewModel> Disable(int RecordId)
+        public Response<DynamicAttViewModel> Disable(int RecordId,string ConnectionString)
         {
             try
             {
@@ -11025,6 +11025,7 @@ namespace TLIS_Service.Services
                     DynamicAtt.Required = false;
 
                 _unitOfWork.SaveChanges();
+                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                 return new Response<DynamicAttViewModel>();
             }
             catch (Exception err)
@@ -11032,7 +11033,7 @@ namespace TLIS_Service.Services
                 return new Response<DynamicAttViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
             }
         }
-        public Response<DynamicAttViewModel> RequiredNOTRequired(int DynamicAttId)
+        public Response<DynamicAttViewModel> RequiredNOTRequired(int DynamicAttId,string ConnectionString)
         {
             try
             {
@@ -11041,7 +11042,7 @@ namespace TLIS_Service.Services
                 DynamicAtt.Required = !(DynamicAtt.Required);
 
                 _unitOfWork.SaveChanges();
-
+                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                 return new Response<DynamicAttViewModel>();
             }
             catch (Exception err)
