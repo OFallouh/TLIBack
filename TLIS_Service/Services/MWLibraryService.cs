@@ -51,6 +51,9 @@ using static TLIS_Service.Helpers.Constants;
 using System.Data;
 using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
 using Org.BouncyCastle.Asn1.Cms;
+using TLIS_DAL.ViewModels.CabinetPowerTypeDTOs;
+using static TLIS_DAL.ViewModels.MW_RFULibraryDTOs.EditMWRFULibrary;
+using TLIS_DAL.ViewModels.MW_RFULibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -437,6 +440,54 @@ namespace TLIS_Service.Services
                             return FKitem;
                         })
                         .ToList();
+                    attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
+                    attributes.AttributesActivatedLibrary = listofAttributesActivated;
+                    attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
+                    List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
+                    BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
+                    if (NameAttribute != null)
+                    {
+                        BaseInstAttViews Swap = Test.ToList()[0];
+                        Test[Test.IndexOf(NameAttribute)] = Swap;
+                        Test[0] = NameAttribute;
+                        attributes.AttributesActivatedLibrary = Test;
+                    }
+                }
+                else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
+                {
+                    TLImwRFULibrary MWRFULibrary = _unitOfWork.MW_RFULibraryRepository.GetIncludeWhereFirst(x =>
+                        x.Id == Id, x => x.diversityType,x=>x.boardType);
+
+                    List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, MWRFULibrary, null).ToList();
+                    var foreignKeyAttributes = listofAttributesActivated.Select(FKitem =>
+                    {
+                        switch (FKitem.Label.ToLower())
+                        {
+                            case "boardtype_name":
+                                FKitem.Value = _mapper.Map<BoardTypeViewModel>(MWRFULibrary.boardType);
+                                FKitem.Options = _mapper.Map<List<BoardTypeViewModel>>(_unitOfWork.BoardTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                break;
+                            case "diversitytype_name":
+                                FKitem.Value = _mapper.Map<DiversityTypeViewModel>(MWRFULibrary.diversityType);
+                                FKitem.Options = _mapper.Map<List<DiversityTypeViewModel>>(_unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                break;
+                            case "rfutype":
+                                List<EnumOutPut> RFUTypes = new List<EnumOutPut>
+                                {
+                                    new EnumOutPut { Id = (int)RFUType.Compact, Name = RFUType.Compact.ToString() },
+                                    new EnumOutPut { Id = (int)RFUType.Traditional, Name = RFUType.Traditional.ToString() },
+
+                                };
+                                
+                                FKitem.Options = RFUTypes;
+                                FKitem.Value = RFUTypes.FirstOrDefault(x => x.Id == (int)MWRFULibrary?.RFUType);
+                               
+                                break;
+                            default:
+                                break;
+                        }
+                        return FKitem;
+                    }).ToList();
                     attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
                     attributes.AttributesActivatedLibrary = listofAttributesActivated;
                     attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
@@ -5245,6 +5296,141 @@ namespace TLIS_Service.Services
                 catch (Exception err)
                 {
                     return new Response<EditMWBULibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+
+        }
+        public async Task<Response<EditMWRFULibrary>> EditMWRFULibrary(int userId, EditMWRFULibrary editMWRFULibraryAttributes, string TableName, string connectionString)
+        {
+            using (TransactionScope transaction =
+                new TransactionScope(TransactionScopeOption.Required,
+                                   new System.TimeSpan(0, 15, 0)))
+            {
+                try
+                {
+
+                    int resultId = 0;
+
+                    TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
+
+                    TLImwRFULibrary MWRFULibraryEntites = _mapper.Map<TLImwRFULibrary>(editMWRFULibraryAttributes.AttributesActivatedLibrary);
+
+                    TLImwRFULibrary MWRFULegLib = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MWRFULibraryEntites.Id);
+
+
+                    if (MWRFULibraryEntites.SpaceLibrary == 0)
+                    {
+                        if (MWRFULibraryEntites.Length <= 0)
+                        {
+                            return new Response<EditMWRFULibrary>(false, null, null, "Length It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        else if (MWRFULibraryEntites.Width <= 0)
+                        {
+                            return new Response<EditMWRFULibrary>(false, null, null, "Width It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                        else if (MWRFULibraryEntites.Length > 0 && MWRFULibraryEntites.Width > 0)
+                        {
+                            MWRFULibraryEntites.SpaceLibrary = MWRFULibraryEntites.Length * MWRFULibraryEntites.Width;
+
+                        }
+                    }
+                   
+                    var CheckModel = db.MV_MWRFU_LIBRARY_VIEW
+                     .FirstOrDefault(x => x.Model != null &&
+                       x.Model.ToLower() == MWRFULibraryEntites.Model.ToLower() &&
+                       x.Id != MWRFULibraryEntites.Id && !x.Deleted);
+
+                    if (CheckModel != null)
+                        return new Response<EditMWRFULibrary>(false, null, null, $"This model {MWRFULibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
+
+                    _unitOfWork.MW_RFULibraryRepository.UpdateWithHistory(userId, MWRFULegLib, MWRFULibraryEntites);
+                    _unitOfWork.SaveChanges();
+
+                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
+                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    //{
+                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
+                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
+                    //{
+                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                    //}
+
+                    LogisticalObject OldLogisticalItemIds = new LogisticalObject();
+
+                    var CheckVendorId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == MWRFULibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckVendorId != null)
+                        OldLogisticalItemIds.Vendor = Convert.ToInt32(CheckVendorId.logisticalId);
+
+                    var CheckSupplierId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == MWRFULibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckSupplierId != null)
+                        OldLogisticalItemIds.Supplier = CheckSupplierId.logisticalId;
+
+                    var CheckDesignerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == MWRFULibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckDesignerId != null)
+                        OldLogisticalItemIds.Designer = CheckDesignerId.logisticalId;
+
+
+                    var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
+                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == MWRFULibraryEntites.Id, x => x.logistical,
+                                x => x.logistical.logisticalType);
+
+                    if (CheckManufacturerId != null)
+                        OldLogisticalItemIds.Manufacturer = CheckManufacturerId.logisticalId;
+
+
+                    var CheckContractorId = _unitOfWork.LogisticalitemRepository
+                 .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
+                     x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == MWRFULibraryEntites.Id, x => x.logistical,
+                         x => x.logistical.logisticalType);
+
+                    if (CheckContractorId != null)
+                        OldLogisticalItemIds.Contractor = CheckContractorId.logisticalId;
+
+
+                    var CheckConsultantId = _unitOfWork.LogisticalitemRepository
+                       .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == MWRFULibraryEntites.Id, x => x.logistical,
+                               x => x.logistical.logisticalType);
+
+                    if (CheckConsultantId != null)
+                        OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
+
+
+                    EditLogisticalItems(userId, editMWRFULibraryAttributes.LogisticalItems, MWRFULibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
+
+                    if (editMWRFULibraryAttributes.DynamicAttributes != null ? editMWRFULibraryAttributes.DynamicAttributes.Count > 0 : false)
+                    {
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editMWRFULibraryAttributes.DynamicAttributes, connectionString, TableNameEntity.Id, MWRFULibraryEntites.Id, userId, resultId, MWRFULegLib.Id);
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
+
+
+                    transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+                    return new Response<EditMWRFULibrary>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                catch (Exception err)
+                {
+                    return new Response<EditMWRFULibrary>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
 

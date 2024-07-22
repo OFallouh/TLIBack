@@ -192,6 +192,7 @@ using static TLIS_DAL.ViewModels.CabinetDTOs.AddCabinetPowerInstallation;
 using static TLIS_DAL.ViewModels.MW_BUDTOs.EditMWBUInstallationObject;
 using static TLIS_DAL.ViewModels.MW_BUDTOs.AddMWBUInstallationObject;
 using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.AddMWRFULibraryObject;
+using static TLIS_DAL.ViewModels.MW_RFULibraryDTOs.EditMWRFULibrary;
 namespace TLIS_DAL.ViewModels
 {
     public class AutoMapperProfile : Profile
@@ -258,6 +259,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditinstallationAttributesMWBUObject, TLImwBU>().ReverseMap();
             CreateMap<AddinstallationAttributesMWBUObject, TLImwBU>().ReverseMap();
             CreateMap<MWRFULibraryAttributes, TLImwRFULibrary>().ReverseMap();
+            CreateMap<EditMWRFULibraryAttributes, TLImwRFULibrary>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

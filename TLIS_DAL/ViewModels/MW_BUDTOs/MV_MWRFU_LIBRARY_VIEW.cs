@@ -29,8 +29,8 @@ namespace TLIS_DAL.ViewModels.MW_BUDTOs
         public float SpaceLibrary { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
-        public int DIVERSITYTYPE { get; set; }
-        public int BOARDTYPE { get; set; }
+        public string DIVERSITYTYPE { get; set; }
+        public string BOARDTYPE { get; set; }
 
         public Dictionary<string, object> GenerateOutputData()
         {

@@ -15,6 +15,7 @@ using TLIS_DAL.ViewModels.MW_ODUDTOs;
 using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
+using TLIS_DAL.ViewModels.MW_RFULibraryDTOs;
 
 namespace TLIS_Service.IService
 {
@@ -22,6 +23,7 @@ namespace TLIS_Service.IService
     {
         Task MW_OtherLibrarySeedDataForTest();
         Response<GetEnableAttribute> GetMWODULibrariesEnabledAtt(string ConnectionString);
+        Task<Response<EditMWRFULibrary>> EditMWRFULibrary(int userId, EditMWRFULibrary editMWRFULibraryAttributes, string TableName, string connectionString);
         Response<AddMWRFULibraryObject> AddMWRFULibrary(int UserId, string TableName, AddMWRFULibraryObject addMWRFULibraryObject, string connectionString);
         Response<GetEnableAttribute> GetMWRFULibrariesEnabledAtt(string ConnectionString);
         Response<GetEnableAttribute> GetMWBULibrariesEnabledAtt(string ConnectionString);
