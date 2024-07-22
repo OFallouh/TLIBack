@@ -11510,12 +11510,20 @@ namespace TLIS_Service.Services
 
                     OutPut.TLIradioAntenna = _mapper.Map<List<LoadandsidearmViewDto>>(RadioAntenna);
                 }
-                if (Loadname == Helpers.Constants.TablesNames.TLIcabinet.ToString())
+                if (Loadname == Helpers.Constants.TablesNames.TLIcabinetPower.ToString())
                 {
                     var SolarReleationWithCabinet = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x => x.allOtherInventoryInst.solar.CabinetId == LoadId
-                         && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(),x=>x.allOtherInventoryInst
-                         ,x=>x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.cabinet)
+                         && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower() && x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId != null
+                         , x=>x.allOtherInventoryInst,x=>x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.cabinet)
                         .Select(x=>x.allOtherInventoryInst.solar).ToList();
+                    OutPut.TLIsolar = _mapper.Map<List<LoadandsidearmViewDto>>(SolarReleationWithCabinet);
+                }
+                if (Loadname == Helpers.Constants.TablesNames.TLIcabinetTelecom.ToString())
+                {
+                    var SolarReleationWithCabinet = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x => x.allOtherInventoryInst.solar.CabinetId == LoadId
+                         && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower() && x.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId != null, x => x.allOtherInventoryInst
+                         , x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.cabinet)
+                        .Select(x => x.allOtherInventoryInst.solar).ToList();
                     OutPut.TLIsolar = _mapper.Map<List<LoadandsidearmViewDto>>(SolarReleationWithCabinet);
                 }
                 return new Response<CivilLoads>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);

@@ -2230,6 +2230,8 @@ namespace TLIS_Service.Helpers
             TLIbaseGeneratorType,
             TLIboardType,
             TLIcabinet,
+            TLIcabinetPower,
+            TLIcabinetTelecom,
             TLIcabinetPowerLibrary,
             TLIcabinetPowerType,
             TLIcabinetTelecomLibrary,
