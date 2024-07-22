@@ -219,6 +219,7 @@ namespace TLIS_DAL
         public virtual DbSet<MV_CABINET_TELECOM_VIEW> MV_CABINET_TELECOM_VIEW { get; set; }
         public virtual DbSet<MV_MWBU_LIBRARY_VIEW> MV_MWBU_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MV_MWBU_VIEW> MV_MWBU_VIEW { get; set; }
+        public virtual DbSet<MV_MWRFU_LIBRARY_VIEW> MV_MWRFU_LIBRARY_VIEW { get; set; }
  
       
         protected override void OnModelCreating(ModelBuilder builder)
@@ -416,6 +417,12 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("MV_MWBU_VIEW");
+
+            });
+            builder.Entity<MV_MWRFU_LIBRARY_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_MWRFU_LIBRARY_VIEW");
             });
             builder.Entity<TLIsession>();
 

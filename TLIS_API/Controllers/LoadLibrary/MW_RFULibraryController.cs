@@ -16,8 +16,8 @@ using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
+using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
-using TLIS_DAL.ViewModels.MW_RFULibraryDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 
@@ -44,11 +44,12 @@ namespace TLIS_API.Controllers.Load
             var response = _unitOfWorkService.MWLibraryService.get_MW_RFU_LibrariesAsync(filters, WithFilterData, parameters);
             return Ok(response);
         }
-        [HttpPost("GetMW_RFULibraries")]
+        [HttpPost("GetMWRFULibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_RFULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery]ParameterPagination parameters)
+        public IActionResult GetMW_RFULibraries()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_RFULibraries(CombineFilters, WithFilterData, parameters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWRFULibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpGet("getById/{id}")]
@@ -58,24 +59,43 @@ namespace TLIS_API.Controllers.Load
             var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
             return Ok(response);
         }
-        //[HttpPost("AddMW_RFULibrary")]
-        //[ProducesResponseType(200, Type = typeof(AddMWRFULibraryObject))]
-        //public IActionResult AddMW_RFULibrary([FromBody] AddMWRFULibraryObject addMW_RFULibraryViewModel)
-        //{
-        //    if(TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMWRFULibraryObject)))
-        //    {
-        //        var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //        var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [HttpPost("AddMW_RFULibrary")]
+        [ProducesResponseType(200, Type = typeof(AddMWRFULibraryObject))]
+        public IActionResult AddMW_RFULibrary([FromBody] AddMWRFULibraryObject addMW_RFULibraryViewModel)
+        {
+            if (TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMWRFULibraryObject)))
+            {
+
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(userId,Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
 
         //[HttpPost("EditMW_RFULibrary")]
         //[ProducesResponseType(200, Type = typeof(EditMW_RFULibraryViewModel))]

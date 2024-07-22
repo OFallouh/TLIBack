@@ -2419,10 +2419,10 @@ namespace TLIS_Service.Services
                                     }
 
                                     NewMW_RFULibraryEntity.Model = MW_RFULibraryModel;
-                                    NewMW_RFULibraryEntity.tx_parity = MW_RFUDataTable.Rows[j]["Parity"].ToString();
+                                    //NewMW_RFULibraryEntity.tx_parity = MW_RFUDataTable.Rows[j]["Parity"].ToString();
                                     NewMW_RFULibraryEntity.frequency_band = MW_RFUDataTable.Rows[j]["Frequency Band"].ToString();
                                     NewMW_RFULibraryEntity.FrequencyRange = MW_RFUDataTable.Rows[j]["Frequency Range"].ToString();
-                                    NewMW_RFULibraryEntity.RFUType = MW_RFUDataTable.Rows[j]["RFU Type"].ToString();
+                                    //NewMW_RFULibraryEntity.RFUType = MW_RFUDataTable.Rows[j]["RFU Type"].ToString();
                                     NewMW_RFULibraryEntity.size = MW_RFUDataTable.Rows[j]["Size"].ToString();
                                     NewMW_RFULibraryEntity.VenferBoardName = MW_RFUDataTable.Rows[j]["Venfer Board Name"].ToString();
                                     NewMW_RFULibraryEntity.L_W_H = MW_RFUDataTable.Rows[j]["L_W_H(cm3)"].ToString();
@@ -5085,10 +5085,10 @@ namespace TLIS_Service.Services
                     TLImwRFULibrary NewMW_RFULibraryEntity = new TLImwRFULibrary();
 
                     NewMW_RFULibraryEntity.Model = MW_RFULibraryModel;
-                    NewMW_RFULibraryEntity.tx_parity = row["Parity"].ToString();
+                    //NewMW_RFULibraryEntity.tx_parity = row["Parity"].ToString();
                     NewMW_RFULibraryEntity.frequency_band = row["Frequency Band"].ToString();
                     NewMW_RFULibraryEntity.FrequencyRange = row["Frequency Range"].ToString();
-                    NewMW_RFULibraryEntity.RFUType = row["RFU Type"].ToString();
+                    //NewMW_RFULibraryEntity.RFUType = row["RFU Type"].ToString();
                     NewMW_RFULibraryEntity.size = row["Size"].ToString();
                     NewMW_RFULibraryEntity.VenferBoardName = row["Venfer Board Name"].ToString();
                     NewMW_RFULibraryEntity.L_W_H = row["L_W_H(cm3)"].ToString();

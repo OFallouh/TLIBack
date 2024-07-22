@@ -752,7 +752,20 @@ namespace TLIS_Service.Services
                             _mapper.Map<ParityViewModel>(CabinetPowerLibrary.IntegratedWith) :
                             null;
                     }
-
+                    LibraryAttributes = LibraryAttributes.Select(x =>
+                    {
+                        if (x.Label.ToLower() == "powerintegrated" && (x.Value as bool?) == false)
+                        {
+                            LibraryAttributes.ForEach(y =>
+                            {
+                                if (y.Label.ToLower() == "integratedwith")
+                                {
+                                    y.visible = false;
+                                }
+                            });
+                        }
+                        return x;
+                    }).ToList();
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                         .GetLogisticals(TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(), CabinetPowerLibrary.Id).ToList());
@@ -6566,7 +6579,20 @@ namespace TLIS_Service.Services
                             _mapper.Map<ParityViewModel>(CabinetPowerLibrary.IntegratedWith) :
                             null;
                     }
-
+                    LibraryAttributes = LibraryAttributes.Select(x =>
+                    {
+                        if (x.Label.ToLower() == "powerintegrated" && (x.Value as bool?) == false)
+                        {
+                            LibraryAttributes.ForEach(y =>
+                            {
+                                if (y.Label.ToLower() == "integratedwith")
+                                {
+                                    y.visible = false;
+                                }
+                            });
+                        }
+                        return x;
+                    }).ToList();
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                             .GetLogisticals(Helpers.Constants.TablePartName.OtherInventory.ToString(), Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString(), CabinetPowerLibrary.Id).ToList());
 
