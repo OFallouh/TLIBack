@@ -3450,7 +3450,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CabinetInstallation" &&
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CabinetPowerInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
@@ -3587,7 +3587,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "CabinetInstallation" &&
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "CabinetTelecomInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
