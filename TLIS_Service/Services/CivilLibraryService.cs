@@ -1613,10 +1613,11 @@ namespace TLIS_Service.Services
                         return new Response<EditCivilWithLegsLibraryObject>(false, null, null, $"{CivilWithLegLib.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                     }
-                    var Civilinst = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithLegs.CivilWithLegsLibId ==
-                    CivilWithLegLibraryEntites.Id,x=>x.allCivilInst,x=>x.allCivilInst.
-                    civilWithLegs,x=>x.allCivilInst.civilWithLegs.CivilWithLegsLib).ToList();
-                    
+          
+                    var Civilinst = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().Where(x => x.allCivilInst.civilWithLegs.CivilWithLegsLibId ==
+                      CivilWithLegLibraryEntites.Id).Include(x => x.allCivilInst).Include(x => x.allCivilInst.
+                      civilWithLegs).Include(x => x.allCivilInst.civilWithLegs.CivilWithLegsLib).ToList();
+
                     foreach (var item in Civilinst)
                     { 
                         if(item.allCivilInst.civilWithLegs.IsEnforeced ==false && item.allCivilInst.civilWithLegs.Support_Limited_Load <= 0)
@@ -1650,7 +1651,7 @@ namespace TLIS_Service.Services
 
                     CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
                     CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;
-
+                    
                     _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(userId, CivilWithLegLib, CivilWithLegLibraryEntites);
 
 
@@ -1755,16 +1756,14 @@ namespace TLIS_Service.Services
                 {
                     TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
 
-                    TLIcivilWithoutLegLibrary CivilWithLegLibraryEntites = _mapper.Map<TLIcivilWithoutLegLibrary>(editCivilWithoutLegsLibraryObject.attributesActivatedLibrary);
-
-                    TLIcivilWithoutLegLibrary CivilWithLegLib = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CivilWithLegLibraryEntites.Id);
-                  
+                    TLIcivilWithoutLegLibrary CivilWithoutLegLibraryEntites = _mapper.Map<TLIcivilWithoutLegLibrary>(editCivilWithoutLegsLibraryObject.attributesActivatedLibrary);
+                    TLIcivilWithoutLegLibrary CivilWithoutLegLib = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == CivilWithoutLegLibraryEntites.Id);
                     var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(editCivilWithoutLegsLibraryObject.logisticalItems.Vendor);
                     var vendor = logisticalObject?.Name;
 
-                    var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithLegLib.structureTypeId);
+                    var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithoutLegLibraryEntites.structureTypeId);
                     var structureTypeName = structureType?.Name;
-                    if (CivilWithLegLibraryEntites.SpaceLibrary == 0)
+                    if (CivilWithoutLegLibraryEntites.SpaceLibrary == 0)
                     {
                         return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "spaceLibrary It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
@@ -1777,31 +1776,31 @@ namespace TLIS_Service.Services
                         return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "Vendor It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                     }
-                    if (CivilWithLegLibraryEntites.Prefix == null)
+                    if (CivilWithoutLegLibraryEntites.Prefix == null)
                     {
-                        return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, $"{CivilWithLegLib.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, $"{CivilWithoutLegLibraryEntites.Prefix} It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                     }
-                    var Civilinst = _unitOfWork.CivilSiteDateRepository.GetWhereAndInclude(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLibId ==
-                  CivilWithLegLibraryEntites.Id, x => x.allCivilInst, x => x.allCivilInst.
-                  civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).ToList();
+                    var Civilinst = _unitOfWork.CivilSiteDateRepository.GetAllAsQueryable().AsNoTracking().Where(x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLibId ==
+                   CivilWithoutLegLibraryEntites.Id).Include(x => x.allCivilInst).Include( x => x.allCivilInst.
+                   civilWithoutLeg).Include( x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).ToList();
 
                     foreach (var item in Civilinst)
                     {
                         if (item.allCivilInst.civilWithoutLeg.Support_Limited_Load <= 0)
                         {
-                            if (item.allCivilInst.civilWithLegs.CurrentLoads > CivilWithLegLibraryEntites.Manufactured_Max_Load)
+                            if (item.allCivilInst.civilWithoutLeg.CurrentLoads > CivilWithoutLegLibraryEntites.Manufactured_Max_Load)
                             {
                                 return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, "can not to be Manufactured_Max_Load smaller from CurrentLoads", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
 
                     }
-                    var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithLegLibraryEntites.CivilWithoutLegCategoryId)?.Name;
-                    var model = CivilCategoryName + ' ' + vendor + ' ' + CivilWithLegLibraryEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithLegLibraryEntites.Height_Designed + "HE";
+                    var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibraryEntites.CivilWithoutLegCategoryId)?.Name;
+                    var model = CivilCategoryName + ' ' + vendor + ' ' + CivilWithoutLegLibraryEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithoutLegLibraryEntites.Height_Designed + "HE";
 
                     var CheckModel = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW
-                    .FirstOrDefault(x => x.Model != null && x.Id != CivilWithLegLibraryEntites.Id &&
+                    .FirstOrDefault(x => x.Model != null && x.Id != CivilWithoutLegLibraryEntites.Id &&
                                x.Model.ToLower() == model.ToLower() &&
                                !x.Deleted);
        
@@ -1810,12 +1809,12 @@ namespace TLIS_Service.Services
                     if (CheckModel != null)
                         return new Response<EditCivilWithoutLegsLibraryObject>(false, null, null, $"The name {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    CivilWithLegLibraryEntites.Model = model;
-                    CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
-                    CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;
-                    CivilWithLegLibraryEntites.CivilSteelSupportCategoryId = CivilWithLegLib.CivilSteelSupportCategoryId;
-                    _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(userId, CivilWithLegLib, CivilWithLegLibraryEntites);
+                    CivilWithoutLegLibraryEntites.Model = model;
+                    CivilWithoutLegLibraryEntites.CivilSteelSupportCategoryId = CivilWithoutLegLibraryEntites.CivilWithoutLegCategoryId;
 
+                    
+                    _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(userId, CivilWithoutLegLib, CivilWithoutLegLibraryEntites);
+                    _unitOfWork.SaveChanges();
 
                     string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithoutLegsLibraryObject, TableName);
                     if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -1833,7 +1832,7 @@ namespace TLIS_Service.Services
 
                     var CheckVendorId = _unitOfWork.LogisticalitemRepository
                         .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
-                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithoutLegLibraryEntites.Id, x => x.logistical,
                                 x => x.logistical.logisticalType);
 
                     if (CheckVendorId != null)
@@ -1841,7 +1840,7 @@ namespace TLIS_Service.Services
 
                     var CheckSupplierId = _unitOfWork.LogisticalitemRepository
                         .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Supplier.ToString().ToLower() &&
-                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithoutLegLibraryEntites.Id, x => x.logistical,
                                 x => x.logistical.logisticalType);
 
                     if (CheckSupplierId != null)
@@ -1849,7 +1848,7 @@ namespace TLIS_Service.Services
 
                     var CheckDesignerId = _unitOfWork.LogisticalitemRepository
                         .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Designer.ToString().ToLower() &&
-                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithoutLegLibraryEntites.Id, x => x.logistical,
                                 x => x.logistical.logisticalType);
 
                     if (CheckDesignerId != null)
@@ -1858,7 +1857,7 @@ namespace TLIS_Service.Services
 
                     var CheckManufacturerId = _unitOfWork.LogisticalitemRepository
                         .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Manufacturer.ToString().ToLower() &&
-                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                            x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithoutLegLibraryEntites.Id, x => x.logistical,
                                 x => x.logistical.logisticalType);
 
                     if (CheckManufacturerId != null)
@@ -1867,7 +1866,7 @@ namespace TLIS_Service.Services
 
                     var CheckContractortId = _unitOfWork.LogisticalitemRepository
                      .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Contractor.ToString().ToLower() &&
-                         x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                         x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithoutLegLibraryEntites.Id, x => x.logistical,
                              x => x.logistical.logisticalType);
 
                     if (CheckContractortId != null)
@@ -1876,7 +1875,7 @@ namespace TLIS_Service.Services
 
                     var CheckConsultantId = _unitOfWork.LogisticalitemRepository
                        .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Consultant.ToString().ToLower() &&
-                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithLegLibraryEntites.Id, x => x.logistical,
+                           x.IsLib && x.tablesNamesId == TableNameEntity.Id && x.RecordId == CivilWithoutLegLibraryEntites.Id, x => x.logistical,
                                x => x.logistical.logisticalType);
 
                     if (CheckConsultantId != null)
@@ -1884,13 +1883,13 @@ namespace TLIS_Service.Services
 
 
 
-                    EditLogisticalItem(userId,editCivilWithoutLegsLibraryObject.logisticalItems, CivilWithLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
+                    EditLogisticalItem(userId,editCivilWithoutLegsLibraryObject.logisticalItems, CivilWithoutLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds);
 
                     if (editCivilWithoutLegsLibraryObject.dynamicAttributes != null ? editCivilWithoutLegsLibraryObject.dynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithoutLegsLibraryObject.dynamicAttributes, connectionString, TableNameEntity.Id, CivilWithLegLibraryEntites.Id, userId, resultId, CivilWithLegLib.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editCivilWithoutLegsLibraryObject.dynamicAttributes, connectionString, TableNameEntity.Id, CivilWithoutLegLibraryEntites.Id, userId, resultId, CivilWithoutLegLib.Id);
                     }
-                    civilLibId = CivilWithLegLibraryEntites.Id;
+                    civilLibId = CivilWithoutLegLibraryEntites.Id;
                     tablesNameId = TableNameEntity.Id;
 
                     await _unitOfWork.SaveChangesAsync();

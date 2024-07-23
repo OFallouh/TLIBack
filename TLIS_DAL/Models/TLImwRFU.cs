@@ -20,7 +20,6 @@ namespace TLIS_DAL.Models
         public TLImwPort MwPort { get; set; }
         public int? MwPortId { get; set; }
         public float SpaceInstallation { get; set; }
-
         public float CenterHigh { get; set; }
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }

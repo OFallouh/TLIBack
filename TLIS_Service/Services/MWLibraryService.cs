@@ -588,34 +588,6 @@ namespace TLIS_Service.Services
                         return new Response<GetForAddCivilLibrarybject>(false, null, null, "this MWODU is not  found", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-                else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
-                {
-                    TLImwRFULibrary MWRFULibrary = _unitOfWork.MW_RFULibraryRepository.GetIncludeWhereFirst(x =>
-                        x.Id == Id, x => x.boardType, x => x.diversityType);
-
-   
-                    List<BaseInstAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TableName, MWRFULibrary, null).ToList();
-                    listofAttributesActivated
-                        .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
-                        .ToList()
-                        .Select(FKitem =>
-                        {
-                            if (FKitem.Label.ToLower() == "boardtype_name")
-                            {
-                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.BoardTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<LocationTypeViewModel>(MWRFULibrary.boardType);
-                            }
-                            else if (FKitem.Label.ToLower() == "diversitytype_name")
-                            {
-                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                                FKitem.Value = _mapper.Map<LocationTypeViewModel>(MWRFULibrary.diversityType);
-                            }
-
-                            return FKitem;
-                        })
-                        .ToList();
-
-                }
                 else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
                 {
                     TLImwOtherLibrary MWOtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetWhereFirst(x =>
@@ -7572,8 +7544,8 @@ namespace TLIS_Service.Services
                             switch (FKitem.Label.ToLower())
                             {
                                 case "diversitytype_name":
-                                    FKitem.Options = _unitOfWork.PolarityTypeRepository
-                                        .GetWhere(x => !x.Delete && !x.Disable)
+                                    FKitem.Options = _unitOfWork.DiversityTypeRepository
+                                        .GetWhere(x => !x.Deleted && !x.Disable)
                                         .Select(x => _mapper.Map<PolarityTypeViewModel>(x))
                                         .ToList();
                                     break;
@@ -7762,38 +7734,6 @@ namespace TLIS_Service.Services
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
 
                 }
-                else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
-                {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLImwRFULibrary.ToString(), null, null)
-                        .Select(FKitem =>
-                    {
-                        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                        {
-                            switch (FKitem.Desc.ToLower())
-                            {
-                                case "tlidiversitytype":
-                                    FKitem.Options = _unitOfWork.DiversityTypeRepository
-                                        .GetWhere(x => !x.Deleted && !x.Disable)
-                                        .Select(x => _mapper.Map<DiversityTypeViewModel>(x))
-                                        .ToList();
-                                    break;
-                                case "tliboardtype":
-                                    FKitem.Options = _unitOfWork.BoardTypeRepository
-                                        .GetWhere(x => !x.Deleted && !x.Disable)
-                                        .Select(x => _mapper.Map<BoardTypeViewModel>(x))
-                                        .ToList();
-                                    break;
-                            }
-                        }
-                        return FKitem;
-                    }).ToList();
-
-                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
-                    attributes.LogisticalItems = LogisticalItems;
-                    attributes.AttributesActivatedLibrary = ListAttributesActivated;
-                    attributes.DynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, null);
-                 
-                }
                 else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
                 {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(LoadSubType.TLImwOtherLibrary.ToString(), null, null).ToList();
@@ -7907,27 +7847,8 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
-                    if (LoadSubType.TLImwBULibrary.ToString() == TableName)
-                    {
-                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
-                    }
-                    else if (LoadSubType.TLImwDishLibrary.ToString() == TableName)
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
-                    else if (LoadSubType.TLImwODULibrary.ToString() == TableName)
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
-                    else if (LoadSubType.TLImwRFULibrary.ToString() == TableName)
-                    {
-                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
-                    }
-                    else if (LoadSubType.TLImwOtherLibrary.ToString() == TableName)
-                    {
-                        //Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_CIVIL_WITHLEG_LIBRARY_VIEW"));
-                    }
-
+                    
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<AllItemAttributes>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
