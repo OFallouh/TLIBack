@@ -41,7 +41,7 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCabinetPowerInstallation(int CabinetPowerLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetPowerInstallation(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetPowerLibraryId, SiteCode);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetPowerInstallation(Helpers.Constants.TablesNames.TLIcabinetPower.ToString(), CabinetPowerLibraryId, SiteCode);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -49,7 +49,7 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCabinetTelecomInstallation(int CabinetTelecomLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetTelecomInstallation(Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), CabinetTelecomLibraryId, SiteCode);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetTelecomInstallation(Helpers.Constants.TablesNames.TLIcabinetTelecom.ToString(), CabinetTelecomLibraryId, SiteCode);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -231,7 +231,7 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCabinetTelecomInstallationById(int OtherInventoryInstId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetTelecomInstallationById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString());
+            var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetTelecomInstallationById(OtherInventoryInstId, Helpers.Constants.TablesNames.TLIcabinetTelecom.ToString());
             return Ok(response);
 
         }
@@ -240,7 +240,7 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCabinetPowerInstallationById(int OtherInventoryInstId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetPowerInstallationById(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString());
+            var response = _unitOfWorkService.OtherInventoryInstService.GetCabinetPowerInstallationById(OtherInventoryInstId, Helpers.Constants.TablesNames.TLIcabinetPower.ToString());
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

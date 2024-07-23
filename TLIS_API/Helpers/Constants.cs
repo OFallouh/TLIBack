@@ -86,6 +86,8 @@ namespace TLIS_API.Helpers
             TLIbaseGeneratorType,
             TLIboardType,
             TLIcabinet,
+            TLIcabinetPower,
+            TLIcabinetTelecom,
             TLIcabinetPowerLibrary,
             TLIcabinetPowerType,
             TLIcabinetTelecomLibrary,
