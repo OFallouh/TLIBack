@@ -3919,18 +3919,16 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                             
-                                TLImwDishLibrary MW_DishLibraryEntity = _mapper.Map<TLImwDishLibrary>(addMWDishLibraryObject.AttributesActivatedLibrary);
-                                if (MW_DishLibraryEntity.SpaceLibrary <= 0)
-                                {
-                                    if (MW_DishLibraryEntity.diameter <= 0)
-                                    {
-                                        return new Response<AddMWDishLibraryObject>(false, null, null, "diameter must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                    }
-                                    else
-                                    {
-                                        MW_DishLibraryEntity.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MW_DishLibraryEntity.diameter / 2, 2); ;
-                                    }
-                                }
+                           TLImwDishLibrary MW_DishLibraryEntity = _mapper.Map<TLImwDishLibrary>(addMWDishLibraryObject.AttributesActivatedLibrary);
+                               
+                            if (MW_DishLibraryEntity.diameter <= 0)
+                            {
+                                return new Response<AddMWDishLibraryObject>(false, null, null, "diameter must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                                   
+                            MW_DishLibraryEntity.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MW_DishLibraryEntity.diameter / 2, 2); ;
+                                    
+                                
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -3993,21 +3991,19 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLImwODULibrary MW_ODULibraryEntity = _mapper.Map<TLImwODULibrary>(aDDMWODULibraryObject.AttributesActivatedLibrary);
-                            if (MW_ODULibraryEntity.SpaceLibrary <= 0)
+                           
+                            if (MW_ODULibraryEntity.Height <= 0)
                             {
-                                if (MW_ODULibraryEntity.Height <= 0)
-                                {
-                                    return new Response<ADDMWODULibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else if (MW_ODULibraryEntity.Width <= 0)
-                                {
-                                    return new Response<ADDMWODULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    MW_ODULibraryEntity.SpaceLibrary = MW_ODULibraryEntity.Height * MW_ODULibraryEntity.Width;
-                                }
+                                return new Response<ADDMWODULibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            else if (MW_ODULibraryEntity.Width <= 0)
+                            {
+                                return new Response<ADDMWODULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                           
+                             MW_ODULibraryEntity.SpaceLibrary = MW_ODULibraryEntity.Height * MW_ODULibraryEntity.Width;
+                            
+                            
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -4068,21 +4064,19 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLImwBULibrary MW_BULibraryEntity = _mapper.Map<TLImwBULibrary>(addMWBULibraryObject.AttributesActivatedLibrary);
-                            if (MW_BULibraryEntity.SpaceLibrary <= 0)
+                           
+                            if (MW_BULibraryEntity.Length <= 0)
                             {
-                                if (MW_BULibraryEntity.Length <= 0)
-                                {
-                                    return new Response<AddMWBULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (MW_BULibraryEntity.Width <= 0)
-                                {
-                                    return new Response<AddMWBULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    MW_BULibraryEntity.SpaceLibrary = MW_BULibraryEntity.Length * MW_BULibraryEntity.Width;
-                                }
+                                return new Response<AddMWBULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (MW_BULibraryEntity.Width <= 0)
+                            {
+                                return new Response<AddMWBULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                           
+                             MW_BULibraryEntity.SpaceLibrary = MW_BULibraryEntity.Length * MW_BULibraryEntity.Width;
+                            
+                            
                             if(MW_BULibraryEntity.NumOfRFU >4)
                                 return new Response<AddMWBULibraryObject>(false, null, null, "NumOfRFU can not be bigger from four", (int)Helpers.Constants.ApiReturnCode.fail);
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
@@ -4146,21 +4140,17 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLImwOtherLibrary MW_OtherLibraryEntity = _mapper.Map<TLImwOtherLibrary>(addMWOtherLibraryObject.AttributesActivatedLibrary);
-                            if (MW_OtherLibraryEntity.SpaceLibrary <= 0)
+                            if (MW_OtherLibraryEntity.Length <= 0)
                             {
-                                if (MW_OtherLibraryEntity.Length <= 0)
-                                {
-                                    return new Response<AddMWOtherLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (MW_OtherLibraryEntity.Width <= 0)
-                                {
-                                    return new Response<AddMWOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    MW_OtherLibraryEntity.SpaceLibrary = MW_OtherLibraryEntity.Length * MW_OtherLibraryEntity.Width;
-                                }
+                                return new Response<AddMWOtherLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (MW_OtherLibraryEntity.Width <= 0)
+                            {
+                                return new Response<AddMWOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                                
+                             MW_OtherLibraryEntity.SpaceLibrary = MW_OtherLibraryEntity.Length * MW_OtherLibraryEntity.Width;
+                                
                                  //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -4222,21 +4212,17 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLImwRFULibrary MW_RFULibraryEntity = _mapper.Map<TLImwRFULibrary>(addMWRFULibraryObject.AttributesActivatedLibrary);
-                            if (MW_RFULibraryEntity.SpaceLibrary <= 0)
+                            if (MW_RFULibraryEntity.Length <= 0)
                             {
-                                if (MW_RFULibraryEntity.Length <= 0)
-                                {
-                                    return new Response<AddMWRFULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (MW_RFULibraryEntity.Width <= 0)
-                                {
-                                    return new Response<AddMWRFULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    MW_RFULibraryEntity.SpaceLibrary = MW_RFULibraryEntity.Length * MW_RFULibraryEntity.Width;
-                                }
+                                return new Response<AddMWRFULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (MW_RFULibraryEntity.Width <= 0)
+                            {
+                                return new Response<AddMWRFULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                               
+                              MW_RFULibraryEntity.SpaceLibrary = MW_RFULibraryEntity.Length * MW_RFULibraryEntity.Width;
+                               
                               //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -5353,23 +5339,16 @@ namespace TLIS_Service.Services
 
                     TLImwBULibrary MWBULegLib = _unitOfWork.MW_BULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MWBULibraryEntites.Id);
 
-
-                        if (MWBULibraryEntites.SpaceLibrary == 0)
-                        {
-                            if(MWBULibraryEntites.Length <= 0)
-                            {
-                              return new Response<EditMWBULibraryObject>(false, null, null, "Length It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
-                           else if (MWBULibraryEntites.Width <= 0)
-                           {
-                                return new Response<EditMWBULibraryObject>(false, null, null, "Width It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                           }
-                            else if(MWBULibraryEntites.Length > 0 && MWBULibraryEntites.Width > 0)
-                            {
-                               MWBULibraryEntites.SpaceLibrary = MWBULibraryEntites.Length * MWBULibraryEntites.Width;
-
-                            }
-                        }
+                    if(MWBULibraryEntites.Length <= 0)
+                    {
+                        return new Response<EditMWBULibraryObject>(false, null, null, "Length It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    if (MWBULibraryEntites.Width <= 0)
+                    {
+                        return new Response<EditMWBULibraryObject>(false, null, null, "Width It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    MWBULibraryEntites.SpaceLibrary = MWBULibraryEntites.Length * MWBULibraryEntites.Width;
+                        
                     if (MWBULibraryEntites.NumOfRFU > 4)
                         return new Response<EditMWBULibraryObject>(false, null, null, "NumOfRFU can not be bigger from four", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -5489,24 +5468,17 @@ namespace TLIS_Service.Services
                     TLImwOtherLibrary MWOtherLibraryEntites = _mapper.Map<TLImwOtherLibrary>(editMWOtherLibraryObject.AttributesActivatedLibrary);
 
                     TLImwOtherLibrary MWOtherLegLib = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MWOtherLibraryEntites.Id);
-
-
-                    if (MWOtherLibraryEntites.SpaceLibrary == 0)
+                  
+                    if (MWOtherLibraryEntites.Length <= 0)
                     {
-                        if (MWOtherLibraryEntites.Length <= 0)
-                        {
-                            return new Response<EditMWOtherLibraryObject>(false, null, null, "Length It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else if (MWOtherLibraryEntites.Width <= 0)
-                        {
-                            return new Response<EditMWOtherLibraryObject>(false, null, null, "Width It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else if (MWOtherLibraryEntites.Length > 0 && MWOtherLibraryEntites.Width > 0)
-                        {
-                            MWOtherLibraryEntites.SpaceLibrary = MWOtherLibraryEntites.Length * MWOtherLibraryEntites.Width;
-
-                        }
+                        return new Response<EditMWOtherLibraryObject>(false, null, null, "Length It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    if (MWOtherLibraryEntites.Width <= 0)
+                    {
+                        return new Response<EditMWOtherLibraryObject>(false, null, null, "Width It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                        
+                     MWOtherLibraryEntites.SpaceLibrary = MWOtherLibraryEntites.Length * MWOtherLibraryEntites.Width;
                    
                     var CheckModel = db.MV_MWOTHER_LIBRARY_VIEW
                      .FirstOrDefault(x => x.Model != null &&
@@ -5625,23 +5597,16 @@ namespace TLIS_Service.Services
 
                     TLImwRFULibrary MWRFULegLib = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MWRFULibraryEntites.Id);
 
-
-                    if (MWRFULibraryEntites.SpaceLibrary == 0)
+                    if (MWRFULibraryEntites.Length <= 0)
                     {
-                        if (MWRFULibraryEntites.Length <= 0)
-                        {
-                            return new Response<EditMWRFULibrary>(false, null, null, "Length It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else if (MWRFULibraryEntites.Width <= 0)
-                        {
-                            return new Response<EditMWRFULibrary>(false, null, null, "Width It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else if (MWRFULibraryEntites.Length > 0 && MWRFULibraryEntites.Width > 0)
-                        {
-                            MWRFULibraryEntites.SpaceLibrary = MWRFULibraryEntites.Length * MWRFULibraryEntites.Width;
-
-                        }
+                        return new Response<EditMWRFULibrary>(false, null, null, "Length It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    if (MWRFULibraryEntites.Width <= 0)
+                    {
+                        return new Response<EditMWRFULibrary>(false, null, null, "Width It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                      
+                        MWRFULibraryEntites.SpaceLibrary = MWRFULibraryEntites.Length * MWRFULibraryEntites.Width;    
                    
                     var CheckModel = db.MV_MWRFU_LIBRARY_VIEW
                      .FirstOrDefault(x => x.Model != null &&
@@ -5759,20 +5724,14 @@ namespace TLIS_Service.Services
                     TLImwDishLibrary MWDishLibraryEntites = _mapper.Map<TLImwDishLibrary>(editMWDishLibraryObject.AttributesActivatedLibrary);
 
                     TLImwDishLibrary MWDishLegLib = _unitOfWork.MW_DishLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MWDishLibraryEntites.Id);
-
-
-                    if (MWDishLibraryEntites.SpaceLibrary == 0)
+                  
+                    if (MWDishLibraryEntites.diameter <= 0)
                     {
-                        if (MWDishLibraryEntites.diameter <= 0)
-                        {
-                            return new Response<EditMWDishLibraryObject>(false, null, null, "diameter It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else
-                        {
-                            MWDishLibraryEntites.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibraryEntites.diameter / 2, 2); ;
-                        }
-
+                        return new Response<EditMWDishLibraryObject>(false, null, null, "diameter It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                        
+                     MWDishLibraryEntites.SpaceLibrary = Convert.ToSingle(3.14) * (float)Math.Pow(MWDishLibraryEntites.diameter / 2, 2); ;
+                        
                     var CheckModel = db.MV_MWDISH_LIBRARY_VIEW
                      .FirstOrDefault(x => x.Model != null &&
                      x.Model.ToLower() == MWDishLibraryEntites.Model.ToLower() &&
@@ -5892,22 +5851,17 @@ namespace TLIS_Service.Services
 
                     TLImwODULibrary MWODULegLib = _unitOfWork.MW_ODULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == MWODULibraryEntites.Id);
 
-
-                    if (MWODULibraryEntites.SpaceLibrary <= 0)
+                    if (MWODULibraryEntites.Height <= 0)
                     {
-                        if (MWODULibraryEntites.Height <= 0)
-                        {
-                            return new Response<EditMWODULibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else if (MWODULibraryEntites.Width <= 0)
-                        {
-                            return new Response<EditMWODULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else
-                        {
-                            MWODULibraryEntites.SpaceLibrary = MWODULibraryEntites.Height * MWODULibraryEntites.Width;
-                        }
+                        return new Response<EditMWODULibraryObject>(false, null, null, "Height must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    else if (MWODULibraryEntites.Width <= 0)
+                    {
+                        return new Response<EditMWODULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                       
+                     MWODULibraryEntites.SpaceLibrary = MWODULibraryEntites.Height * MWODULibraryEntites.Width;
+                        
                     var CheckModel = db.MV_MWODU_LIBRARY_VIEW
                    .FirstOrDefault(x => x.Model != null &&
                      x.Model.ToLower() == MWODULibraryEntites.Model.ToLower() &&

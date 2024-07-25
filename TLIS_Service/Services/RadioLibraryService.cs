@@ -1968,21 +1968,19 @@ namespace TLIS_Service.Services
                             TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
                           
                             TLIradioAntennaLibrary radioAntennaLibrary = _mapper.Map<TLIradioAntennaLibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
-                            if (radioAntennaLibrary.SpaceLibrary <= 0)
+                           
+                            if (radioAntennaLibrary.Length <= 0)
                             {
-                                if (radioAntennaLibrary.Length <= 0)
-                                {
-                                    return new Response<AddRadioAntennaLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (radioAntennaLibrary.Width <= 0)
-                                {
-                                    return new Response<AddRadioAntennaLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    radioAntennaLibrary.SpaceLibrary = radioAntennaLibrary.Length * radioAntennaLibrary.Width;
-                                }
+                                return new Response<AddRadioAntennaLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (radioAntennaLibrary.Width <= 0)
+                            {
+                                return new Response<AddRadioAntennaLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                              
+                             radioAntennaLibrary.SpaceLibrary = radioAntennaLibrary.Length * radioAntennaLibrary.Width;
+                                
+                            
                             //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -2047,21 +2045,19 @@ namespace TLIS_Service.Services
                             TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
 
                             TLIradioOtherLibrary radioOtherLibrary = _mapper.Map<TLIradioOtherLibrary>(addRadioOtherLibraryObject.AttributesActivatedLibrary);
-                            if (radioOtherLibrary.SpaceLibrary <= 0)
+                            
+                            if (radioOtherLibrary.Length <= 0)
                             {
-                                if (radioOtherLibrary.Length <= 0)
-                                {
-                                    return new Response<AddRadioOtherLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (radioOtherLibrary.Width <= 0)
-                                {
-                                    return new Response<AddRadioOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    radioOtherLibrary.SpaceLibrary = radioOtherLibrary.Length * radioOtherLibrary.Width;
-                                }
+                                return new Response<AddRadioOtherLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (radioOtherLibrary.Width <= 0)
+                            {
+                                return new Response<AddRadioOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                                
+                             radioOtherLibrary.SpaceLibrary = radioOtherLibrary.Length * radioOtherLibrary.Width;
+                                
+                            
                             //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -2126,21 +2122,20 @@ namespace TLIS_Service.Services
                             TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == TableName.ToLower());
 
                             TLIradioRRULibrary radioRRULibrary = _mapper.Map<TLIradioRRULibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
-                            if (radioRRULibrary.SpaceLibrary <= 0)
+                            
+                            if (radioRRULibrary.Length <= 0)
                             {
-                                if (radioRRULibrary.Length <= 0)
-                                {
-                                    return new Response<AddRadioRRULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (radioRRULibrary.Width <= 0)
-                                {
-                                    return new Response<AddRadioRRULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    radioRRULibrary.SpaceLibrary = radioRRULibrary.Length * radioRRULibrary.Width;
-                                }
+                                return new Response<AddRadioRRULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (radioRRULibrary.Width <= 0)
+                            {
+                                return new Response<AddRadioRRULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                            else
+                            {
+                                radioRRULibrary.SpaceLibrary = radioRRULibrary.Length * radioRRULibrary.Width;
+                            }
+                            
                             //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -3455,7 +3450,19 @@ namespace TLIS_Service.Services
 
                         TLIradioAntennaLibrary radioAntennaLibrary = _mapper.Map<TLIradioAntennaLibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
                         var OldRadioAntenna = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioAntennaLibrary.Id);
-                        var CheckModel = db.MV_RADIO_ANTENNA_LIBRARY_VIEW
+
+                    if (RadioLibraryViewModel.AttributesActivatedLibrary.Length <= 0)
+                    {
+                        return new Response<EditRadioAntennaLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    if (RadioLibraryViewModel.AttributesActivatedLibrary.Width <= 0)
+                    {
+                        return new Response<EditRadioAntennaLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    RadioLibraryViewModel.AttributesActivatedLibrary.SpaceLibrary = RadioLibraryViewModel.AttributesActivatedLibrary.Length * RadioLibraryViewModel.AttributesActivatedLibrary.Width;
+
+                    var CheckModel = db.MV_RADIO_ANTENNA_LIBRARY_VIEW
                         .FirstOrDefault(
                         x => x.Model.ToLower() == radioAntennaLibrary.Model.ToLower()
                         && x.Id != radioAntennaLibrary.Id && !x.Deleted);
@@ -3565,6 +3572,18 @@ namespace TLIS_Service.Services
 
                     TLIradioOtherLibrary radioOtherLibrary = _mapper.Map<TLIradioOtherLibrary>(editRadioOtherLibraryObject.AttributesActivatedLibrary);
                     var OldRadioOther= _unitOfWork.RadioOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioOtherLibrary.Id);
+                    if (editRadioOtherLibraryObject.AttributesActivatedLibrary.Length <= 0)
+                    {
+                        return new Response<EditRadioOtherLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    if (editRadioOtherLibraryObject.AttributesActivatedLibrary.Width <= 0)
+                    {
+                        return new Response<EditRadioOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    editRadioOtherLibraryObject.AttributesActivatedLibrary.SpaceLibrary = editRadioOtherLibraryObject.AttributesActivatedLibrary.Length * editRadioOtherLibraryObject.AttributesActivatedLibrary.Width;
+
+
                     var CheckModel = db.MV_RADIO_OTHER_LIBRARY_VIEW
                     .FirstOrDefault(
                     x => x.Model.ToLower() == radioOtherLibrary.Model.ToLower()
@@ -3675,6 +3694,18 @@ namespace TLIS_Service.Services
 
                     TLIradioRRULibrary radioRRULibrary = _mapper.Map<TLIradioRRULibrary>(RadioLibraryViewModel.AttributesActivatedLibrary);
                     var OldRadioRRU= _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == radioRRULibrary.Id);
+                    
+                    if (RadioLibraryViewModel.AttributesActivatedLibrary.Length <= 0)
+                    {
+                        return new Response<EditRadioRRULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    if (RadioLibraryViewModel.AttributesActivatedLibrary.Width <= 0)
+                    {
+                        return new Response<EditRadioRRULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    RadioLibraryViewModel.AttributesActivatedLibrary.SpaceLibrary = RadioLibraryViewModel.AttributesActivatedLibrary.Length * RadioLibraryViewModel.AttributesActivatedLibrary.Width;
+
 
                     var CheckModel = db.MV_RADIO_RRU_LIBRARY_VIEW
                          .FirstOrDefault(

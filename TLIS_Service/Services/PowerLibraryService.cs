@@ -689,21 +689,18 @@ namespace TLIS_Service.Services
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName.ToLower() == LoadSubType.TLIpowerLibrary.ToString().ToLower());
                             TLIpowerLibrary PowerLibrary = _mapper.Map<TLIpowerLibrary>(PowerLibraryViewModel.AttributesActivatedLibrary);
-                            if (PowerLibrary.SpaceLibrary <= 0)
+                           
+                            if (PowerLibrary.Length <= 0)
                             {
-                                if (PowerLibrary.Length <= 0)
-                                {
-                                    return new Response<AddPowerLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (PowerLibrary.width <= 0)
-                                {
-                                    return new Response<AddPowerLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    PowerLibrary.SpaceLibrary = PowerLibrary.Length * PowerLibrary.width;
-                                }
+                                return new Response<AddPowerLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (PowerLibrary.width <= 0)
+                            {
+                                return new Response<AddPowerLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                                
+                             PowerLibrary.SpaceLibrary = PowerLibrary.Length * PowerLibrary.width;
+
                             //string CheckDependencyValidation = CheckDependencyValidationForPower(PowerLibraryViewModel);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -989,19 +986,18 @@ namespace TLIS_Service.Services
 
                     TLIpowerLibrary PowerLegLib = _unitOfWork.PowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == PowerLibraryEntites.Id);
 
-
-                    if (PowerLibraryEntites.SpaceLibrary == 0)
+                    if (PowerLibraryEntites.Length <= 0)
                     {
-                        if (PowerLibraryEntites.Height <= 0)
-                        {
-                            return new Response<EditPowerLibraryObject>(false, null, null, "Height It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        else
-                        {
-                            PowerLibraryEntites.SpaceLibrary = PowerLibraryEntites.Height * PowerLibraryEntites.width;
-                        }
-
+                        return new Response<EditPowerLibraryObject>(false, null, null, "Length It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    if (PowerLibraryEntites.width <= 0)
+                    {
+                        return new Response<EditPowerLibraryObject>(false, null, null, "width It must be greater than zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    PowerLibraryEntites.SpaceLibrary = PowerLibraryEntites.Length * PowerLibraryEntites.width;
+                        
+
+                    
                     var CheckModel = db.MV_POWER_LIBRARY_VIEW
                     .FirstOrDefault(x => x.Model != null &&
                      x.Model.ToLower() == PowerLibraryEntites.Model.ToLower()

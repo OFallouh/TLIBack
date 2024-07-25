@@ -203,6 +203,7 @@ using static TLIS_DAL.ViewModels.LoadOtherDTOs.AddLoadOtherInstallationObject;
 using static TLIS_DAL.ViewModels.LoadOtherLibraryDTOs.AddLoadOtherLibraryObject;
 using static TLIS_DAL.ViewModels.LoadOtherLibraryDTOs.EditLoadOtherLibraryObject;
 using static TLIS_DAL.ViewModels.LoadOtherDTOs.EditLoadOtherInstallationObject;
+using static TLIS_DAL.ViewModels.MW_OtherLibraryDTOs.EditMWOtherLibraryObject;
 namespace TLIS_DAL.ViewModels
 {
     public class AutoMapperProfile : Profile
@@ -278,6 +279,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditLoadOtherLibraryAttribute, TLIloadOtherLibrary>().ReverseMap();
             CreateMap<AddLoadOtherLibraryAttribute, TLIloadOtherLibrary>().ReverseMap();
             CreateMap<EditInstallationLoadOtherConfigObject, TLIloadOtherLibrary>().ReverseMap();
+            CreateMap<EditMWOtherLibraryAttributes, TLImwOtherLibrary>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

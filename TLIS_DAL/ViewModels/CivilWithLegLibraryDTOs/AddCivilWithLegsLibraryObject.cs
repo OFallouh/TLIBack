@@ -16,9 +16,6 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttributes { get; set; }
         public AddLogisticalViewModel logisticalItems { get; set; }
 
-
-
-
         public class CivilWihtLegsLibraryAttributes
         {
             public string Model { get; set; }

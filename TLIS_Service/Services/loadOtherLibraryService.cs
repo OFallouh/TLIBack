@@ -78,21 +78,18 @@ namespace TLIS_Service.Services
                             TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName== "TLIloadOtherLibrary");
 
                             TLIloadOtherLibrary LoadOtherLibrary = _mapper.Map<TLIloadOtherLibrary>(addLoadOtherLibraryObject.AttributesActivatedLibrary);
-                            if (LoadOtherLibrary.SpaceLibrary <= 0)
+                           
+                            if (LoadOtherLibrary.Length <= 0)
                             {
-                                if (LoadOtherLibrary.Length <= 0)
-                                {
-                                    return new Response<AddLoadOtherLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                if (LoadOtherLibrary.Width <= 0)
-                                {
-                                    return new Response<AddLoadOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                }
-                                else
-                                {
-                                    LoadOtherLibrary.SpaceLibrary = LoadOtherLibrary.Length * LoadOtherLibrary.Width;
-                                }
+                                return new Response<AddLoadOtherLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (LoadOtherLibrary.Width <= 0)
+                            {
+                                return new Response<AddLoadOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                            
+                             LoadOtherLibrary.SpaceLibrary = LoadOtherLibrary.Length * LoadOtherLibrary.Width;
+                            
                             //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -1249,6 +1246,18 @@ namespace TLIS_Service.Services
 
                     TLIloadOtherLibrary loadOther = _mapper.Map<TLIloadOtherLibrary>(editLoadOtherLibraryObjectc.AttributesActivatedLibrary);
                     var OldLoadOther = _unitOfWork.LoadOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == loadOther.Id);
+
+                    if (editLoadOtherLibraryObjectc.AttributesActivatedLibrary.Length <= 0)
+                    {
+                        return new Response<EditLoadOtherLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    if (editLoadOtherLibraryObjectc.AttributesActivatedLibrary.Width <= 0)
+                    {
+                        return new Response<EditLoadOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+
+                    editLoadOtherLibraryObjectc.AttributesActivatedLibrary.SpaceLibrary = editLoadOtherLibraryObjectc.AttributesActivatedLibrary.Length * editLoadOtherLibraryObjectc.AttributesActivatedLibrary.Width;
+
                     var CheckModel = db.MV_LOAD_OTHER_LIBRARY_VIEW
                     .FirstOrDefault(
                     x => x.Model.ToLower() == loadOther.Model.ToLower()
