@@ -193,6 +193,16 @@ using static TLIS_DAL.ViewModels.MW_BUDTOs.EditMWBUInstallationObject;
 using static TLIS_DAL.ViewModels.MW_BUDTOs.AddMWBUInstallationObject;
 using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.AddMWRFULibraryObject;
 using static TLIS_DAL.ViewModels.MW_RFULibraryDTOs.EditMWRFULibrary;
+using static TLIS_DAL.ViewModels.MW_OtherLibraryDTOs.AddMWOtherLibraryObject;
+using static TLIS_DAL.ViewModels.Mw_OtherDTOs.EditMWOtherInstallationObject;
+using static TLIS_DAL.ViewModels.Mw_OtherDTOs.AddMWOtherInstallationObject;
+using static TLIS_DAL.ViewModels.RadioOtherLibraryDTOs.AddRadioOtherLibraryObject;
+using static TLIS_DAL.ViewModels.RadioOtherDTOs.AddRadioOtherInstallationObject;
+using static TLIS_DAL.ViewModels.RadioOtherDTOs.EditRadioOtherInstallationObject;
+using static TLIS_DAL.ViewModels.LoadOtherDTOs.AddLoadOtherInstallationObject;
+using static TLIS_DAL.ViewModels.LoadOtherLibraryDTOs.AddLoadOtherLibraryObject;
+using static TLIS_DAL.ViewModels.LoadOtherLibraryDTOs.EditLoadOtherLibraryObject;
+using static TLIS_DAL.ViewModels.LoadOtherDTOs.EditLoadOtherInstallationObject;
 namespace TLIS_DAL.ViewModels
 {
     public class AutoMapperProfile : Profile
@@ -260,6 +270,14 @@ namespace TLIS_DAL.ViewModels
             CreateMap<AddinstallationAttributesMWBUObject, TLImwBU>().ReverseMap();
             CreateMap<MWRFULibraryAttributes, TLImwRFULibrary>().ReverseMap();
             CreateMap<EditMWRFULibraryAttributes, TLImwRFULibrary>().ReverseMap();
+            CreateMap<EditRadioAntennaLibraryAttributes, TLIradioOtherLibrary>().ReverseMap();
+            CreateMap<RadioOtherLibraryAttributes, TLIradioOtherLibrary>().ReverseMap();
+            CreateMap<InstallationRadioOtherAttributeObject, TLIradioOther>().ReverseMap();
+            CreateMap<EditInstallationRadioOtherAttributeObject, TLIradioOther>().ReverseMap();
+            CreateMap<InstallationLoadOtherAttributeObject, TLIloadOther>().ReverseMap();
+            CreateMap<EditLoadOtherLibraryAttribute, TLIloadOtherLibrary>().ReverseMap();
+            CreateMap<AddLoadOtherLibraryAttribute, TLIloadOtherLibrary>().ReverseMap();
+            CreateMap<EditInstallationLoadOtherConfigObject, TLIloadOtherLibrary>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
@@ -302,6 +320,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditPowerLibraryAttributes, TLIpowerLibrary>().ReverseMap();
             CreateMap<InstallationPowerAttributeObject, TLIpower>().ReverseMap();
             CreateMap<EditInstallationPowerAttributeObject, TLIpower>().ReverseMap();
+            CreateMap<EditMWBULibraryAttributes, TLImwOtherLibrary>().ReverseMap();
+            CreateMap<MWOtherLibraryAttributes, TLImwOtherLibrary>().ReverseMap();
+            CreateMap<installationAttributesMWOther, TLImwOther>().ReverseMap();
+            CreateMap<EditInstallationMWOtherAttributeObject, TLImwOther>().ReverseMap();
 
             CreateMap<SectionsLegTypeViewModel, TLIsideArmInstallationPlace>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIsideArmType>().ReverseMap();

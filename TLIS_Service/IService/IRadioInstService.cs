@@ -21,6 +21,9 @@ namespace TLIS_Service.IService
     public interface IRadioInstService
     {
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibId, string SiteCode);
+        Response<GetForAddLoadObject> GetRadioOtherInstallationById(int RadioId, string TableName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioOtherInstallation(int LibraryID, string SiteCode);
+        Response<GetEnableAttribute> GetRadioOtherInstallationWithEnableAtt(string SiteCode, string ConnectionString);
         Response<GetForAddMWDishInstallationObject> GetAttForAddRadioRRUInstallation(int LibraryID, string SiteCode);
         Task<Response<GetForAddMWDishInstallationObject>> EditRadioInstallation(object RadioInstallationViewModel, string TableName, int? TaskId, int UserId, string ConnectionString);
         Response<GetEnableAttribute> GetRadioAntennaInstallationWithEnableAtt(string SiteCode, string ConnectionString);

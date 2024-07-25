@@ -14,12 +14,12 @@ namespace TLIS_DAL.Models
         public int Id { get; set; }
         // [Index(IsUnique = true)]
         public string Model { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public float Length { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
-        public string L_W_H { get; set; }
-        public string frequency_band { get; set; }
+        public string? L_W_H { get; set; }
+        public string? frequency_band { get; set; }
         public float SpaceLibrary { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }

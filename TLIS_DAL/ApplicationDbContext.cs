@@ -34,6 +34,12 @@ using TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs;
 using TLIS_DAL.ViewModels.CabinetDTOs;
 using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_BUDTOs;
+using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
+using TLIS_DAL.ViewModels.Mw_OtherDTOs;
+using TLIS_DAL.ViewModels.RadioOtherLibraryDTOs;
+using TLIS_DAL.ViewModels.RadioOtherDTOs;
+using TLIS_DAL.ViewModels.LoadOtherLibraryDTOs;
+using TLIS_DAL.ViewModels.LoadOtherDTOs;
 
 
 namespace TLIS_DAL
@@ -220,6 +226,12 @@ namespace TLIS_DAL
         public virtual DbSet<MV_MWBU_LIBRARY_VIEW> MV_MWBU_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MV_MWBU_VIEW> MV_MWBU_VIEW { get; set; }
         public virtual DbSet<MV_MWRFU_LIBRARY_VIEW> MV_MWRFU_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_MWOTHER_LIBRARY_VIEW> MV_MWOTHER_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_MWOTHER_VIEW> MV_MWOTHER_VIEW { get; set; }
+        public virtual DbSet<MV_RADIO_OTHER_LIBRARY_VIEW> MV_RADIO_OTHER_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_RADIO_OTHER_VIEW> MV_RADIO_OTHER_VIEW { get; set; }
+        public virtual DbSet<MV_LOAD_OTHER_LIBRARY_VIEW> MV_LOAD_OTHER_LIBRARY_VIEW { get; set; }
+        public virtual DbSet<MV_LOAD_OTHER_VIEW> MV_LOAD_OTHER_VIEW { get; set; }
  
       
         protected override void OnModelCreating(ModelBuilder builder)
@@ -423,6 +435,39 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("MV_MWRFU_LIBRARY_VIEW");
+
+            });
+            builder.Entity<MV_MWOTHER_LIBRARY_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_MWOTHER_LIBRARY_VIEW");
+            });
+            builder.Entity<MV_MWOTHER_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_MWOTHER_VIEW");
+
+            });
+            builder.Entity<MV_RADIO_OTHER_LIBRARY_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_RADIO_OTHER_LIBRARY_VIEW");
+
+            });
+            builder.Entity<MV_RADIO_OTHER_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_RADIO_OTHER_VIEW");
+            });
+            builder.Entity<MV_LOAD_OTHER_LIBRARY_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_LOAD_OTHER_LIBRARY_VIEW");
+            });
+            builder.Entity<MV_LOAD_OTHER_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_LOAD_OTHER_VIEW");
             });
             builder.Entity<TLIsession>();
 

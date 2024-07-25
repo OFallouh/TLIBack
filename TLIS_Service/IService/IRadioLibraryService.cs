@@ -22,6 +22,9 @@ namespace TLIS_Service.IService
         Task<Response<EditRadioAntennaLibraryObject>> EditRadioAntennaLibrary(string TableName, EditRadioAntennaLibraryObject RadioLibraryViewModel, int UserId,string connectionString);
         Response<ReturnWithFilters<RadioOtherLibraryViewModel>> GetOtherRadioLibraries(ParameterPagination parameters, List<FilterObjectList> filters = null);
         Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName);
+        Task<Response<EditRadioOtherLibraryObject>> EditRadioOtherLibrary(string TableName, EditRadioOtherLibraryObject editRadioOtherLibraryObject, int UserId, string connectionString);
+        Response<GetEnableAttribute> GetRadioOtherLibrariesEnabledAtt(string ConnectionString);
+        Response<AddRadioOtherLibraryObject> AddRadioOtherLibrary(string TableName, AddRadioOtherLibraryObject addRadioOtherLibraryObject, string connectionString, int UserId);
         Response<GetEnableAttribute> GetRadioRRULibrariesEnabledAtt(string ConnectionString);
         Response<AllItemAttributes> AddRadioLibrary(string TableName, object RadioLibraryViewModel, string connectionString, int UserId);
         // Task<Response<AllItemAttributes>> EditRadioLibrary(string TableName, object RadioLibraryViewModel);

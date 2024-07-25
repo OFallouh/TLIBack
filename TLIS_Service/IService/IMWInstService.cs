@@ -17,6 +17,7 @@ using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
+using TLIS_DAL.ViewModels.Mw_OtherDTOs;
 
 namespace TLIS_Service.IService
 {
@@ -24,6 +25,10 @@ namespace TLIS_Service.IService
     {
         Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode);
         Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString);
+        Task<Response<GetForAddMWDishInstallationObject>> EditMWOtherInstallation(int UserId, EditMWOtherInstallationObject editmwOtherInstallationObject, string TableName, int? TaskId, string ConnectionString);
+        Response<GetForAddLoadObject> GetMWOtherInstallationById(int MWOtherId, string TableName);
+        Response<GetEnableAttribute> GetMWOtherInstallationWithEnableAtt(string? SiteCode, string ConnectionString);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWOtherInstallation(string TableName, int LibraryID, string SiteCode);
         Response<GetForAddLoadObject> GetMWBUInstallationById(int MWInsId, string TableName);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWBUInstallation(int UserId, EditMWBUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString);
         Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode);

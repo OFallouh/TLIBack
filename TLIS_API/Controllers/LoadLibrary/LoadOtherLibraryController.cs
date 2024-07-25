@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -30,25 +31,20 @@ namespace TLIS_API.Controllers.LoadLibrary
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        [HttpPost("GetLoadOtherLibraries")]
+        [HttpPost("GetLoadOtherLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<LoadOtherLibraryViewModel>))]
-        public IActionResult GetLoadOtherLibraries([FromQuery]ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters = null)
+        public IActionResult GetLoadOtherLibrariesWithEnableAtt()
         {
-            var response = _unitOfWorkService.LoadOtherLibraryService.GetLoadOtherLibraries(parameterPagination, filters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.LoadOtherLibraryService.GetLoadOtherLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
-        [HttpPost("GetLoadOtherLibrariesWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<object>))]
-        public IActionResult GetLoadOtherLibrariesWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
-        {
-            var response = _unitOfWorkService.LoadOtherLibraryService.GetLoadOtherLibrariesWithEnableAtt(CombineFilters, parameterPagination);
-            return Ok(response);
-        }
+        
         [HttpGet("GetLoadOtherLibraryById/{Id}")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetLoadOtherLibraryById(int Id)
         {
-            var response = _unitOfWorkService.LoadOtherLibraryService.GetById(Id);
+            var response = _unitOfWorkService.LoadOtherLibraryService.GetById(Id, Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString());
             return Ok(response);
         }
         [HttpGet("GetForAddLoadOtherLibrary")]
@@ -65,7 +61,25 @@ namespace TLIS_API.Controllers.LoadLibrary
             if (TryValidateModel(addLoadOtherLibrary, nameof(AddLoadOtherLibraryObject)))
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.LoadOtherLibraryService.AddLoadOtherLibrary(addLoadOtherLibrary, ConnectionString);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.LoadOtherLibraryService.AddLoadOtherLibrary(addLoadOtherLibrary, ConnectionString, userId);
                 return Ok(response);
             }
             else
@@ -73,38 +87,95 @@ namespace TLIS_API.Controllers.LoadLibrary
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddLoadOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddLoadOtherLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        //[HttpPost("UpdateLoadOtherLibrary")]
-        //[ProducesResponseType(200, Type = typeof(EditLoadOtherLibraryViewModel))]
-        //public async Task<IActionResult> UpdateLoadOtherLibrary(EditLoadOtherLibraryViewModel editLoadOther)
-        //{
-        //    if (TryValidateModel(editLoadOther, nameof(EditLoadOtherLibraryViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.LoadOtherLibraryService.EditLoadOtherLibrary(editLoadOther);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditLoadOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [HttpPost("EditLoadOtherLibrary")]
+        [ProducesResponseType(200, Type = typeof(EditLoadOtherLibraryObject))]
+        public async Task<IActionResult> EditLoadOtherLibrary(EditLoadOtherLibraryObject editLoadOther)
+        {
+            if (TryValidateModel(editLoadOther, nameof(EditLoadOtherLibraryObject)))
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.LoadOtherLibraryService.EditLoadOtherLibrary(editLoadOther, userId, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditLoadOtherLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [HttpPost("DisableLoadOtherLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DisableLoadOtherLibrary(int Id)
         {
-            var response = await _unitOfWorkService.LoadOtherLibraryService.DisableLoadOtherLibrary(Id);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.LoadOtherLibraryService.DisableLoadOtherLibrary(Id, userId);
             return Ok(response);
         }
         [HttpPost("DeleteLoadOtherLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public async Task<IActionResult> DeleteLoadOtherLibrary(int Id)
         {
-            var response = await _unitOfWorkService.LoadOtherLibraryService.DeletedLoadOtherLibrary(Id);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.LoadOtherLibraryService.DeletedLoadOtherLibrary(Id, userId);
             return Ok(response);
         }
     }

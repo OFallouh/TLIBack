@@ -34,24 +34,40 @@ namespace TLIS_API.Controllers
             _configuration = configuration;
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAdd")]
+        [HttpGet("GetAttForAddLoadOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAdd(int LibId, string SiteCode)
+        public IActionResult GetAttForAddLoadOtherInstallation(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.LoadOtherService.GetAttForAdd(LibId, SiteCode);
+            var response = _unitOfWorkService.LoadOtherService.GetAttForAddLoadOtherInstallation(LibId, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddLoadOther")]
-        [ProducesResponseType(200, Type = typeof(AddLoadOtherViewModel))]
-        public IActionResult AddLoadOther([FromBody] AddLoadOtherViewModel addLoadOther, string SiteCode, int TaskId)
+        [HttpPost("AddLoadOtherInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddLoadOtherInstallationObject))]
+        public IActionResult AddLoadOther([FromBody] AddLoadOtherInstallationObject addLoadOther, string SiteCode, int TaskId)
         {
-            if (addLoadOther.TLIcivilLoads.sideArmId == 0)
-                addLoadOther.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(addLoadOther, nameof(AddLoadOtherViewModel)))
+            if (TryValidateModel(addLoadOther, nameof(AddLoadOtherInstallationObject)))
             {
-                var response = _unitOfWorkService.LoadOtherService.AddLoadOther(addLoadOther, SiteCode, ConnectionString, TaskId);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.LoadOtherService.AddLoadOther(addLoadOther, SiteCode, ConnectionString, TaskId, userId);
                 return Ok(response);
             }
             else
@@ -59,17 +75,36 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddLoadOtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddLoadOtherInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditLoadOther")]
-        [ProducesResponseType(200, Type = typeof(EditLoadOtherViewModel))]
-        public async Task<IActionResult> EditLoadOther([FromBody] EditLoadOtherViewModel LoadOtherViewModel, int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditLoadOtherInstallationObject))]
+        public async Task<IActionResult> EditLoadOther([FromBody] EditLoadOtherInstallationObject LoadOtherViewModel, int TaskId)
         {
-            if (TryValidateModel(LoadOtherViewModel, nameof(EditLoadOtherViewModel)))
+            if (TryValidateModel(LoadOtherViewModel, nameof(EditLoadOtherInstallationObject)))
             {
-                var response = await _unitOfWorkService.LoadOtherService.EditLoadOther(LoadOtherViewModel, TaskId);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.LoadOtherService.EditLoadOtherInstallation(LoadOtherViewModel, TaskId, userId, ConnectionString);
                 return Ok(response);
             }
             else
@@ -77,7 +112,7 @@ namespace TLIS_API.Controllers
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<EditLoadOtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<EditLoadOtherInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -109,11 +144,11 @@ namespace TLIS_API.Controllers
 
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetById")]
+        [HttpGet("GetLoadOtherInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetById(int Id)
         {
-            var response = _unitOfWorkService.LoadOtherService.GetById(Id);
+            var response = _unitOfWorkService.LoadOtherService.GetLoadOtherInstallationById(Id, Helpers.Constants.LoadSubType.TLIloadOther.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -132,11 +167,12 @@ namespace TLIS_API.Controllers
         //    return Ok(response);
         //}
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetLoadOtherOnSiteWithEnableAtt")]
+        [HttpPost("GetLoadOtherInstallationWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<object>))]
-        public IActionResult GetLoadOtherOnSiteWithEnableAtt([FromBody] CombineFilters CombineFilters, [FromQuery] LoadsOnSiteFilter filters, bool WithFilterData, int? CivilId, string CivilType, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetLoadOtherInstallationWithEnableAtt([FromQuery] string SiteCode)
         {
-            var response = _unitOfWorkService.LoadOtherService.GetLoadOtherOnSiteWithEnableAtt(filters, WithFilterData, CombineFilters, parameters, CivilId, CivilType);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.LoadOtherService.GetLoadOtherInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

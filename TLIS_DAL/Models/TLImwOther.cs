@@ -13,10 +13,10 @@ namespace TLIS_DAL.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string SerialNumber { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
         public float HeightBase { get; set; }
         public float HeightLand { get; set; }
-        public string VisibleStatus { get; set; }
+        public string? VisibleStatus { get; set; }
         public TLImwOtherLibrary mwOtherLibrary { get; set; }
         public int mwOtherLibraryId { get; set; }
         public float CenterHigh { get; set; }

@@ -73,11 +73,11 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddMW_Other")]
+        [HttpGet("GetAttForAddMWOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddMW_Other(int LibId, string SiteCode)
+        public IActionResult GetAttForAddMWOtherInstallation(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode);
+            var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -217,27 +217,44 @@ namespace TLIS_API.Controllers
         //        return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
         //    }
         //}
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("AddMW_Other")]
-        //[ProducesResponseType(200, Type = typeof(AddMw_OtherViewModel))]
-        //public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode, int? TaskId)
-        //{
-        //    if (AddMw_OtherViewModel.TLIcivilLoads.sideArmId == 0)
-        //        AddMw_OtherViewModel.TLIcivilLoads.sideArmId = null;
-        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //    if (TryValidateModel(AddMw_OtherViewModel, nameof(AddMw_OtherViewModel)))
-        //    {
-        //        var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddMW_OtherInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddMWOtherInstallationObject))]
+        public IActionResult AddMW_Other([FromBody] AddMWOtherInstallationObject AddMw_OtherViewModel, string SiteCode, int? TaskId)
+        {
+           
+            if (TryValidateModel(AddMw_OtherViewModel, nameof(AddMw_OtherViewModel)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId,AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddMWOtherInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
 
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
 
@@ -370,24 +387,43 @@ namespace TLIS_API.Controllers
         //        return Ok(new Response<EditMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
         //    }
         //}
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("EditMw_Other")]
-        //[ProducesResponseType(200, Type = typeof(EditMw_OtherViewModel))]
-        //public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other, int? TaskId)
-        //{
-        //    if (TryValidateModel(Mw_Other, nameof(EditMw_OtherViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.MWInstService.EditMWInstallation(Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditMw_OtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("EditMWOtherInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditMWOtherInstallationObject))]
+        public async Task<IActionResult> EditMWOtherInstallation([FromBody] EditMWOtherInstallationObject Mw_Other, int? TaskId)
+        {
+            if (TryValidateModel(Mw_Other, nameof(EditMWOtherInstallationObject)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = await _unitOfWorkService.MWInstService.EditMWOtherInstallation(userId,Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditMWOtherInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("DismantleMW_BU")]
         public IActionResult DismantleMW_BU(string sitecode, int Id,int? TaskId)
@@ -554,11 +590,11 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetMW_OtherById")]
+        [HttpGet("GetMWOtherInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
-        public IActionResult GetMWOtherId(int mwOther)
+        public IActionResult GetMWOtherInstallationById(int mwOther)
         {
-            var response = _unitOfWorkService.MWInstService.GetById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString());
+            var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString());
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -694,6 +730,14 @@ namespace TLIS_API.Controllers
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("GetMWOtherInstallationWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetMWOtherInstallationWithEnableAtt([FromQuery] string? SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

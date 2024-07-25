@@ -10,19 +10,19 @@ namespace TLIS_DAL.ViewModels.LoadOtherLibraryDTOs
 {
     public class AddLoadOtherLibraryObject
     {
-        public LoadOtherLibraryAttributes LibraryAttribute { get; set; }
+        public AddLoadOtherLibraryAttribute AttributesActivatedLibrary { get; set; }
         public AddLogisticalViewModel LogisticalItems { get; set; }
-        public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
-        public class LoadOtherLibraryAttributes
+        public List<AddDdynamicAttributeInstallationValueViewModel> DynamicAttributes { get; set; }
+        public class AddLoadOtherLibraryAttribute
         {
             public string Model { get; set; }
-            public string Note { get; set; }
-            public float Length { get; set; }
-            public float Width { get; set; }
-            public float Height { get; set; }
-            public float SpaceLibrary { get; set; }
-            public bool Active { get; set; }
-            public bool Deleted { get; set; }
+            public string? Note { get; set; } = " ";
+            public float Length { get; set; } = 0;
+            public float Width { get; set; } = 0;
+            public float Height { get; set; } = 0;
+            public float SpaceLibrary { get; set; } = 0;
+            public bool Active { get; set; } = true;
+            public bool Deleted { get; set; } = false;
         }
     }
 }

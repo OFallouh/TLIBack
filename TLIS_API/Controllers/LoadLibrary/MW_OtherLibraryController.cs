@@ -46,42 +46,79 @@ namespace TLIS_API.Controllers.LoadLibrary
             var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString());
             return Ok(response);
         }
-        //[HttpPost("AddMW_OtherLibrary")]
-        //[ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
-        //public IActionResult AddMW_OtherLibrary([FromBody] AddMWOtherLibraryObject addMW_OtherLibraryViewModel)
-        //{
-        //    if (TryValidateModel(addMW_OtherLibraryViewModel, nameof(AddMWOtherLibraryObject)))
-        //    {
-        //        var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //        var response = _unitOfWorkService.MWLibraryService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, ConnectionString);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddMW_OtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-       //}
-        //[HttpPost("EditMW_OtherLibrary")]
-        //[ProducesResponseType(200, Type = typeof(EditMW_OtherLibraryViewModel))]
+        [HttpPost("AddMW_OtherLibrary")]
+        [ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
+        public IActionResult AddMW_OtherLibrary([FromBody] AddMWOtherLibraryObject addMW_OtherLibraryViewModel)
+        {
+            if (TryValidateModel(addMW_OtherLibraryViewModel, nameof(AddMWOtherLibraryObject)))
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
 
-        //public async Task<IActionResult> EditMW_OtherLibrary([FromBody]EditMW_OtherLibraryViewModel editMW_OtherLibraryViewModel)
-        //{
-        //    if (TryValidateModel(editMW_OtherLibraryViewModel, nameof(EditMW_OtherLibraryViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.MWLibraryService.EditMWLibrary(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), editMW_OtherLibraryViewModel);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditMW_OtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.MWLibraryService.AddMWOtherLibrary(userId,Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddMW_OtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("EditMW_OtherLibrary")]
+        [ProducesResponseType(200, Type = typeof(EditMWOtherLibraryObject))]
+
+        public async Task<IActionResult> EditMW_OtherLibrary([FromBody] EditMWOtherLibraryObject editMW_OtherLibraryViewModel)
+        {
+            if (TryValidateModel(editMW_OtherLibraryViewModel, nameof(EditMWOtherLibraryObject)))
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.MWLibraryService.EditMWOtherLibrary(userId, editMW_OtherLibraryViewModel, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), ConnectionString);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditMWOtherLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
 
         [HttpPost("DisableMW_OtherLibrary/{Id}")]
         [ProducesResponseType(200, Type = typeof(MW_OtherLibraryViewModel))]
@@ -143,11 +180,12 @@ namespace TLIS_API.Controllers.LoadLibrary
             var response = await _unitOfWorkService.MWLibraryService.Delete(Id, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), ConnectionString, userId);
             return Ok(response);
         }
-        [HttpPost("GetMW_OtherLibraries")]
+        [HttpPost("GetMWOtherLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_OtherLibraries([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetMWOtherLibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetMW_OtherLibraries(CombineFilters, parameters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWOtherLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
     }

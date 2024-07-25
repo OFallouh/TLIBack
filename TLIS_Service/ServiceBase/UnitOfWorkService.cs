@@ -601,7 +601,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_LoadOtherLibraryService == null)
-                    _LoadOtherLibraryService = new LoadOtherLibraryService(_unitOfWork, _services,_mapper);
+                    _LoadOtherLibraryService = new LoadOtherLibraryService(_unitOfWork, _services,_mapper,db);
                 return _LoadOtherLibraryService;
             }
         }

@@ -23,6 +23,9 @@ namespace TLIS_Service.IService
     {
         Task MW_OtherLibrarySeedDataForTest();
         Response<GetEnableAttribute> GetMWODULibrariesEnabledAtt(string ConnectionString);
+        Response<AddMWOtherLibraryObject> AddMWOtherLibrary(int UserId, string TableName, AddMWOtherLibraryObject addMWOtherLibraryObject, string connectionString);
+        Task<Response<EditMWOtherLibraryObject>> EditMWOtherLibrary(int userId, EditMWOtherLibraryObject editMWOtherLibraryObject, string TableName, string connectionString);
+        Response<GetEnableAttribute> GetMWOtherLibrariesEnabledAtt(string ConnectionString);
         Task<Response<EditMWRFULibrary>> EditMWRFULibrary(int userId, EditMWRFULibrary editMWRFULibraryAttributes, string TableName, string connectionString);
         Response<AddMWRFULibraryObject> AddMWRFULibrary(int UserId, string TableName, AddMWRFULibraryObject addMWRFULibraryObject, string connectionString);
         Response<GetEnableAttribute> GetMWRFULibrariesEnabledAtt(string ConnectionString);
