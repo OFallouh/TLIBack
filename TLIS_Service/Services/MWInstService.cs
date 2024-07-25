@@ -3163,7 +3163,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "OtherMWInstallation" &&
                         ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
                         .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
-                      .OrderByDescending(x => x.attribute.ToLower().StartsWith("dishname"))
+                      .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
                             .ThenBy(x => x.attribute == null)
                             .ThenBy(x => x.attribute)
                             .ToList();
@@ -3202,8 +3202,6 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SIDEARM_ID");
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEG_ID");
-                    propertyNamesStatic.Add("ODU_COUNT");
-                    propertyNamesStatic.Add("POLARITYTYPE");
                     propertyNamesStatic.Add("SideArmSec_Name");
                     propertyNamesStatic.Add("SideArmSec_Id");
                     if (SiteCode == null)
