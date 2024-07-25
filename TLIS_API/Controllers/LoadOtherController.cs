@@ -44,7 +44,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddLoadOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(AddLoadOtherInstallationObject))]
-        public IActionResult AddLoadOther([FromBody] AddLoadOtherInstallationObject addLoadOther, string SiteCode, int TaskId)
+        public IActionResult AddLoadOther([FromBody] AddLoadOtherInstallationObject addLoadOther, string SiteCode, int? TaskId)
         {
             if (TryValidateModel(addLoadOther, nameof(AddLoadOtherInstallationObject)))
             {
@@ -81,7 +81,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditLoadOther")]
         [ProducesResponseType(200, Type = typeof(EditLoadOtherInstallationObject))]
-        public async Task<IActionResult> EditLoadOther([FromBody] EditLoadOtherInstallationObject LoadOtherViewModel, int TaskId)
+        public async Task<IActionResult> EditLoadOther([FromBody] EditLoadOtherInstallationObject LoadOtherViewModel, int? TaskId)
         {
             if (TryValidateModel(LoadOtherViewModel, nameof(EditLoadOtherInstallationObject)))
             {
@@ -118,7 +118,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DismantleLoadOther")]
 
-        public IActionResult DismantleLoadOther(string sitecode, int Id , int TaskId)
+        public IActionResult DismantleLoadOther(string sitecode, int Id , int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 

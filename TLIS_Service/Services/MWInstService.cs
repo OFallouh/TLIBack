@@ -76,6 +76,7 @@ using static TLIS_DAL.ViewModels.MW_BULibraryDTOs.EditMWBULibraryObject;
 using TLIS_DAL.ViewModels.DiversityTypeDTOs;
 using TLIS_DAL.ViewModels.RadioAntennaDTOs;
 using static TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs.EditRadioAntennaLibraryObject;
+using static TLIS_DAL.ViewModels.MW_OtherLibraryDTOs.EditMWOtherLibraryObject;
 
 namespace TLIS_Service.Services
 {
@@ -297,7 +298,7 @@ namespace TLIS_Service.Services
                 GetForAddMWDishInstallationObject objectInst = new GetForAddMWDishInstallationObject();
                 List<BaseInstAttViews> ListAttributesActivated = new List<BaseInstAttViews>();
 
-                EditMWBULibraryAttributes mwOtherLibrary = _mapper.Map<EditMWBULibraryAttributes>(_unitOfWork.MW_OtherLibraryRepository
+                EditMWOtherLibraryAttributes mwOtherLibrary = _mapper.Map<EditMWOtherLibraryAttributes>(_unitOfWork.MW_OtherLibraryRepository
                     .GetIncludeWhereFirst(x => x.Id == LibraryID));
                 if (mwOtherLibrary != null)
                 {
@@ -27436,7 +27437,6 @@ namespace TLIS_Service.Services
 
 
                 var MWOther = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null && x.allLoadInst.mwOtherId == MWOtherId
-                && x.allLoadInst.mwOther == null
                 && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                 x => x.allLoadInst, x => x.allLoadInst.mwOther, x => x.allLoadInst.mwOther.mwOtherLibrary,
                 x => x.allLoadInst.mwOther.InstallationPlace

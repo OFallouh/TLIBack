@@ -784,7 +784,6 @@ namespace TLIS_Service.Services
 
 
                 var LoadOther = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == LoadOtherId
-                && x.allLoadInst.radioOtherId == null
                 && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                 x => x.allLoadInst, x => x.allLoadInst.loadOther, x => x.allLoadInst.loadOther.loadOtherLibrary,
                 x => x.allLoadInst.loadOther.InstallationPlace
