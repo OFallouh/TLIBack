@@ -5042,7 +5042,7 @@ namespace TLIS_Service.Services
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                 {
-                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIradioOther.ToString(), null, null);
+                    var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIradioOtherLibrary.ToString(), null, null);
                     var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("Radio");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
