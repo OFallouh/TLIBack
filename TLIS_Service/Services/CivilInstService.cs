@@ -2943,7 +2943,7 @@ namespace TLIS_Service.Services
                         if (civilwithoutlegs.LongitudinalSpinDiameterrmm != 51 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 76 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 88
                          && civilwithoutlegs.LongitudinalSpinDiameterrmm != 101)
                         {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101)", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                         if (civilwithoutlegs.ConcreteBaseLengthm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
                         {
@@ -3639,7 +3639,7 @@ namespace TLIS_Service.Services
                         if (civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 51 && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 76 && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 88
                          && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 101)
                         {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101)", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                         if (civilWithoutLegsEntity.ConcreteBaseLengthm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
                         {

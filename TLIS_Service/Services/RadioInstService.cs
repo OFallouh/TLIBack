@@ -13359,7 +13359,7 @@ namespace TLIS_Service.Services
             try
             {
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
-                    x.TableName == "TLIradioAntenna");
+                    x.TableName == "TLIradioOther");
 
                 GetForAddMWDishInstallationObject objectInst = new GetForAddMWDishInstallationObject();
                 List<BaseInstAttViews> ListAttributesActivated = new List<BaseInstAttViews>();
