@@ -46,6 +46,7 @@ using TLIS_DAL.ViewModels.BoardTypeDTOs;
 using TLIS_DAL.ViewModels.DiversityTypeDTOs;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using TLIS_DAL.ViewModels.PolarityTypeDTOs;
+using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 
 namespace TLIS_Service.Services
 {
@@ -1284,7 +1285,7 @@ namespace TLIS_Service.Services
                     dynamic LogisticalItemIds = new ExpandoObject();
                     LogisticalItemIds = editLoadOtherLibraryObjectc;
 
-                    AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
+                    LogisticalObject OldLogisticalItemIds = new LogisticalObject();
 
                     var CheckVendorId = _unitOfWork.LogisticalitemRepository
                         .GetIncludeWhereFirst(x => x.logistical.logisticalType.Name.ToLower() == Helpers.Constants.LogisticalType.Vendor.ToString().ToLower() &&
@@ -1338,7 +1339,7 @@ namespace TLIS_Service.Services
                         OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
 
 
-                    EditLogisticalItemss(UserId, editLoadOtherLibraryObjectc.LogisticalItems, loadOther, TableNameEntity.Id, OldLogisticalItemIds);
+                    EditLogisticalItems(UserId, editLoadOtherLibraryObjectc.LogisticalItems, loadOther, TableNameEntity.Id, OldLogisticalItemIds);
 
                     if (editLoadOtherLibraryObjectc.DynamicAttributes != null ? editLoadOtherLibraryObjectc.DynamicAttributes.Count > 0 : false)
                     {
@@ -1357,7 +1358,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public void EditLogisticalItemss(int UserId, AddLogisticalViewModel LogisticalItemIds, dynamic MainEntity, int TableNameEntityId, AddLogisticalViewModel OldLogisticalItemIds)
+        public void EditLogisticalItems(int UserId, LogisticalObject LogisticalItemIds, dynamic MainEntity, int TableNameEntityId, LogisticalObject OldLogisticalItemIds)
         {
             using (TransactionScope transaction2 =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -1372,7 +1373,7 @@ namespace TLIS_Service.Services
                             if (OldLogisticalItemIds.Vendor != null ? OldLogisticalItemIds.Vendor != 0 : false)
                             {
                                 TLIlogistical OldLogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(OldLogisticalItemIds.Vendor);
+                                    .GetWhereFirst(x => x.Id == LogisticalItemIds.Vendor);
 
                                 int CivilId = MainEntity.Id;
 
@@ -1409,7 +1410,7 @@ namespace TLIS_Service.Services
                             else
                             {
                                 TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetByID(LogisticalItemIds.Vendor);
+                                    .GetWhereFirst(x => x.Id == LogisticalItemIds.Vendor);
 
                                 TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
                                 {

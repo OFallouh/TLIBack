@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.LogisticalDTOs;
+using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 
 namespace TLIS_DAL.ViewModels.RadioOtherLibraryDTOs
 {
     public class EditRadioOtherLibraryObject
     {
         public EditRadioOtherLibraryAttributes AttributesActivatedLibrary { get; set; }
-        public AddLogisticalViewModels LogisticalItems { get; set; }
+        public LogisticalObject LogisticalItems { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> DynamicAttributes { get; set; }
         public class EditRadioOtherLibraryAttributes
         {
