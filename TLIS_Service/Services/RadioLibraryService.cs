@@ -4924,18 +4924,7 @@ namespace TLIS_Service.Services
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
-                    if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
-                    else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
-                    {
-                        //  Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
-                    }
-                    else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
-                    {
-                          Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
@@ -5152,19 +5141,8 @@ namespace TLIS_Service.Services
                         AddHistory(NewRadioRRULibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString());
                     }
                     transaction.Complete();
-                    if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
-                    {
-                        Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
-                    else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
-                    {
-                      //  Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString, "MV_MWDISH_LIBRARY_VIEW"));
-                    }
-                    else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
-                    {
-                       Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-                    }
-                
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)

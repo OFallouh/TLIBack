@@ -629,6 +629,7 @@ namespace TLIS_Service.Services
                     await _unitOfWork.SaveChangesAsync();
                     //AddHistory(LoadOtherEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString());
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)
@@ -659,6 +660,7 @@ namespace TLIS_Service.Services
                     _unitOfWork.LoadOtherLibraryRepository.UpdateWithHistory(UserId, LoadOtherLibraryEntity, NewLoadOtherLibraryEntity);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                     return new Response<AllItemAttributes>();
                 }
                 catch (Exception err)

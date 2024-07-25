@@ -3667,7 +3667,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (RadioOther.HBA <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioOtherLibrary.Length <= 0)
                                                             {
@@ -3787,7 +3787,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (RadioOther.HBA <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioOtherLibrary.Length <= 0)
                                                             {
@@ -3945,7 +3945,7 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         if (RadioOther.HBA <= 0)
                                                                         {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
                                                                         if (RadioOtherLibrary.Length <= 0)
                                                                         {
@@ -4063,7 +4063,7 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         if (RadioOther.HBA <= 0)
                                                                         {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
                                                                         if (RadioOtherLibrary.Length <= 0)
                                                                         {
@@ -4217,7 +4217,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 if (RadioOther.HBA <= 0)
                                                                 {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
                                                                 if (RadioOtherLibrary.Length <= 0)
                                                                 {
@@ -4337,7 +4337,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 if (RadioOther.HBA <= 0)
                                                                 {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
                                                                 if (RadioOtherLibrary.Length <= 0)
                                                                 {
@@ -4489,7 +4489,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (RadioOther.HBA <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioOtherLibrary.Length <= 0)
                                                             {
@@ -8276,7 +8276,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (radioOther.HBA <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                     {
@@ -8406,7 +8406,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (radioOther.HBA <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                     {
@@ -8523,7 +8523,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (radioOther.HBA <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                     {
@@ -8655,7 +8655,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (radioOther.HBA <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                     {
@@ -8832,7 +8832,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (radioOther.HBA <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                             {
@@ -8960,7 +8960,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (radioOther.HBA <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                             {
@@ -9076,7 +9076,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (radioOther.HBA <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                             {
@@ -9206,7 +9206,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (radioOther.HBA <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                             {
@@ -9375,7 +9375,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (radioOther.HBA <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                         {
@@ -9503,7 +9503,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (radioOther.HBA <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                         {
@@ -9618,7 +9618,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (radioOther.HBA <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                         {
@@ -9748,7 +9748,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (radioOther.HBA <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                         {
@@ -9911,7 +9911,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (radioOther.HBA <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length <= 0)
                                                     {
