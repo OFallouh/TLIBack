@@ -19,8 +19,8 @@ namespace TLIS_Service.IService
         Task<Response<EditLoadOtherLibraryObject>> EditLoadOtherLibrary(EditLoadOtherLibraryObject editLoadOtherLibraryObjectc, int UserId, string connectionString);
         Response<GetEnableAttribute> GetLoadOtherLibrariesEnabledAtt(string ConnectionString);
         Response<AddLoadOtherLibraryObject> AddLoadOtherLibrary( AddLoadOtherLibraryObject addLoadOtherLibraryObject, string connectionString, int UserId);
-        Task<Response<AllItemAttributes>> DisableLoadOtherLibrary(int Id, int UserId);
-        Task<Response<AllItemAttributes>> DeletedLoadOtherLibrary(int Id, int UserId);
+        Task<Response<AllItemAttributes>> DisableLoadOtherLibrary(int Id, int UserId, string connectionString);
+        Task<Response<AllItemAttributes>> DeletedLoadOtherLibrary(int Id, int UserId, string connectionString);
         Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
         Response<ReturnWithFilters<object>> GetLoadOtherLibrariesWithEnableAtt(CombineFilters CombineFilters, ParameterPagination parameterPagination);
     }

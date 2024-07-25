@@ -607,7 +607,7 @@ namespace TLIS_Service.Services
             return invalidValidation ?? string.Empty;
         }
         #endregion
-        public async Task<Response<AllItemAttributes>> DeletedLoadOtherLibrary(int Id,int UserId)
+        public async Task<Response<AllItemAttributes>> DeletedLoadOtherLibrary(int Id,int UserId, string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -640,7 +640,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        public async Task<Response<AllItemAttributes>> DisableLoadOtherLibrary(int Id,int UserId)
+        public async Task<Response<AllItemAttributes>> DisableLoadOtherLibrary(int Id,int UserId,string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope())
             {

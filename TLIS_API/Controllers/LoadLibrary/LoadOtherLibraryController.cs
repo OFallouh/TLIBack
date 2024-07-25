@@ -149,7 +149,7 @@ namespace TLIS_API.Controllers.LoadLibrary
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.LoadOtherLibraryService.DisableLoadOtherLibrary(Id, userId);
+            var response = await _unitOfWorkService.LoadOtherLibraryService.DisableLoadOtherLibrary(Id, userId, ConnectionString);
             return Ok(response);
         }
         [HttpPost("DeleteLoadOtherLibrary")]
@@ -175,7 +175,7 @@ namespace TLIS_API.Controllers.LoadLibrary
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = await _unitOfWorkService.LoadOtherLibraryService.DeletedLoadOtherLibrary(Id, userId);
+            var response = await _unitOfWorkService.LoadOtherLibraryService.DeletedLoadOtherLibrary(Id, userId, ConnectionString);
             return Ok(response);
         }
     }
