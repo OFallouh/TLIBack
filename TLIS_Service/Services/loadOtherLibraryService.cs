@@ -1767,7 +1767,7 @@ namespace TLIS_Service.Services
             {
                 GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
-                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIradioAntennaLibrary.ToString(), null, null);
+                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLIloadOtherLibrary.ToString(), null, null);
                 var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibraryNonSteel(Helpers.Constants.TablePartName.LoadOther.ToString());
                 attributes.LogisticalItems = LogisticalItems;
                 attributes.AttributesActivatedLibrary = ListAttributesActivated;
