@@ -441,7 +441,7 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
+                        attributes.LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalsNonSteel(Helpers.Constants.TablePartName.MW.ToString(), TableName, Id);
                         attributes.AttributesActivatedLibrary = listofAttributesActivated;
                         attributes.DynamicAttributes = _unitOfWork.DynamicAttLibRepository.GetDynamicLibAtt(TableNameEntity.Id, Id, null);
                         List<BaseInstAttViews> Test = attributes.AttributesActivatedLibrary.ToList();
@@ -8028,7 +8028,7 @@ namespace TLIS_Service.Services
                 {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TablesNames.TLImwOtherLibrary.ToString(), null, null)
                      .ToList();
-                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibrary("MW");
+                    var LogisticalItems = _unitOfWork.LogistcalRepository.GetLogisticalLibraryNonSteel("MW");
                     attributes.LogisticalItems = LogisticalItems;
                     attributes.AttributesActivatedLibrary = ListAttributesActivated;
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository

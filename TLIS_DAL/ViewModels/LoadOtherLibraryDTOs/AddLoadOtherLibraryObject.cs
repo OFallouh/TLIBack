@@ -11,7 +11,7 @@ namespace TLIS_DAL.ViewModels.LoadOtherLibraryDTOs
     public class AddLoadOtherLibraryObject
     {
         public AddLoadOtherLibraryAttribute AttributesActivatedLibrary { get; set; }
-        public AddLogisticalViewModel LogisticalItems { get; set; }
+        public AddLogisticalViewModels LogisticalItems { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> DynamicAttributes { get; set; }
         public class AddLoadOtherLibraryAttribute
         {
