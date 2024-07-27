@@ -2471,11 +2471,11 @@ namespace TLIS_Service.Helpers
             [Description("TLItelecomType")]
             TLIcabinetTelecomLibrary,
 
-            [Description("TLIcapacity")]
-            TLIsolarLibrary,
+            //[Description("TLIcapacity")]
+            //TLIsolarLibrary,
 
-            [Description("TLIcapacity")]
-            TLIgeneratorLibrary,
+            //[Description("TLIcapacity")]
+            //TLIgeneratorLibrary,
 
             // Don't Have Any Foreign Key
             // [Description("")]
@@ -2503,17 +2503,17 @@ namespace TLIS_Service.Helpers
             /// After Update (Installation)
             /// </summary>
 
-            [Description("TLIlocationType TLIbaseType TLIowner TLIbaseCivilWithLegsType " +
+            [Description("TLIlocationType TLIbaseType TLIowner " +
                 "TLIguyLineType TLIsupportTypeImplemented TLIenforcmentCategory")]
             TLIcivilWithLegs,
 
             [Description("TLIowner TLIsupportTypeImplemented TLIlocationType")]
             TLIcivilNonSteel,
 
-            [Description("TLIowner TLIsubType")]
+            [Description("TLIowner")]
             TLIcivilWithoutLeg,
 
-            [Description("TLIbaseBU TLIowner")]
+            [Description("TLIowner")]
             TLImwBU,
 
             [Description("TLIowner TLIrepeaterType TLIpolarityOnLocation " +
@@ -2545,11 +2545,17 @@ namespace TLIS_Service.Helpers
             //TLIloadOther,
             // mwother
 
-            [Description("TLIowner TLIitemStatus")]
+            [Description("TLIowner")]
             TLIsideArm,
 
             [Description("TLIrenewableCabinetType")]
             TLIcabinet,
+
+            [Description("TLIrenewableCabinetType")]
+            TLIcabinetPower,
+
+            [Description("TLIrenewableCabinetType")]
+            TLIcabinetTelecom,
 
             [Description("TLIbaseGeneratorType")]
             TLIgenerator,

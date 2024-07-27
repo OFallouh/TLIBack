@@ -3203,8 +3203,6 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SIDEARM_ID");
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEG_ID");
-                    propertyNamesStatic.Add("SideArmSec_Name");
-                    propertyNamesStatic.Add("SideArmSec_Id");
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)

@@ -166,7 +166,7 @@ namespace TLIS_API.Controllers
         //    var response = _unitOfWorkService.LoadOtherService.GetLoadsOtherBySite(filters, WithFilterData, ObjectAttributeFilters, parameters);
         //    return Ok(response);
         //}
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetLoadOtherInstallationWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<object>))]
         public IActionResult GetLoadOtherInstallationWithEnableAtt([FromQuery] string SiteCode)

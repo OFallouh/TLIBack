@@ -13264,14 +13264,17 @@ namespace TLIS_Service.Services
         {
             try
             {
- 
-                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
-                     || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
+                if (TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
+                                   || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary" || TabelName == "TLImwBULibrary" || TabelName == "TLImwRFULibrary"
+                                   || TabelName == "TLImwOtherLibrary" || TabelName == "TLImwOther" || TabelName == "TLIradioAntennaLibrary" || TabelName == "TLIradioOtherLibrary" || TabelName == "TLIradioRRULibrary"
+                                   || TabelName == "TLIcabinetPowerLibrary" || TabelName == "TLIcabinetTelecomLibrary" || TabelName == "TLIgeneratorLibrary" || TabelName == "TLIgenerator"
+                                   || TabelName == "TLIsolarLibrary" || TabelName == "TLIsolar")
                 {
                     return new Response<List<TableAffected>>(true, null, null, "You cannot modify any item in any list", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                else if (TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
-                   || TabelName == "TLImwDish" || TabelName == "TLImwODU")
+                else if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
+                   || TabelName == "TLImwDish" || TabelName == "TLImwODU" || TabelName == "TLImwBU" || TabelName == "TLImwRFU" || TabelName == "TLIradioAntenna"
+                   || TabelName == "TLIRadioRRU" || TabelName == "TLIradioOther" || TabelName == "TLIpower" )
                 {
                     if (ConfigrationTables.TLIowner.ToString() == ListName)
                     {
@@ -13279,35 +13282,110 @@ namespace TLIS_Service.Services
                               .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
                             return new Response<List<TableAffected>>(false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        
-                        var CheckOwnerInCivil = _unitOfWork.AllCivilInstRepository
-                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == RecordId ||
-                            x.civilWithoutLeg.OwnerId == RecordId || x.civilNonSteel.ownerId == RecordId,
-                            x => x.civilNonSteel, x => x.civilWithLegs, x => x.civilWithoutLeg);
+
+                        var CheckOwnerInCivil = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegs.OwnerId == RecordId ||
+                            x.allCivilInst.civilWithoutLeg.OwnerId == RecordId || x.allCivilInst.civilNonSteel.ownerId
+                            == RecordId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel,
+                            x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg);
+
                         var CheckOwnerInload = _unitOfWork.CivilLoadsRepository
                           .GetIncludeWhereFirst(x => x.sideArm.ownerId == RecordId ||
-                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId,
+                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId
+                          || x.allLoadInst.mwBU.OwnerId == RecordId || x.allLoadInst.mwRFU.OwnerId == RecordId
+                          || x.allLoadInst.radioAntenna.ownerId == RecordId || x.allLoadInst.radioOther.ownerId == RecordId
+                          || x.allLoadInst.radioRRU.ownerId == RecordId || x.allLoadInst.power.ownerId == RecordId,
                           x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU);
 
                         if (CheckOwnerInCivil == null || CheckOwnerInload == null)
                         {
-                           
+
                             TLIowner NewEntity = _unitOfWork.OwnerRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.Disable = !NewEntity.Disable;
+                            NewEntity.Disable = true;
 
                             _unitOfWork.OwnerRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else
                         {
-                            return  new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name {OldEntity?.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name{OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    } 
+                    else
+                    {
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (TabelName == "TLIcabinetPower" || TabelName == "TLIcabinetTelecom")
+                {
+                    if (ConfigrationTables.TLIrenewableCabinetType.ToString() == ListName)
+                    {
+                        TLIrenewableCabinetType OldEntity = _unitOfWork.RenewableCabinetTypeRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<List<TableAffected>>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckrenewableCabinetTypeInCabinet = _unitOfWork.OtherInSiteRepository
+                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinet.RenewableCabinetNumberOfBatteries == RecordId
+                            && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
+
+
+                        if (CheckrenewableCabinetTypeInCabinet == null)
+                        {
+
+                            TLIrenewableCabinetType NewEntity = _unitOfWork.RenewableCabinetTypeRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Disable = true;
+
+                            _unitOfWork.RenewableCabinetTypeRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the renewableCabinetType name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
                     {
-                        return  new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (TabelName == "TLImwODULibrary")
+                {
+                    if (ConfigrationTables.TLIparity.ToString() == ListName)
+                    {
+                        TLIparity OldEntity = _unitOfWork.ParityRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<List<TableAffected>>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckparityInODU = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhereFirst(x => x.allLoadInst.mwODU.MwODULibrary.parityId == RecordId
+                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.MwODULibrary);
+
+
+                        if (CheckparityInODU == null)
+                        {
+
+                            TLIparity NewEntity = _unitOfWork.ParityRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Disable = true;
+
+                            _unitOfWork.ParityRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the parity  name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called parity ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else
@@ -13315,6 +13393,7 @@ namespace TLIS_Service.Services
                     return new Response<List<TableAffected>>(false, null, null, $"this tabel name {TabelName} is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 return new Response<List<TableAffected>>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
             }
             catch (Exception)
             {
@@ -13327,13 +13406,17 @@ namespace TLIS_Service.Services
             try
             {
 
-                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
-                     || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
+                if (TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
+                     || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwBULibrary" || TabelName == "TLImwRFULibrary"
+                     || TabelName == "TLImwOtherLibrary" || TabelName == "TLImwOther" || TabelName == "TLIradioAntennaLibrary" || TabelName == "TLIradioOtherLibrary" || TabelName == "TLIradioRRULibrary"
+                     || TabelName == "TLIcabinetPowerLibrary" || TabelName == "TLIcabinetTelecomLibrary" || TabelName == "TLIgeneratorLibrary" || TabelName == "TLIgenerator"
+                     || TabelName == "TLIsolarLibrary" || TabelName == "TLIsolar")
                 {
                     return new Response<List<TableAffected>>(true, null, null, "You cannot modify any item in any list", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                else if (TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
-                   || TabelName == "TLImwDish" || TabelName == "TLImwODU")
+                else if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
+                   || TabelName == "TLImwDish" || TabelName == "TLImwODU" || TabelName == "TLImwBU" || TabelName == "TLImwRFU" || TabelName == "TLIradioAntenna"
+                   || TabelName == "TLIRadioRRU" || TabelName == "TLIradioOther" || TabelName == "TLIpower")
                 {
                     if (ConfigrationTables.TLIowner.ToString() == ListName)
                     {
@@ -13341,14 +13424,19 @@ namespace TLIS_Service.Services
                               .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
                             return new Response<List<TableAffected>>(false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        
-                        var CheckOwnerInCivil = _unitOfWork.AllCivilInstRepository
-                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == RecordId ||
-                            x.civilWithoutLeg.OwnerId == RecordId || x.civilNonSteel.ownerId == RecordId,
-                            x => x.civilNonSteel, x => x.civilWithLegs, x => x.civilWithoutLeg);
+
+                        var CheckOwnerInCivil = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegs.OwnerId == RecordId ||
+                            x.allCivilInst.civilWithoutLeg.OwnerId == RecordId || x.allCivilInst.civilNonSteel.ownerId
+                            == RecordId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel,
+                            x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg);
+
                         var CheckOwnerInload = _unitOfWork.CivilLoadsRepository
                           .GetIncludeWhereFirst(x => x.sideArm.ownerId == RecordId ||
-                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId,
+                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId
+                          || x.allLoadInst.mwBU.OwnerId == RecordId || x.allLoadInst.mwRFU.OwnerId == RecordId
+                          || x.allLoadInst.radioAntenna.ownerId == RecordId || x.allLoadInst.radioOther.ownerId == RecordId
+                          || x.allLoadInst.radioRRU.ownerId == RecordId || x.allLoadInst.power.ownerId == RecordId,
                           x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU);
 
                         if (CheckOwnerInCivil == null || CheckOwnerInload == null)
@@ -13357,19 +13445,90 @@ namespace TLIS_Service.Services
                             TLIowner NewEntity = _unitOfWork.OwnerRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.Deleted = true;
+                            NewEntity.Disable = true;
 
                             _unitOfWork.OwnerRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else
                         {
-                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name{OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the owner name{OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+
+                    else
+                    {
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot delete any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (TabelName == "TLIcabinetPower" || TabelName == "TLIcabinetTelecom")
+                {
+                    if (ConfigrationTables.TLIrenewableCabinetType.ToString() == ListName)
+                    {
+                        TLIrenewableCabinetType OldEntity = _unitOfWork.RenewableCabinetTypeRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<List<TableAffected>>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckrenewableCabinetTypeInCabinet = _unitOfWork.OtherInSiteRepository
+                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinet.RenewableCabinetNumberOfBatteries == RecordId
+                            && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
+
+
+                        if (CheckrenewableCabinetTypeInCabinet == null)
+                        {
+
+                            TLIrenewableCabinetType NewEntity = _unitOfWork.RenewableCabinetTypeRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Disable = true;
+
+                            _unitOfWork.RenewableCabinetTypeRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the renewableCabinetType name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
                     {
-                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (TabelName == "TLImwODULibrary")
+                {
+                    if (ConfigrationTables.TLIparity.ToString() == ListName)
+                    {
+                        TLIparity OldEntity = _unitOfWork.ParityRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<List<TableAffected>>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckparityInODU = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhereFirst(x => x.allLoadInst.mwODU.MwODULibrary.parityId == RecordId
+                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU,x=>x.allLoadInst.mwODU.MwODULibrary);
+
+
+                        if (CheckparityInODU == null)
+                        {
+
+                            TLIparity NewEntity = _unitOfWork.ParityRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Disable = true;
+
+                            _unitOfWork.ParityRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the parity  name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called parity ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else

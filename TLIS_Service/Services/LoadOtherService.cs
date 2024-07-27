@@ -4473,13 +4473,15 @@ namespace TLIS_Service.Services
                         }
 
                     }
+                    propertyNamesStatic.Add("SiteCode");
+                    propertyNamesStatic.Add("LEG_NAME");
                     propertyNamesStatic.Add("CIVILNAME");
                     propertyNamesStatic.Add("CIVIL_ID");
                     propertyNamesStatic.Add("SIDEARMNAME");
                     propertyNamesStatic.Add("SIDEARM_ID");
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
-                    propertyNamesStatic.Add("LEGID");
-                    propertyNamesStatic.Add("LEGNAME");
+                    propertyNamesStatic.Add("LEG_ID");
+
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)

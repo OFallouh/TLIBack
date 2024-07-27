@@ -3675,7 +3675,7 @@ namespace TLIS_Service.Services
                         if (civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 12 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 14 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 16
                          && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 18 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 20)
                         {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                         if (civilWithoutLegsEntity.HeightBase != CivilWithoutLegInst.HeightBase)
                         {
