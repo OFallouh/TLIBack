@@ -10,6 +10,7 @@ namespace TLIS_DAL.ViewModelBase
         public string Name { get; set; }
         public string TableName { get; set; }
         public bool Disable { get; set; }
+        public bool Manage { get; set; }
 
         
         public ConfigurationAttsViewModel()

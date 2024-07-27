@@ -12010,29 +12010,61 @@ namespace TLIS_Service.Services
 
                 if (ConfigrationTables.TLIdiversityType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false 
+                    }).ToList();
                 }
-                else if (ConfigrationTables.TLIdataType.ToString() == TableName)
-                {
-                    ConfigurationAtts = _unitOfWork.DataTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
-                }
-                else if (ConfigrationTables.TLIoperation.ToString() == TableName)
-                {
-                    ConfigurationAtts = _unitOfWork.OperationRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
-                }
+                //else if (ConfigrationTables.TLIdataType.ToString() == TableName)
+                //{
+                //    ConfigurationAtts = _unitOfWork.DataTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                //    {
+                //        Id = x.Id,
+                //        Name = x.Name,
+                //        TableName = TableName,
+                //        Disable = x.Disable,
+                //        Manage = false
+                //    }).ToList();
+                //}
+                //else if (ConfigrationTables.TLIoperation.ToString() == TableName)
+                //{
+                //    ConfigurationAtts = _unitOfWork.OperationRepository.GetWhere(x => !x.Deleted && x.Id > 0)
+                //       .Select(x => new ConfigurationAttsViewModel
+                //       {
+                //           Id = x.Id,
+                //           Name = x.Name,
+                //           TableName = TableName,
+                //           Disable = x.Disable,
+                //           Manage = false
+                //       }).ToList();
+                //}
                     
-                else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
-                {
-                    ConfigurationAtts = _unitOfWork.LogicalOperationRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
-                }
+                //else if (ConfigrationTables.TLIlogicalOperation.ToString() == TableName)
+                //{
+                //    ConfigurationAtts = _unitOfWork.LogicalOperationRepository.GetWhere(x => !x.Deleted && x.Id > 0)
+                //        .Select(x => new ConfigurationAttsViewModel
+                //        {
+                //            Id = x.Id,
+                //            Name = x.Name,
+                //            TableName = TableName,
+                //            Disable = x.Disable,
+                //            Manage = false
+                //        }).ToList();
+                //}
                 else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.TelecomTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.TelecomTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 //else if (ConfigrationTables.TLIoduInstallationType.ToString() == TableName)
                 //{
@@ -12046,147 +12078,322 @@ namespace TLIS_Service.Services
                 //}
                 else if (ConfigrationTables.TLIrepeaterType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.RepeaterTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.RepeaterTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIpolarityOnLocation.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIitemConnectTo.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.ItemConnectToRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.ItemConnectToRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIsupportTypeDesigned.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIsupportTypeImplemented.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIstructureType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIsectionsLegType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIlogisticalType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.logisticalTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.logisticalTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIbaseCivilWithLegsType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIbaseGeneratorType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIinstallationCivilwithoutLegsType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIboardType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.BoardTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.BoardTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIguyLineType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIenforcmentCategory.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                        .Select(x => new ConfigurationAttsViewModel
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            TableName = TableName,
+                            Disable = x.Disable,
+                            Manage = false
+                        }).ToList();
                 }
                 else if (ConfigrationTables.TLIdocumentType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.DocumentTypeRepository.GetSelect(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, true)).ToList();
+                    ConfigurationAtts = _unitOfWork.DocumentTypeRepository.GetSelect(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, true)).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIpowerType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.PowerTypeRepository.GetWhere(x => !x.Delete && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.PowerTypeRepository.GetWhere(x => !x.Delete && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIsubType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
                 {
-                    ConfigurationAtts = _unitOfWork.CivilNonSteelTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    ConfigurationAtts = _unitOfWork.CivilNonSteelTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIasType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.AsTypeRepository.GetWhere(x => !x.Delete && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                       .Select(x => new ConfigurationAttsViewModel
+                       {
+                           Id = x.Id,
+                           Name = x.Name,
+                           TableName = TableName,
+                           Disable = x.Disable,
+                           Manage = false
+                       }).ToList();
                 }
                 else if (ConfigrationTables.TLIpolarityType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.PolarityTypeRepository.GetWhere(x => !x.Delete && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    .Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIparity.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.ParityRepository.GetWhere(x => !x.Delete && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    .Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = true
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIcabinetPowerType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.CabinetPowerTypeRepository.GetWhere(x => !x.Delete && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
-                }
-                else if (ConfigrationTables.TLIcapacity.ToString() == TableName)
-                {
-                    ConfigurationAtts = _unitOfWork.CapacityRepository.GetWhere(x => !x.Delete && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                      .Select(x => new ConfigurationAttsViewModel
+                      {
+                          Id = x.Id,
+                          Name = x.Name,
+                          TableName = TableName,
+                          Disable = x.Disable,
+                          Manage = false
+                      }).ToList();
                 }
                 else if (ConfigrationTables.TLIlocationType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                    .Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
                 }
                 else if (ConfigrationTables.TLIbaseType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                       .Select(x => new ConfigurationAttsViewModel
+                       {
+                           Id = x.Id,
+                           Name = x.Name,
+                           TableName = TableName,
+                           Disable = x.Disable,
+                           Manage = false
+                       }).ToList();
                 }
                 else if (ConfigrationTables.TLIbaseGeneratorType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                   .Select(x => new ConfigurationAttsViewModel
+                   {
+                       Id = x.Id,
+                       Name = x.Name,
+                       TableName = TableName,
+                       Disable = x.Disable,
+                       Manage = false
+                   }).ToList();
                 }
                 else if (ConfigrationTables.TLIowner.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.OwnerName, TableName, x.Disable)).ToList();
+                       .Select(x => new ConfigurationAttsViewModel
+                       {
+                           Id = x.Id,
+                           Name = x.OwnerName,
+                           TableName = TableName,
+                           Disable = x.Disable,
+                           Manage = true
+                       }).ToList();
                 }
                 else if (ConfigrationTables.TLIbaseBU.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.BaseBURepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                     .Select(x => new ConfigurationAttsViewModel
+                     {
+                         Id = x.Id,
+                         Name = x.Name,
+                         TableName = TableName,
+                         Disable = x.Disable,
+                         Manage = false
+                     }).ToList();
                 }
                 else if (ConfigrationTables.TLIrenewableCabinetType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.RenewableCabinetTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0)
-                        .Select(x => new ConfigurationAttsViewModel(x.Id, x.Name, TableName, x.Disable)).ToList();
+                        .Select(x => new ConfigurationAttsViewModel
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            TableName = TableName,
+                            Disable = x.Disable,
+                            Manage = true
+                        }).ToList();
                 }
                 //else if (ConfigrationTables.TLIsideArmType.ToString() == TableName)
                 //{
@@ -13152,30 +13359,68 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
-                     || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
+                if (TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
+                    || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwBULibrary" || TabelName == "TLImwRFULibrary"
+                    || TabelName == "TLImwOtherLibrary" || TabelName == "TLImwOther" || TabelName == "TLIradioAntennaLibrary" || TabelName == "TLIradioOtherLibrary" || TabelName == "TLIradioRRULibrary"
+                    || TabelName == "TLIcabinetPowerLibrary" || TabelName == "TLIcabinetTelecomLibrary" || TabelName == "TLIgeneratorLibrary" || TabelName == "TLIgenerator"
+                    || TabelName == "TLIsolarLibrary" || TabelName == "TLIsolar")
                 {
-                    return new Response<ConfigurationAttsViewModel>(true, null, null, "You cannot Add any item To any list", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<ConfigurationAttsViewModel>(true, null, null, "You cannot modify any item in any list", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                else if (TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
-                   || TabelName == "TLImwDish" || TabelName == "TLImwODU")
+                else if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
+                   || TabelName == "TLImwDish" || TabelName == "TLImwODU" || TabelName == "TLImwBU" || TabelName == "TLImwRFU" || TabelName == "TLIradioAntenna"
+                   || TabelName == "TLIRadioRRU" || TabelName == "TLIradioOther" || TabelName == "TLIpower")
                 {
                     if (ConfigrationTables.TLIowner.ToString() == ListName)
                     {
                         TLIowner tLIowner = new TLIowner()
                         {
                             OwnerName = NewName,
-                             Deleted=false,
-                             Disable=false,
-
+                            Deleted = false,
+                            Disable=false,
                         };
                         _unitOfWork.OwnerRepository.AddWithHistory(UserId, tLIowner);
-                        await _unitOfWork.SaveChangesAsync();
-                        
+                        _unitOfWork.SaveChanges();
                     }
                     else
                     {
                         return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (TabelName == "TLIcabinetPower" || TabelName == "TLIcabinetTelecom")
+                {
+                    if (ConfigrationTables.TLIrenewableCabinetType.ToString() == ListName)
+                    {
+                        TLIrenewableCabinetType tLIrenewableCabinetType = new TLIrenewableCabinetType()
+                        {
+                            Name = NewName,
+                            Deleted = false,
+                            Disable = false
+                        };
+                        _unitOfWork.RenewableCabinetTypeRepository.AddWithHistory(UserId, tLIrenewableCabinetType);
+                        _unitOfWork.SaveChanges();
+                    }
+                    else
+                    {
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (TabelName == "TLImwODULibrary")
+                {
+                    if (ConfigrationTables.TLIparity.ToString() == ListName)
+                    {
+                        TLIparity tLIparity = new TLIparity()
+                        {
+                            Name = NewName,
+                            Delete = false,
+                            Disable = false
+                        };
+                        _unitOfWork.ParityRepository.AddWithHistory(UserId, tLIparity);
+                        _unitOfWork.SaveChanges();
+                    }
+                    else
+                    {
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called parity ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else
@@ -13196,37 +13441,41 @@ namespace TLIS_Service.Services
         {
             try
             {
-                if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
-                     || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary")
+                if (TabelName == "TLIcivilWithLegLibrary" || TabelName == "TLIcivilWithoutLegLibrary" || TabelName == "TLIcivilNonSteelLibrary"
+                                   || TabelName == "TLIsideArmLibrary" || TabelName == "TLImwDishLibrary" || TabelName == "TLImwODULibrary" || TabelName == "TLImwBULibrary" || TabelName == "TLImwRFULibrary"
+                                   || TabelName == "TLImwOtherLibrary" || TabelName == "TLImwOther" || TabelName == "TLIradioAntennaLibrary" || TabelName == "TLIradioOtherLibrary" || TabelName == "TLIradioRRULibrary"
+                                   || TabelName == "TLIcabinetPowerLibrary" || TabelName == "TLIcabinetTelecomLibrary" || TabelName == "TLIgeneratorLibrary" || TabelName == "TLIgenerator"
+                                   || TabelName == "TLIsolarLibrary" || TabelName == "TLIsolar")
                 {
-                    return new Response<ConfigurationAttsViewModel>(true, null, null, "You cannot modify any item in any list", (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<ConfigurationAttsViewModel> (true, null, null, "You cannot modify any item in any list", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                else if (TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
-                   || TabelName == "TLImwDish" || TabelName == "TLImwODU")
+                else if (TabelName == "TLIcivilWithLegs" || TabelName == "TLIcivilWithoutLeg" || TabelName == "TLIcivilNonSteel" || TabelName == "TLIsideArm"
+                   || TabelName == "TLImwDish" || TabelName == "TLImwODU" || TabelName == "TLImwBU" || TabelName == "TLImwRFU" || TabelName == "TLIradioAntenna"
+                   || TabelName == "TLIRadioRRU" || TabelName == "TLIradioOther" || TabelName == "TLIpower")
                 {
                     if (ConfigrationTables.TLIowner.ToString() == ListName)
                     {
                         TLIowner OldEntity = _unitOfWork.OwnerRepository
                               .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
-                        return new Response<ConfigurationAttsViewModel>(false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        
-                        var CheckOwnerInCivil = _unitOfWork.AllCivilInstRepository
-                            .GetIncludeWhereFirst(x => x.civilWithLegs.OwnerId == RecordId ||
-                            x.civilWithoutLeg.OwnerId == RecordId || x.civilNonSteel.ownerId == RecordId,
-                            x => x.civilNonSteel, x => x.civilWithLegs, x => x.civilWithoutLeg);
+                            return new Response < ConfigurationAttsViewModel > (false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckOwnerInCivil = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegs.OwnerId == RecordId ||
+                            x.allCivilInst.civilWithoutLeg.OwnerId == RecordId || x.allCivilInst.civilNonSteel.ownerId
+                            == RecordId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel,
+                            x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg);
+
                         var CheckOwnerInload = _unitOfWork.CivilLoadsRepository
                           .GetIncludeWhereFirst(x => x.sideArm.ownerId == RecordId ||
-                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId,
+                          x.allLoadInst.mwDish.ownerId == RecordId || x.allLoadInst.mwODU.OwnerId == RecordId
+                          || x.allLoadInst.mwBU.OwnerId == RecordId || x.allLoadInst.mwRFU.OwnerId == RecordId
+                          || x.allLoadInst.radioAntenna.ownerId == RecordId || x.allLoadInst.radioOther.ownerId == RecordId
+                          || x.allLoadInst.radioRRU.ownerId == RecordId || x.allLoadInst.power.ownerId == RecordId,
                           x => x.sideArm, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU);
 
                         if (CheckOwnerInCivil == null || CheckOwnerInload == null)
                         {
-
-                            TLIowner CheckName = _unitOfWork.OwnerRepository
-                                .GetWhereFirst(x => x.OwnerName == NewName);
-                            if (CheckName != null)
-                                return new Response<ConfigurationAttsViewModel>(false, null, null, $"this owner name {NewName} is already exist", (int)Helpers.Constants.ApiReturnCode.fail);
 
                             TLIowner NewEntity = _unitOfWork.OwnerRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
@@ -13238,7 +13487,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not update the owner name {OldEntity?.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not change status the owner name{OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -13246,11 +13495,81 @@ namespace TLIS_Service.Services
                         return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
+                else if (TabelName == "TLIcabinetPower" || TabelName == "TLIcabinetTelecom")
+                {
+                    if (ConfigrationTables.TLIrenewableCabinetType.ToString() == ListName)
+                    {
+                        TLIrenewableCabinetType OldEntity = _unitOfWork.RenewableCabinetTypeRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckrenewableCabinetTypeInCabinet = _unitOfWork.OtherInSiteRepository
+                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinet.RenewableCabinetNumberOfBatteries == RecordId
+                            && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
+
+
+                        if (CheckrenewableCabinetTypeInCabinet == null)
+                        {
+
+                            TLIrenewableCabinetType NewEntity = _unitOfWork.RenewableCabinetTypeRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Name = NewName;
+
+                            _unitOfWork.RenewableCabinetTypeRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not change status the renewableCabinetType name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                else if (TabelName == "TLImwODULibrary")
+                {
+                    if (ConfigrationTables.TLIparity.ToString() == ListName)
+                    {
+                        TLIparity OldEntity = _unitOfWork.ParityRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckparityInODU = _unitOfWork.CivilLoadsRepository
+                            .GetIncludeWhereFirst(x => x.allLoadInst.mwODU.MwODULibrary.parityId == RecordId
+                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.MwODULibrary);
+
+
+                        if (CheckparityInODU == null)
+                        {
+
+                            TLIparity NewEntity = _unitOfWork.ParityRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Name = NewName;
+
+                            _unitOfWork.ParityRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not change status the parity  name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else
+                    {
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called parity ", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
                 else
                 {
                     return new Response<ConfigurationAttsViewModel>(false, null, null, $"this tabel name {TabelName} is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
-                return new Response<ConfigurationAttsViewModel>(true, null, null,null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<ConfigurationAttsViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
             }
             catch (Exception ex)
