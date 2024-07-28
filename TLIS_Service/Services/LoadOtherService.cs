@@ -2087,7 +2087,7 @@ namespace TLIS_Service.Services
                         TLIcivilLoads loadOtherInst = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                        .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                        .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && x.allLoadInst.loadOtherId == null && !x.Dismantle);
+                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
                         if (loadOtherInst == null)
                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "loadOther is not found", (int)ApiReturnCode.fail);
