@@ -1089,7 +1089,7 @@ namespace TLIS_Service.Services
 
                                                     if (!string.IsNullOrEmpty(LoadOther.SerialNumber))
                                                     {
-                                                        bool CheckSerialNumber = _dbContext.MV_RADIO_OTHER_VIEW.Any(x => x.SerialNumber == LoadOther.SerialNumber && !x.Dismantle);
+                                                        bool CheckSerialNumber = _dbContext.MV_LOAD_OTHER_VIEW.Any(x => x.SerialNumber == LoadOther.SerialNumber && !x.Dismantle);
                                                         if (CheckSerialNumber)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {LoadOther.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                                                     }
@@ -1128,27 +1128,19 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEG_ID == LoadOtherViewModel.installationConfig.legId
+                                                                x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null
                                                                 && x.Azimuth == LoadOther.Azimuth && x.HeightBase == LoadOther.HeightBase && !x.Dismantle)
                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                 .Select(g => g.First())
                                                                 .ToList();
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the loadOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                        TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == LoadOtherViewModel.installationConfig.legId);
-                                                        if (legname != null && LoadOther.Azimuth > 0 && LoadOther.HeightBase > 0)
-                                                        {
-                                                            LoadOther.Name = legname?.CiviLegName + " " + LoadOther.HeightBase + "HE" + " " + LoadOther.Azimuth + "AZ";
-
-                                                        }
-
-
-                                                        var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
+                                                        var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                    !x.Dismantle &&
                                                                    x.Name.ToLower() == LoadOther.Name.ToLower() &&
                                                                    x.SiteCode.ToLower() == SiteCode.ToLower());
@@ -1246,26 +1238,21 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEG_ID == LoadOtherViewModel.installationConfig.legId
+                                                                x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null
                                                                 && x.Azimuth == LoadOther.Azimuth && x.HeightBase == LoadOther.HeightBase && !x.Dismantle)
                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                 .Select(g => g.First())
                                                                 .ToList();
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the loadOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                        TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == LoadOtherViewModel.installationConfig.legId);
-                                                        if (legname != null && LoadOther.Azimuth > 0 && LoadOther.HeightBase > 0)
-                                                        {
-                                                            LoadOther.Name = legname?.CiviLegName + " " + LoadOther.HeightBase + "HE" + " " + LoadOther.Azimuth + "AZ";
+                                                       
 
-                                                        }
-
-                                                        var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
+                                                        var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                    !x.Dismantle &&
                                                                    x.Name.ToLower() == LoadOther.Name.ToLower() &&
                                                                    x.SiteCode.ToLower() == SiteCode.ToLower());
@@ -1365,7 +1352,7 @@ namespace TLIS_Service.Services
 
                                                             if (!string.IsNullOrEmpty(LoadOther.SerialNumber))
                                                             {
-                                                                bool CheckSerialNumber = _dbContext.MV_RADIO_OTHER_VIEW.Any(x => x.SerialNumber == LoadOther.SerialNumber && !x.Dismantle);
+                                                                bool CheckSerialNumber = _dbContext.MV_LOAD_OTHER_VIEW.Any(x => x.SerialNumber == LoadOther.SerialNumber && !x.Dismantle);
                                                                 if (CheckSerialNumber)
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {LoadOther.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                                                             }
@@ -1405,7 +1392,7 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
+                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                                           x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                           x.SIDEARM_ID == LoadOtherViewModel.installationConfig.sideArmId
                                                                           && x.Azimuth == LoadOther.Azimuth && x.HeightBase ==
@@ -1415,17 +1402,12 @@ namespace TLIS_Service.Services
                                                                             .ToList();
 
                                                                     if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the loadOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
-                                                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                                    if (SideArmName1 != null && LoadOther.Azimuth > 0 && LoadOther.HeightBase > 0)
-                                                                    {
-                                                                        LoadOther.Name = SideArmName1?.Name + " " + LoadOther.HeightBase + "HE" + " " + LoadOther.Azimuth + "AZ";
-                                                                    }
+                                                                  
 
-
-                                                                    var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
+                                                                    var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                                !x.Dismantle &&
                                                                                x.Name.ToLower() == LoadOther.Name.ToLower() &&
                                                                                x.SiteCode.ToLower() == SiteCode.ToLower());
@@ -1522,7 +1504,7 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
+                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                                           x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                           x.SIDEARM_ID == LoadOtherViewModel.installationConfig.sideArmId
                                                                           && x.Azimuth == LoadOther.Azimuth && x.HeightBase ==
@@ -1533,16 +1515,12 @@ namespace TLIS_Service.Services
 
 
                                                                     if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the loadOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-                                                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                                    if (SideArmName1 != null && LoadOther.Azimuth > 0 && LoadOther.HeightBase > 0)
-                                                                    {
-                                                                        LoadOther.Name = SideArmName1?.Name + " " + LoadOther.HeightBase + "HE" + " " + LoadOther.Azimuth + "AZ";
-                                                                    }
+                                                                   
 
 
-                                                                    var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
+                                                                    var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                                !x.Dismantle &&
                                                                                x.Name.ToLower() == LoadOther.Name.ToLower() &&
                                                                                x.SiteCode.ToLower() == SiteCode.ToLower());
@@ -1639,7 +1617,7 @@ namespace TLIS_Service.Services
 
                                                         if (!string.IsNullOrEmpty(LoadOther.SerialNumber))
                                                         {
-                                                            bool CheckSerialNumber = _dbContext.MV_RADIO_OTHER_VIEW.Any(x => x.SerialNumber == LoadOther.SerialNumber && !x.Dismantle);
+                                                            bool CheckSerialNumber = _dbContext.MV_LOAD_OTHER_VIEW.Any(x => x.SerialNumber == LoadOther.SerialNumber && !x.Dismantle);
                                                             if (CheckSerialNumber)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {LoadOther.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                                                         }
@@ -1677,7 +1655,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
+                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                          x.SIDEARM_ID == LoadOtherViewModel.installationConfig.sideArmId
                                                                          && x.Azimuth == LoadOther.Azimuth && x.HeightBase ==
@@ -1688,18 +1666,12 @@ namespace TLIS_Service.Services
 
 
                                                             if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                            var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                            if (SideArmName1 != null && LoadOther.Azimuth > 0 && LoadOther.HeightBase > 0)
-                                                            {
-                                                                LoadOther.Name = SideArmName1?.Name + " " + LoadOther.HeightBase + "HE" + " " + LoadOther.Azimuth + "AZ";
-                                                            }
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the loadOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
 
-                                                            var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
+
+                                                            var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                        !x.Dismantle &&
                                                                        x.Name.ToLower() == LoadOther.Name.ToLower() &&
                                                                        x.SiteCode.ToLower() == SiteCode.ToLower());
@@ -1797,7 +1769,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
+                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                         x.SIDEARM_ID == LoadOtherViewModel.installationConfig.sideArmId
                                                                         && x.Azimuth == LoadOther.Azimuth && x.HeightBase ==
@@ -1808,18 +1780,11 @@ namespace TLIS_Service.Services
 
 
                                                             if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                            var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                            if (SideArmName1 != null && LoadOther.Azimuth > 0 && LoadOther.HeightBase > 0)
-                                                            {
-                                                                LoadOther.Name = SideArmName1?.Name + " " + LoadOther.HeightBase + "HE" + " " + LoadOther.Azimuth + "AZ";
-                                                            }
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the loadOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
 
 
-                                                            var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
+                                                            var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                        !x.Dismantle &&
                                                                        x.Name.ToLower() == LoadOther.Name.ToLower() &&
                                                                        x.SiteCode.ToLower() == SiteCode.ToLower());
@@ -1906,7 +1871,7 @@ namespace TLIS_Service.Services
 
                                                         if (!string.IsNullOrEmpty(LoadOther.SerialNumber))
                                                         {
-                                                            bool CheckSerialNumber = _dbContext.MV_RADIO_OTHER_VIEW.Any(x => x.SerialNumber == LoadOther.SerialNumber && !x.Dismantle);
+                                                            bool CheckSerialNumber = _dbContext.MV_LOAD_OTHER_VIEW.Any(x => x.SerialNumber == LoadOther.SerialNumber && !x.Dismantle);
                                                             if (CheckSerialNumber)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {LoadOther.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                                                         }
@@ -1949,7 +1914,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
+                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                                           x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                           x.SIDEARM_ID == LoadOtherViewModel.installationConfig.sideArmId
                                                                           && x.Azimuth == LoadOther.Azimuth && x.HeightBase ==
@@ -1960,18 +1925,9 @@ namespace TLIS_Service.Services
 
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the loadOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
 
-
-                                                        var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                        if (SideArmName1 != null && LoadOther.Azimuth > 0 && LoadOther.HeightBase > 0)
-                                                        {
-                                                            LoadOther.Name = SideArmName1?.Name + " " + LoadOther.HeightBase + "HE" + " " + LoadOther.Azimuth + "AZ";
-                                                        }
-
-
-
-                                                        var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
+                                                        var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                    !x.Dismantle &&
                                                                    x.Name.ToLower() == LoadOther.Name.ToLower() &&
                                                                    x.SiteCode.ToLower() == SiteCode.ToLower());
@@ -2062,6 +2018,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                                 transaction.Complete();
                             }
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                             return new Response<GetForAddMWDishInstallationObject>();
                         }
                         catch (Exception err)
@@ -2168,22 +2125,17 @@ namespace TLIS_Service.Services
 
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.Id != loadOther.Id
+                                                        x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null && x.Id != loadOther.Id
                                                         && x.Azimuth == loadOther.Azimuth && x.HeightBase == loadOther.HeightBase && !x.Dismantle)
                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                             .Select(g => g.First())
                                                                             .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
 
-                                                TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == LoadOtherViewModel.installationConfig.legId);
-                                                if (legname != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                {
-                                                    loadOther.Name = legname?.CiviLegName + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-
-                                                }
+                                           
                                                 var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != loadOther.Id &&
                                                            x.Name.ToLower() == loadOther.Name.ToLower() &&
@@ -2226,7 +2178,7 @@ namespace TLIS_Service.Services
 
 
                                                     TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                       .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -2297,22 +2249,16 @@ namespace TLIS_Service.Services
                                                 }
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.Id != loadOther.Id
+                                                x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null && x.Id != loadOther.Id
                                                 && x.Azimuth == loadOther.Azimuth && x.HeightBase == loadOther.HeightBase && !x.Dismantle)
                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                     .Select(g => g.First())
                                                                     .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
 
-                                                TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == LoadOtherViewModel.installationConfig.legId);
-                                                if (legname != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                {
-                                                    loadOther.Name = legname?.CiviLegName + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-
-                                                }
 
                                                 var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle && x.Id != loadOther.Id &&
@@ -2344,7 +2290,7 @@ namespace TLIS_Service.Services
 
 
                                                     TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                       .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -2415,23 +2361,17 @@ namespace TLIS_Service.Services
 
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.Id != loadOther.Id
+                                                        x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null && x.Id != loadOther.Id
                                                         && x.Azimuth == loadOther.Azimuth && x.HeightBase == loadOther.HeightBase && !x.Dismantle)
                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                     .Select(g => g.First())
                                                                     .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
 
-                                                TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == LoadOtherViewModel.installationConfig.legId);
-                                                if (legname != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                {
-                                                    loadOther.Name = legname?.CiviLegName + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-
-                                                }
-
+                                            
                                                 var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                        !x.Dismantle && x.Id != loadOther.Id &&
                                                        x.Name.ToLower() == loadOther.Name.ToLower() &&
@@ -2476,7 +2416,7 @@ namespace TLIS_Service.Services
 
 
                                                     TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                       .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -2547,23 +2487,17 @@ namespace TLIS_Service.Services
 
                                                 var CheckAzimuthAndHeightBase = _dbContext.MV_LOAD_OTHER_VIEW.Where(
                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.Id != loadOther.Id
+                                                        x.LEG_ID == LoadOtherViewModel.installationConfig.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null && x.Id != loadOther.Id
                                                         && x.Azimuth == loadOther.Azimuth && x.HeightBase == loadOther.HeightBase && !x.Dismantle)
                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                     .Select(g => g.First())
                                                                     .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
 
-                                                TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == LoadOtherViewModel.installationConfig.legId);
-                                                if (legname != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                {
-                                                    loadOther.Name = legname?.CiviLegName + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-
-                                                }
-
+                                             
                                                 var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != loadOther.Id &&
                                                            x.Name.ToLower() == loadOther.Name.ToLower() &&
@@ -2586,7 +2520,7 @@ namespace TLIS_Service.Services
 
 
                                                     TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                       .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -2731,14 +2665,9 @@ namespace TLIS_Service.Services
                                                               .ToList();
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
-                                                        var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                        if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                        {
-                                                            loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + " " + loadOther.Azimuth;
-                                                        }
-
+                                                    
                                                         var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                   !x.Dismantle && x.Id != loadOther.Id &&
                                                                   x.Name.ToLower() == loadOther.Name.ToLower() &&
@@ -2782,7 +2711,7 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                                 .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -2859,13 +2788,8 @@ namespace TLIS_Service.Services
                                                               .ToList();
 
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
-                                                        var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                        if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                        {
-                                                            loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-                                                        }
 
                                                         var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != loadOther.Id &&
@@ -2897,7 +2821,7 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                                 .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -2974,14 +2898,9 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                               .ToList();
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
-                                                        var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                        if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                        {
-                                                            loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-                                                        }
-
+                                                     
 
                                                         var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle && x.Id != loadOther.Id &&
@@ -3027,7 +2946,7 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                                 .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -3104,12 +3023,8 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                               .ToList();
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                                        var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                        if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                        {
-                                                            loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-                                                        }
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
+                                                    
 
                                                         var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle && x.Id != loadOther.Id &&
@@ -3133,7 +3048,7 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                                 .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -3273,14 +3188,10 @@ namespace TLIS_Service.Services
                                                               .ToList();
 
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
 
-                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                    if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                    {
-                                                        loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-                                                    }
+                                             
                                                     var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                                !x.Dismantle && x.Id != loadOther.Id &&
                                                                x.Name.ToLower() == loadOther.Name.ToLower() &&
@@ -3324,7 +3235,7 @@ namespace TLIS_Service.Services
 
 
                                                         TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                           .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                           .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -3402,13 +3313,9 @@ namespace TLIS_Service.Services
                                                               .ToList();
 
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
-                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                    if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                    {
-                                                        loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-                                                    }
+                                            
 
                                                     var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle && x.Id != loadOther.Id &&
@@ -3440,7 +3347,7 @@ namespace TLIS_Service.Services
 
 
                                                         TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                           .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                           .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -3517,13 +3424,7 @@ namespace TLIS_Service.Services
                                                               .ToList();
 
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                    if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                    {
-                                                        loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-                                                    }
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
                                                     var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != loadOther.Id &&
@@ -3569,7 +3470,7 @@ namespace TLIS_Service.Services
 
 
                                                         TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                           .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                           .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -3647,13 +3548,9 @@ namespace TLIS_Service.Services
                                                               .ToList();
 
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
-                                                    var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                    if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                    {
-                                                        loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-                                                    }
+                                              
 
                                                     var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle && x.Id != loadOther.Id &&
@@ -3676,7 +3573,7 @@ namespace TLIS_Service.Services
                                                             .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
                                                         TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                           .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                           .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -3809,13 +3706,9 @@ namespace TLIS_Service.Services
                                                               .ToList();
 
                                                 if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the LoadOther on same azimuth and height because found other LoadOther in same angle", (int)ApiReturnCode.fail);
 
-                                                var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == LoadOtherViewModel.installationConfig.sideArmId);
-                                                if (SideArmName != null && loadOther.Azimuth > 0 && loadOther.HeightBase > 0)
-                                                {
-                                                    loadOther.Name = SideArmName?.Name + " " + loadOther.HeightBase + "HE" + " " + loadOther.Azimuth + "AZ";
-                                                }
+                                             
 
                                                 var CheckName = _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != loadOther.Id &&
@@ -3839,7 +3732,7 @@ namespace TLIS_Service.Services
 
 
                                                     TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
                                                       .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                                                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
 
@@ -3906,6 +3799,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
                 catch (Exception err)

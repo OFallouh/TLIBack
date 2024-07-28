@@ -3268,104 +3268,107 @@ namespace TLIS_Service.Services
                                 var allloadinst = _dbContext.TLIallLoadInst.Where(x => x.Id == civilload).Include(x => x.mwBU).Include(x => x.mwDish).Include(x => x.mwODU).
                                     Include(x => x.mwOther).Include(x => x.mwRFU).Include(x => x.radioAntenna).Include(x => x.radioRRU).Include(x => x.radioOther).
                                     Include(x => x.power).Include(x => x.loadOther).FirstOrDefault();
-                                if (allloadinst.mwBUId != null)
+                                if (allloadinst != null)
                                 {
-                                    var OldValueMWBU = _dbContext.TLImwBU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwBUId);
-                                    TLImwBU tLImwBU = allloadinst.mwBU;
-                                    tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                    _unitOfWork.MW_BURepository.UpdateWithHistory(userId, OldValueMWBU, tLImwBU);
-                                    _dbContext.SaveChanges();
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWBU.EquivalentSpace;
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
-                                }
-                                if (allloadinst.mwDishId != null)
-                                {
-                                    var OldValueMWDish = _dbContext.TLImwDish.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwDishId);
-                                    TLImwDish tLImwDish = allloadinst.mwDish;
-                                    tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                    _unitOfWork.MW_DishRepository.UpdateWithHistory(userId, OldValueMWDish, tLImwDish);
-                                    _dbContext.SaveChanges();
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWDish.EquivalentSpace;
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
-                                
-                                }
-                                if (allloadinst.mwODUId != null)
-                                {
-                                    var CivilloadMWODU = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
-                                        x => x.allLoadInst.mwODUId == allloadinst.mwODUId && !x.Dismantle && x.ReservedSpace == true
-                                    ,x=>x.allLoadInst,x=>x.allLoadInst.mwODU,x=>x.allLoadInst.mwODU.OduInstallationType );
-                                    if (CivilloadMWODU.allLoadInst.mwODU.OduInstallationType.Name.ToLower() != "direct mount")
+                                    if (allloadinst.mwBUId != null)
                                     {
-                                        var OldValueMWODU = _dbContext.TLImwODU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwODUId);
-                                        TLImwODU tLImwODU = allloadinst.mwODU;
-                                        tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.MW_ODURepository.UpdateWithHistory(userId, OldValueMWODU, tLImwODU);
+                                        var OldValueMWBU = _dbContext.TLImwBU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwBUId);
+                                        TLImwBU tLImwBU = allloadinst.mwBU;
+                                        tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                        _unitOfWork.MW_BURepository.UpdateWithHistory(userId, OldValueMWBU, tLImwBU);
                                         _dbContext.SaveChanges();
-                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWODU.EquivalentSpace;
-                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWBU.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
                                     }
-                                }
-                                if (allloadinst.mwOtherId != null)
-                                {
-                                    var OldValueMWOther = _dbContext.TLImwOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwOtherId);
-                                    TLImwOther tLImwOther = allloadinst.mwOther;
-                                    tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                    _unitOfWork.Mw_OtherRepository.UpdateWithHistory(userId, OldValueMWOther, tLImwOther);
-                                    _dbContext.SaveChanges();
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWOther.EquivalentSpace;
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
-                                }
-                                if (allloadinst.radioAntennaId != null)
-                                {
-                                    var OldValueRadioAntenna = _dbContext.TLIradioAntenna.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioAntennaId);
-                                    TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
-                                    tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                    _unitOfWork.RadioAntennaRepository.UpdateWithHistory(userId, OldValueRadioAntenna, tLIradioAntenna);
-                                    _dbContext.SaveChanges();
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioAntenna.EquivalentSpace;
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
-                                }
-                                if (allloadinst.radioRRUId != null)
-                                {
-                                    var OldValueRadioRRU = _dbContext.TLIRadioRRU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioRRUId);
-                                    TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
-                                    tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                    _unitOfWork.RadioRRURepository.UpdateWithHistory(userId, OldValueRadioRRU, tLIRadioRRU);
-                                    _dbContext.SaveChanges();
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioRRU.EquivalentSpace;
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
-                                }
-                                if (allloadinst.radioOtherId != null)
-                                {
-                                    var OldValueRadioOther = _dbContext.TLIradioOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioOtherId);
-                                    TLIradioOther tLIradioOther = allloadinst.radioOther;
-                                    tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                    _unitOfWork.RadioOtherRepository.UpdateWithHistory(userId, OldValueRadioOther, tLIradioOther);
-                                    _dbContext.SaveChanges();
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioOther.EquivalentSpace;
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
-                                }
-                                if (allloadinst.powerId != null)
-                                {
-                                    var OldValuePower = _dbContext.TLIpower.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.powerId);
-                                    TLIpower tLIpower = allloadinst.power;
-                                    tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                    _unitOfWork.PowerRepository.UpdateWithHistory(userId, OldValuePower, tLIpower);
-                                    _dbContext.SaveChanges();
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValuePower.EquivalentSpace;
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
-                                }
-                                if (allloadinst.loadOtherId != null)
-                                {
-                                    var OldValueloadOther = _dbContext.TLIloadOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.loadOtherId);
-                                    TLIloadOther tLIloadOther = allloadinst.loadOther;
-                                    tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                    _unitOfWork.LoadOtherRepository.UpdateWithHistory(userId, OldValueloadOther, tLIloadOther);
-                                    _dbContext.SaveChanges();
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueloadOther.EquivalentSpace;
-                                    civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
-                                }
+                                    if (allloadinst.mwDishId != null)
+                                    {
+                                        var OldValueMWDish = _dbContext.TLImwDish.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwDishId);
+                                        TLImwDish tLImwDish = allloadinst.mwDish;
+                                        tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                        _unitOfWork.MW_DishRepository.UpdateWithHistory(userId, OldValueMWDish, tLImwDish);
+                                        _dbContext.SaveChanges();
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWDish.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
 
+                                    }
+                                    if (allloadinst.mwODUId != null)
+                                    {
+                                        var CivilloadMWODU = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
+                                            x => x.allLoadInst.mwODUId == allloadinst.mwODUId && !x.Dismantle && x.ReservedSpace == true
+                                        , x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.OduInstallationType);
+                                        if (CivilloadMWODU.allLoadInst.mwODU.OduInstallationType.Name.ToLower() != "direct mount")
+                                        {
+                                            var OldValueMWODU = _dbContext.TLImwODU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwODUId);
+                                            TLImwODU tLImwODU = allloadinst.mwODU;
+                                            tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                            _unitOfWork.MW_ODURepository.UpdateWithHistory(userId, OldValueMWODU, tLImwODU);
+                                            _dbContext.SaveChanges();
+                                            civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWODU.EquivalentSpace;
+                                            civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
+                                        }
+                                    }
+                                    if (allloadinst.mwOtherId != null)
+                                    {
+                                        var OldValueMWOther = _dbContext.TLImwOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwOtherId);
+                                        TLImwOther tLImwOther = allloadinst.mwOther;
+                                        tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                        _unitOfWork.Mw_OtherRepository.UpdateWithHistory(userId, OldValueMWOther, tLImwOther);
+                                        _dbContext.SaveChanges();
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWOther.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
+                                    }
+                                    if (allloadinst.radioAntennaId != null)
+                                    {
+                                        var OldValueRadioAntenna = _dbContext.TLIradioAntenna.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioAntennaId);
+                                        TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
+                                        tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                        _unitOfWork.RadioAntennaRepository.UpdateWithHistory(userId, OldValueRadioAntenna, tLIradioAntenna);
+                                        _dbContext.SaveChanges();
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioAntenna.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
+                                    }
+                                    if (allloadinst.radioRRUId != null)
+                                    {
+                                        var OldValueRadioRRU = _dbContext.TLIRadioRRU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioRRUId);
+                                        TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
+                                        tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                        _unitOfWork.RadioRRURepository.UpdateWithHistory(userId, OldValueRadioRRU, tLIRadioRRU);
+                                        _dbContext.SaveChanges();
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioRRU.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
+                                    }
+                                    if (allloadinst.radioOtherId != null)
+                                    {
+                                        var OldValueRadioOther = _dbContext.TLIradioOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioOtherId);
+                                        TLIradioOther tLIradioOther = allloadinst.radioOther;
+                                        tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                        _unitOfWork.RadioOtherRepository.UpdateWithHistory(userId, OldValueRadioOther, tLIradioOther);
+                                        _dbContext.SaveChanges();
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioOther.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
+                                    }
+                                    if (allloadinst.powerId != null)
+                                    {
+                                        var OldValuePower = _dbContext.TLIpower.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.powerId);
+                                        TLIpower tLIpower = allloadinst.power;
+                                        tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                        _unitOfWork.PowerRepository.UpdateWithHistory(userId, OldValuePower, tLIpower);
+                                        _dbContext.SaveChanges();
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValuePower.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
+                                    }
+                                    if (allloadinst.loadOtherId != null)
+                                    {
+                                        var OldValueloadOther = _dbContext.TLIloadOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.loadOtherId);
+                                        TLIloadOther tLIloadOther = allloadinst.loadOther;
+                                        tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
+                                        _unitOfWork.LoadOtherRepository.UpdateWithHistory(userId, OldValueloadOther, tLIloadOther);
+                                        _dbContext.SaveChanges();
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueloadOther.EquivalentSpace;
+                                        civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
+                                    }
+
+                                }
                             }
 
                         }
@@ -3687,104 +3690,107 @@ namespace TLIS_Service.Services
                                 var allloadinst = _dbContext.TLIallLoadInst.Where(x => x.Id == civilload).Include(x => x.mwBU).Include(x => x.mwDish).Include(x => x.mwODU).
                                     Include(x => x.mwOther).Include(x => x.mwRFU).Include(x => x.radioAntenna).Include(x => x.radioRRU).Include(x => x.radioOther).
                                     Include(x => x.power).Include(x => x.loadOther).FirstOrDefault();
-                                if (allloadinst.mwBUId != null)
+                                if (allloadinst != null)
                                 {
-                                    var OldValueMWBU = _dbContext.TLImwBU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwBUId);
-                                    TLImwBU tLImwBU = allloadinst.mwBU;
-                                    tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                    _unitOfWork.MW_BURepository.UpdateWithHistory(userId, OldValueMWBU, tLImwBU);
-                                    _dbContext.SaveChanges();
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueMWBU.EquivalentSpace;
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
-                                }
-                                if (allloadinst.mwDishId != null)
-                                {
-                                    var OldValueMWDish = _dbContext.TLImwDish.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwDishId);
-                                    TLImwDish tLImwDish = allloadinst.mwDish;
-                                    tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                    _unitOfWork.MW_DishRepository.UpdateWithHistory(userId, OldValueMWDish, tLImwDish);
-                                    _dbContext.SaveChanges();
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueMWDish.EquivalentSpace;
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
-
-                                }
-                                if (allloadinst.mwODUId != null)
-                                {
-                                    var CivilloadMWODU = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
-                                        x => x.allLoadInst.mwODUId == allloadinst.mwODUId && !x.Dismantle && x.ReservedSpace == true
-                                    , x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.OduInstallationType);
-                                    if (CivilloadMWODU.allLoadInst.mwODU.OduInstallationType.Name.ToLower() != "direct mount")
+                                    if (allloadinst.mwBUId != null)
                                     {
-                                        var OldValueMWODU = _dbContext.TLImwODU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwODUId);
-                                        TLImwODU tLImwODU = allloadinst.mwODU;
-                                        tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                        _unitOfWork.MW_ODURepository.UpdateWithHistory(userId, OldValueMWODU, tLImwODU);
+                                        var OldValueMWBU = _dbContext.TLImwBU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwBUId);
+                                        TLImwBU tLImwBU = allloadinst.mwBU;
+                                        tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                        _unitOfWork.MW_BURepository.UpdateWithHistory(userId, OldValueMWBU, tLImwBU);
                                         _dbContext.SaveChanges();
-                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueMWODU.EquivalentSpace;
-                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueMWBU.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
                                     }
-                                }
-                                if (allloadinst.mwOtherId != null)
-                                {
-                                    var OldValueMWOther = _dbContext.TLImwOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwOtherId);
-                                    TLImwOther tLImwOther = allloadinst.mwOther;
-                                    tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                    _unitOfWork.Mw_OtherRepository.UpdateWithHistory(userId, OldValueMWOther, tLImwOther);
-                                    _dbContext.SaveChanges();
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueMWOther.EquivalentSpace;
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
-                                }
-                                if (allloadinst.radioAntennaId != null)
-                                {
-                                    var OldValueRadioAntenna = _dbContext.TLIradioAntenna.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioAntennaId);
-                                    TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
-                                    tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                    _unitOfWork.RadioAntennaRepository.UpdateWithHistory(userId, OldValueRadioAntenna, tLIradioAntenna);
-                                    _dbContext.SaveChanges();
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueRadioAntenna.EquivalentSpace;
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
-                                }
-                                if (allloadinst.radioRRUId != null)
-                                {
-                                    var OldValueRadioRRU = _dbContext.TLIRadioRRU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioRRUId);
-                                    TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
-                                    tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                    _unitOfWork.RadioRRURepository.UpdateWithHistory(userId, OldValueRadioRRU, tLIRadioRRU);
-                                    _dbContext.SaveChanges();
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueRadioRRU.EquivalentSpace;
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
-                                }
-                                if (allloadinst.radioOtherId != null)
-                                {
-                                    var OldValueRadioOther = _dbContext.TLIradioOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioOtherId);
-                                    TLIradioOther tLIradioOther = allloadinst.radioOther;
-                                    tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                    _unitOfWork.RadioOtherRepository.UpdateWithHistory(userId, OldValueRadioOther, tLIradioOther);
-                                    _dbContext.SaveChanges();
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueRadioOther.EquivalentSpace;
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
-                                }
-                                if (allloadinst.powerId != null)
-                                {
-                                    var OldValuePower = _dbContext.TLIpower.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.powerId);
-                                    TLIpower tLIpower = allloadinst.power;
-                                    tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                    _unitOfWork.PowerRepository.UpdateWithHistory(userId, OldValuePower, tLIpower);
-                                    _dbContext.SaveChanges();
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValuePower.EquivalentSpace;
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
-                                }
-                                if (allloadinst.loadOtherId != null)
-                                {
-                                    var OldValueloadOther = _dbContext.TLIloadOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.loadOtherId);
-                                    TLIloadOther tLIloadOther = allloadinst.loadOther;
-                                    tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
-                                    _unitOfWork.LoadOtherRepository.UpdateWithHistory(userId, OldValueloadOther, tLIloadOther);
-                                    _dbContext.SaveChanges();
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueloadOther.EquivalentSpace;
-                                    civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
-                                }
+                                    if (allloadinst.mwDishId != null)
+                                    {
+                                        var OldValueMWDish = _dbContext.TLImwDish.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwDishId);
+                                        TLImwDish tLImwDish = allloadinst.mwDish;
+                                        tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                        _unitOfWork.MW_DishRepository.UpdateWithHistory(userId, OldValueMWDish, tLImwDish);
+                                        _dbContext.SaveChanges();
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueMWDish.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
 
+                                    }
+                                    if (allloadinst.mwODUId != null)
+                                    {
+                                        var CivilloadMWODU = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
+                                            x => x.allLoadInst.mwODUId == allloadinst.mwODUId && !x.Dismantle && x.ReservedSpace == true
+                                        , x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.OduInstallationType);
+                                        if (CivilloadMWODU.allLoadInst.mwODU.OduInstallationType.Name.ToLower() != "direct mount")
+                                        {
+                                            var OldValueMWODU = _dbContext.TLImwODU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwODUId);
+                                            TLImwODU tLImwODU = allloadinst.mwODU;
+                                            tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                            _unitOfWork.MW_ODURepository.UpdateWithHistory(userId, OldValueMWODU, tLImwODU);
+                                            _dbContext.SaveChanges();
+                                            civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueMWODU.EquivalentSpace;
+                                            civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
+                                        }
+                                    }
+                                    if (allloadinst.mwOtherId != null)
+                                    {
+                                        var OldValueMWOther = _dbContext.TLImwOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwOtherId);
+                                        TLImwOther tLImwOther = allloadinst.mwOther;
+                                        tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                        _unitOfWork.Mw_OtherRepository.UpdateWithHistory(userId, OldValueMWOther, tLImwOther);
+                                        _dbContext.SaveChanges();
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueMWOther.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
+                                    }
+                                    if (allloadinst.radioAntennaId != null)
+                                    {
+                                        var OldValueRadioAntenna = _dbContext.TLIradioAntenna.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioAntennaId);
+                                        TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
+                                        tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                        _unitOfWork.RadioAntennaRepository.UpdateWithHistory(userId, OldValueRadioAntenna, tLIradioAntenna);
+                                        _dbContext.SaveChanges();
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueRadioAntenna.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
+                                    }
+                                    if (allloadinst.radioRRUId != null)
+                                    {
+                                        var OldValueRadioRRU = _dbContext.TLIRadioRRU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioRRUId);
+                                        TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
+                                        tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                        _unitOfWork.RadioRRURepository.UpdateWithHistory(userId, OldValueRadioRRU, tLIRadioRRU);
+                                        _dbContext.SaveChanges();
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueRadioRRU.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
+                                    }
+                                    if (allloadinst.radioOtherId != null)
+                                    {
+                                        var OldValueRadioOther = _dbContext.TLIradioOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioOtherId);
+                                        TLIradioOther tLIradioOther = allloadinst.radioOther;
+                                        tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                        _unitOfWork.RadioOtherRepository.UpdateWithHistory(userId, OldValueRadioOther, tLIradioOther);
+                                        _dbContext.SaveChanges();
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueRadioOther.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
+                                    }
+                                    if (allloadinst.powerId != null)
+                                    {
+                                        var OldValuePower = _dbContext.TLIpower.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.powerId);
+                                        TLIpower tLIpower = allloadinst.power;
+                                        tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                        _unitOfWork.PowerRepository.UpdateWithHistory(userId, OldValuePower, tLIpower);
+                                        _dbContext.SaveChanges();
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValuePower.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
+                                    }
+                                    if (allloadinst.loadOtherId != null)
+                                    {
+                                        var OldValueloadOther = _dbContext.TLIloadOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.loadOtherId);
+                                        TLIloadOther tLIloadOther = allloadinst.loadOther;
+                                        tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithoutLegsEntity.HeightBase);
+                                        _unitOfWork.LoadOtherRepository.UpdateWithHistory(userId, OldValueloadOther, tLIloadOther);
+                                        _dbContext.SaveChanges();
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads - OldValueloadOther.EquivalentSpace;
+                                        civilWithoutLegsEntity.CurrentLoads = civilWithoutLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
+                                    }
+
+                                }
                             }
 
                         }
@@ -12821,6 +12827,12 @@ namespace TLIS_Service.Services
                         , x => x.allLoadInst.radioRRU
                         , x => x.allLoadInst.loadOther, x => x.allLoadInst.power).ToList();
                         AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                        if(AllLoadOnCivil.Count == 0)
+                        {
+                            AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                            _dbContext.TLIcivilWithLegs.Update(AllCivilInst.civilWithLegs);
+                            _dbContext.SaveChanges();
+                        }
                         foreach (var item in AllLoadOnCivil)
                         {
                             if (item.allLoadInst != null)
@@ -13659,6 +13671,12 @@ namespace TLIS_Service.Services
                         x => x.allLoadInst.mwRFU , x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther, x => x.allLoadInst.radioAntenna,
                         x => x.allLoadInst.radioOther , x => x.allLoadInst.radioRRU, x => x.allLoadInst.loadOther, x => x.allLoadInst.power).ToList();
                         AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                        if (AllLoadOnCivil.Count == 0)
+                        {
+                            AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                            _dbContext.TLIcivilWithLegs.Update(AllCivilInst.civilWithLegs);
+                            _dbContext.SaveChanges();
+                        }
                         foreach (var item in AllLoadOnCivil)
                         {
                             if (item.allLoadInst != null)
