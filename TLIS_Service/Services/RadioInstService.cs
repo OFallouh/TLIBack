@@ -13838,7 +13838,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivatedGetForAdd(TablesNames.TLIradioOther.ToString(), RadioOther.allLoadInst.radioAntenna
+                        .GetInstAttributeActivatedGetForAdd(TablesNames.TLIradioOther.ToString(), RadioOther.allLoadInst.radioOther
                             ).ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
