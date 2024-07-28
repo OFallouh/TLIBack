@@ -8241,7 +8241,7 @@ namespace TLIS_Service.Services
                         TLIcivilLoads radioOtherInst = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                        .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
                        .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && x.allLoadInst.radioOtherId == null && !x.Dismantle);
+                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
 
                         if (radioOtherInst == null)
                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "radioOtheris not found", (int)ApiReturnCode.fail);

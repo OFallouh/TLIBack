@@ -116,7 +116,7 @@ namespace TLIS_API.Controllers
             }
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpGet("DismantleLoadOther")]
+        [HttpPost("DismantleLoadOther")]
 
         public IActionResult DismantleLoadOther(string sitecode, int Id , int? TaskId)
         {
