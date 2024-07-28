@@ -13764,7 +13764,7 @@ namespace TLIS_Service.Services
                             TLIowner NewEntity = _unitOfWork.OwnerRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.Disable = true;
+                            NewEntity.Deleted = true;
 
                             _unitOfWork.OwnerRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
@@ -13800,7 +13800,7 @@ namespace TLIS_Service.Services
                             TLIrenewableCabinetType NewEntity = _unitOfWork.RenewableCabinetTypeRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.Disable = true;
+                            NewEntity.Deleted = true;
 
                             _unitOfWork.RenewableCabinetTypeRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
@@ -13835,7 +13835,7 @@ namespace TLIS_Service.Services
                             TLIparity NewEntity = _unitOfWork.ParityRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.Disable = true;
+                            NewEntity.Delete = true;
 
                             _unitOfWork.ParityRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();

@@ -282,6 +282,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditInstallationLoadOtherConfigObject, TLIloadOtherLibrary>().ReverseMap();
             CreateMap<EditMWOtherLibraryAttributes, TLImwOtherLibrary>().ReverseMap();
             CreateMap<EditRadioOtherLibraryAttributes, TLIradioOtherLibrary>().ReverseMap();
+            CreateMap<EditInstallationLoadOtherAttributeObject, TLIloadOther>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
