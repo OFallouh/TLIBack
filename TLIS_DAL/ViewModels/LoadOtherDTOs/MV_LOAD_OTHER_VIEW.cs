@@ -33,7 +33,7 @@ namespace TLIS_DAL.ViewModels.LoadOtherDTOs
         public int CIVIL_ID { get; set; }
         public int ALLCIVILINST_ID { get; set; }
         public int ALLLOAD_ID { get; set; }
-        public int LEG_ID { get; set; }
+        public int? LEG_ID { get; set; }
         public bool Dismantle { get; set; }
         public int? SIDEARM_ID { get; set; }
         public int? SideArmSec_Id { get; set; }
