@@ -13824,7 +13824,7 @@ namespace TLIS_Service.Services
 
                 if (RadioOther != null)
                 {
-                    EditRadioAntennaLibraryAttributes RadioOtherLibrary = _mapper.Map<EditRadioAntennaLibraryAttributes>(RadioOther.allLoadInst.radioOther.radioOtherLibrary);
+                    EditRadioOtherLibraryAttributes RadioOtherLibrary = _mapper.Map<EditRadioOtherLibraryAttributes>(RadioOther.allLoadInst.radioOther.radioOtherLibrary);
 
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivatedGetLibrary(TablesNames.TLIradioOtherLibrary.ToString(), RadioOtherLibrary, null).ToList();
@@ -13855,7 +13855,7 @@ namespace TLIS_Service.Services
                         {
 
                             case "owner_name":
-                                if (RadioOther.allLoadInst.radioAntenna.owner != null)
+                                if (RadioOther.allLoadInst.radioOther.owner != null)
                                 {
                                     FKitem.Value = _mapper.Map<OwnerViewModel>(RadioOther.allLoadInst.radioOther.owner);
                                     FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
