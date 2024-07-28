@@ -5263,16 +5263,16 @@ namespace TLIS_Service.Services
                                                                x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                                x.LEG_ID == AddMW_BU.installationConfig.legId &&
                                                                 x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
                                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                               (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                              x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && x.LEG_ID == AddMW_BU.installationConfig.legId &&
+                                                              x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && 
                                                                x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.LEG_ID, x.Azimuth, x.Height })
+                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
                                                                .Select(g => g.First())
                                                                .ToList();
 
@@ -5304,7 +5304,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                               && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
@@ -5315,7 +5315,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                               && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
+                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
                                                                .Select(g => g.First())
                                                                .ToList();
 
@@ -5450,7 +5450,7 @@ namespace TLIS_Service.Services
                                                               x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
 
                                                                x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
@@ -5459,7 +5459,7 @@ namespace TLIS_Service.Services
                                                               (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
                                                               x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                                x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
+                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
                                                                .Select(g => g.First())
                                                                .ToList();
 
@@ -5490,7 +5490,7 @@ namespace TLIS_Service.Services
                                                                || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                                && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                                x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                .Select(g => g.First())
                                                                  .ToList();
 
@@ -5501,7 +5501,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                               && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
+                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
                                                                .Select(g => g.First())
                                                                .ToList();
 
@@ -5774,16 +5774,16 @@ namespace TLIS_Service.Services
                                                              x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                              x.LEG_ID == AddMW_BU.installationConfig.legId &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
                                                         List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                           (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                          x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && x.LEG_ID == AddMW_BU.installationConfig.legId &&
+                                                          x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                            x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.LEG_ID, x.Azimuth, x.Height })
+                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id ,x.SiteCode, x.Azimuth, x.Height })
                                                            .Select(g => g.First())
                                                            .ToList();
                                                         if (CheckAzimuthAndHeight.Count > 0)
@@ -5812,7 +5812,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                               && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
@@ -5823,7 +5823,7 @@ namespace TLIS_Service.Services
                                                           || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                           && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                           x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id ,x.SiteCode, x.Azimuth, x.Height })
                                                            .Select(g => g.First())
                                                            .ToList();
 
@@ -5953,16 +5953,16 @@ namespace TLIS_Service.Services
                                                                 x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                                 x.LEG_ID == AddMW_BU.installationConfig.legId &&
                                                                  x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
                                                         List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                           (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                          x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && x.LEG_ID == AddMW_BU.installationConfig.legId &&
+                                                          x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && 
                                                            x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.LEG_ID, x.Azimuth, x.Height })
+                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
                                                            .Select(g => g.First())
                                                            .ToList();
                                                         if (CheckAzimuthAndHeight.Count > 0)
@@ -5991,7 +5991,7 @@ namespace TLIS_Service.Services
                                                                 || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                                 && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                                 x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                   .ToList();
 
@@ -6002,7 +6002,7 @@ namespace TLIS_Service.Services
                                                           || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                           && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                           x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
                                                            .Select(g => g.First())
                                                            .ToList();
 
@@ -6277,16 +6277,16 @@ namespace TLIS_Service.Services
                                                                     x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                                     x.LEG_ID == AddMW_BU.installationConfig.legId &&
                                                                      x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
                                                     List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                       (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                      x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && x.LEG_ID == AddMW_BU.installationConfig.legId &&
+                                                      x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && 
                                                        x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.LEG_ID, x.Azimuth, x.Height })
+                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
                                                        .Select(g => g.First())
                                                        .ToList();
                                                     if (CheckAzimuthAndHeight.Count > 0)
@@ -6315,7 +6315,7 @@ namespace TLIS_Service.Services
                                                         || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                         && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                         x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                         .Select(g => g.First())
                                                             .ToList();
 
@@ -6326,7 +6326,7 @@ namespace TLIS_Service.Services
                                                       || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
                                                       && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
                                                       x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.Height })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
                                                        .Select(g => g.First())
                                                        .ToList();
 
@@ -6901,16 +6901,16 @@ namespace TLIS_Service.Services
                                                                x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                                x.LEG_ID == AddMW_Dish.installationConfig.legId &&
                                                                 x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
                                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                               (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
-                                                              x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) && x.LEG_ID == AddMW_Dish.installationConfig.legId &&
+                                                              x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                                x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.LEG_ID, x.Azimuth, x.HeightBase })
+                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                .Select(g => g.First())
                                                                .ToList();
 
@@ -6942,7 +6942,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                                && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                              .GroupBy(x => new { x.ALLCIVILINST_ID,x.SIDEARM_ID,x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
@@ -6953,7 +6953,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                                && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                .Select(g => g.First())
                                                                .ToList();
 
@@ -7128,7 +7128,7 @@ namespace TLIS_Service.Services
                                                               x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
 
                                                                x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
@@ -7137,7 +7137,7 @@ namespace TLIS_Service.Services
                                                               (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
                                                               x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                                x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                .Select(g => g.First())
                                                                .ToList();
 
@@ -7168,7 +7168,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                                && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode })
+                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode })
                                                                 .Select(g => g.First())
                                                                 .ToList();
 
@@ -7180,7 +7180,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                                && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &
                                                               x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                                .Select(g => g.First())
                                                                .ToList();
                                                             if (CheckAzimuthAndHeightBase.Count > 0)
@@ -7370,16 +7370,16 @@ namespace TLIS_Service.Services
                                                              x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                              x.LEG_ID == AddMW_Dish.installationConfig.legId &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
                                                         List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                           (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
-                                                          x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) && x.LEG_ID == AddMW_Dish.installationConfig.legId &&
+                                                          x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                            x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.LEG_ID, x.Azimuth, x.HeightBase })
+                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                            .Select(g => g.First())
                                                            .ToList();
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
@@ -7408,7 +7408,7 @@ namespace TLIS_Service.Services
                                                               || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                                && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
@@ -7420,7 +7420,7 @@ namespace TLIS_Service.Services
                                                           || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                            && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &
                                                           x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                            .Select(g => g.First())
                                                            .ToList();
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
@@ -7590,16 +7590,16 @@ namespace TLIS_Service.Services
                                                                 x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                                 x.LEG_ID == AddMW_Dish.installationConfig.legId &&
                                                                  x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
                                                         List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                           (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
-                                                          x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) && x.LEG_ID == AddMW_Dish.installationConfig.legId &&
+                                                          x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                            x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.LEG_ID, x.Azimuth, x.HeightBase })
+                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                            .Select(g => g.First())
                                                            .ToList();
                                                         if (CheckAzimuthAndHeightBase.Count > 0)
@@ -7628,7 +7628,7 @@ namespace TLIS_Service.Services
                                                         || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                          && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                         x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                         .Select(g => g.First())
                                                           .ToList();
 
@@ -7640,7 +7640,7 @@ namespace TLIS_Service.Services
                                                           || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                            && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &
                                                           x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                            .Select(g => g.First())
                                                            .ToList();
 
@@ -7832,16 +7832,16 @@ namespace TLIS_Service.Services
                                                                     x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                                     x.LEG_ID == AddMW_Dish.installationConfig.legId &&
                                                                      x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
                                                     List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                       (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
-                                                      x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) && x.LEG_ID == AddMW_Dish.installationConfig.legId &&
+                                                      x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0])&& 
                                                        x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.LEG_ID, x.Azimuth, x.HeightBase })
+                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                        .Select(g => g.First())
                                                        .ToList();
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
@@ -7870,7 +7870,7 @@ namespace TLIS_Service.Services
                                                          || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                           && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
                                                          x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                          .Select(g => g.First())
                                                            .ToList();
 
@@ -7882,7 +7882,7 @@ namespace TLIS_Service.Services
                                                       || (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[1]
                                                        && x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &
                                                       x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth && x.HeightBase == mwDish.HeightBase)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.HeightBase })
                                                        .Select(g => g.First())
                                                        .ToList();
                                                     if (CheckAzimuthAndHeightBase.Count > 0)
@@ -9311,6 +9311,30 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
 
+
+                                            }
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId 
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if(MWODU !=null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -9475,6 +9499,29 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
 
+                                            }
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODU != null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
                                             }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -9653,6 +9700,29 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
 
                                             }
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODU != null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -9803,6 +9873,29 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
 
                                             }
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODU != null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -9932,15 +10025,15 @@ namespace TLIS_Service.Services
                                             {
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                          .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                          .GroupBy(x => new { x.ALLCIVILINST_ID,x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                   && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                   && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                    && x.HeightBase == mwDish.HeightBase)
@@ -9975,7 +10068,7 @@ namespace TLIS_Service.Services
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                 && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                          .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                          .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
@@ -10113,6 +10206,29 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
 
                                             }
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODU != null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -10154,15 +10270,15 @@ namespace TLIS_Service.Services
                                             {
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                     && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                     && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                      || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                      && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                          .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                          .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                 && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                 && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                  || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                  && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                  && x.HeightBase == mwDish.HeightBase)
@@ -10197,7 +10313,7 @@ namespace TLIS_Service.Services
                                                   || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                   && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
@@ -10322,6 +10438,29 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
 
                                             }
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODU != null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -10364,15 +10503,15 @@ namespace TLIS_Service.Services
                                             {
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                            && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                            && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                  && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                  && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                   || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                   && x.HeightBase == mwDish.HeightBase)
@@ -10407,7 +10546,7 @@ namespace TLIS_Service.Services
                                                   || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                   && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
@@ -10546,6 +10685,29 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
 
                                             }
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODU != null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -10588,15 +10750,15 @@ namespace TLIS_Service.Services
                                             {
                                                 List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                 && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                 && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                  || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                  && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                  && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                  && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                   || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                   && x.HeightBase == mwDish.HeightBase)
@@ -10631,7 +10793,7 @@ namespace TLIS_Service.Services
                                                     || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                     && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
@@ -10748,6 +10910,29 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
 
                                             }
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODU != null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
                                             if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                                 _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -10839,15 +11024,15 @@ namespace TLIS_Service.Services
                                         {
                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                            && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                            && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                 && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                 && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                  || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                  && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                  && x.HeightBase == mwDish.HeightBase)
@@ -10882,7 +11067,7 @@ namespace TLIS_Service.Services
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                 && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
@@ -11019,6 +11204,29 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
 
                                         }
+                                        var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                        if (MWODU != null && MWODU.Count > 0)
+                                        {
+                                            foreach (var item in MWODU)
+                                            {
+                                                var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                    .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                        }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -11062,15 +11270,15 @@ namespace TLIS_Service.Services
                                         {
                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                            && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                            && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                     && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                     && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                      || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                      && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                      && x.HeightBase == mwDish.HeightBase)
@@ -11105,7 +11313,7 @@ namespace TLIS_Service.Services
                                             || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                             && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
@@ -11236,6 +11444,29 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
 
                                         }
+                                        var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                        if (MWODU != null && MWODU.Count > 0)
+                                        {
+                                            foreach (var item in MWODU)
+                                            {
+                                                var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                    .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                        }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -11279,15 +11510,15 @@ namespace TLIS_Service.Services
                                         {
                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                              x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                             && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                             && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                              || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                              && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                  && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                  && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                   || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                   && x.HeightBase == mwDish.HeightBase)
@@ -11322,7 +11553,7 @@ namespace TLIS_Service.Services
                                             || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                             && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
@@ -11458,6 +11689,29 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
 
                                         }
+                                        var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                        if (MWODU != null && MWODU.Count > 0)
+                                        {
+                                            foreach (var item in MWODU)
+                                            {
+                                                var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                    .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                        }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
 
@@ -11502,15 +11756,15 @@ namespace TLIS_Service.Services
                                         {
                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                            && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                            && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                  && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                  && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                   || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                   && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                   && x.HeightBase == mwDish.HeightBase)
@@ -11545,7 +11799,7 @@ namespace TLIS_Service.Services
                                                  || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                  && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                  && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
@@ -11661,6 +11915,29 @@ namespace TLIS_Service.Services
                                             _unitOfWork.SaveChanges();
 
                                         }
+                                        var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                        if (MWODU != null && MWODU.Count > 0)
+                                        {
+                                            foreach (var item in MWODU)
+                                            {
+                                                var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                    .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                        }
                                         if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                             _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
                                     }
@@ -11745,15 +12022,15 @@ namespace TLIS_Service.Services
                                     {
                                         List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                        && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                        && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                         || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                         && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                         List<MV_MWDISH_VIEW> CheckAzimuthAndHeightBase = _dbContext.MV_MWDISH_VIEW.Where(
                                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                 && x.Id != mwDish.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                 && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                  || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                  && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwDish.Azimuth
                                                  && x.HeightBase == mwDish.HeightBase)
@@ -11788,7 +12065,7 @@ namespace TLIS_Service.Services
                                             || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                             && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
 
@@ -11903,6 +12180,29 @@ namespace TLIS_Service.Services
                                         _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, TLIMWDish);
                                         _unitOfWork.SaveChanges();
 
+                                    }
+                                    var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                            == MWInstallationViewModel.installationAttributes.Id
+                                            && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                    if (MWODU != null && MWODU.Count > 0)
+                                    {
+                                        foreach (var item in MWODU)
+                                        {
+                                            var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                            item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                            item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                            item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                            item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                            item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                            _unitOfWork.SaveChanges();
+                                        }
                                     }
                                     if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.dynamicAttribute.Count() > 0 : false)
                                         _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, MWInstallationViewModel.dynamicAttribute, TableNameId, mwDish.Id, ConnectionString);
@@ -12797,15 +13097,15 @@ namespace TLIS_Service.Services
                                             {
                                                 List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                     && x.Height == mwBU.Height)
@@ -12841,7 +13141,7 @@ namespace TLIS_Service.Services
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                 && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
@@ -12980,15 +13280,15 @@ namespace TLIS_Service.Services
                                             {
                                                 List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                        && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                        && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                         || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                         && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                     && x.Height == mwBU.Height)
@@ -13023,7 +13323,7 @@ namespace TLIS_Service.Services
                                                     || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                     && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
@@ -13150,15 +13450,15 @@ namespace TLIS_Service.Services
                                             {
                                                 List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                            && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                            && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                     && x.Height == mwBU.Height)
@@ -13193,7 +13493,7 @@ namespace TLIS_Service.Services
                                                     || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                     && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
@@ -13333,15 +13633,15 @@ namespace TLIS_Service.Services
                                             {
                                                 List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                     && x.Height == mwBU.Height)
@@ -13376,7 +13676,7 @@ namespace TLIS_Service.Services
                                                     || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                     && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                                 List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
@@ -13660,15 +13960,15 @@ namespace TLIS_Service.Services
                                         {
                                             List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                            && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                            && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                     && x.Height == mwBU.Height)
@@ -13703,7 +14003,7 @@ namespace TLIS_Service.Services
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                 && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
@@ -13843,15 +14143,15 @@ namespace TLIS_Service.Services
                                         {
                                             List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                            && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                            && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                        && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                        && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                         || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                         && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                         && x.Height == mwBU.Height)
@@ -13886,7 +14186,7 @@ namespace TLIS_Service.Services
                                             || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                             && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
@@ -14020,15 +14320,15 @@ namespace TLIS_Service.Services
                                         {
                                             List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                 || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                 && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                     && x.Height == mwBU.Height)
@@ -14063,7 +14363,7 @@ namespace TLIS_Service.Services
                                             || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                             && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
@@ -14204,15 +14504,15 @@ namespace TLIS_Service.Services
                                         {
                                             List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                            && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                            && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                     && x.Height == mwBU.Height)
@@ -14247,7 +14547,7 @@ namespace TLIS_Service.Services
                                                     || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                     && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                             List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
@@ -14524,15 +14824,15 @@ namespace TLIS_Service.Services
                                     {
                                         List<MV_MWBU_VIEW> Checkinstallationplace = _dbContext.MV_MWBU_VIEW.Where(
                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                        && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                        && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                         || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                         && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
                                         List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0]
+                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
                                                     && x.Height == mwBU.Height)
@@ -14567,7 +14867,7 @@ namespace TLIS_Service.Services
                                             || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                             && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                             && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
+                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                                 .Select(g => g.First())
                                                                 .ToList();
 
@@ -14688,6 +14988,7 @@ namespace TLIS_Service.Services
             }
         }
         public async Task<Response<GetForAddMWDishInstallationObject>> EditMWOtherInstallation(int UserId, EditMWOtherInstallationObject editmwOtherInstallationObject, string TableName, int? TaskId, string ConnectionString)
+        
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -14700,7 +15001,7 @@ namespace TLIS_Service.Services
                         TLIcivilLoads mwOtherInst = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                        .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwOther).Include(x => x.allLoadInst.mwOther.mwOtherLibrary).Include(x => x.allCivilInst)
                        .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwOtherId == mwOther.Id && x.allLoadInst.mwOtherId == null && !x.Dismantle);
+                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwOtherId == mwOther.Id && !x.Dismantle);
 
                         if (mwOtherInst == null)
                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "mwOther is not found", (int)ApiReturnCode.fail);

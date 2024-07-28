@@ -791,7 +791,7 @@ namespace TLIS_Service.Services
 
                 if (LoadOther != null)
                 {
-                    EditLoadOtherLibraryObject LoadOtherLibrary = _mapper.Map<EditLoadOtherLibraryObject>(LoadOther.allLoadInst.loadOther.loadOtherLibrary);
+                    EditLoadOtherLibraryAttribute LoadOtherLibrary = _mapper.Map<EditLoadOtherLibraryAttribute>(LoadOther.allLoadInst.loadOther.loadOtherLibrary);
 
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
                         .GetAttributeActivatedGetLibrary(TablesNames.TLIloadOtherLibrary.ToString(), LoadOtherLibrary, null).ToList();

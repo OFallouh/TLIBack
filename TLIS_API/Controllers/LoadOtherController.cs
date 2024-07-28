@@ -143,7 +143,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
 
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetLoadOtherInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetById(int Id)
