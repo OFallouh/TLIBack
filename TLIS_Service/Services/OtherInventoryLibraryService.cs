@@ -3037,13 +3037,15 @@ namespace TLIS_Service.Services
 
                     TLIsolarLibrary SolarLegLib = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SolarLibraryEntites.Id);
 
-
-                    if (SolarLibraryEntites.SpaceLibrary <= 0)
+                    if (SolarLegLib.Length <= 0)
                     {
-                       
-                        return new Response<EditSolarLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        
+                        return new Response<EditSolarLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    if (SolarLegLib.Width <= 0)
+                    {
+                        return new Response<EditSolarLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    SolarLegLib.SpaceLibrary = SolarLegLib.Length * SolarLegLib.Width;
                     var CheckModel = db.MV_SOLAR_LIBRARY_VIEW
                              .FirstOrDefault(x => x.Model != null &&
                                          x.Model.ToLower() == SolarLibraryEntites.Model.ToLower() &&
@@ -6990,12 +6992,6 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLIgeneratorLibrary GeneratorLibraryEntity = _mapper.Map<TLIgeneratorLibrary>(addGeneratorLibraryObject.AttributesActivatedLibrary);
-                            if (GeneratorLibraryEntity.SpaceLibrary <= 0)
-                            {
-                                
-                                return new Response<AddGeneratorLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                               
-                            }
                             if (GeneratorLibraryEntity.Length <= 0)
                             {
                                 return new Response<AddGeneratorLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -7067,12 +7063,15 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLIsolarLibrary SolarLibraryEntity = _mapper.Map<TLIsolarLibrary>(addSolarLibraryObject.AttributesActivatedLibrary);
-                            if (SolarLibraryEntity.SpaceLibrary <= 0)
+                            if (SolarLibraryEntity.Length <= 0)
                             {
-                                
-                                return new Response<AddSolarLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                                
+                                return new Response<AddSolarLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
+                            if (SolarLibraryEntity.Width <= 0)
+                            {
+                                return new Response<AddSolarLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                            SolarLibraryEntity.SpaceLibrary = SolarLibraryEntity.Length * SolarLibraryEntity.Width;
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))

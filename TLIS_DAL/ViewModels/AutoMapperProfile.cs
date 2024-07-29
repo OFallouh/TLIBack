@@ -329,6 +329,17 @@ namespace TLIS_DAL.ViewModels
             CreateMap<MWOtherLibraryAttributes, TLImwOtherLibrary>().ReverseMap();
             CreateMap<installationAttributesMWOther, TLImwOther>().ReverseMap();
             CreateMap<EditInstallationMWOtherAttributeObject, TLImwOther>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto,MV_SIDEARM_VIEW >().ReverseMap();
+            CreateMap<LoadandsidearmViewDto,MV_MWBU_VIEW> ().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_MWOTHER_VIEW>().ReverseMap();
+            //CreateMap<LoadandsidearmViewDto, >().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_MWODU_VIEW>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_RADIO_ANTENNA_VIEW>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_RADIO_RRU_VIEW>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_RADIO_OTHER_VIEW>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_POWER_VIEW>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_LOAD_OTHER_VIEW>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_MWDISH_VIEW>().ReverseMap();
 
             CreateMap<SectionsLegTypeViewModel, TLIsideArmInstallationPlace>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIsideArmType>().ReverseMap();

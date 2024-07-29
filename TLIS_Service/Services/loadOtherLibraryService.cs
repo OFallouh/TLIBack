@@ -1259,7 +1259,7 @@ namespace TLIS_Service.Services
                         return new Response<EditLoadOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    editLoadOtherLibraryObjectc.AttributesActivatedLibrary.SpaceLibrary = editLoadOtherLibraryObjectc.AttributesActivatedLibrary.Length * editLoadOtherLibraryObjectc.AttributesActivatedLibrary.Width;
+                    loadOther.SpaceLibrary = loadOther.Length * loadOther.Width;
 
                     var CheckModel = db.MV_LOAD_OTHER_LIBRARY_VIEW
                     .FirstOrDefault(

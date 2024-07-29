@@ -181,17 +181,17 @@ namespace TLIS_Service.Services
                             x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther,
                             x => x.allLoadInst.radioRRU, x => x.allLoadInst.loadOther).ToList();
 
-                    OutPut.TLIsideArm = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.sideArmId != null && x.allLoadInstId == null, x => x.sideArm);
-                    OutPut.TLImwODU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwODUId != null, x => x.allLoadInst.mwODU);
-                    OutPut.TLImwDish = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwDishId != null, x => x.allLoadInst.mwDish);
+                    OutPut.TLIsideArm = GetMappedLocationTypeViewModelList( civilSiteDates,x => x.sideArmId != null && x.allLoadInstId == null,  x => _dbContext.MV_SIDEARM_VIEW.FirstOrDefault(y => y.Id == x.sideArm.Id) );
+                    OutPut.TLImwODU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwODUId != null, x => _dbContext.MV_MWODU_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.mwODU.Id));
+                    OutPut.TLImwDish = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwDishId != null, x => _dbContext.MV_MWDISH_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.mwDish.Id));
                     OutPut.TLImwRFU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwRFUId != null, x => x.allLoadInst.mwRFU);
-                    OutPut.TLImwBU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwBUId != null, x => x.allLoadInst.mwBU);
-                    OutPut.TLImwOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwOtherId != null, x => x.allLoadInst.mwOther);
-                    OutPut.TLIradioAntenna = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioAntennaId != null, x => x.allLoadInst.radioAntenna);
-                    OutPut.TLIRadioRRU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioRRUId != null, x => x.allLoadInst.radioRRU);
-                    OutPut.TLIradioOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioOtherId != null, x => x.allLoadInst.radioOther);
-                    OutPut.TLIpower = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.powerId != null, x => x.allLoadInst.power);
-                    OutPut.TLIloadOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.loadOtherId != null, x => x.allLoadInst.loadOther);
+                    OutPut.TLImwBU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwBUId != null, x => _dbContext.MV_MWBU_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.mwBU.Id));
+                    OutPut.TLImwOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.mwOtherId != null, x => _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.mwOther.Id));
+                    OutPut.TLIradioAntenna = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioAntennaId != null, x => _dbContext.MV_RADIO_ANTENNA_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.radioAntenna.Id));
+                    OutPut.TLIRadioRRU = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioRRUId != null, x => _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.radioRRU.Id));
+                    OutPut.TLIradioOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.radioOtherId != null, x => _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.radioOther.Id));
+                    OutPut.TLIpower = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.powerId != null, x => _dbContext.MV_POWER_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.power.Id));
+                    OutPut.TLIloadOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.loadOtherId != null, x => _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.loadOther.Id));
                     Response.Loads = OutPut;
                 }
               
