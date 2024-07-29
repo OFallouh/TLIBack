@@ -28,7 +28,7 @@ namespace TLIS_DAL.ViewModels.RadioRRULibraryDTOs
             public string? Notes { get; set; } = "";
             public float Depth { get; set; } = 0;
             public float SpaceLibrary { get; set; } = 0;
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;
         }
     }

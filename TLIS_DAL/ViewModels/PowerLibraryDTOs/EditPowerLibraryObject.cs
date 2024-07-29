@@ -30,7 +30,7 @@ namespace TLIS_DAL.ViewModels.PowerLibraryDTOs
             public float Height { get; set; } = 0;
             public float Depth { get; set; } = 0;
             public float SpaceLibrary { get; set; }
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;
         }
     }

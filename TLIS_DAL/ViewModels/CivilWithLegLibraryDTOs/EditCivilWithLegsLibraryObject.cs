@@ -26,7 +26,7 @@ namespace TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs
             public float Height_Designed { get; set; } = 0;
             public float Max_load_M2 { get; set; } = 0;
             public float SpaceLibrary { get; set; } = 0;
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;
             public int supportTypeDesignedId { get; set; }
             public int sectionsLegTypeId { get; set; }

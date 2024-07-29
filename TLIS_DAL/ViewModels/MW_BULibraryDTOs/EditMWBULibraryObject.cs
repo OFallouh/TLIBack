@@ -34,7 +34,7 @@ namespace TLIS_DAL.ViewModels.MW_BULibraryDTOs
             public float channel_bandwidth { get; set; }
             public string? FreqChannel { get; set; } = " ";
             public float SpaceLibrary { get; set; } = 0;
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;
             public int diversityTypeId { get; set; }
 

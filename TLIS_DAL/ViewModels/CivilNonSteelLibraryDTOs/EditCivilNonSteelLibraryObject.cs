@@ -26,7 +26,7 @@ namespace TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs
             public bool VerticalMeasured { get; set; } = false;
             public int civilNonSteelTypeId { get; set; }
             public float NumberofBoltHoles { get; set; } = 0;
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;
             public float Manufactured_Max_Load { get; set; } = 0;
             public string? WidthVariation { get; set; }

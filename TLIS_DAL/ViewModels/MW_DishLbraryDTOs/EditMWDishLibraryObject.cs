@@ -31,7 +31,7 @@ namespace TLIS_DAL.ViewModels.MW_DishLbraryDTOs
             public float diameter { get; set; } = 0;
             public string? frequency_band { get; set; } = " ";
             public float SpaceLibrary { get; set; } = 0;
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;    
             public int polarityTypeId { get; set; }         
             public int asTypeId { get; set; }

@@ -4809,7 +4809,7 @@ namespace TLIS_Service.Services
 
                                                             if (CheckAzimuthAndHeight.Count > 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                             }
                                                            
                                                             else
@@ -4939,7 +4939,7 @@ namespace TLIS_Service.Services
                                                                     .ToList();
                                                             if (CheckAzimuthAndHeight.Count > 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                             }
                                                            
                                                             else
@@ -5256,7 +5256,7 @@ namespace TLIS_Service.Services
 
                                                             if (CheckAzimuthAndHeight.Count > 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                             }
                                                            
                                                             else
@@ -5420,7 +5420,7 @@ namespace TLIS_Service.Services
 
                                                             if (CheckAzimuthAndHeight.Count > 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                             }
                                                           
                                                             else
@@ -5449,7 +5449,7 @@ namespace TLIS_Service.Services
 
                                                             if (CheckAzimuthAndHeight.Count > 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                             }
                                                          
                                                             else
@@ -5719,7 +5719,7 @@ namespace TLIS_Service.Services
                                                            .ToList();
                                                         if (CheckAzimuthAndHeight.Count > 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                         }
                                                      
                                                         else
@@ -5747,7 +5747,7 @@ namespace TLIS_Service.Services
 
                                                         if (CheckAzimuthAndHeight.Count > 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                         }
                                                       
                                                         else
@@ -5874,7 +5874,7 @@ namespace TLIS_Service.Services
                                                            .ToList();
                                                         if (CheckAzimuthAndHeight.Count > 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                         }
                                                         
                                                         else
@@ -5904,7 +5904,7 @@ namespace TLIS_Service.Services
 
                                                         if (CheckAzimuthAndHeight.Count > 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                         }
                                                        
                                                         else
@@ -6175,7 +6175,7 @@ namespace TLIS_Service.Services
                                                        .ToList();
                                                     if (CheckAzimuthAndHeight.Count > 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                     }
                                                  
                                                     else
@@ -6204,7 +6204,7 @@ namespace TLIS_Service.Services
 
                                                     if (CheckAzimuthAndHeight.Count > 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                     }
                                                   
                                                     else
@@ -12234,7 +12234,7 @@ namespace TLIS_Service.Services
 
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 
                                                 else
@@ -12364,7 +12364,7 @@ namespace TLIS_Service.Services
                                                                    .ToList();
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -12482,7 +12482,7 @@ namespace TLIS_Service.Services
                                                                   .ToList();
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -12611,7 +12611,7 @@ namespace TLIS_Service.Services
                                                                   .ToList();
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -12924,7 +12924,7 @@ namespace TLIS_Service.Services
 
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -12954,7 +12954,7 @@ namespace TLIS_Service.Services
                                                     .ToList();
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -13085,7 +13085,7 @@ namespace TLIS_Service.Services
 
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -13114,7 +13114,7 @@ namespace TLIS_Service.Services
                                                     .ToList();
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -13233,7 +13233,7 @@ namespace TLIS_Service.Services
 
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 
                                                 else
@@ -13262,7 +13262,7 @@ namespace TLIS_Service.Services
                                                     .ToList();
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -13394,7 +13394,7 @@ namespace TLIS_Service.Services
 
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                                
                                                 else
@@ -13423,7 +13423,7 @@ namespace TLIS_Service.Services
                                                     .ToList();
                                                 if (CheckAzimuthAndHeight.Count > 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                                 }
                                               
                                                 else
@@ -13699,7 +13699,7 @@ namespace TLIS_Service.Services
 
                                             if (CheckAzimuthAndHeight.Count > 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                             }
                                            
                                             else
@@ -13728,7 +13728,7 @@ namespace TLIS_Service.Services
                                                 .ToList();
                                             if (CheckAzimuthAndHeight.Count > 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                             }
                                            
                                             else
@@ -13860,7 +13860,7 @@ namespace TLIS_Service.Services
 
                                             if (CheckAzimuthAndHeight.Count > 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                             }
                                          
                                             else
@@ -13889,7 +13889,7 @@ namespace TLIS_Service.Services
                                                 .ToList();
                                             if (CheckAzimuthAndHeight.Count > 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                             }
                                            
                                             else
@@ -14015,7 +14015,7 @@ namespace TLIS_Service.Services
 
                                             if (CheckAzimuthAndHeight.Count > 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                             }
                                           
                                             else
@@ -14044,7 +14044,7 @@ namespace TLIS_Service.Services
                                                 .ToList();
                                             if (CheckAzimuthAndHeight.Count > 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                             }
                                           
                                             else
@@ -14177,7 +14177,7 @@ namespace TLIS_Service.Services
 
                                             if (CheckAzimuthAndHeight.Count > 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                             }
                                            
                                             else
@@ -14206,7 +14206,7 @@ namespace TLIS_Service.Services
                                                 .ToList();
                                             if (CheckAzimuthAndHeight.Count > 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                             }
                                            
                                             else
@@ -14475,7 +14475,7 @@ namespace TLIS_Service.Services
 
                                         if (CheckAzimuthAndHeight.Count > 0)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                         }
                                        
                                         else
@@ -14505,7 +14505,7 @@ namespace TLIS_Service.Services
                                             .ToList();
                                         if (CheckAzimuthAndHeight.Count > 0)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
                                         }
                                         
                                         else

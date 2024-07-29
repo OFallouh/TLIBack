@@ -93,7 +93,7 @@ namespace TLIS_API.Controllers.LoadLibrary
         }
 
         [HttpPost("EditMW_DishLibrary")]
-        [ProducesResponseType(200, Type = typeof(EditMW_DishLibraryViewModel))]
+        [ProducesResponseType(200, Type = typeof(EditMWDishLibraryObject))]
         public async Task<IActionResult> EditMW_DishLibrary([FromBody] EditMWDishLibraryObject editMW_DishLibraryViewModel)
         {
             if (TryValidateModel(editMW_DishLibraryViewModel, nameof(EditMWDishLibraryObject)))

@@ -31,7 +31,7 @@ namespace TLIS_DAL.ViewModels.MW_RFULibraryDTOs
             public RFUType RFUType { get; set; }
             public string? VenferBoardName { get; set; } = " ";
             public float SpaceLibrary { get; set; } = 0;
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;
             public int diversityTypeId { get; set; }
             public int boardTypeId { get; set; }

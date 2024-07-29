@@ -28,7 +28,7 @@ namespace TLIS_DAL.ViewModels.SolarLibraryDTOs
             public string? BasePlateDimension { get; set; } = " ";
             public int? CapacityId { get; set; } = null;
             public float SpaceLibrary { get; set; } = 0;
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;
 
         }

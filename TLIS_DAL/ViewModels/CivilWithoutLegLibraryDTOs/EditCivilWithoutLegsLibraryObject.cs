@@ -25,7 +25,7 @@ namespace TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs
             public float Max_Load { get; set; } = 0;
             public float SpaceLibrary { get; set; } = 0;
             public string Prefix { get; set; }
-            public bool Active { get; set; } = true;
+            public bool Active { get; set; } 
             public bool Deleted { get; set; } = false;
             public int? CivilSteelSupportCategoryId { get; set; }
             public int? InstCivilwithoutLegsTypeId { get; set; }
