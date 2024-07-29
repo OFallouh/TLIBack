@@ -203,7 +203,7 @@ namespace TLIS_Service.Services
 
                         if (CivilWithLeg.IsEnforeced == true)
                         {
-                            if (CivilWithLeg.SupportMaxLoadAfterInforcement != 0 && CivilWithLeg.CurrentLoads != 0)
+                            if (CivilWithLeg.SupportMaxLoadAfterInforcement != 0 )
                             {
                                 Availablespace = CivilWithLeg.SupportMaxLoadAfterInforcement - CivilWithLeg.CurrentLoads;
 
@@ -213,18 +213,16 @@ namespace TLIS_Service.Services
 
                         else if (CivilWithLeg.Support_Limited_Load != 0)
                         {
-                            if (CivilWithLeg.CurrentLoads != 0)
-                            {
-                                Availablespace = CivilWithLeg.Support_Limited_Load - CivilWithLeg.CurrentLoads;
-                            }
+                           
+                            Availablespace = CivilWithLeg.Support_Limited_Load - CivilWithLeg.CurrentLoads;
+                            
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithLeg.Support_Limited_Load;
                         }
                         else
                         {
-                            if (CivilWithLeg.CurrentLoads != 0)
-                            {
-                                Availablespace = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load - CivilWithLeg.CurrentLoads;
-                            }
+                            
+                            Availablespace = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load - CivilWithLeg.CurrentLoads;
+                            
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load;
                         }
                     }
@@ -239,18 +237,16 @@ namespace TLIS_Service.Services
                     {
                         if (CivilWithout.Support_Limited_Load != 0)
                         {
-                            if (CivilWithout.CurrentLoads != 0)
-                            {
-                                Availablespace = CivilWithout.Support_Limited_Load - CivilWithout.CurrentLoads;
-                            }
+                            
+                            Availablespace = CivilWithout.Support_Limited_Load - CivilWithout.CurrentLoads;
+                            
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithout.Support_Limited_Load;
                         }
                         else
                         {
-                            if (CivilWithout.CurrentLoads != 0)
-                            {
-                                Availablespace = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load - CivilWithout.CurrentLoads;
-                            }
+                            
+                             Availablespace = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load - CivilWithout.CurrentLoads;
+                            
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load;
                         }
                     }

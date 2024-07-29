@@ -3461,7 +3461,7 @@ namespace TLIS_Service.Services
                         return new Response<EditRadioAntennaLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    RadioLibraryViewModel.AttributesActivatedLibrary.SpaceLibrary = RadioLibraryViewModel.AttributesActivatedLibrary.Length * RadioLibraryViewModel.AttributesActivatedLibrary.Width;
+                    radioAntennaLibrary.SpaceLibrary = RadioLibraryViewModel.AttributesActivatedLibrary.Length * RadioLibraryViewModel.AttributesActivatedLibrary.Width;
 
                     var CheckModel = db.MV_RADIO_ANTENNA_LIBRARY_VIEW
                         .FirstOrDefault(
@@ -3582,7 +3582,7 @@ namespace TLIS_Service.Services
                         return new Response<EditRadioOtherLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    editRadioOtherLibraryObject.AttributesActivatedLibrary.SpaceLibrary = editRadioOtherLibraryObject.AttributesActivatedLibrary.Length * editRadioOtherLibraryObject.AttributesActivatedLibrary.Width;
+                    radioOtherLibrary.SpaceLibrary = editRadioOtherLibraryObject.AttributesActivatedLibrary.Length * editRadioOtherLibraryObject.AttributesActivatedLibrary.Width;
 
 
                     var CheckModel = db.MV_RADIO_OTHER_LIBRARY_VIEW
@@ -4067,7 +4067,7 @@ namespace TLIS_Service.Services
                         return new Response<EditRadioRRULibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    RadioLibraryViewModel.AttributesActivatedLibrary.SpaceLibrary = RadioLibraryViewModel.AttributesActivatedLibrary.Length * RadioLibraryViewModel.AttributesActivatedLibrary.Width;
+                    radioRRULibrary.SpaceLibrary = RadioLibraryViewModel.AttributesActivatedLibrary.Length * RadioLibraryViewModel.AttributesActivatedLibrary.Width;
 
 
                     var CheckModel = db.MV_RADIO_RRU_LIBRARY_VIEW

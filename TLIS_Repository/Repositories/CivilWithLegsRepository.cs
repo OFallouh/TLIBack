@@ -593,7 +593,7 @@ namespace TLIS_Repository.Repositories
                     else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
                     {
                         Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
-                        if (Availablespace == 0 || Availablespace < 0)
+                        if (Availablespace == 0 || Availablespace <= 0)
                         {
                             return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }

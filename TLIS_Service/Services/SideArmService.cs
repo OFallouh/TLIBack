@@ -3172,7 +3172,34 @@ namespace TLIS_Service.Services
                                 var OldAllLoadOnSideArm = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                 .AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
                                 item.allCivilInstId = AllCivilInst;
-                                CivilLoads.Dismantle = false;
+                                if (SideArmViewModel.installationConfig?.legId != null && SideArmViewModel.installationConfig?.legId?.Count > 0)
+                                {
+                                    if (SideArmViewModel.installationConfig?.legId.Count == 1)
+                                    {
+                                        item.legId = SideArmViewModel.installationConfig?.legId[0] ?? null;
+
+                                    }
+                                    else
+                                    {
+                                        item.legId = null;
+                                    }
+                                    if (SideArmViewModel.installationConfig?.legId.Count > 1)
+                                    {
+                                        item.legId = SideArmViewModel.installationConfig?.legId[0] ?? null;
+                                        item.Leg2Id = SideArmViewModel.installationConfig?.legId[1] ?? null;
+
+                                    }
+                                    else
+                                    {
+                                        item.Leg2Id = null;
+                                    }
+                                }
+                                else if (SideArmViewModel.installationConfig?.legId == null)
+                                {
+                                    item.legId = null;
+                                    item.Leg2Id = null;
+
+                                }
                                 _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldAllLoadOnSideArm, item);
                                 return item;
                             }).ToList();

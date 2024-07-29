@@ -49,6 +49,7 @@ using TLIS_DAL.ViewModels.OwnerDTOs;
 using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
 using TLIS_DAL.ViewModels.CabinetPowerTypeDTOs;
 using TLIS_DAL.ViewModels.TelecomTypeDTOs;
+using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -2907,13 +2908,16 @@ namespace TLIS_Service.Services
 
                     TLIgeneratorLibrary GeneratorLegLib = _unitOfWork.GeneratorLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == GeneratorLibraryEntites.Id);
 
-
-                    if (GeneratorLibraryEntites.SpaceLibrary <= 0)
+                    if (GeneratorLibraryEntites.Length <= 0)
                     {
-                        
-                            return new Response<EditGeneratorLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
-                        
+                        return new Response<EditGeneratorLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                    if (GeneratorLibraryEntites.Width <= 0)
+                    {
+                        return new Response<EditGeneratorLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    GeneratorLibraryEntites.SpaceLibrary = GeneratorLibraryEntites.Length * GeneratorLibraryEntites.Width;
+
                     var CheckModel = db.MV_GENERATOR_LIBRARY_VIEW
                              .FirstOrDefault(x => x.Model != null &&
                                          x.Model.ToLower() == GeneratorLibraryEntites.Model.ToLower() &&
@@ -6992,6 +6996,15 @@ namespace TLIS_Service.Services
                                 return new Response<AddGeneratorLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                                
                             }
+                            if (GeneratorLibraryEntity.Length <= 0)
+                            {
+                                return new Response<AddGeneratorLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                            if (GeneratorLibraryEntity.Width <= 0)
+                            {
+                                return new Response<AddGeneratorLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                            GeneratorLibraryEntity.SpaceLibrary = GeneratorLibraryEntity.Length * GeneratorLibraryEntity.Width;
                             //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
 
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
@@ -7001,7 +7014,7 @@ namespace TLIS_Service.Services
 
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                             var CheckModel = db.MV_GENERATOR_LIBRARY_VIEW
+                            var CheckModel = db.MV_GENERATOR_LIBRARY_VIEW
                                .FirstOrDefault(x => x.Model != null &&
                                 x.Model.ToLower() == GeneratorLibraryEntity.Model.ToLower()
                                 && !x.Deleted);
