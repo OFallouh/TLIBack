@@ -584,7 +584,7 @@ namespace TLIS_Repository.Repositories
                     if (AllCivilInst.civilWithLegs.IsEnforeced == true)
                     {
                         Availablespace = AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement - AllCivilInst.civilWithLegs.CurrentLoads;
-                        if (Availablespace == 0 || Availablespace < 0)
+                        if (Availablespace < 0)
                         {
                             return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -593,7 +593,7 @@ namespace TLIS_Repository.Repositories
                     else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
                     {
                         Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
-                        if (Availablespace == 0 || Availablespace <= 0)
+                        if ( Availablespace <= 0)
                         {
                             return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -601,7 +601,7 @@ namespace TLIS_Repository.Repositories
                     else
                     {
                         Availablespace = AllCivilInst.civilWithLegs.CivilWithLegsLib.Manufactured_Max_Load - AllCivilInst.civilWithLegs.CurrentLoads;
-                        if (Availablespace == 0 || Availablespace < 0)
+                        if (Availablespace < 0)
                         {
                             return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -616,7 +616,7 @@ namespace TLIS_Repository.Repositories
                     if (AllCivilInst.civilWithoutLeg.Support_Limited_Load != 0)
                     {
                         Availablespace = AllCivilInst.civilWithoutLeg.Support_Limited_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
-                        if (Availablespace == 0 || Availablespace < 0)
+                        if (Availablespace < 0)
                         {
                             return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -624,7 +624,7 @@ namespace TLIS_Repository.Repositories
                     else
                     {
                         Availablespace = AllCivilInst.civilWithoutLeg.CivilWithoutlegsLib.Manufactured_Max_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
-                        if (Availablespace == 0 || Availablespace < 0)
+                        if (Availablespace < 0)
                         {
                             return new Response<float>(true, 0, null, $"No available space on the civill ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
