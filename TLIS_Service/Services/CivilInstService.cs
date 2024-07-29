@@ -206,24 +206,27 @@ namespace TLIS_Service.Services
                             if (CivilWithLeg.SupportMaxLoadAfterInforcement != 0 )
                             {
                                 Availablespace = CivilWithLeg.SupportMaxLoadAfterInforcement - CivilWithLeg.CurrentLoads;
-
+                                Availablespace = Math.Round(Availablespace, 2);
                             }
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithLeg.SupportMaxLoadAfterInforcement;
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = Math.Round(sideArmAndLoadsOnCivil.CivilMaxLoad, 2);
                         }
 
                         else if (CivilWithLeg.Support_Limited_Load != 0)
                         {
                            
                             Availablespace = CivilWithLeg.Support_Limited_Load - CivilWithLeg.CurrentLoads;
-                            
+                            Availablespace = Math.Round(Availablespace, 2);
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithLeg.Support_Limited_Load;
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = Math.Round(sideArmAndLoadsOnCivil.CivilMaxLoad, 2);
                         }
                         else
                         {
                             
                             Availablespace = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load - CivilWithLeg.CurrentLoads;
-                            
+                            Availablespace = Math.Round(Availablespace, 2);
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithLeg.CivilWithLegsLib.Manufactured_Max_Load;
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = Math.Round(sideArmAndLoadsOnCivil.CivilMaxLoad, 2);
                         }
                     }
                     sideArmAndLoadsOnCivil.CurrentLoads = CivilWithLeg.CurrentLoads;
@@ -239,15 +242,17 @@ namespace TLIS_Service.Services
                         {
                             
                             Availablespace = CivilWithout.Support_Limited_Load - CivilWithout.CurrentLoads;
-                            
+                            Availablespace = Math.Round(Availablespace, 2);
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithout.Support_Limited_Load;
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = Math.Round(sideArmAndLoadsOnCivil.CivilMaxLoad, 2);
                         }
                         else
                         {
                             
-                             Availablespace = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load - CivilWithout.CurrentLoads;
-                            
+                            Availablespace = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load - CivilWithout.CurrentLoads;
+                            Availablespace = Math.Round(Availablespace, 2);
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilWithout.CivilWithoutlegsLib.Manufactured_Max_Load;
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = Math.Round(sideArmAndLoadsOnCivil.CivilMaxLoad, 2);
                         }
                     }
                     sideArmAndLoadsOnCivil.CurrentLoads = CivilWithout.CurrentLoads;
@@ -264,16 +269,20 @@ namespace TLIS_Service.Services
                             if (CivilNonSteel.CurrentLoads != 0)
                             {
                                 Availablespace = CivilNonSteel.Support_Limited_Load - CivilNonSteel.CurrentLoads;
+                                Availablespace = Math.Round(Availablespace, 2);
                             }
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilNonSteel.Support_Limited_Load;
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = Math.Round(sideArmAndLoadsOnCivil.CivilMaxLoad, 2);
                         }
                         else
                         {
                             if (CivilNonSteel.CurrentLoads != 0)
                             {
                                 Availablespace = CivilNonSteel.CivilNonsteelLibrary.Manufactured_Max_Load - CivilNonSteel.CurrentLoads;
+                                Availablespace = Math.Round(Availablespace, 2);
                             }
                             sideArmAndLoadsOnCivil.CivilMaxLoad = CivilNonSteel.CivilNonsteelLibrary.Manufactured_Max_Load;
+                            sideArmAndLoadsOnCivil.CivilMaxLoad = Math.Round(sideArmAndLoadsOnCivil.CivilMaxLoad, 2);
                         }
                     }
                     sideArmAndLoadsOnCivil.CurrentLoads = CivilNonSteel.CurrentLoads;
