@@ -6977,7 +6977,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivatedGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(), CivilWithLoutInst.allCivilInst.civilWithoutLeg, "CivilWithoutlegsLibId").ToList();
+                        .GetInstAttributeActivatedForCivilWithoutLegGetForAdd(Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(), CivilWithLoutInst.allCivilInst.civilWithoutLeg, "CivilWithoutlegsLibId").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
