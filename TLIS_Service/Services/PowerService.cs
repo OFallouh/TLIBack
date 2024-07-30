@@ -3128,7 +3128,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            Power.CenterHigh = Power.HBA + PowerLibrary.Length / 2;
+                                                            Power.CenterHigh = Power.HBA + (PowerLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (Power.SpaceInstallation == 0)
@@ -3248,7 +3248,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            Power.CenterHigh = Power.HBA + PowerLibrary.Length / 2;
+                                                            Power.CenterHigh = Power.HBA + (PowerLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (Power.SpaceInstallation == 0)
@@ -3406,7 +3406,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                     else
                                                                     {
-                                                                        Power.CenterHigh = Power.HBA + PowerLibrary.Length / 2;
+                                                                        Power.CenterHigh = Power.HBA + (PowerLibrary.Length / 2);
                                                                     }
                                                                 }
                                                                 if (Power.SpaceInstallation == 0)
@@ -3524,7 +3524,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                     else
                                                                     {
-                                                                        Power.CenterHigh = Power.HBA + PowerLibrary.Length / 2;
+                                                                        Power.CenterHigh = Power.HBA + (PowerLibrary.Length / 2);
                                                                     }
                                                                 }
                                                                 if (Power.SpaceInstallation == 0)
@@ -3679,7 +3679,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                Power.CenterHigh = Power.HBA + PowerLibrary.Length / 2;
+                                                                Power.CenterHigh = Power.HBA + (PowerLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (Power.SpaceInstallation == 0)
@@ -3799,7 +3799,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                Power.CenterHigh = Power.HBA + PowerLibrary.Length / 2;
+                                                                Power.CenterHigh = Power.HBA + (PowerLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (Power.SpaceInstallation == 0)
@@ -3951,7 +3951,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            Power.CenterHigh = Power.HBA + PowerLibrary.Length / 2;
+                                                            Power.CenterHigh = Power.HBA + (PowerLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (Power.SpaceInstallation == 0)
@@ -4156,7 +4156,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                    power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                 }
                                             }
                                             if (power.SpaceInstallation == 0)
@@ -4271,7 +4271,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                    power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                 }
                                             }
                                             if (power.SpaceInstallation == 0)
@@ -4371,7 +4371,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                    power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                 }
                                             }
                                             if (power.SpaceInstallation == 0)
@@ -4486,7 +4486,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                    power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                 }
                                             }
                                             if (power.SpaceInstallation == 0)
@@ -4647,7 +4647,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                            power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (power.SpaceInstallation == 0)
@@ -4758,7 +4758,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                            power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (power.SpaceInstallation == 0)
@@ -4858,7 +4858,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                            power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (power.SpaceInstallation == 0)
@@ -4972,7 +4972,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                            power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (power.SpaceInstallation == 0)
@@ -5124,7 +5124,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                        power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (power.SpaceInstallation == 0)
@@ -5236,7 +5236,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                        power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (power.SpaceInstallation == 0)
@@ -5335,7 +5335,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                        power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (power.SpaceInstallation == 0)
@@ -5449,7 +5449,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                        power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (power.SpaceInstallation == 0)
@@ -5595,7 +5595,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    power.CenterHigh = power.HBA + powerInst.allLoadInst.power.powerLibrary.Length / 2;
+                                                    power.CenterHigh = power.HBA + (powerInst.allLoadInst.power.powerLibrary.Length / 2);
                                                 }
                                             }
                                             if (power.SpaceInstallation == 0)

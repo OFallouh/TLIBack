@@ -1615,7 +1615,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -1735,7 +1735,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -1893,7 +1893,7 @@ namespace TLIS_Service.Services
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                                         }
                                                                     }
                                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -2011,7 +2011,7 @@ namespace TLIS_Service.Services
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                                         }
                                                                     }
                                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -2165,7 +2165,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                    RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (RadioAntenna.SpaceInstallation == 0)
@@ -2285,7 +2285,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                    RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (RadioAntenna.SpaceInstallation == 0)
@@ -2437,7 +2437,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaLibrary.Length / 2;
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -2612,7 +2612,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -2740,7 +2740,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -2917,7 +2917,7 @@ namespace TLIS_Service.Services
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
+                                                                            RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRULibrary.Length / 2);
                                                                         }
                                                                     }
                                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -3045,7 +3045,7 @@ namespace TLIS_Service.Services
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
+                                                                            RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRULibrary.Length / 2);
                                                                         }
                                                                     }
                                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -3218,7 +3218,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
+                                                                    RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRULibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (RadioRRU.SpaceInstallation == 0)
@@ -3344,7 +3344,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
+                                                                    RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRULibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (RadioRRU.SpaceInstallation == 0)
@@ -3510,7 +3510,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRULibrary.Length / 2;
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -3677,7 +3677,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioOther.CenterHigh = RadioOther.HBA + RadioOtherLibrary.Length / 2;
+                                                                RadioOther.CenterHigh = RadioOther.HBA + (RadioOtherLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioOther.Spaceinstallation == 0)
@@ -3791,7 +3791,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioOther.CenterHigh = RadioOther.HBA + RadioOtherLibrary.Length / 2;
+                                                                RadioOther.CenterHigh = RadioOther.HBA + (RadioOtherLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioOther.Spaceinstallation == 0)
@@ -3944,7 +3944,7 @@ namespace TLIS_Service.Services
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioOther.CenterHigh = RadioOther.HBA + RadioOtherLibrary.Length / 2;
+                                                                            RadioOther.CenterHigh = RadioOther.HBA + (RadioOtherLibrary.Length / 2);
                                                                         }
                                                                     }
                                                                     if (RadioOther.Spaceinstallation == 0)
@@ -4057,7 +4057,7 @@ namespace TLIS_Service.Services
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioOther.CenterHigh = RadioOther.HBA + RadioOtherLibrary.Length / 2;
+                                                                            RadioOther.CenterHigh = RadioOther.HBA + (RadioOtherLibrary.Length / 2);
                                                                         }
                                                                     }
                                                                     if (RadioOther.Spaceinstallation == 0)
@@ -4206,7 +4206,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    RadioOther.CenterHigh = RadioOther.HBA + RadioOtherLibrary.Length / 2;
+                                                                    RadioOther.CenterHigh = RadioOther.HBA + (RadioOtherLibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (RadioOther.Spaceinstallation == 0)
@@ -4321,7 +4321,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    RadioOther.CenterHigh = RadioOther.HBA + RadioOtherLibrary.Length / 2;
+                                                                    RadioOther.CenterHigh = RadioOther.HBA + (RadioOtherLibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (RadioOther.Spaceinstallation == 0)
@@ -4468,7 +4468,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioOther.CenterHigh = RadioOther.HBA + RadioOtherLibrary.Length / 2;
+                                                                RadioOther.CenterHigh = RadioOther.HBA + (RadioOtherLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioOther.Spaceinstallation == 0)
@@ -4674,7 +4674,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -4805,7 +4805,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -4922,7 +4922,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -5054,7 +5054,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -5231,7 +5231,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -5359,7 +5359,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -5475,7 +5475,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -5605,7 +5605,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -5774,7 +5774,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -5902,7 +5902,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -6017,7 +6017,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -6147,7 +6147,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -6310,7 +6310,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2;
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -6495,7 +6495,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -6617,7 +6617,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -6724,7 +6724,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -6845,7 +6845,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -7020,7 +7020,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -7157,7 +7157,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -7265,7 +7265,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         
@@ -7398,7 +7398,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA + RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -7570,7 +7570,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                            RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -7690,7 +7690,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                            RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -7797,7 +7797,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                            RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -7919,7 +7919,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                            RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -8086,7 +8086,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA +  RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2;
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -8250,7 +8250,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                        radioOther.CenterHigh = radioOther.HBA + ((radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2));
                                                     }
                                                 }
                                                 if (radioOther.Spaceinstallation == 0)
@@ -8375,7 +8375,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                        radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (radioOther.Spaceinstallation == 0)
@@ -8487,7 +8487,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                        radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (radioOther.Spaceinstallation == 0)
@@ -8613,7 +8613,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                        radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (radioOther.Spaceinstallation == 0)
@@ -8785,7 +8785,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                                radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (radioOther.Spaceinstallation == 0)
@@ -8909,7 +8909,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                                radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (radioOther.Spaceinstallation == 0)
@@ -9019,7 +9019,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                                radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (radioOther.Spaceinstallation == 0)
@@ -9144,7 +9144,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                                radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (radioOther.Spaceinstallation == 0)
@@ -9308,7 +9308,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                            radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (radioOther.Spaceinstallation == 0)
@@ -9432,7 +9432,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                            radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (radioOther.Spaceinstallation == 0)
@@ -9542,7 +9542,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                            radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (radioOther.Spaceinstallation == 0)
@@ -9668,7 +9668,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                            radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (radioOther.Spaceinstallation == 0)
@@ -9827,7 +9827,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        radioOther.CenterHigh = radioOther.HBA + radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2;
+                                                        radioOther.CenterHigh = radioOther.HBA + (radioOtherInst.allLoadInst.radioOther.radioOtherLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (radioOther.Spaceinstallation == 0)
