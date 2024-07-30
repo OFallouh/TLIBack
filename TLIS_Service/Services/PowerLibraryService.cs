@@ -1005,8 +1005,9 @@ namespace TLIS_Service.Services
 
                     if (CheckModel !=null)
                         return new Response<EditPowerLibraryObject>(false, null, null, $"This model {PowerLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                    
 
+                    PowerLibraryEntites.Active = PowerLegLib.Active;
+                    PowerLibraryEntites.Deleted = PowerLegLib.Deleted;
 
                     _unitOfWork.PowerLibraryRepository.UpdateWithHistory(userId, PowerLegLib, PowerLibraryEntites);
 

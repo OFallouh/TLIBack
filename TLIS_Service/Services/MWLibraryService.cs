@@ -4233,7 +4233,7 @@ namespace TLIS_Service.Services
                             //if (!string.IsNullOrEmpty(CheckGeneralValidation))
                             //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                            var CheckModel = db.MV_MWBU_LIBRARY_VIEW
+                            var CheckModel = db.MV_MWRFU_LIBRARY_VIEW
                                .FirstOrDefault(x => x.Model != null &&
                                 x.Model.ToLower() == MW_RFULibraryEntity.Model.ToLower()
                                 && !x.Deleted);
@@ -5361,7 +5361,8 @@ namespace TLIS_Service.Services
                         return new Response<EditMWBULibraryObject>(false, null, null, $"This model {MWBULibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
-
+                    MWBULibraryEntites.Active = MWBULegLib.Active;
+                    MWBULibraryEntites.Deleted = MWBULegLib.Deleted;
                     _unitOfWork.MW_BULibraryRepository.UpdateWithHistory(userId, MWBULegLib, MWBULibraryEntites);
                     _unitOfWork.SaveChanges();
 
@@ -5489,7 +5490,8 @@ namespace TLIS_Service.Services
                         return new Response<EditMWOtherLibraryObject>(false, null, null, $"This model {MWOtherLibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
-
+                    MWOtherLibraryEntites.Active = MWOtherLegLib.Active;
+                    MWOtherLibraryEntites.Deleted = MWOtherLegLib.Deleted;
                     _unitOfWork.MW_OtherLibraryRepository.UpdateWithHistory(userId, MWOtherLegLib, MWOtherLibraryEntites);
                     _unitOfWork.SaveChanges();
 
@@ -5616,7 +5618,8 @@ namespace TLIS_Service.Services
                     if (CheckModel != null)
                         return new Response<EditMWRFULibrary>(false, null, null, $"This model {MWRFULibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-
+                    MWRFULibraryEntites.Active = MWRFULegLib.Active;
+                    MWRFULibraryEntites.Deleted = MWRFULegLib.Deleted;
 
                     _unitOfWork.MW_RFULibraryRepository.UpdateWithHistory(userId, MWRFULegLib, MWRFULibraryEntites);
                     _unitOfWork.SaveChanges();

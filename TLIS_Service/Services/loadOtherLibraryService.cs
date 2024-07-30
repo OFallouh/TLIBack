@@ -1267,7 +1267,8 @@ namespace TLIS_Service.Services
                     && x.Id != loadOther.Id && !x.Deleted);
                     if (CheckModel != null)
                         return new Response<EditLoadOtherLibraryObject>(true, null, null, $"This model {loadOther.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
+                    loadOther.Active = OldLoadOther.Active;
+                    loadOther.Deleted = OldLoadOther.Deleted;
                     _unitOfWork.LoadOtherLibraryRepository.UpdateWithHistory(UserId, OldLoadOther, loadOther);
                     await _unitOfWork.SaveChangesAsync();
                     //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);

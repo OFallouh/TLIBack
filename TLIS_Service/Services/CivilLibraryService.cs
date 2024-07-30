@@ -1812,7 +1812,8 @@ namespace TLIS_Service.Services
                     CivilWithoutLegLibraryEntites.Model = model;
                     CivilWithoutLegLibraryEntites.CivilSteelSupportCategoryId = CivilWithoutLegLibraryEntites.CivilWithoutLegCategoryId;
 
-                    
+                    CivilWithoutLegLibraryEntites.Active = CivilWithoutLegLib.Active;
+                    CivilWithoutLegLibraryEntites.Deleted = CivilWithoutLegLib.Deleted;
                     _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithHistory(userId, CivilWithoutLegLib, CivilWithoutLegLibraryEntites);
                     _unitOfWork.SaveChanges();
 
@@ -1933,7 +1934,8 @@ namespace TLIS_Service.Services
                     {
                         return new Response<EditCivilNonSteelLibraryObject>(true, null, null, $"This model {CivilNonSteelibraryEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-
+                    CivilNonSteelibraryEntites.Active = CivilNonSteelLib.Active;
+                    CivilNonSteelibraryEntites.Deleted = CivilNonSteelLib.Deleted;
                     _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithHistory(userId, CivilNonSteelLib, CivilNonSteelibraryEntites);
 
 

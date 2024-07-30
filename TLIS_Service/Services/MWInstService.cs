@@ -3576,7 +3576,9 @@ namespace TLIS_Service.Services
                                ALLCIVILINST_ID = x.ALLCIVILINST_ID,
                                ALLLOAD_ID = x.ALLLOAD_ID,
                                LEG_ID = x.LEG_ID,
-
+                               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                               SIDEARM_ID = x.SIDEARM_ID,
+                               SideArmSec_Id = x.SideArmSec_Id
                            })
                            .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
@@ -3629,6 +3631,9 @@ namespace TLIS_Service.Services
                            ALLCIVILINST_ID = x.ALLCIVILINST_ID,
                            ALLLOAD_ID = x.ALLLOAD_ID,
                            LEG_ID = x.LEG_ID,
+                           INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                            SIDEARM_ID = x.SIDEARM_ID,
+                               SideArmSec_Id = x.SideArmSec_Id
 
                        })
                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
@@ -5350,7 +5355,7 @@ namespace TLIS_Service.Services
                                                                 legId = AddMW_BU.installationConfig?.legId,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddMW_BU.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                                sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 2 ? AddMW_BU.installationConfig.sideArmId[2] : (int?)null,
+                                                                sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 1 ? AddMW_BU.installationConfig.sideArmId[1] : (int?)null,
                                                                 ItemOnCivilStatus = AddMW_BU.civilLoads.ItemOnCivilStatus,
                                                                 ItemStatus = AddMW_BU.civilLoads?.ItemStatus,
                                                                 Dismantle = false,
@@ -5486,7 +5491,7 @@ namespace TLIS_Service.Services
                                                                 legId = AddMW_BU.installationConfig?.legId,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddMW_BU.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                                sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 2 ? AddMW_BU.installationConfig.sideArmId[2] : (int?)null,
+                                                                sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 1 ? AddMW_BU.installationConfig.sideArmId[1] : (int?)null,
                                                                 ItemOnCivilStatus = AddMW_BU.civilLoads.ItemOnCivilStatus,
                                                                 ItemStatus = AddMW_BU.civilLoads?.ItemStatus,
                                                                 Dismantle = false,
@@ -5808,7 +5813,7 @@ namespace TLIS_Service.Services
                                                             legId = AddMW_BU.installationConfig?.legId,
                                                             allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                             sideArmId = AddMW_BU.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                            sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 2 ? AddMW_BU.installationConfig.sideArmId[2] : (int?)null,
+                                                            sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 1 ? AddMW_BU.installationConfig.sideArmId[1] : (int?)null,
                                                             ItemOnCivilStatus = AddMW_BU.civilLoads.ItemOnCivilStatus,
                                                             ItemStatus = AddMW_BU.civilLoads?.ItemStatus,
                                                             Dismantle = false,
@@ -5941,7 +5946,7 @@ namespace TLIS_Service.Services
                                                             legId = AddMW_BU.installationConfig?.legId,
                                                             allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                             sideArmId = AddMW_BU.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                            sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 2 ? AddMW_BU.installationConfig.sideArmId[2] : (int?)null,
+                                                            sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 1 ? AddMW_BU.installationConfig.sideArmId[1] : (int?)null,
                                                             ItemOnCivilStatus = AddMW_BU.civilLoads.ItemOnCivilStatus,
                                                             ItemStatus = AddMW_BU.civilLoads?.ItemStatus,
                                                             Dismantle = false,
@@ -6243,7 +6248,7 @@ namespace TLIS_Service.Services
                                                         legId = null,
                                                         allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                         sideArmId = AddMW_BU.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                        sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 2 ? AddMW_BU.installationConfig.sideArmId[2] : (int?)null,
+                                                        sideArm2Id = AddMW_BU.installationConfig?.sideArmId != null && AddMW_BU.installationConfig.sideArmId.Count > 1 ? AddMW_BU.installationConfig.sideArmId[1] : (int?)null,
                                                         ItemOnCivilStatus = AddMW_BU.civilLoads.ItemOnCivilStatus,
                                                         ItemStatus = AddMW_BU.civilLoads?.ItemStatus,
                                                         Dismantle = false,
@@ -6329,7 +6334,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh = mwDish.HBA + (MWDishLibrary.diameter / 2);
+                                                                mwDish.CenterHigh =(mwDish.HBA + (MWDishLibrary.diameter / 2));
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -6511,7 +6516,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh = mwDish.HBA + (MWDishLibrary.diameter / 2);
+                                                                mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -6746,7 +6751,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh = mwDish.HBA + (MWDishLibrary.diameter / 2);
+                                                                mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -6939,7 +6944,7 @@ namespace TLIS_Service.Services
                                                                 legId = AddMW_Dish.installationConfig?.legId,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddMW_Dish.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                                sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 2 ? AddMW_Dish.installationConfig.sideArmId[2] : (int?)null,
+                                                                sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
                                                                 ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
                                                                 ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
                                                                 Dismantle = false,
@@ -6973,7 +6978,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh = mwDish.HBA + (MWDishLibrary.diameter / 2);
+                                                                mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -7139,7 +7144,7 @@ namespace TLIS_Service.Services
                                                                 legId = AddMW_Dish.installationConfig?.legId,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddMW_Dish.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                                sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 2 ? AddMW_Dish.installationConfig.sideArmId[2] : (int?)null,
+                                                                sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
                                                                 ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
                                                                 ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
                                                                 Dismantle = false,
@@ -7218,7 +7223,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            mwDish.CenterHigh = mwDish.HBA + (MWDishLibrary.diameter / 2);
+                                                            mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
                                                         }
                                                     }
                                                     if (mwDish.SpaceInstallation == 0)
@@ -7403,7 +7408,7 @@ namespace TLIS_Service.Services
                                                             legId = AddMW_Dish.installationConfig?.legId,
                                                             allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                             sideArmId = AddMW_Dish.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                            sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 2 ? AddMW_Dish.installationConfig.sideArmId[2] : (int?)null,
+                                                            sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
                                                             ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
                                                             ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
                                                             Dismantle = false,
@@ -7438,7 +7443,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            mwDish.CenterHigh = mwDish.HBA + (MWDishLibrary.diameter / 2);
+                                                            mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
                                                         }
                                                     }
                                                     if (mwDish.SpaceInstallation == 0)
@@ -7600,7 +7605,7 @@ namespace TLIS_Service.Services
                                                             legId = AddMW_Dish.installationConfig?.legId,
                                                             allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                             sideArmId = AddMW_Dish.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                            sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 2 ? AddMW_Dish.installationConfig.sideArmId[2] : (int?)null,
+                                                            sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
                                                             ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
                                                             ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
                                                             Dismantle = false,
@@ -7672,7 +7677,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        mwDish.CenterHigh = mwDish.HBA + (MWDishLibrary.diameter / 2);
+                                                        mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
                                                     }
                                                 }
                                                 if (mwDish.SpaceInstallation == 0)
@@ -7842,7 +7847,7 @@ namespace TLIS_Service.Services
                                                         legId = null,
                                                         allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                         sideArmId = AddMW_Dish.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                        sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 2 ? AddMW_Dish.installationConfig.sideArmId[2] : (int?)null,
+                                                        sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
                                                         ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
                                                         ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
                                                         Dismantle = false,
@@ -9142,7 +9147,7 @@ namespace TLIS_Service.Services
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -9166,7 +9171,7 @@ namespace TLIS_Service.Services
 
                                                     item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -9331,7 +9336,7 @@ namespace TLIS_Service.Services
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -9355,7 +9360,7 @@ namespace TLIS_Service.Services
 
                                                     item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -9533,7 +9538,7 @@ namespace TLIS_Service.Services
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -9557,7 +9562,7 @@ namespace TLIS_Service.Services
 
                                                     item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -9708,7 +9713,7 @@ namespace TLIS_Service.Services
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -9732,7 +9737,7 @@ namespace TLIS_Service.Services
 
                                                     item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -10041,7 +10046,7 @@ namespace TLIS_Service.Services
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -10065,7 +10070,7 @@ namespace TLIS_Service.Services
 
                                                     item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -10273,7 +10278,7 @@ namespace TLIS_Service.Services
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -10297,7 +10302,7 @@ namespace TLIS_Service.Services
 
                                                     item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -10520,7 +10525,7 @@ namespace TLIS_Service.Services
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -10544,7 +10549,7 @@ namespace TLIS_Service.Services
 
                                                     item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -10745,7 +10750,7 @@ namespace TLIS_Service.Services
 
                                                 TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -10769,7 +10774,7 @@ namespace TLIS_Service.Services
 
                                                     item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -11039,7 +11044,7 @@ namespace TLIS_Service.Services
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -11063,7 +11068,7 @@ namespace TLIS_Service.Services
 
                                                 item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                 item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -11279,7 +11284,7 @@ namespace TLIS_Service.Services
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -11303,7 +11308,7 @@ namespace TLIS_Service.Services
 
                                                 item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                 item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -11524,7 +11529,7 @@ namespace TLIS_Service.Services
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -11548,7 +11553,7 @@ namespace TLIS_Service.Services
 
                                                 item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                 item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -11750,7 +11755,7 @@ namespace TLIS_Service.Services
 
                                             TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                             TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLIMWDish.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -11774,7 +11779,7 @@ namespace TLIS_Service.Services
 
                                                 item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                 item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 item.legId = MWInstallationViewModel.installationConfig?.legId;
                                                 item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -12017,7 +12022,7 @@ namespace TLIS_Service.Services
 
                                         TLIMWDish.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                         TLIMWDish.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                        TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                        TLIMWDish.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                         TLIMWDish.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                         TLIMWDish.legId = null;
                                         TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -12040,7 +12045,7 @@ namespace TLIS_Service.Services
 
                                             item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                             item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             item.legId = MWInstallationViewModel.installationConfig?.legId;
                                             item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -12305,7 +12310,7 @@ namespace TLIS_Service.Services
 
                                                     TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                                     TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
                                                     TLImwBU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
@@ -12421,7 +12426,7 @@ namespace TLIS_Service.Services
 
                                                     TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                     TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -12552,7 +12557,7 @@ namespace TLIS_Service.Services
 
                                                     TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                     TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -12655,7 +12660,7 @@ namespace TLIS_Service.Services
 
                                                     TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                     TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                    TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                    TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                     TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                     TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -13022,7 +13027,7 @@ namespace TLIS_Service.Services
 
                                                 TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -13169,7 +13174,7 @@ namespace TLIS_Service.Services
 
                                                 TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -13330,7 +13335,7 @@ namespace TLIS_Service.Services
 
                                                 TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -13469,7 +13474,7 @@ namespace TLIS_Service.Services
 
                                                 TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                 TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                                TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                                 TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                                 TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -13795,7 +13800,7 @@ namespace TLIS_Service.Services
 
                                             TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                             TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -13950,7 +13955,7 @@ namespace TLIS_Service.Services
 
                                             TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                             TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -14111,7 +14116,7 @@ namespace TLIS_Service.Services
 
                                             TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                             TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -14252,7 +14257,7 @@ namespace TLIS_Service.Services
 
                                             TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                             TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                            TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
 
                                             TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                             TLImwBU.legId = MWInstallationViewModel.installationConfig?.legId;
@@ -14551,7 +14556,7 @@ namespace TLIS_Service.Services
 
                                         TLImwBU.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                         TLImwBU.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                        TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 2 ? MWInstallationViewModel.installationConfig.sideArmId[2] : (int?)null;
+                                        TLImwBU.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
                                         TLImwBU.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
                                         TLImwBU.legId = null;
                                         TLImwBU.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;

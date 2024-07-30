@@ -3469,7 +3469,8 @@ namespace TLIS_Service.Services
                         && x.Id != radioAntennaLibrary.Id && !x.Deleted);
                         if (CheckModel != null)
                          return new Response<EditRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                        
+                        radioAntennaLibrary.Active = OldRadioAntenna.Active;
+                        radioAntennaLibrary.Deleted = OldRadioAntenna.Deleted;
                         _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, OldRadioAntenna, radioAntennaLibrary);
                         await _unitOfWork.SaveChangesAsync();
                         //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
@@ -3592,6 +3593,8 @@ namespace TLIS_Service.Services
                     if (CheckModel != null)
                         return new Response<EditRadioOtherLibraryObject>(true, null, null, $"This model {radioOtherLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
+                    radioOtherLibrary.Active = OldRadioOther.Active;
+                    radioOtherLibrary.Deleted = OldRadioOther.Deleted;
                     _unitOfWork.RadioOtherLibraryRepository.UpdateWithHistory(UserId, OldRadioOther, radioOtherLibrary);
                     await _unitOfWork.SaveChangesAsync();
                     //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
@@ -4078,6 +4081,8 @@ namespace TLIS_Service.Services
                     if (CheckModel != null)
                         return new Response<EditRadioRRULibraryObject>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
+                    radioRRULibrary.Active = OldRadioRRU.Active;
+                    radioRRULibrary.Deleted = OldRadioRRU.Deleted;
                     _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(UserId, OldRadioRRU, radioRRULibrary);
                     await _unitOfWork.SaveChangesAsync();
                     //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
