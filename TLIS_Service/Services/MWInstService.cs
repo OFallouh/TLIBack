@@ -3665,6 +3665,7 @@ namespace TLIS_Service.Services
                     {
                         try
                         {
+                            TLIcivilLoads tLImwDish = null;
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableName);
                             TLIcivilSiteDate CivilFound = null;
@@ -3684,7 +3685,6 @@ namespace TLIS_Service.Services
                                     {
                                         if (AddMW_ODU.installationConfig?.civilWithLegId != null)
                                         {
-                                            TLIcivilLoads tLImwDish = null;
                                             CivilFound = _unitOfWork.CivilSiteDateRepository.GetWhereFirst(x => x.allCivilInst.civilWithLegsId
                                             == AddMW_ODU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() ==
                                             SiteCode.ToLower());
@@ -3713,6 +3713,12 @@ namespace TLIS_Service.Services
                                                    x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                    || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                    x=>x.allLoadInst,XAttribute=>XAttribute.allLoadInst.mwBU).ToList();
+                                                    if (MWBUDish.Count>0)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+
                                                 }
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                 && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.allCivilInst.civilWithLegsId ==
@@ -3800,13 +3806,20 @@ namespace TLIS_Service.Services
 
                                             if (AddMW_ODU.installationConfig?.mwDishId != null)
                                             {
-                                                TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
+                                                tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
                                                 && !x.Dismantle && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.allCivilInst.civilWithoutLegId ==
                                                 AddMW_ODU.installationConfig.civilWithoutLegId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                 x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
                                                 x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg);
                                                 if (tLImwDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+
+                                                var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                if (MWBUDish.Count>0)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                 && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.allCivilInst.civilWithoutLegId ==
                                                 AddMW_ODU.installationConfig.civilWithoutLegId && x.SiteCode.ToLower() == SiteCode.ToLower(),
@@ -3893,13 +3906,19 @@ namespace TLIS_Service.Services
 
                                             if (AddMW_ODU.installationConfig?.mwDishId != null)
                                             {
-                                                TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
+                                                tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
                                                 && !x.Dismantle && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.allCivilInst.civilNonSteelId ==
                                                 AddMW_ODU.installationConfig.civilNonSteelId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                 x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish.MwDishLibrary,
                                                 x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel);
                                                 if (tLImwDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                                var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                   || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                   x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                if (MWBUDish.Count>0)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                 && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.allCivilInst.civilNonSteelId ==
                                                 AddMW_ODU.installationConfig.civilNonSteelId && x.SiteCode.ToLower() == SiteCode.ToLower(),
@@ -3995,7 +4014,6 @@ namespace TLIS_Service.Services
 
                                                 if (AddMW_ODU.installationConfig?.sideArmId != null)
                                                 {
-                                                    TLIcivilLoads tLImwDish = null;
                                                     if (AddMW_ODU.installationConfig?.mwDishId != null)
                                                     {
 
@@ -4009,13 +4027,18 @@ namespace TLIS_Service.Services
 
 
                                                         tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
-                                                        && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                                        && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.sideArmId == AddMW_ODU.installationConfig.sideArmId
+                                                        && !x.Dismantle && x.allCivilInstId == CivilFound.allCivilInstId
+                                                        && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId 
                                                         && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                         x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish,
                                                          x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.sideArm);
                                                         if (tLImwDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                                        var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                          || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                          x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                          if (MWBUDish.Count>0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
 
                                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
@@ -4284,14 +4307,21 @@ namespace TLIS_Service.Services
 
                                                 if (AddMW_ODU.installationConfig?.mwDishId != null)
                                                 {
-                                                    TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
-                                                    && !x.Dismantle && x.sideArmId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                                    && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish,
-                                                    x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allLoadInst.mwDish.MwDishLibrary.polarityType,
-                                                    x => x.allCivilInst, x => x.sideArm);
+                                                    tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
+                                                         && !x.Dismantle && x.allCivilInstId == CivilFound.allCivilInstId
+                                                         && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId
+                                                         && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                         x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish,
+                                                          x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.sideArm);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+
+                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                    if (MWBUDish.Count>0)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                     && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
@@ -4556,13 +4586,20 @@ namespace TLIS_Service.Services
 
                                                 if (AddMW_ODU.installationConfig?.mwDishId != null)
                                                 {
-                                                    TLIcivilLoads tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
-                                                    && !x.Dismantle && x.sideArmId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                                    && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                    x => x.allLoadInst, x => x.allLoadInst.mwDish
-                                                    , x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allLoadInst.mwDish.MwDishLibrary, x => x.allCivilInst, x => x.sideArm);
+                                                    tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
+                                                      && !x.Dismantle && x.allCivilInstId == CivilFound.allCivilInstId
+                                                      && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId
+                                                      && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                      x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish,
+                                                       x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.sideArm);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                    if (MWBUDish.Count>0)
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                     && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.Mw_Dish, x => x.allLoadInst.mwODU.Mw_Dish.MwDishLibrary).ToList();
@@ -4718,21 +4755,31 @@ namespace TLIS_Service.Services
                                                         var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                             && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                            && (x.legId == AddMW_BU.installationConfig.legId || x.Leg2Id == AddMW_BU.installationConfig.legId
-                                                        ));
+                                                            && x.SiteCode.ToLower()==SiteCode.ToLower()
+                                                        );
                                                         if (MainDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same leg", (int)ApiReturnCode.fail);
 
+                                                        var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.mainDishId
+                                                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                          x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUMainDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                                         if (AddMW_BU.installationConfig.sdDishId != null)
                                                         {
                                                             var SdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                 x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                                && (x.legId == AddMW_BU.installationConfig.legId || x.Leg2Id == AddMW_BU.installationConfig.legId
-                                                            ));
+                                                                  && x.SiteCode.ToLower() == SiteCode.ToLower()
+                                                            );
                                                             if (SdDish == null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sddish is not found on same leg", (int)ApiReturnCode.fail);
+                                                            var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.sdDishId
+                                                            && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                             x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                            if (MWODUSDDish.Count >0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                                         }
                                                         if (AddMW_BU.installationConfig.CascededBuId != null)
@@ -5089,10 +5136,14 @@ namespace TLIS_Service.Services
                                                             var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                 x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                                && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                                == AddMW_BU.installationConfig.sideArmId[0]));
+                                                                && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                             if (MainDish == null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                            var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.mainDishId
+                                                             && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                              x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                            if (MWODUMainDish.Count > 0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                                         }
@@ -5101,10 +5152,14 @@ namespace TLIS_Service.Services
                                                             var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                 x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.sdDishId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                                && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                                == AddMW_BU.installationConfig.sideArmId[0]));
+                                                                 && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                             if (sdDish == null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDishId is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                            var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.sdDishId
+                                                                && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                                 x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                            if (MWODUSDDish.Count > 0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                                         }
@@ -5151,23 +5206,30 @@ namespace TLIS_Service.Services
                                                             var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                 x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                                && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                                == AddMW_BU.installationConfig.sideArmId[0]) || x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                                || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                                && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                             if (MainDish == null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                                            var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.mainDishId
+                                                             && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                              x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                            if (MWODUMainDish.Count > 0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
+
                                                         }
                                                         if (AddMW_BU.installationConfig.sdDishId != null)
                                                         {
                                                             var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.sdDishId && !x.Dismantle
                                                             && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                            && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]) || x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                            || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                             && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                             if (sdDish == null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDish is not found on same sidearm", (int)ApiReturnCode.fail);
 
+                                                            var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.sdDishId
+                                                                && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                                 x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                            if (MWODUSDDish.Count > 0)
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                                         }
                                                         if (AddMW_BU.installationConfig.CascededBuId != null)
@@ -5563,10 +5625,14 @@ namespace TLIS_Service.Services
                                                         var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                             && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
-                                                            && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]));
+                                                             && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (MainDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                        var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.mainDishId
+                                                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                          x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUMainDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                                     }
@@ -5575,10 +5641,14 @@ namespace TLIS_Service.Services
                                                         var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.sdDishId && !x.Dismantle
                                                             && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
-                                                            && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]));
+                                                              && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (sdDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDishId is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                        var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.sdDishId
+                                                            && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                             x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUSDDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                                     }
@@ -5625,22 +5695,29 @@ namespace TLIS_Service.Services
                                                         var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                             && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
-                                                            && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]) || x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                            || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                             && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (MainDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                                        var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.mainDishId
+                                                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                          x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUMainDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
+
                                                     }
                                                     if (AddMW_BU.installationConfig.sdDishId != null)
                                                     {
                                                         var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                         x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.sdDishId && !x.Dismantle
                                                         && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
-                                                        && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                        == AddMW_BU.installationConfig.sideArmId[0]) ||x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                        || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                        && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (sdDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDish is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                        var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.sdDishId
+                                                            && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                             x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUSDDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                                     }
@@ -6015,11 +6092,15 @@ namespace TLIS_Service.Services
                                                         var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                             && x.allCivilInst.civilNonSteelId == AddMW_BU.installationConfig.civilNonSteelId
-                                                            && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]));
+                                                              && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (MainDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same sidearm", (int)ApiReturnCode.fail);
 
+                                                        var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.mainDishId
+                                                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                          x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUMainDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                                     }
                                                     if (AddMW_BU.installationConfig.sdDishId != null)
@@ -6027,10 +6108,14 @@ namespace TLIS_Service.Services
                                                         var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.sdDishId && !x.Dismantle
                                                             && x.allCivilInst.civilNonSteelId == AddMW_BU.installationConfig.civilNonSteelId
-                                                            && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]));
+                                                             && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (sdDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDishId is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                        var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.sdDishId
+                                                            && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                             x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUSDDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                                     }
@@ -6077,22 +6162,29 @@ namespace TLIS_Service.Services
                                                         var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                             && x.allCivilInst.civilNonSteelId == AddMW_BU.installationConfig.civilNonSteelId
-                                                            && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                            == AddMW_BU.installationConfig.sideArmId[0]) || x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                            || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                            && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (MainDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                                        var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.mainDishId
+                                                          && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                           x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUMainDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
+
                                                     }
                                                     if (AddMW_BU.installationConfig.sdDishId != null)
                                                     {
                                                         var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                         x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.sdDishId && !x.Dismantle
                                                         && x.allCivilInst.civilNonSteelId == AddMW_BU.installationConfig.civilNonSteelId
-                                                        && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                        == AddMW_BU.installationConfig.sideArmId[0]) || x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                        || x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                         && x.SiteCode.ToLower() == SiteCode.ToLower());
                                                         if (sdDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDish is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                        var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.sdDishId
+                                                        && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                         x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                        if (MWODUSDDish.Count > 0)
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                                     }
@@ -12144,10 +12236,14 @@ namespace TLIS_Service.Services
                                             var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                 x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mainDishId && !x.Dismantle
                                                 && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                                                && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId
-                                            ));
+                                                  && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                             if (MainDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same leg", (int)ApiReturnCode.fail);
+                                            var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mainDishId
+                                             && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                              x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUMainDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                             if (MWInstallationViewModel.installationConfig.sdDishId != null)
@@ -12155,10 +12251,14 @@ namespace TLIS_Service.Services
                                                 var SdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                     x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mainDishId && !x.Dismantle
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                                                    && (x.legId == MWInstallationViewModel.installationConfig.legId || x.Leg2Id == MWInstallationViewModel.installationConfig.legId
-                                                ));
+                                                 && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                                 if (SdDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sddish is not found on same leg", (int)ApiReturnCode.fail);
+                                                var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.sdDishId
+                                                && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                                 x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                if (MWODUSDDish.Count > 0)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                             }
                                             if (MWInstallationViewModel.installationConfig.CascededBuId != null)
@@ -12773,10 +12873,14 @@ namespace TLIS_Service.Services
                                                 var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                     x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mainDishId && !x.Dismantle
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                                                    && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                    == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                                     && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                                 if (MainDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same sidearm", (int)ApiReturnCode.fail);
+                                                var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mainDishId
+                                                  && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                                   x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                if (MWODUMainDish.Count > 0)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                             }
@@ -12785,11 +12889,15 @@ namespace TLIS_Service.Services
                                                 var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                     x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.sdDishId && !x.Dismantle
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                                                    && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                    == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                                     && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                                 if (sdDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDishId is not found on same sidearm", (int)ApiReturnCode.fail);
 
+                                                var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.sdDishId
+                                                && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                                 x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                if (MWODUSDDish.Count > 0)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                             }
                                             if (MWInstallationViewModel.installationConfig.CascededBuId != null)
@@ -12832,23 +12940,30 @@ namespace TLIS_Service.Services
                                                 var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                     x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mainDishId && !x.Dismantle
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                                                    && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                    == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                    || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
+                                                     && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                                 if (MainDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                                var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mainDishId
+                                                  && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                                   x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                if (MWODUMainDish.Count > 0)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
+
                                             }
                                             if (MWInstallationViewModel.installationConfig.sdDishId != null)
                                             {
                                                 var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                 x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.sdDishId && !x.Dismantle
                                                 && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                                                && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
+                                                 && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                                 if (sdDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDish is not found on same sidearm", (int)ApiReturnCode.fail);
 
+                                                var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.sdDishId
+                                                    && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                                     x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                                if (MWODUSDDish.Count > 0)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                             }
                                             if (MWInstallationViewModel.installationConfig.CascededBuId != null)
@@ -13548,11 +13663,15 @@ namespace TLIS_Service.Services
                                             var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                 x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mainDishId && !x.Dismantle
                                                 && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId
-                                                && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                                 && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                             if (MainDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same sidearm", (int)ApiReturnCode.fail);
 
+                                            var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mainDishId
+                                             && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                              x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUMainDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                         }
                                         if (MWInstallationViewModel.installationConfig.sdDishId != null)
@@ -13560,10 +13679,14 @@ namespace TLIS_Service.Services
                                             var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                 x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.sdDishId && !x.Dismantle
                                                 && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId
-                                                && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                                && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                             if (sdDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDishId is not found on same sidearm", (int)ApiReturnCode.fail);
+                                            var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.sdDishId
+                                            && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                             x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUSDDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                         }
@@ -13607,23 +13730,30 @@ namespace TLIS_Service.Services
                                             var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                 x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mainDishId && !x.Dismantle
                                                 && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId
-                                                && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
+                                               && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                             if (MainDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                            var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mainDishId
+                                              && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                               x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUMainDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
+
                                         }
                                         if (MWInstallationViewModel.installationConfig.sdDishId != null)
                                         {
                                             var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                             x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.sdDishId && !x.Dismantle
                                             && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId
-                                            && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                            == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                            || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
+                                            && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                             if (sdDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDish is not found on same sidearm", (int)ApiReturnCode.fail);
 
+                                            var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.sdDishId
+                                            && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                             x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUSDDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                         }
                                         if (MWInstallationViewModel.installationConfig.CascededBuId != null)
@@ -14327,10 +14457,14 @@ namespace TLIS_Service.Services
                                             var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                 x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mainDishId && !x.Dismantle
                                                 && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
-                                                && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                                 && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                             if (MainDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same sidearm", (int)ApiReturnCode.fail);
+                                            var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mainDishId
+                                             && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                              x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUMainDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                         }
@@ -14339,10 +14473,14 @@ namespace TLIS_Service.Services
                                             var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                 x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.sdDishId && !x.Dismantle
                                                 && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
-                                                && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]));
+                                               && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                             if (sdDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDishId is not found on same sidearm", (int)ApiReturnCode.fail);
+                                            var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.sdDishId
+                                                && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                                 x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUSDDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                         }
@@ -14386,23 +14524,30 @@ namespace TLIS_Service.Services
                                             var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                 x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mainDishId && !x.Dismantle
                                                 && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
-                                                && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                                == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
+                                             && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
                                             if (MainDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same tow sidearm", (int)ApiReturnCode.fail);
+                                            var MWODUMainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mainDishId
+                                             && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                              x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUMainDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MainDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
+
                                         }
                                         if (MWInstallationViewModel.installationConfig.sdDishId != null)
                                         {
                                             var sdDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                             x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.sdDishId && !x.Dismantle
                                             && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
-                                            && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] || x.sideArm2Id
-                                            == MWInstallationViewModel.installationConfig.sideArmId[0]) || x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                            || x.sideArm2Id == MWInstallationViewModel.installationConfig.sideArmId[1], x => x.allLoadInst, x => x.allLoadInst.mwBU
-                                                               , x => x.allLoadInst.mwBU.MwBULibrary);
+                                             && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
+                                                               ;
                                             if (sdDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDish is not found on same sidearm", (int)ApiReturnCode.fail);
+                                            var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.sdDishId
+                                            && !x.Dismantle && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower(),
+                                             x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                            if (MWODUSDDish.Count > 0)
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
 
                                         }
@@ -16451,6 +16596,11 @@ namespace TLIS_Service.Services
                                         if (tLImwDish == null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
 
+                                        var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                        if (MWBUDish.Count>0)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                        .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.
@@ -16559,6 +16709,12 @@ namespace TLIS_Service.Services
 
                                     if (tLImwDish == null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                    if (MWBUDish.Count>0)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+
                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                     .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
                                        && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)
@@ -16656,6 +16812,12 @@ namespace TLIS_Service.Services
 
                                     if (tLImwDish == null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                    if (MWBUDish.Count>0)
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+
                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                     .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
                                        && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)
@@ -16769,12 +16931,17 @@ namespace TLIS_Service.Services
                                                .Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
                                                .ThenInclude(x => x.polarityType).Include(x => x.allCivilInst)
                                                .Include(x => x.sideArm).FirstOrDefault(x => x.allLoadInstId != null
-                                               && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                               && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId ==
+                                               && !x.Dismantle && x.allCivilInstId == CivilFound.allCivilInstId
+                                                && x.allLoadInst.mwDishId ==
                                                MWInstallationViewModel.installationConfig.mwDishId
                                                && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                                 if (tLImwDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                                var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                 || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                                 x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                if (MWBUDish.Count>0)
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                                  .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
@@ -17270,11 +17437,16 @@ namespace TLIS_Service.Services
                                         .Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
                                         .ThenInclude(x => x.polarityType).Include(x => x.allCivilInst)
                                         .Include(x => x.sideArm).FirstOrDefault(x => x.allLoadInstId != null
-                                         && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                         && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                         && !x.Dismantle && x.allCivilInstId == CivilFound.allCivilInstId
+                                        && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId
                                          && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                         if (tLImwDish == null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                        var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                 || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                                 x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                        if (MWBUDish.Count>0)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                          .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
@@ -17762,11 +17934,17 @@ namespace TLIS_Service.Services
                                        .Include(x => x.allLoadInst).ThenInclude(x => x.mwDish).ThenInclude(x => x.MwDishLibrary)
                                        .ThenInclude(x => x.polarityType).Include(x => x.allCivilInst)
                                        .Include(x => x.sideArm).FirstOrDefault(x => x.allLoadInstId != null
-                                       && !x.Dismantle && x.sideArmId != null && x.allCivilInstId != null && x.allCivilInstId == CivilFound.allCivilInstId
-                                       && x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                       && !x.Dismantle&& x.allCivilInstId == CivilFound.allCivilInstId
+                                        && x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.mwDishId
                                        && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                         if (tLImwDish == null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+                                        var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                        if (MWBUDish.Count>0)
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+
                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                         .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
                                          && x.SiteCode.ToLower() == tLImwDish.SiteCode.ToLower()).Include(x => x.allLoadInst).ThenInclude(x => x.mwODU).ThenInclude(x => x.Mw_Dish)

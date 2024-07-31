@@ -7049,7 +7049,7 @@ namespace TLIS_Service.Services
                     objectInst.LibraryAttribute = LibraryAttributes;
 
                     List<BaseInstAttViews> ListAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                        .GetInstAttributeActivatedForCivilWithoutLegGetForAdd(CategoryId,Helpers.Constants.TablesNames.TLIcivilWithoutLeg.ToString(), "CivilWithoutlegsLibId").ToList();
+                        .GetInstAttributeActivatedForCivilWithoutLegGetForAdd(CategoryId, CivilWithLoutInst.allCivilInst.civilWithoutLeg, "CivilWithoutlegsLibId").ToList();
 
                     BaseInstAttViews NameAttribute = ListAttributesActivated.FirstOrDefault(x => x.Key.ToLower() == "Name".ToLower());
                     if (NameAttribute != null)
