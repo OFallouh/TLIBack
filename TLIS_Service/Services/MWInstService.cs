@@ -3532,6 +3532,8 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEG_ID");
                     propertyNamesStatic.Add("LEG_NAME");
+                    propertyNamesStatic.Add("SideArmSec_Id");
+                    propertyNamesStatic.Add("SideArmSec_Name");
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)
@@ -4782,7 +4784,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+                                                                    mwBU.CenterHigh = mwBU.HBA + (mwBULibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (mwBU.SpaceInstallation == 0)
@@ -4913,7 +4915,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+                                                                    mwBU.CenterHigh = mwBU.HBA + (mwBULibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (mwBU.SpaceInstallation == 0)
@@ -5225,7 +5227,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+                                                                mwBU.CenterHigh = mwBU.HBA + (mwBULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (mwBU.SpaceInstallation == 0)
@@ -5389,7 +5391,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+                                                                mwBU.CenterHigh = mwBU.HBA + (mwBULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (mwBU.SpaceInstallation == 0)
@@ -5693,7 +5695,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+                                                            mwBU.CenterHigh = mwBU.HBA + (mwBULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (mwBU.SpaceInstallation == 0)
@@ -5848,7 +5850,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+                                                            mwBU.CenterHigh = mwBU.HBA + (mwBULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (mwBU.SpaceInstallation == 0)
@@ -6141,7 +6143,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        mwBU.CenterHigh = mwBU.HBA + mwBULibrary.Length / 2;
+                                                        mwBU.CenterHigh = mwBU.HBA + (mwBULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (mwBU.SpaceInstallation == 0)
@@ -6324,9 +6326,9 @@ namespace TLIS_Service.Services
 
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface <= 0)
+                                                            if (mwDish.HBA_Surface_Surface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (MWDishLibrary.diameter <= 0)
                                                             {
@@ -6334,7 +6336,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh =(mwDish.HBA + (MWDishLibrary.diameter / 2));
+                                                                mwDish.CenterHigh =(mwDish.HBA_Surface + (MWDishLibrary.diameter / 2));
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -6506,9 +6508,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface <= 0)
+                                                            if (mwDish.HBA_Surface_Surface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (MWDishLibrary.diameter <= 0)
                                                             {
@@ -6516,7 +6518,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
+                                                                mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -6741,9 +6743,9 @@ namespace TLIS_Service.Services
 
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface <= 0)
+                                                            if (mwDish.HBA_Surface_Surface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (MWDishLibrary.diameter <= 0)
                                                             {
@@ -6751,7 +6753,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
+                                                                mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -6968,9 +6970,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface <= 0)
+                                                            if (mwDish.HBA_Surface_Surface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (MWDishLibrary.diameter <= 0)
                                                             {
@@ -6978,7 +6980,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
+                                                                mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -7213,9 +7215,9 @@ namespace TLIS_Service.Services
 
                                                     if (mwDish.CenterHigh <= 0)
                                                     {
-                                                        if (mwDish.HBA_Surface <= 0)
+                                                        if (mwDish.HBA_Surface_Surface <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         else if (MWDishLibrary.diameter <= 0)
                                                         {
@@ -7223,7 +7225,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
+                                                            mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
                                                         }
                                                     }
                                                     if (mwDish.SpaceInstallation == 0)
@@ -7433,9 +7435,9 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (mwDish.CenterHigh <= 0)
                                                     {
-                                                        if (mwDish.HBA_Surface <= 0)
+                                                        if (mwDish.HBA_Surface_Surface <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         else if (MWDishLibrary.diameter <= 0)
                                                         {
@@ -7443,7 +7445,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
+                                                            mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
                                                         }
                                                     }
                                                     if (mwDish.SpaceInstallation == 0)
@@ -7667,9 +7669,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (mwDish.CenterHigh <= 0)
                                                 {
-                                                    if (mwDish.HBA_Surface <= 0)
+                                                    if (mwDish.HBA_Surface_Surface <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     else if (MWDishLibrary.diameter <= 0)
                                                     {
@@ -7677,7 +7679,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        mwDish.CenterHigh =( mwDish.HBA + (MWDishLibrary.diameter / 2));
+                                                        mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
                                                     }
                                                 }
                                                 if (mwDish.SpaceInstallation == 0)
@@ -8984,9 +8986,9 @@ namespace TLIS_Service.Services
 
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface <= 0)
+                                                if (mwDish.HBA_Surface_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -8994,7 +8996,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                    mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                                 }
                                             }
                                             if (mwDish.SpaceInstallation == 0)
@@ -9191,9 +9193,9 @@ namespace TLIS_Service.Services
 
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface <= 0)
+                                                if (mwDish.HBA_Surface_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -9201,7 +9203,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                    mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                                 }
                                             }
                                             if (mwDish.SpaceInstallation == 0)
@@ -9380,9 +9382,9 @@ namespace TLIS_Service.Services
 
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface <= 0)
+                                                if (mwDish.HBA_Surface_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -9390,7 +9392,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                    mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                                 }
                                             }
                                             if (mwDish.SpaceInstallation == 0)
@@ -9581,9 +9583,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface <= 0)
+                                                if (mwDish.HBA_Surface_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -9591,7 +9593,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                    mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                                 }
                                             }
                                             if (mwDish.SpaceInstallation == 0)
@@ -9843,9 +9845,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface <= 0)
+                                                if (mwDish.HBA_Surface_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -9853,7 +9855,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                    mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                                 }
                                             }
                                             if (mwDish.SpaceInstallation == 0)
@@ -10088,9 +10090,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface <= 0)
+                                                if (mwDish.HBA_Surface_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -10098,7 +10100,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                    mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                                 }
                                             }
                                             if (mwDish.SpaceInstallation == 0)
@@ -10321,9 +10323,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface <= 0)
+                                                if (mwDish.HBA_Surface_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -10331,7 +10333,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                    mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                                 }
                                             }
                                             if (mwDish.SpaceInstallation == 0)
@@ -10568,9 +10570,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface <= 0)
+                                                if (mwDish.HBA_Surface_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -10578,7 +10580,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                    mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                                 }
                                             }
                                             if (mwDish.SpaceInstallation == 0)
@@ -10842,9 +10844,9 @@ namespace TLIS_Service.Services
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
-                                            if (mwDish.HBA_Surface <= 0)
+                                            if (mwDish.HBA_Surface_Surface <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                             {
@@ -10852,7 +10854,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
-                                                mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                             }
                                         }
                                         if (mwDish.SpaceInstallation == 0)
@@ -11088,9 +11090,9 @@ namespace TLIS_Service.Services
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
-                                            if (mwDish.HBA_Surface <= 0)
+                                            if (mwDish.HBA_Surface_Surface <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                             {
@@ -11098,7 +11100,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
-                                                mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                             }
                                         }
                                         if (mwDish.SpaceInstallation == 0)
@@ -11328,9 +11330,9 @@ namespace TLIS_Service.Services
 
                                         if (mwDish.CenterHigh <= 0)
                                         {
-                                            if (mwDish.HBA_Surface <= 0)
+                                            if (mwDish.HBA_Surface_Surface <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                             {
@@ -11338,7 +11340,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
-                                                mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                             }
                                         }
                                         if (mwDish.SpaceInstallation == 0)
@@ -11574,9 +11576,9 @@ namespace TLIS_Service.Services
 
                                         if (mwDish.CenterHigh <= 0)
                                         {
-                                            if (mwDish.HBA_Surface <= 0)
+                                            if (mwDish.HBA_Surface_Surface <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                             {
@@ -11584,7 +11586,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
-                                                mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                                mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                             }
                                         }
                                         if (mwDish.SpaceInstallation == 0)
@@ -11841,9 +11843,9 @@ namespace TLIS_Service.Services
                                 {
                                     if (mwDish.CenterHigh <= 0)
                                     {
-                                        if (mwDish.HBA_Surface <= 0)
+                                        if (mwDish.HBA_Surface_Surface <= 0)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                         }
                                         else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                         {
@@ -11851,7 +11853,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            mwDish.CenterHigh = mwDish.HBA + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
+                                            mwDish.CenterHigh = mwDish.HBA_Surface + (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter / 2);
                                         }
                                     }
                                     if (mwDish.SpaceInstallation == 0)

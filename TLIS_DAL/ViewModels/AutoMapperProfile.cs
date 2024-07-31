@@ -339,7 +339,9 @@ namespace TLIS_DAL.ViewModels
             CreateMap<LoadandsidearmViewDto, MV_RADIO_OTHER_VIEW>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, MV_POWER_VIEW>().ReverseMap();
             CreateMap<LoadandsidearmViewDto, MV_LOAD_OTHER_VIEW>().ReverseMap();
-            CreateMap<LoadandsidearmViewDto, MV_MWDISH_VIEW>().ReverseMap();
+            CreateMap<LoadandsidearmViewDto, MV_MWDISH_VIEW>().
+                ForMember(c => c.DishName, c => c.MapFrom(s => s.Name))
+                  .ReverseMap();
 
             CreateMap<SectionsLegTypeViewModel, TLIsideArmInstallationPlace>().ReverseMap();
             CreateMap<SectionsLegTypeViewModel, TLIsideArmType>().ReverseMap();
