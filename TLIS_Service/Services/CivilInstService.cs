@@ -2729,12 +2729,12 @@ namespace TLIS_Service.Services
                         if (AddCivilWithLegsViewModel.civilSupportDistance != null)
                         {
                             var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
-                            AddCivilWithLegsViewModel.civilSupportDistance.ReferenceCivilId && x.Distance == AddCivilWithLegsViewModel.civilSupportDistance.Distance
-                            && x.Azimuth == AddCivilWithLegsViewModel.civilSupportDistance.Azimuth
-                             ,x=>x.CivilInst).ToList();
-                            var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y.ReferenceCivilId
-                            == x.allCivilInstId && !x.Dismantle && x.SiteCode.ToLower()==SiteCode.ToLower())).ToList();
-                            if(CivilSiteDate.Count > 0)
+                             AddCivilWithLegsViewModel.civilSupportDistance.ReferenceCivilId && x.Distance == AddCivilWithLegsViewModel.civilSupportDistance.Distance
+                             && x.Azimuth == AddCivilWithLegsViewModel.civilSupportDistance.Azimuth
+                              , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
+                            var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                            == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()).ToList();
+                            if (CivilSiteDate.Count > 0)
                             {
                                 return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
@@ -3032,11 +3032,11 @@ namespace TLIS_Service.Services
                         if (addCivilWithoutLegViewModel.civilSupportDistance != null)
                         {
                             var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
-                            addCivilWithoutLegViewModel.civilSupportDistance.ReferenceCivilId && x.Distance == addCivilWithoutLegViewModel.civilSupportDistance.Distance
-                            && x.Azimuth == addCivilWithoutLegViewModel.civilSupportDistance.Azimuth
-                            , x => x.CivilInst).ToList();
-                            var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y.ReferenceCivilId
-                            == x.allCivilInstId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower())).ToList();
+                             addCivilWithoutLegViewModel.civilSupportDistance.ReferenceCivilId && x.Distance == addCivilWithoutLegViewModel.civilSupportDistance.Distance
+                             && x.Azimuth == addCivilWithoutLegViewModel.civilSupportDistance.Azimuth
+                            , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
+                            var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                            == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()).ToList();
                             if (CivilSiteDate.Count > 0)
                             {
                                 return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3171,9 +3171,9 @@ namespace TLIS_Service.Services
                             var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
                             addCivilNonSteelObject.civilSupportDistance.ReferenceCivilId && x.Distance == addCivilNonSteelObject.civilSupportDistance.Distance
                             && x.Azimuth == addCivilNonSteelObject.civilSupportDistance.Azimuth
-                             , x => x.CivilInst).ToList();
-                            var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y.ReferenceCivilId
-                            == x.allCivilInstId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower())).ToList();
+                             , x => x.CivilInst).Select(x=>x.ReferenceCivilId).ToList();
+                            var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                            == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()).ToList();
                             if (CivilSiteDate.Count > 0)
                             {
                                 return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3470,9 +3470,9 @@ namespace TLIS_Service.Services
                                 var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
                                  editCivilWithLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithLegsInstallationObject.civilSupportDistance.Distance
                                  && x.Azimuth == editCivilWithLegsInstallationObject.civilSupportDistance.Azimuth
-                                 , x => x.CivilInst).ToList();
-                                var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y.ReferenceCivilId
-                                == x.allCivilInstId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower())).ToList();
+                                 , x => x.CivilInst).Select(x=>x.ReferenceCivilId).ToList();
+                                var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                                == x.allCivilInstId )&& !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
                                 if (CivilSiteDate.Count > 0)
                                 {
                                     return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3907,11 +3907,11 @@ namespace TLIS_Service.Services
                             if (OldValuecivilsupportdistance.ReferenceCivilId != editCivilWithoutLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
                             {
                                 var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
-                                 editCivilWithoutLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithoutLegsInstallationObject.civilSupportDistance.Distance
-                                 && x.Azimuth == editCivilWithoutLegsInstallationObject.civilSupportDistance.Azimuth
-                                 , x => x.CivilInst).ToList();
-                                var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y.ReferenceCivilId
-                                == x.allCivilInstId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower())).ToList();
+                                  editCivilWithoutLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithoutLegsInstallationObject.civilSupportDistance.Distance
+                                  && x.Azimuth == editCivilWithoutLegsInstallationObject.civilSupportDistance.Azimuth
+                                  , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
+                                var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                                == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
                                 if (CivilSiteDate.Count > 0)
                                 {
                                     return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4068,17 +4068,17 @@ namespace TLIS_Service.Services
 
                         if (OldValuecivilsupportdistance.ReferenceCivilId != editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId)
                         {
-                            var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
-                                editCivilNonSteelInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilNonSteelInstallationObject.civilSupportDistance.Distance
-                                && x.Azimuth == editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth
-                                , x => x.CivilInst).ToList();
-                            var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y.ReferenceCivilId
-                            == x.allCivilInstId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower())).ToList();
-                            if (CivilSiteDate.Count > 0)
-                            {
-                                return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
+                                      editCivilNonSteelInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilNonSteelInstallationObject.civilSupportDistance.Distance
+                                      && x.Azimuth == editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth
+                                      , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
+                                var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                                == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
+                                if (CivilSiteDate.Count > 0)
+                                {
+                                    return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
                             }
-                        }
                          civilsupportdistance.Azimuth = editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth;
                         civilsupportdistance.Distance = editCivilNonSteelInstallationObject.civilSupportDistance.Distance;
                         civilsupportdistance.ReferenceCivilId = editCivilNonSteelInstallationObject.civilSupportDistance.ReferenceCivilId;
