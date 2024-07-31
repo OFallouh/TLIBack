@@ -283,7 +283,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.MWInstService.EditMWInstallation(userId,MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId);
+                var response = await _unitOfWorkService.MWInstService.EditMWBUInstallation(userId,MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, ConnectionString);
                 return Ok(response);
             }
             else
