@@ -6326,9 +6326,9 @@ namespace TLIS_Service.Services
 
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface_Surface <= 0)
+                                                            if (mwDish.HBA_Surface<= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (MWDishLibrary.diameter <= 0)
                                                             {
@@ -6508,9 +6508,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface_Surface <= 0)
+                                                            if (mwDish.HBA_Surface<= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (MWDishLibrary.diameter <= 0)
                                                             {
@@ -6743,9 +6743,9 @@ namespace TLIS_Service.Services
 
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface_Surface <= 0)
+                                                            if (mwDish.HBA_Surface<= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (MWDishLibrary.diameter <= 0)
                                                             {
@@ -6970,9 +6970,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface_Surface <= 0)
+                                                            if (mwDish.HBA_Surface<= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             else if (MWDishLibrary.diameter <= 0)
                                                             {
@@ -7215,9 +7215,9 @@ namespace TLIS_Service.Services
 
                                                     if (mwDish.CenterHigh <= 0)
                                                     {
-                                                        if (mwDish.HBA_Surface_Surface <= 0)
+                                                        if (mwDish.HBA_Surface<= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         else if (MWDishLibrary.diameter <= 0)
                                                         {
@@ -7435,9 +7435,9 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (mwDish.CenterHigh <= 0)
                                                     {
-                                                        if (mwDish.HBA_Surface_Surface <= 0)
+                                                        if (mwDish.HBA_Surface<= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         else if (MWDishLibrary.diameter <= 0)
                                                         {
@@ -7669,9 +7669,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (mwDish.CenterHigh <= 0)
                                                 {
-                                                    if (mwDish.HBA_Surface_Surface <= 0)
+                                                    if (mwDish.HBA_Surface<= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     else if (MWDishLibrary.diameter <= 0)
                                                     {
@@ -8986,9 +8986,9 @@ namespace TLIS_Service.Services
 
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface_Surface <= 0)
+                                                if (mwDish.HBA_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -9193,9 +9193,9 @@ namespace TLIS_Service.Services
 
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface_Surface <= 0)
+                                                if (mwDish.HBA_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -9382,9 +9382,9 @@ namespace TLIS_Service.Services
 
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface_Surface <= 0)
+                                                if (mwDish.HBA_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -9583,9 +9583,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface_Surface <= 0)
+                                                if (mwDish.HBA_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -9845,9 +9845,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface_Surface <= 0)
+                                                if (mwDish.HBA_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -10090,9 +10090,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface_Surface <= 0)
+                                                if (mwDish.HBA_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -10323,9 +10323,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface_Surface <= 0)
+                                                if (mwDish.HBA_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -10570,9 +10570,9 @@ namespace TLIS_Service.Services
                                         {
                                             if (mwDish.CenterHigh <= 0)
                                             {
-                                                if (mwDish.HBA_Surface_Surface <= 0)
+                                                if (mwDish.HBA_Surface <= 0)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                                 {
@@ -10844,9 +10844,9 @@ namespace TLIS_Service.Services
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
-                                            if (mwDish.HBA_Surface_Surface <= 0)
+                                            if (mwDish.HBA_Surface <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                             {
@@ -11090,9 +11090,9 @@ namespace TLIS_Service.Services
                                     {
                                         if (mwDish.CenterHigh <= 0)
                                         {
-                                            if (mwDish.HBA_Surface_Surface <= 0)
+                                            if (mwDish.HBA_Surface <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                             {
@@ -11330,9 +11330,9 @@ namespace TLIS_Service.Services
 
                                         if (mwDish.CenterHigh <= 0)
                                         {
-                                            if (mwDish.HBA_Surface_Surface <= 0)
+                                            if (mwDish.HBA_Surface <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                             {
@@ -11576,9 +11576,9 @@ namespace TLIS_Service.Services
 
                                         if (mwDish.CenterHigh <= 0)
                                         {
-                                            if (mwDish.HBA_Surface_Surface <= 0)
+                                            if (mwDish.HBA_Surface <= 0)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                             {
@@ -11843,9 +11843,9 @@ namespace TLIS_Service.Services
                                 {
                                     if (mwDish.CenterHigh <= 0)
                                     {
-                                        if (mwDish.HBA_Surface_Surface <= 0)
+                                        if (mwDish.HBA_Surface <= 0)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                         }
                                         else if (MWDishInst.allLoadInst.mwDish.MwDishLibrary.diameter <= 0)
                                         {

@@ -1605,9 +1605,9 @@ namespace TLIS_Service.Services
                                                        
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
-                                                            if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                            if (RadioAntenna.HBASurface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioAntennaLibrary.Length <= 0)
                                                             {
@@ -1615,7 +1615,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaLibrary.Length / 2);
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -1725,9 +1725,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
-                                                            if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                            if (RadioAntenna.HBASurface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioAntennaLibrary.Length <= 0)
                                                             {
@@ -1735,7 +1735,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaLibrary.Length / 2);
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -1883,9 +1883,9 @@ namespace TLIS_Service.Services
                                                                   
                                                                     if (RadioAntenna.CenterHigh <= 0)
                                                                     {
-                                                                        if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                                        if (RadioAntenna.HBASurface <= 0)
                                                                         {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
                                                                         if (RadioAntennaLibrary.Length <= 0)
                                                                         {
@@ -1893,7 +1893,7 @@ namespace TLIS_Service.Services
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaLibrary.Length / 2);
+                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                                         }
                                                                     }
                                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -2001,9 +2001,9 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (RadioAntenna.CenterHigh <= 0)
                                                                     {
-                                                                        if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                                        if (RadioAntenna.HBASurface <= 0)
                                                                         {
-                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                                         }
                                                                         if (RadioAntennaLibrary.Length <= 0)
                                                                         {
@@ -2011,7 +2011,7 @@ namespace TLIS_Service.Services
                                                                         }
                                                                         else
                                                                         {
-                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaLibrary.Length / 2);
+                                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                                         }
                                                                     }
                                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -2155,9 +2155,9 @@ namespace TLIS_Service.Services
                                                            
                                                             if (RadioAntenna.CenterHigh <= 0)
                                                             {
-                                                                if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                                if (RadioAntenna.HBASurface <= 0)
                                                                 {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
                                                                 if (RadioAntennaLibrary.Length <= 0)
                                                                 {
@@ -2165,7 +2165,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaLibrary.Length / 2);
+                                                                    RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (RadioAntenna.SpaceInstallation == 0)
@@ -2275,9 +2275,9 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (RadioAntenna.CenterHigh <= 0)
                                                             {
-                                                                if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                                if (RadioAntenna.HBASurface <= 0)
                                                                 {
-                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                                 }
                                                                 if (RadioAntennaLibrary.Length <= 0)
                                                                 {
@@ -2285,7 +2285,7 @@ namespace TLIS_Service.Services
                                                                 }
                                                                 else
                                                                 {
-                                                                    RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaLibrary.Length / 2);
+                                                                    RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                                 }
                                                             }
                                                             if (RadioAntenna.SpaceInstallation == 0)
@@ -2427,9 +2427,9 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
-                                                            if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                            if (RadioAntenna.HBASurface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioAntennaLibrary.Length <= 0)
                                                             {
@@ -2437,7 +2437,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaLibrary.Length / 2);
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -4664,9 +4664,9 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RadioAntenna.CenterHigh <= 0)
                                                 {
-                                                    if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                    if (RadioAntenna.HBASurface <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                     {
@@ -4674,7 +4674,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -4795,9 +4795,9 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RadioAntenna.CenterHigh <= 0)
                                                 {
-                                                    if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                    if (RadioAntenna.HBASurface <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                     {
@@ -4805,7 +4805,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -4912,9 +4912,9 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RadioAntenna.CenterHigh <= 0)
                                                 {
-                                                    if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                    if (RadioAntenna.HBASurface <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                     {
@@ -4922,7 +4922,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -5044,9 +5044,9 @@ namespace TLIS_Service.Services
                                             {
                                                 if (RadioAntenna.CenterHigh <= 0)
                                                 {
-                                                    if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                    if (RadioAntenna.HBASurface <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                     {
@@ -5054,7 +5054,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
@@ -5221,9 +5221,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
-                                                            if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                            if (RadioAntenna.HBASurface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                             {
@@ -5231,7 +5231,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -5349,9 +5349,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
-                                                            if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                            if (RadioAntenna.HBASurface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                             {
@@ -5359,7 +5359,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -5465,9 +5465,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
-                                                            if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                            if (RadioAntenna.HBASurface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                             {
@@ -5475,7 +5475,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -5595,9 +5595,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
-                                                            if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                            if (RadioAntenna.HBASurface <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                             {
@@ -5605,7 +5605,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                                RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioAntenna.SpaceInstallation == 0)
@@ -5764,9 +5764,9 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (RadioAntenna.CenterHigh <= 0)
                                                     {
-                                                        if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                        if (RadioAntenna.HBASurface <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                         {
@@ -5774,7 +5774,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -5892,9 +5892,9 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (RadioAntenna.CenterHigh <= 0)
                                                     {
-                                                        if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                        if (RadioAntenna.HBASurface <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                         {
@@ -5902,7 +5902,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -6007,9 +6007,9 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (RadioAntenna.CenterHigh <= 0)
                                                     {
-                                                        if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                        if (RadioAntenna.HBASurface <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                         {
@@ -6017,7 +6017,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -6137,9 +6137,9 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (RadioAntenna.CenterHigh <= 0)
                                                     {
-                                                        if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                        if (RadioAntenna.HBASurface <= 0)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                         {
@@ -6147,7 +6147,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                            RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioAntenna.SpaceInstallation == 0)
@@ -6300,9 +6300,9 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (RadioAntenna.CenterHigh <= 0)
                                                 {
-                                                    if (RadioAntenna.HBA_SurfaceSurface <= 0)
+                                                    if (RadioAntenna.HBASurface <= 0)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_SurfaceSurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     if (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length <= 0)
                                                     {
@@ -6310,7 +6310,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        RadioAntenna.CenterHigh = RadioAntenna.HBA_SurfaceSurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
+                                                        RadioAntenna.CenterHigh = RadioAntenna.HBASurface + (RadioAntennaInst.allLoadInst.radioAntenna.radioAntennaLibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioAntenna.SpaceInstallation == 0)
