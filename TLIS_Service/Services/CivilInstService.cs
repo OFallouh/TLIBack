@@ -109,7 +109,7 @@ namespace TLIS_Service.Services
                 CivilLoads OutPut = new CivilLoads();
 
                 List<TLIcivilLoads> CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => !x.Dismantle &&( x.sideArmId == SideArmId || x.sideArm2Id== SideArmId) 
-                 x => x.allLoadInst.mwBU, x => x.allLoadInst.loadOther, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
+                 ,x => x.allLoadInst.mwBU, x => x.allLoadInst.loadOther, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther,
                  x => x.allLoadInst.mwRFU, x => x.allLoadInst.power, x => x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther, x => x.allLoadInst.radioRRU).ToList();
 
                 OutPut.TLImwODU = _mapper.Map<List<LoadandsidearmViewDto>>(CivilLoads.Where(x => x.allLoadInst.mwODUId != null)

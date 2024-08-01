@@ -3715,7 +3715,7 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                     var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                     || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                    x=>x.allLoadInst,XAttribute=>XAttribute.allLoadInst.mwBU).ToList();
+                                                    x=>x.allLoadInst,x=>x.allLoadInst.mwBU).ToList();
                                                     if (MWBUDish.Count>0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -3816,7 +3816,7 @@ namespace TLIS_Service.Services
 
                                                 var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                 if (MWBUDish.Count>0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -3915,7 +3915,7 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                 var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                    || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                   x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                 if (MWBUDish.Count>0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -4036,7 +4036,7 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                         var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                           || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                          x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                          x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                           if (MWBUDish.Count>0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -4318,7 +4318,7 @@ namespace TLIS_Service.Services
 
                                                     var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                     if (MWBUDish.Count>0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -4596,7 +4596,7 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                     var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                     if (MWBUDish.Count>0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -16628,7 +16628,7 @@ namespace TLIS_Service.Services
 
                                         var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
-                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                         if (MWBUDish.Count>0)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -16741,7 +16741,7 @@ namespace TLIS_Service.Services
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                     var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
-                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                     if (MWBUDish.Count>0)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -16844,7 +16844,7 @@ namespace TLIS_Service.Services
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                     var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
-                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                     if (MWBUDish.Count>0)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -16969,7 +16969,7 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                 var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
-                                                 x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                 x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                 if (MWBUDish.Count>0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -17474,7 +17474,7 @@ namespace TLIS_Service.Services
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                         var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
-                                                 x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                 x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                         if (MWBUDish.Count>0)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
@@ -17971,7 +17971,7 @@ namespace TLIS_Service.Services
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                         var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
-                                                  x => x.allLoadInst, XAttribute => XAttribute.allLoadInst.mwBU).ToList();
+                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                         if (MWBUDish.Count>0)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
