@@ -14569,6 +14569,7 @@ namespace TLIS_Service.Services
                         }
                     }
                 }
+                _dbContext.SaveChanges();
                 return new Response<List<RecalculatSpace>>(true, recalculatSpaces, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception ex)

@@ -865,7 +865,8 @@ namespace TLIS_Service.Services
 
                 if (CheckModel != null)
                  return new Response<EditSideArmLibraryObject>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-                
+                tLIsideArmLibrary.Active = SidArm.Active;
+                tLIsideArmLibrary.Deleted = SidArm.Deleted;
                 _unitOfWork.SideArmLibraryRepository.UpdateWithHistory(UserId, SidArm, tLIsideArmLibrary);
                 //string CheckDependency = CheckDependencyValidationEditApiVersion(editSideArmLibraryViewModel);
                 //if (!string.IsNullOrEmpty(CheckDependency))
