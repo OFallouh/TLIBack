@@ -5,6 +5,7 @@ using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
@@ -20,6 +21,7 @@ namespace TLIS_Repository.IRepository
         bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item);
         Response<float> CheckloadsOnCivil(int allcivilinstId,int? loadid,float Azimuth, float CenterHigh);
         Response<float> CheckAvailableSpaceOnCivil(int AllCivilInst);
+        Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType);
         Response<float> CheckAvailableSpaceOnCivils(TLIallCivilInst AllCivilInst);
         Response<float> Checkspaceload(int allcivilinstId, string TableName, float SpaceInstallation, float CenterHigh, int libraryId, float HBA);
      

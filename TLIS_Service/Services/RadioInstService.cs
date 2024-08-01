@@ -6430,6 +6430,18 @@ namespace TLIS_Service.Services
                             }
 
                         }
+                        if (EditRadioAntenna.installationConfig.civilWithLegId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditRadioAntenna.installationConfig.civilWithLegId), "TLIcivilWithLegs");
+                        }
+                        else if (EditRadioAntenna.installationConfig.civilWithoutLegId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditRadioAntenna.installationConfig.civilWithoutLegId), "TLIcivilWithoutLeg");
+                        }
+                        else if (EditRadioAntenna.installationConfig.civilNonSteelId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditRadioAntenna.installationConfig.civilWithLegId), "TLIcivilNonSteel");
+                        }
                     }
                     if (LoadSubType.TLIradioRRU.ToString() == TableName)
                     {
@@ -8197,6 +8209,18 @@ namespace TLIS_Service.Services
                             }
 
                         }
+                        if (EditRadioRRU.installationConfig.civilWithLegId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditRadioRRU.installationConfig.civilWithLegId), "TLIcivilWithLegs");
+                        }
+                        else if (EditRadioRRU.installationConfig.civilWithoutLegId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditRadioRRU.installationConfig.civilWithoutLegId), "TLIcivilWithoutLeg");
+                        }
+                        else if (EditRadioRRU.installationConfig.civilNonSteelId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditRadioRRU.installationConfig.civilWithLegId), "TLIcivilNonSteel");
+                        }
                     }
                     if (LoadSubType.TLIradioOther.ToString() == TableName)
                     {
@@ -9942,6 +9966,18 @@ namespace TLIS_Service.Services
                             }
 
                         }
+                        if (EditradioOther.installationConfig.civilWithLegId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditradioOther.installationConfig.civilWithLegId), "TLIcivilWithLegs");
+                        }
+                        else if (EditradioOther.installationConfig.civilWithoutLegId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditradioOther.installationConfig.civilWithoutLegId), "TLIcivilWithoutLeg");
+                        }
+                        else if (EditradioOther.installationConfig.civilNonSteelId != null)
+                        {
+                            _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(EditradioOther.installationConfig.civilWithLegId), "TLIcivilNonSteel");
+                        }
                     }
                     if (TaskId != null)
                     {
@@ -9963,7 +9999,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
-                   
+                    
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                  
                     return new Response<GetForAddMWDishInstallationObject>();

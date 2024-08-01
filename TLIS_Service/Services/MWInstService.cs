@@ -12180,6 +12180,18 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
+                    if (MWInstallationViewModel.installationConfig.civilWithLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithLegId), "TLIcivilWithLegs");
+                    }
+                    else if (MWInstallationViewModel.installationConfig.civilWithoutLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithoutLegId), "TLIcivilWithoutLeg");
+                    }
+                    else if (MWInstallationViewModel.installationConfig.civilNonSteelId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithLegId), "TLIcivilNonSteel");
+                    }
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
@@ -14413,7 +14425,7 @@ namespace TLIS_Service.Services
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
                             }
                         }
-                        if (MWInstallationViewModel.installationConfig.civilNonSteelId != null)
+                        else if (MWInstallationViewModel.installationConfig.civilNonSteelId != null)
                         {
                             if (MWInstallationViewModel.installationConfig.sideArmId != null)
                             {
@@ -14741,6 +14753,18 @@ namespace TLIS_Service.Services
                     {
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
+                    }
+                    if (MWInstallationViewModel.installationConfig.civilWithLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithLegId), "TLIcivilWithLegs");
+                    }
+                    else if (MWInstallationViewModel.installationConfig.civilWithoutLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithoutLegId), "TLIcivilWithoutLeg");
+                    }
+                    else if (MWInstallationViewModel.installationConfig.civilNonSteelId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithLegId), "TLIcivilNonSteel");
                     }
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
@@ -16526,6 +16550,18 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
                     }
+                    if (editmwOtherInstallationObject.installationConfig.civilWithLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(editmwOtherInstallationObject.installationConfig.civilWithLegId), "TLIcivilWithLegs");
+                    }
+                    else if (editmwOtherInstallationObject.installationConfig.civilWithoutLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(editmwOtherInstallationObject.installationConfig.civilWithoutLegId), "TLIcivilWithoutLeg");
+                    }
+                    else if (editmwOtherInstallationObject.installationConfig.civilNonSteelId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(editmwOtherInstallationObject.installationConfig.civilWithLegId), "TLIcivilNonSteel");
+                    }
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
                 }
@@ -18075,6 +18111,18 @@ namespace TLIS_Service.Services
                     {
                         _unitOfWork.SaveChanges();
                         transactionScope.Complete();
+                    }
+                    if (MWInstallationViewModel.installationConfig.civilWithLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithLegId), "TLIcivilWithLegs");
+                    }
+                    else if (MWInstallationViewModel.installationConfig.civilWithoutLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithoutLegId), "TLIcivilWithoutLeg");
+                    }
+                    else if (MWInstallationViewModel.installationConfig.civilNonSteelId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(MWInstallationViewModel.installationConfig.civilWithLegId), "TLIcivilNonSteel");
                     }
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();

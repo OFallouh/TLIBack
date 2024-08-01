@@ -5719,7 +5719,18 @@ namespace TLIS_Service.Services
                         _unitOfWork.SaveChanges();
                         transaction.Complete();
                     }
-
+                    if (Editpower.installationConfig.civilWithLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(Editpower.installationConfig.civilWithLegId), "TLIcivilWithLegs");
+                    }
+                    else if (Editpower.installationConfig.civilWithoutLegId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(Editpower.installationConfig.civilWithoutLegId), "TLIcivilWithoutLeg");
+                    }
+                    else if (Editpower.installationConfig.civilNonSteelId != null)
+                    {
+                        _unitOfWork.CivilWithLegsRepository.RecalculatSpace(Convert.ToInt32(Editpower.installationConfig.civilWithLegId), "TLIcivilNonSteel");
+                    }
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
 
                     return new Response<GetForAddMWDishInstallationObject>();
