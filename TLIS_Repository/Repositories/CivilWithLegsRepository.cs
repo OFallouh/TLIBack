@@ -1909,27 +1909,34 @@ namespace TLIS_Repository.Repositories
                 return new Response<List<RecalculatSpace>>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<bool> FilterAzimuthAndHeight(string? SiteCode, int? FirstLegId,int? SecondLegId,int? CivilwithLegId, int? CivilWithoutLegId,int? CivilNonSteelId, int? FirstSideArmId, int? SecondSideArmId,
-        float Azimuth,float Height,int switchValue)
+        public Response<bool> FilterAzimuthAndHeight(string? SiteCode, int? FirstLegId, int? SecondLegId, int? CivilwithLegId, int? CivilWithoutLegId, int? CivilNonSteelId, int? FirstSideArmId, int? SecondSideArmId,
+        float Azimuth, float Height, int switchValue)
         {
-            SecondLegId ??= 0;
-            SecondSideArmId ??= 0;
-            FirstLegId ??= 0;
-            FirstSideArmId ??= 0;
-
             List<INSTALLATION_PLACE> Result = new List<INSTALLATION_PLACE>();
 
             var Check = _context.INSTALLATION_PLACE.Where(x =>
                 x.SITECODE.ToLower() == SiteCode.ToLower() &&
                 x.WITHLEG_ID == CivilwithLegId &&
-                (x.FIRST_LEG_ID == FirstLegId || x.FIRST_LEG_ID == SecondLegId) &&
-                (x.SECOND_LEG_ID == SecondLegId || x.SECOND_LEG_ID == FirstLegId) &&
                 x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                x.NONSTEEL_ID == CivilNonSteelId &&
-                (x.FIRST_SIDEARM_ID == FirstSideArmId || x.FIRST_SIDEARM_ID == SecondSideArmId) &&
-                (x.SECOND_SIDEARM_ID == SecondSideArmId || x.SECOND_SIDEARM_ID == FirstSideArmId)
+                x.NONSTEEL_ID == CivilNonSteelId
             );
-
+            var cc = Check.ToList();
+            if (FirstLegId != null)
+            {
+                Check = Check.Where(x => (x.FIRST_LEG_ID != null && x.FIRST_LEG_ID == FirstLegId) || (x.SECOND_LEG_ID != null && x.SECOND_LEG_ID == FirstLegId));
+                if (SecondLegId != null)
+                {
+                    Check = Check.Where(x => (x.FIRST_LEG_ID != null && x.FIRST_LEG_ID == SecondLegId) || (x.SECOND_LEG_ID != null && x.SECOND_LEG_ID == SecondLegId));
+                }
+            }
+            if (FirstSideArmId != null)
+            {
+                Check = Check.Where(x => (x.FIRST_SIDEARM_ID != null && x.FIRST_SIDEARM_ID == FirstSideArmId) || (x.SECOND_SIDEARM_ID != null && x.SECOND_SIDEARM_ID == FirstSideArmId));
+                if (SecondSideArmId != null)
+                {
+                    Check = Check.Where(x => (x.FIRST_SIDEARM_ID != null && x.FIRST_SIDEARM_ID == SecondSideArmId) || (x.SECOND_SIDEARM_ID != null && x.SECOND_SIDEARM_ID == SecondSideArmId));
+                }
+            }
             switch (switchValue)
             {
                 case 1:
@@ -1952,11 +1959,11 @@ namespace TLIS_Repository.Repositories
                     ).ToList();
                     break;
                 default:
- 
+
                     break;
             }
 
-        
+
             if (Result.Count > 0)
             {
                 return new Response<bool>(true, false, null, "Cannot install the load at the same azimuth and height because another load exists at the same angle.", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1965,7 +1972,7 @@ namespace TLIS_Repository.Repositories
             {
                 return new Response<bool>(true, true, null, "success", (int)Helpers.Constants.ApiReturnCode.success);
             }
-      
+
             return new Response<bool>(true, true, null, "No conflicting load found.", (int)Helpers.Constants.ApiReturnCode.success);
         }
 

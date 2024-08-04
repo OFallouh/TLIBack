@@ -195,7 +195,7 @@ namespace TLIS_API.Controllers
             }
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddMW_RFU")]
+        [HttpPost("AddMWRFUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWRFUInstallation))]
         public IActionResult AddMW_RFU([FromBody] AddMWRFUInstallation AddMW_RFUViewModel, string SiteCode, int? TaskId)
         {

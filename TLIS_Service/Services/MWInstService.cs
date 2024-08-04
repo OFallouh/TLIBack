@@ -816,7 +816,7 @@ namespace TLIS_Service.Services
                             TLIcivilSiteDate AllcivilinstId = null;
                             string ErrorMessage = string.Empty;
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
-
+                            TLIcivilLoads MWBU = new TLIcivilLoads();
                             AddMWRFUInstallation AddmwRFU = _mapper.Map<AddMWRFUInstallation>(AddMWRFUInstallation);
                             TLImwRFU mwRFU = _mapper.Map<TLImwRFU>(AddmwRFU.installationAttributes);
                             var mwRFULibrary = _unitOfWork.MW_RFULibraryRepository.GetWhereFirst(x => x.Id == AddmwRFU.installationConfig.MwRFULibraryId
@@ -848,10 +848,10 @@ namespace TLIS_Service.Services
                                                 if (AddmwRFU.installationConfig.mwBUId != null)
                                                 {
                                                
-                                                    var MWBU = _unitOfWork.CivilLoadsRepository
+                                                     MWBU = _unitOfWork.CivilLoadsRepository
                                                         .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId 
                                                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                        AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                        AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst,x=>x.allLoadInst,x=>x.allLoadInst.mwBU);
                                                     if (MWBU == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The MWBU is not found", (int)ApiReturnCode.fail);
 
@@ -951,6 +951,7 @@ namespace TLIS_Service.Services
                                                         Port_Name = "RFUPort",
                                                         Port_Type = 2,
                                                         TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
+                                                        MwBULibraryId= MWBU.allLoadInst.mwBU.MwBULibraryId,
                                                     };
                                                     _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
                                                     _unitOfWork.SaveChanges();
@@ -1048,6 +1049,7 @@ namespace TLIS_Service.Services
                                                         Port_Name = "RFUPort",
                                                         Port_Type = 2,
                                                         TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
+                                                        MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId,
                                                     };
                                                     _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
                                                     _unitOfWork.SaveChanges();
@@ -1146,10 +1148,10 @@ namespace TLIS_Service.Services
                                                         if (AddmwRFU.installationConfig.mwBUId != null)
                                                         {
 
-                                                            var MWBU = _unitOfWork.CivilLoadsRepository
+                                                             MWBU = _unitOfWork.CivilLoadsRepository
                                                            .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId && x.sideArmId == AddmwRFU.installationConfig.sideArmId
                                                            && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                           AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                           AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwBU);
                                                             if (MWBU == null)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The MWBU is not found", (int)ApiReturnCode.fail);
 
@@ -1248,6 +1250,7 @@ namespace TLIS_Service.Services
                                                                     Port_Name = "RFUPort",
                                                                     Port_Type = 2,
                                                                     TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
+                                                                    MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId,
                                                                 };
                                                                 _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
                                                                 _unitOfWork.SaveChanges();
@@ -1340,13 +1343,13 @@ namespace TLIS_Service.Services
 
                                                                 if (CheckName != null)
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
                                                                 TLImwPort tLImwPort = new TLImwPort()
                                                                 {
                                                                     MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                                     Port_Name = "RFUPort",
                                                                     Port_Type = 2,
                                                                     TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
+                                                                    MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId,
                                                                 };
                                                                 _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
                                                                 _unitOfWork.SaveChanges();
@@ -1439,10 +1442,10 @@ namespace TLIS_Service.Services
                                                     if (AddmwRFU.installationConfig.mwBUId != null)
                                                     {
                                                        
-                                                        var MWBU = _unitOfWork.CivilLoadsRepository
+                                                         MWBU = _unitOfWork.CivilLoadsRepository
                                                             .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId && x.sideArmId== AddmwRFU.installationConfig.sideArmId
                                                             && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                            AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                            AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwBU);
                                                         if (MWBU == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The MWBU is not found", (int)ApiReturnCode.fail);
                                                         
@@ -1538,6 +1541,7 @@ namespace TLIS_Service.Services
                                                             Port_Name = "RFUPort",
                                                             Port_Type = 2,
                                                             TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
+                                                            MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId,
                                                         };
                                                         _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
                                                         _unitOfWork.SaveChanges();
@@ -1630,13 +1634,13 @@ namespace TLIS_Service.Services
 
                                                         if (CheckName != null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
                                                         TLImwPort tLImwPort = new TLImwPort()
                                                         {
                                                             MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                             Port_Name = "RFUPort",
                                                             Port_Type = 2,
                                                             TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
+                                                            MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId,
                                                         };
                                                         _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
                                                         _unitOfWork.SaveChanges();
@@ -1718,10 +1722,10 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (AddmwRFU.installationConfig.mwBUId != null)
                                                     {
-                                                        var MWBU = _unitOfWork.CivilLoadsRepository
+                                                         MWBU = _unitOfWork.CivilLoadsRepository
                                                           .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId && x.sideArmId == AddmwRFU.installationConfig.sideArmId
                                                           && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
-                                                          AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
+                                                          AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwBU);
                                                         if (MWBU == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The MWBU is not found", (int)ApiReturnCode.fail);
 
@@ -1791,13 +1795,13 @@ namespace TLIS_Service.Services
                                                     if (CheckName != null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-
                                                     TLImwPort tLImwPort = new TLImwPort()
                                                     {
                                                         MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                         Port_Name = "RFUPort",
                                                         Port_Type = 2,
                                                         TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
+                                                        MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId,
                                                     };
                                                     _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
                                                     _unitOfWork.SaveChanges();
