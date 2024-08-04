@@ -94,7 +94,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilInstService.GetLoadsAndSideArmsForCivil(CivilId, CivilType);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetLoadsOnSideArm")]
         [ProducesResponseType(200, Type = typeof(LoadsOnSideArm))]
         public IActionResult GetLoadsOnSideArm(int SideArmId)

@@ -11,14 +11,14 @@ namespace TLIS_DAL.Models
         public string Name { get; set; }
         public float Azimuth { get; set; }
         public float heightBase { get; set; }
-        public string? SerialNumber { get; set; }
-        public string Note { get; set; }
+        public string SerialNumber { get; set; }
+        public string? Note { get; set; }
         public TLIowner Owner { get; set; }
         public int? OwnerId { get; set; }
         public TLImwRFULibrary MwRFULibrary { get; set; }
         public int MwRFULibraryId { get; set; }
         public TLImwPort MwPort { get; set; }
-        public int? MwPortId { get; set; }
+        public int MwPortId { get; set; }
         public float SpaceInstallation { get; set; }
         public float CenterHigh { get; set; }
         public float HBA { get; set; }

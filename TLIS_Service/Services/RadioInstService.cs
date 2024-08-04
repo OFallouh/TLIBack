@@ -2604,7 +2604,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             if (RadioRRU.HBA <= 0)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBASurface_Surface must bigger from zero", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
                                                             if (RadioRRULibrary.Length <= 0)
                                                             {

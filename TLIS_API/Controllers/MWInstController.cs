@@ -65,11 +65,11 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddMW_RFU")]
+        [HttpGet("GetAttForAddMWRFUInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddMW_RFU(int LibId, string SiteCode)
+        public IActionResult GetAttForAddMWRFUInstallation(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.MWInstService.GetAttForAdd(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode);
+            var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -194,29 +194,43 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddMW_DishViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("AddMW_RFU")]
-        //[ProducesResponseType(200, Type = typeof(AddMW_RFUViewModel))]
-        //public IActionResult AddMW_RFU([FromBody]AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode, int? TaskId)
-        //{
-        //    if (AddMW_RFUViewModel.TLIcivilLoads.sideArmId == 0)
-        //        AddMW_RFUViewModel.TLIcivilLoads.sideArmId = null;
-        //    if (AddMW_RFUViewModel.MwPortId == 0)
-        //        AddMW_RFUViewModel.MwPortId = null;
-        //    var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-        //    if (TryValidateModel(AddMW_RFUViewModel, nameof(AddMW_RFUViewModel)))
-        //    {
-        //        var response = _unitOfWorkService.MWInstService.AddMWInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddMW_RFU")]
+        [ProducesResponseType(200, Type = typeof(AddMWRFUInstallation))]
+        public IActionResult AddMW_RFU([FromBody] AddMWRFUInstallation AddMW_RFUViewModel, string SiteCode, int? TaskId)
+        {
+            if (TryValidateModel(AddMW_RFUViewModel, nameof(AddMW_RFUViewModel)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddMWRFUInstallation>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AddMW_OtherInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWOtherInstallationObject))]
@@ -738,6 +752,16 @@ namespace TLIS_API.Controllers
         {
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+
+
+        }
+        [HttpPost("GetMWRFUInstallationWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetMWRFUInstallationWithEnableAtt([FromQuery] string? SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
     }

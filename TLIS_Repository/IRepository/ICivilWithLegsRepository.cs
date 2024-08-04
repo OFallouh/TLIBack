@@ -21,6 +21,18 @@ namespace TLIS_Repository.IRepository
         bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item);
         Response<float> CheckloadsOnCivil(int allcivilinstId,int? loadid,float Azimuth, float CenterHigh);
         Response<float> CheckAvailableSpaceOnCivil(int AllCivilInst);
+        Response<bool> FilterAzimuthAndHeight(
+          string? SiteCode,
+          int? FirstLegId,
+          int? SecondLegId,
+          int? CivilwithLegId,
+          int? CivilWithoutLegId,
+          int? CivilNonSteelId,
+          int? FirstSideArmId,
+          int? SecondSideArmId,
+          float Azimuth,
+          float Height,
+          int switchValue);
         Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType);
         Response<float> CheckAvailableSpaceOnCivils(TLIallCivilInst AllCivilInst);
         Response<float> Checkspaceload(int allcivilinstId, string TableName, float SpaceInstallation, float CenterHigh, int libraryId, float HBA);

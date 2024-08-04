@@ -9,12 +9,20 @@ using System.Reflection;
 using System.Text;
 using System.Transactions;
 using TLIS_DAL;
+using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels.BaseCivilWithLegsTypeDTOs;
+using TLIS_DAL.ViewModels.BaseTypeDTOs;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
+using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
+using TLIS_DAL.ViewModels.LocationTypeDTOs;
+using TLIS_DAL.ViewModels.OwnerDTOs;
+using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
 using static TLIS_Repository.Helpers.Constants;
@@ -1901,6 +1909,66 @@ namespace TLIS_Repository.Repositories
                 return new Response<List<RecalculatSpace>>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+        public Response<bool> FilterAzimuthAndHeight(string? SiteCode, int? FirstLegId,int? SecondLegId,int? CivilwithLegId, int? CivilWithoutLegId,int? CivilNonSteelId, int? FirstSideArmId, int? SecondSideArmId,
+        float Azimuth,float Height,int switchValue)
+        {
+            SecondLegId ??= 0;
+            SecondSideArmId ??= 0;
+            FirstLegId ??= 0;
+            FirstSideArmId ??= 0;
+
+            List<INSTALLATION_PLACE> Result = new List<INSTALLATION_PLACE>();
+
+            var Check = _context.INSTALLATION_PLACE.Where(x =>
+                x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                x.WITHLEG_ID == CivilwithLegId &&
+                (x.FIRST_LEG_ID == FirstLegId || x.FIRST_LEG_ID == SecondLegId) &&
+                (x.SECOND_LEG_ID == SecondLegId || x.SECOND_LEG_ID == FirstLegId) &&
+                x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                x.NONSTEEL_ID == CivilNonSteelId &&
+                (x.FIRST_SIDEARM_ID == FirstSideArmId || x.FIRST_SIDEARM_ID == SecondSideArmId) &&
+                (x.SECOND_SIDEARM_ID == SecondSideArmId || x.SECOND_SIDEARM_ID == FirstSideArmId)
+            );
+
+            switch (switchValue)
+            {
+                case 1:
+                    Result = Check.Where(x =>
+                        ((x.STATUS_NUMBER == 1 || x.STATUS_NUMBER == 4) && x.AZIMUTH == Azimuth && x.HEIGHT == Height) ||
+                        (x.STATUS_NUMBER == 5 && x.HEIGHT == Height)
+                    ).ToList();
+                    break;
+                case 2:
+                case 3:
+                    Result = Check.Where(x =>
+                        (x.STATUS_NUMBER == 2 || x.STATUS_NUMBER == 3) && x.AZIMUTH == Azimuth && x.HEIGHT == Height
+                    ).ToList();
+                    break;
+                case 4:
+                case 5:
+                    Result = Check.Where(x =>
+                        ((x.STATUS_NUMBER == 1 || x.STATUS_NUMBER == 4) && x.AZIMUTH == Azimuth && x.HEIGHT == Height) ||
+                        (x.STATUS_NUMBER == 5 && x.HEIGHT == Height)
+                    ).ToList();
+                    break;
+                default:
+ 
+                    break;
+            }
+
+        
+            if (Result.Count > 0)
+            {
+                return new Response<bool>(true, false, null, "Cannot install the load at the same azimuth and height because another load exists at the same angle.", (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+            else
+            {
+                return new Response<bool>(true, true, null, "success", (int)Helpers.Constants.ApiReturnCode.success);
+            }
+      
+            return new Response<bool>(true, true, null, "No conflicting load found.", (int)Helpers.Constants.ApiReturnCode.success);
+        }
+
         public bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item)
         {
             bool x = true;

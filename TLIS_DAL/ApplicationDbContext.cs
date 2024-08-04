@@ -40,6 +40,8 @@ using TLIS_DAL.ViewModels.RadioOtherLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioOtherDTOs;
 using TLIS_DAL.ViewModels.LoadOtherLibraryDTOs;
 using TLIS_DAL.ViewModels.LoadOtherDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.MW_RFUDTOs;
 
 
 namespace TLIS_DAL
@@ -232,6 +234,8 @@ namespace TLIS_DAL
         public virtual DbSet<MV_RADIO_OTHER_VIEW> MV_RADIO_OTHER_VIEW { get; set; }
         public virtual DbSet<MV_LOAD_OTHER_LIBRARY_VIEW> MV_LOAD_OTHER_LIBRARY_VIEW { get; set; }
         public virtual DbSet<MV_LOAD_OTHER_VIEW> MV_LOAD_OTHER_VIEW { get; set; }
+        public virtual DbSet<INSTALLATION_PLACE> INSTALLATION_PLACE { get; set; }
+        public virtual DbSet<MV_MWRFU_VIEW> MV_MWRFU_VIEW { get; set; }
  
       
         protected override void OnModelCreating(ModelBuilder builder)
@@ -468,6 +472,16 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("MV_LOAD_OTHER_VIEW");
+            });
+            builder.Entity<INSTALLATION_PLACE>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("INSTALLATION_PLACE");
+            });
+            builder.Entity<MV_MWRFU_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("MV_MWRFU_VIEW");
             });
             builder.Entity<TLIsession>();
 
