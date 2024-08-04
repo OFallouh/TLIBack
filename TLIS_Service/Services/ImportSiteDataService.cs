@@ -16202,20 +16202,20 @@ namespace TLIS_Service.Services
                                         MW_RFUOwnerId = CheckMW_RFUOwnerName.Id;
                                     }
 
-                                    TLImwRFU NewMW_RFUEntity = new TLImwRFU()
-                                    {
-                                        Name = MW_RFUName,
-                                        MwRFULibraryId = MW_RFULibraryId,
-                                        heightBase = MW_RFUHeightBase,
-                                        Azimuth = MW_RFUAzimuth,
-                                        OwnerId = MW_RFUOwnerId,
-                                        MwPortId = MW_RFUPortId,
-                                        Note = MW_RFUDataTable.Rows[j]["Notes"].ToString(),
-                                        SerialNumber = MW_RFUDataTable.Rows[j]["Serial Number"].ToString()
-                                    };
+                                    //TLImwRFU NewMW_RFUEntity = new TLImwRFU()
+                                    //{
+                                    //    Name = MW_RFUName,
+                                    //    MwRFULibraryId = MW_RFULibraryId,
+                                    //    heightBase = MW_RFUHeightBase,
+                                    //    Azimuth = MW_RFUAzimuth,
+                                    //    OwnerId = MW_RFUOwnerId,
+                                    //    MwPortId = MW_RFUPortId,
+                                    //    Note = MW_RFUDataTable.Rows[j]["Notes"].ToString(),
+                                    //    SerialNumber = MW_RFUDataTable.Rows[j]["Serial Number"].ToString()
+                                    //};
 
-                                    _unitOfWork.MW_RFURepository.Add(NewMW_RFUEntity);
-                                    _unitOfWork.SaveChanges();
+                                    //_unitOfWork.MW_RFURepository.Add(NewMW_RFUEntity);
+                                    //_unitOfWork.SaveChanges();
 
                                     //
                                     // Dynamic Attribute Information..
@@ -16232,7 +16232,7 @@ namespace TLIS_Service.Services
                                                 tablesNamesId = MW_RFUTableNameId,
                                                 disable = false,
                                                 DynamicAttId = MissedAttribute.Id,
-                                                InventoryId = NewMW_RFUEntity.Id
+                                                //InventoryId = NewMW_RFUEntity.Id
                                             };
 
                                             if (MissedAttribute.DataType.Name.ToLower() == "string".ToLower())
@@ -16379,16 +16379,16 @@ namespace TLIS_Service.Services
                                         MW_RFUAllLoadInstCurrentStatus = CheckMW_RFUAllLoadInstCurrentStatusName.Id;
                                     }
 
-                                    TLIallLoadInst MW_RFUAllLoadInst = new TLIallLoadInst()
-                                    {
-                                        Active = MW_RFUAllLoadActive,
-                                        mwRFUId = NewMW_RFUEntity.Id,
-                                        ItemStatusId = MW_RFUAllLoadInstCurrentStatus,
-                                        Draft = false
-                                    };
+                                    //TLIallLoadInst MW_RFUAllLoadInst = new TLIallLoadInst()
+                                    //{
+                                    //    Active = MW_RFUAllLoadActive,
+                                    //    mwRFUId = NewMW_RFUEntity.Id,
+                                    //    ItemStatusId = MW_RFUAllLoadInstCurrentStatus,
+                                    //    Draft = false
+                                    //};
 
-                                    _unitOfWork.AllLoadInstRepository.Add(MW_RFUAllLoadInst);
-                                    _unitOfWork.SaveChanges();
+                                    //_unitOfWork.AllLoadInstRepository.Add(MW_RFUAllLoadInst);
+                                    //_unitOfWork.SaveChanges();
 
                                     //
                                     // CivilLoads Information..
@@ -16406,19 +16406,19 @@ namespace TLIS_Service.Services
                                             MW_RFUCivilLoadsStatusDate = DateTimeParser;
                                     }
 
-                                    TLIcivilLoads MW_RFUCivilLoads = new TLIcivilLoads()
-                                    {
-                                        allCivilInstId = MW_RFUAllCivilInstId,
-                                        allLoadInstId = MW_RFUAllLoadInst.Id,
-                                        sideArmId = MW_RFUSideArmId,
-                                        Dismantle = false,
-                                        SiteCode = MW_RFU_SiteCodeAfterCheck,
-                                        civilSteelSupportCategoryId = MW_RFUCivilSteelSupportCategoryId,
-                                        InstallationDate = MW_RFUCivilLoadsStatusDate
-                                    };
+                                    //TLIcivilLoads MW_RFUCivilLoads = new TLIcivilLoads()
+                                    //{
+                                    //    allCivilInstId = MW_RFUAllCivilInstId,
+                                    //    allLoadInstId = MW_RFUAllLoadInst.Id,
+                                    //    sideArmId = MW_RFUSideArmId,
+                                    //    Dismantle = false,
+                                    //    SiteCode = MW_RFU_SiteCodeAfterCheck,
+                                    //    civilSteelSupportCategoryId = MW_RFUCivilSteelSupportCategoryId,
+                                    //    InstallationDate = MW_RFUCivilLoadsStatusDate
+                                    //};
 
-                                    _unitOfWork.CivilLoadsRepository.Add(MW_RFUCivilLoads);
-                                    _unitOfWork.SaveChanges();
+                                    //_unitOfWork.CivilLoadsRepository.Add(MW_RFUCivilLoads);
+                                    //_unitOfWork.SaveChanges();
 
                                     MW_RFUTransaction.Complete();
                                 }

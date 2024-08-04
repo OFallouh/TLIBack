@@ -845,11 +845,11 @@ namespace TLIS_Service.Services
                                                 if (AddmwRFU.installationConfig.sideArmId != null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not selected sidearm because installation place is leg ", (int)ApiReturnCode.fail);
 
-                                                if (AddmwRFU.installationConfig.MWBUId != null)
+                                                if (AddmwRFU.installationConfig.mwBUId != null)
                                                 {
                                                
                                                     var MWBU = _unitOfWork.CivilLoadsRepository
-                                                        .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.MWBUId 
+                                                        .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId 
                                                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
                                                         AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
                                                     if (MWBU == null)
@@ -947,7 +947,7 @@ namespace TLIS_Service.Services
 
                                                     TLImwPort tLImwPort = new TLImwPort()
                                                     {
-                                                        MwBUId = AddmwRFU.installationConfig.MWBUId,
+                                                        MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                         Port_Name = "RFUPort",
                                                         Port_Type = 2,
                                                         TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
@@ -1044,7 +1044,7 @@ namespace TLIS_Service.Services
 
                                                     TLImwPort tLImwPort = new TLImwPort()
                                                     {
-                                                        MwBUId = AddmwRFU.installationConfig.MWBUId,
+                                                        MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                         Port_Name = "RFUPort",
                                                         Port_Type = 2,
                                                         TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
@@ -1143,11 +1143,11 @@ namespace TLIS_Service.Services
                                                         x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                                     if (SideArm != null)
                                                     {
-                                                        if (AddmwRFU.installationConfig.MWBUId != null)
+                                                        if (AddmwRFU.installationConfig.mwBUId != null)
                                                         {
 
                                                             var MWBU = _unitOfWork.CivilLoadsRepository
-                                                           .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.MWBUId && x.sideArmId == AddmwRFU.installationConfig.sideArmId
+                                                           .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId && x.sideArmId == AddmwRFU.installationConfig.sideArmId
                                                            && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
                                                            AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
                                                             if (MWBU == null)
@@ -1244,7 +1244,7 @@ namespace TLIS_Service.Services
 
                                                                 TLImwPort tLImwPort = new TLImwPort()
                                                                 {
-                                                                    MwBUId = AddmwRFU.installationConfig.MWBUId,
+                                                                    MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                                     Port_Name = "RFUPort",
                                                                     Port_Type = 2,
                                                                     TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
@@ -1343,7 +1343,7 @@ namespace TLIS_Service.Services
 
                                                                 TLImwPort tLImwPort = new TLImwPort()
                                                                 {
-                                                                    MwBUId = AddmwRFU.installationConfig.MWBUId,
+                                                                    MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                                     Port_Name = "RFUPort",
                                                                     Port_Type = 2,
                                                                     TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
@@ -1436,11 +1436,11 @@ namespace TLIS_Service.Services
 
                                                 if (SideArm != null)
                                                 {
-                                                    if (AddmwRFU.installationConfig.MWBUId != null)
+                                                    if (AddmwRFU.installationConfig.mwBUId != null)
                                                     {
                                                        
                                                         var MWBU = _unitOfWork.CivilLoadsRepository
-                                                            .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.MWBUId && x.sideArmId== AddmwRFU.installationConfig.sideArmId
+                                                            .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId && x.sideArmId== AddmwRFU.installationConfig.sideArmId
                                                             && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
                                                             AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
                                                         if (MWBU == null)
@@ -1534,7 +1534,7 @@ namespace TLIS_Service.Services
 
                                                         TLImwPort tLImwPort = new TLImwPort()
                                                         {
-                                                            MwBUId = AddmwRFU.installationConfig.MWBUId,
+                                                            MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                             Port_Name = "RFUPort",
                                                             Port_Type = 2,
                                                             TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
@@ -1633,7 +1633,7 @@ namespace TLIS_Service.Services
 
                                                         TLImwPort tLImwPort = new TLImwPort()
                                                         {
-                                                            MwBUId = AddmwRFU.installationConfig.MWBUId,
+                                                            MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                             Port_Name = "RFUPort",
                                                             Port_Type = 2,
                                                             TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
@@ -1716,10 +1716,10 @@ namespace TLIS_Service.Services
                                                     x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                                 if (SideArm != null)
                                                 {
-                                                    if (AddmwRFU.installationConfig.MWBUId != null)
+                                                    if (AddmwRFU.installationConfig.mwBUId != null)
                                                     {
                                                         var MWBU = _unitOfWork.CivilLoadsRepository
-                                                          .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.MWBUId && x.sideArmId == AddmwRFU.installationConfig.sideArmId
+                                                          .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId && x.sideArmId == AddmwRFU.installationConfig.sideArmId
                                                           && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower() && x.allCivilInst.civilWithLegsId ==
                                                           AddmwRFU.installationConfig.civilWithLegId, x => x.allLoadInst, x => x.allCivilInst);
                                                         if (MWBU == null)
@@ -1794,7 +1794,7 @@ namespace TLIS_Service.Services
 
                                                     TLImwPort tLImwPort = new TLImwPort()
                                                     {
-                                                        MwBUId = AddmwRFU.installationConfig.MWBUId,
+                                                        MwBUId = AddmwRFU.installationConfig.mwBUId,
                                                         Port_Name = "RFUPort",
                                                         Port_Type = 2,
                                                         TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
