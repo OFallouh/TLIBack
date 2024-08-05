@@ -31,13 +31,6 @@ namespace TLIS_DAL.ViewModels.MW_RFUDTOs
         }
         public class InstallationAttributesMWRFUConfigObject
         {
-            public int InstallationPlaceId { get; set; }
-            public int? civilSteelType { get; set; }
-            public int? civilWithLegId { get; set; }
-            public int? civilWithoutLegId { get; set; }
-            public int? civilNonSteelId { get; set; }
-            public int? sideArmId { get; set; }
-            public int? legId { get; set; }
             public int MwRFULibraryId { get; set; }
             public int mwBUId { get; set; }
             public string? TX_Frequency { get; set; }

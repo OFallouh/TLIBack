@@ -595,12 +595,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString());
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetMW_RFUById")]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetMWRFUInstallationById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
-        public IActionResult GetMW_RFUById(int MW_RFU)
+        public IActionResult GetMWRFUInstallationById(int MW_RFU)
         {
-            var response = _unitOfWorkService.MWInstService.GetById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString());
+            var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString());
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
