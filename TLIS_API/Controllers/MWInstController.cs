@@ -383,24 +383,43 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditMWODUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
-        //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        //[HttpPost("EditMW_RFU")]
-        //[ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]
-        //public async Task<IActionResult> EditMW_RFU([FromBody]EditMW_RFUViewModel MW_RFU,int? TaskId)
-        //{
-        //    if (TryValidateModel(MW_RFU, nameof(EditMW_RFUViewModel)))
-        //    {
-        //        var response = await _unitOfWorkService.MWInstService.EditMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId);
-        //        return Ok(response);
-        //    }
-        //    else
-        //    {
-        //        var ErrorMessages = from state in ModelState.Values
-        //                            from error in state.Errors
-        //                            select error.ErrorMessage;
-        //        return Ok(new Response<EditMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-        //    }
-        //}
+        [ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("EditMWRFUInstallation")]
+        [ProducesResponseType(200, Type = typeof(EditMWRFUInstallationObject))]
+        public async Task<IActionResult> EditMWRFUInstallation([FromBody] EditMWRFUInstallationObject MW_RFU, int? TaskId)
+        {
+            if (TryValidateModel(MW_RFU, nameof(EditMWRFUInstallationObject)))
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response =await  _unitOfWorkService.MWInstService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), ConnectionString, TaskId, userId);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditMWRFUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("EditMWOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWOtherInstallationObject))]

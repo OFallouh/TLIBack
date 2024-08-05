@@ -20,6 +20,16 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
         public int? NONSTEEL_ID { get; set; }
         public int? FIRST_SIDEARM_ID { get; set; }
         public int? SECOND_SIDEARM_ID { get; set; }
+        public int? MWDISH_ID { get; set; }
+        public int? MWODU_ID { get; set; }
+        public int? MWBU_ID { get; set; }
+        public int? MWRFU_ID { get; set; }
+        public int? MWOTHER_ID { get; set; }
+        public int? RADIO_ANTENNA_ID { get; set; }
+        public int? RADIO_RRU_ID { get; set; }
+        public int? RADIO_OTHER_ID { get; set; }
+        public int? POWER_ID { get; set; }
+        public int? LOAD_OTHER_ID { get; set; }
    
  
 
@@ -40,6 +50,16 @@ namespace TLIS_DAL.ViewModels.CivilWithLegsDTOs
             outputData.Add("NONSTEEL_ID", NONSTEEL_ID);
             outputData.Add("FIRST_SIDEARM_ID", FIRST_SIDEARM_ID);
             outputData.Add("SECOND_SIDEARM_ID", SECOND_SIDEARM_ID);
+            outputData.Add("MWDISH_ID", MWDISH_ID);
+            outputData.Add("MWODU_ID", MWODU_ID);
+            outputData.Add("MWBU_ID", MWBU_ID);
+            outputData.Add("MWRFU_ID", MWRFU_ID);
+            outputData.Add("MWOTHER_ID", MWOTHER_ID);
+            outputData.Add("RADIO_ANTENNA_ID", RADIO_ANTENNA_ID);
+            outputData.Add("RADIO_RRU_ID", RADIO_RRU_ID);
+            outputData.Add("RADIO_OTHER_ID", RADIO_OTHER_ID);
+            outputData.Add("POWER_ID", POWER_ID);
+            outputData.Add("LOAD_OTHER_ID", LOAD_OTHER_ID);
     
 
             return outputData;

@@ -33,6 +33,10 @@ namespace TLIS_Repository.IRepository
           float Azimuth,
           float Height,
           int switchValue);
+        public Response<bool> EditFilterAzimuthAndHeight(int? MWDishID, int? MWODUID, int? MWRFUID, int? MWBUID, int? MWOTHERID, int? RadioAntennaID
+              , int? RadioRRUID, int? RadioOtherID, int? LOADOTHERID, int? PowerID, string LoadName,
+              string? SiteCode, int? FirstLegId, int? SecondLegId, int? CivilwithLegId, int? CivilWithoutLegId, int? CivilNonSteelId, int? FirstSideArmId, int? SecondSideArmId,
+          float Azimuth, float Height, int switchValue);
         Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType);
         Response<float> CheckAvailableSpaceOnCivils(TLIallCivilInst AllCivilInst);
         Response<float> Checkspaceload(int allcivilinstId, string TableName, float SpaceInstallation, float CenterHigh, int libraryId, float HBA);

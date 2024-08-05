@@ -206,6 +206,7 @@ using static TLIS_DAL.ViewModels.LoadOtherDTOs.EditLoadOtherInstallationObject;
 using static TLIS_DAL.ViewModels.MW_OtherLibraryDTOs.EditMWOtherLibraryObject;
 using static TLIS_DAL.ViewModels.RadioOtherLibraryDTOs.EditRadioOtherLibraryObject;
 using static TLIS_DAL.ViewModels.MW_RFUDTOs.AddMWRFUInstallation;
+using static TLIS_DAL.ViewModels.MW_RFUDTOs.EditMWRFUInstallationObject;
 namespace TLIS_DAL.ViewModels
 {
     public class AutoMapperProfile : Profile
@@ -285,6 +286,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditRadioOtherLibraryAttributes, TLIradioOtherLibrary>().ReverseMap();
             CreateMap<EditInstallationLoadOtherAttributeObject, TLIloadOther>().ReverseMap();
             CreateMap<InstallationMWRFUConfigObject, TLImwRFU>().ReverseMap();
+            CreateMap<installationAttributesMWDRFUObject, TLImwRFU>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

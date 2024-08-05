@@ -1275,6 +1275,497 @@ namespace TLIS_Service.Services
 
 
         }
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWRFUInstallation(EditMWRFUInstallationObject editMWRFUInstallationObject, string TableName, string ConnectionString, int? TaskId, int UserId)
+        {
+            using (var con = new OracleConnection(ConnectionString))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    using (TransactionScope transaction = new TransactionScope())
+                    {
+                        try
+                        {
+                            string ErrorMessage = string.Empty;
+                            var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
+                            TLImwRFU mwRFU = _mapper.Map<TLImwRFU>(editMWRFUInstallationObject.installationAttributes);
+
+                            TLIcivilLoads MWRFU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwRFU).Include(x => x.allLoadInst.mwRFU.MwRFULibrary).Include(x => x.allCivilInst)
+                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwRFUId == mwRFU.Id && !x.Dismantle);
+
+                            if (MWRFU == null)
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "mwOther is not found", (int)ApiReturnCode.fail);
+
+
+                            if (editMWRFUInstallationObject.installationConfig.mwBUId == null)
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected MWBU to installed the MWRFU", (int)ApiReturnCode.fail);
+
+                            var MWBU = _unitOfWork.CivilLoadsRepository
+                                    .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == editMWRFUInstallationObject.installationConfig.mwBUId
+                                    && !x.Dismantle, x => x.allLoadInst,
+                                    x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwBU, x => x.allLoadInst.mwBU.MwBULibrary);
+
+                            if (MWBU == null)
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The MWBU is not found", (int)ApiReturnCode.fail);
+
+                            var MWRFUCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwRFU.MwPort.MwBUId == editMWRFUInstallationObject.installationConfig.mwBUId
+                            && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwRFU
+                            , x => x.allLoadInst.mwRFU.MwPort).ToList();
+
+                            if (MWRFUCount.Count > MWBU.allLoadInst.mwBU.MwBULibrary.NumOfRFU)
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not install the MWRFU item on this MWBU because not found port not busy", (int)ApiReturnCode.fail);
+
+                            if (!string.IsNullOrEmpty(mwRFU.SerialNumber))
+                            {
+                                bool CheckSerialNumber = _dbContext.MV_MWRFU_VIEW.Any(x => x.SerialNumber == mwRFU.SerialNumber && !x.Dismantle
+                                && x.Id != mwRFU.Id);
+                                if (CheckSerialNumber)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The Serial Number {mwRFU.SerialNumber} is already exists", (int)ApiReturnCode.fail);
+                            }
+
+                            if (editMWRFUInstallationObject.civilLoads.ReservedSpace == true)
+                            {
+
+                                if (mwRFU.CenterHigh <= 0)
+                                {
+                                    if (mwRFU.HBA <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    if (MWRFU.allLoadInst.mwRFU.MwRFULibrary.Length <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        mwRFU.CenterHigh = mwRFU.HBA + (MWRFU.allLoadInst.mwRFU.MwRFULibrary.Length / 2);
+                                    }
+                                }
+                                if (mwRFU.SpaceInstallation == 0)
+                                {
+
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+
+                                }
+
+                                if (mwRFU.Azimuth <= 0)
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                }
+                                if (mwRFU.heightBase <= 0)
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "heightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                }
+                                if (MWBU.allLoadInst.mwBU.InstallationPlaceId == 1)
+                                {
+                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                             null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                        , null, MWBU.allCivilInst.civilWithLegsId, null, null, null, null, mwRFU.Azimuth
+                                        , mwRFU.heightBase, 1).Data;
+
+                                    if (Data == false)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                    }
+                                }
+                                else if (MWBU.allLoadInst.mwBU.InstallationPlaceId == 2)
+                                {
+                                    if (MWBU.allCivilInst.civilWithLegsId != null)
+                                    {
+                                        if (MWBU.sideArm2Id != null)
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null,null,mwRFU.Id,
+                                             null,null,null,null,null,null,null, "TLImwRFU", SiteCode, MWBU.legId
+                                           , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                           MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                           , mwRFU.heightBase, 3).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                           null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                         , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                         MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                         , mwRFU.heightBase, 2).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                    }
+                                    else if (MWBU.allCivilInst.civilWithoutLegId != null)
+                                    {
+                                        if (MWBU.sideArm2Id != null)
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                        null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                          , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                          MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                          , mwRFU.heightBase, 3).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                       null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                         , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                         MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                         , mwRFU.heightBase, 2).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                    }
+                                    else if (MWBU.allCivilInst.civilNonSteelId != null)
+                                    {
+                                        if (MWBU.sideArm2Id != null)
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                      null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                          , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                          MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                          , mwRFU.heightBase, 3).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                      null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                           , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                           MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                           , mwRFU.heightBase, 2).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                    }
+                                }
+                                var CheckName = _dbContext.MV_MWRFU_VIEW.FirstOrDefault(x =>
+                                    !x.Dismantle &&
+                                    x.Name.ToLower() == mwRFU.Name.ToLower() &&
+                                    x.SiteCode.ToLower() == SiteCode.ToLower() && x.Id != mwRFU.Id);
+
+                                if (CheckName != null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                if (MWBU.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                {
+                                    MWBU.allCivilInst.civilWithLegs.CurrentLoads = 0;
+                                }
+                                var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == MWBU.allCivilInst.civilWithLegsId);
+
+                                if (OldVcivilinfo != null)
+                                {
+
+                                    var EquivalentSpace = mwRFU.SpaceInstallation * (mwRFU.CenterHigh / (float)MWBU.allCivilInst.civilWithLegs.HeightBase);
+
+                                    MWBU.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                    mwRFU.EquivalentSpace = EquivalentSpace;
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(MWBU.allCivilInst).Message;
+
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                    }
+                                    _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, MWBU.allCivilInst.civilWithLegs);
+
+                                    _unitOfWork.SaveChanges();
+                                }
+
+                                TLImwPort tLImwPort = new TLImwPort()
+                                {
+                                    MwBUId = editMWRFUInstallationObject.installationConfig.mwBUId,
+                                    Port_Name = "RFUPort",
+                                    Port_Type = 2,
+                                    TX_Frequency = editMWRFUInstallationObject.installationConfig.TX_Frequency,
+                                    MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId,
+                                };
+                                _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                _unitOfWork.SaveChanges();
+
+                                mwRFU.MwRFULibraryId = editMWRFUInstallationObject.civilType.MwRFULibraryId;
+                                mwRFU.MwPortId = tLImwPort.Id;
+                                _unitOfWork.MW_RFURepository.AddWithHistory(UserId, mwRFU);
+                                _unitOfWork.SaveChanges();
+                                int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwRFU.ToString(), mwRFU.Id);
+
+                                if (editMWRFUInstallationObject.civilLoads != null && Id != 0)
+                                {
+                                    TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                    {
+                                        InstallationDate = editMWRFUInstallationObject.civilLoads.InstallationDate,
+                                        allLoadInstId = Id,
+                                        legId = MWBU?.legId,
+                                        allCivilInstId = MWBU.allCivilInst.Id,
+                                        sideArmId = MWBU?.sideArmId,
+                                        sideArm2Id = MWBU?.sideArm2Id,
+                                        ItemOnCivilStatus = editMWRFUInstallationObject.civilLoads.ItemOnCivilStatus,
+                                        ItemStatus = editMWRFUInstallationObject.civilLoads?.ItemStatus,
+                                        Dismantle = false,
+                                        ReservedSpace = editMWRFUInstallationObject.civilLoads.ReservedSpace,
+                                        SiteCode = SiteCode,
+
+
+                                    };
+                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                    _unitOfWork.SaveChanges();
+
+                                }
+                                if (editMWRFUInstallationObject.dynamicAttribute != null ? editMWRFUInstallationObject.dynamicAttribute.Count > 0 : false)
+                                {
+
+                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, editMWRFUInstallationObject.dynamicAttribute, TableNameEntity.Id, mwRFU.Id, ConnectionString);
+
+                                }
+                            }
+                            else
+                            {
+
+                                if (mwRFU.CenterHigh <= 0)
+                                {
+                                    if (mwRFU.HBA <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    if (MWRFU.allLoadInst.mwRFU.MwRFULibrary.Length <= 0)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        mwRFU.CenterHigh = mwRFU.HBA + (MWRFU.allLoadInst.mwRFU.MwRFULibrary.Length / 2);
+                                    }
+                                }
+                                if (mwRFU.SpaceInstallation == 0)
+                                {
+
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
+
+                                }
+
+                                if (mwRFU.Azimuth <= 0)
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
+                                }
+                                if (mwRFU.heightBase <= 0)
+                                {
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "heightBase must bigger from zero", (int)ApiReturnCode.fail);
+                                }
+                                if (MWBU.allLoadInst.mwBU.InstallationPlaceId == 1)
+                                {
+                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                             null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                        , null, MWBU.allCivilInst.civilWithLegsId, null, null, null, null, mwRFU.Azimuth
+                                        , mwRFU.heightBase, 1).Data;
+
+                                    if (Data == false)
+                                    {
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                    }
+                                }
+                                else if (MWBU.allLoadInst.mwBU.InstallationPlaceId == 2)
+                                {
+                                    if (MWBU.allCivilInst.civilWithLegsId != null)
+                                    {
+                                        if (MWBU.sideArm2Id != null)
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                             null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                           , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                           MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                           , mwRFU.heightBase, 3).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                           null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                         , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                         MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                         , mwRFU.heightBase, 2).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                    }
+                                    else if (MWBU.allCivilInst.civilWithoutLegId != null)
+                                    {
+                                        if (MWBU.sideArm2Id != null)
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                        null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                          , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                          MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                          , mwRFU.heightBase, 3).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                       null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                         , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                         MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                         , mwRFU.heightBase, 2).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                    }
+                                    else if (MWBU.allCivilInst.civilNonSteelId != null)
+                                    {
+                                        if (MWBU.sideArm2Id != null)
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                      null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                          , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                          MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                          , mwRFU.heightBase, 3).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
+                                      null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                           , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
+                                           MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
+                                           , mwRFU.heightBase, 2).Data;
+
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            }
+                                        }
+                                    }
+                                }
+                                var CheckName = _dbContext.MV_MWRFU_VIEW.FirstOrDefault(x =>
+                                    !x.Dismantle &&
+                                    x.Name.ToLower() == mwRFU.Name.ToLower() &&
+                                    x.SiteCode.ToLower() == SiteCode.ToLower() && x.Id != mwRFU.Id);
+
+                                if (CheckName != null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                TLImwPort tLImwPort = new TLImwPort()
+                                {
+                                    MwBUId = editMWRFUInstallationObject.installationConfig.mwBUId,
+                                    Port_Name = "RFUPort",
+                                    Port_Type = 2,
+                                    TX_Frequency = editMWRFUInstallationObject.installationConfig.TX_Frequency,
+                                    MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId,
+                                };
+                                _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
+                                _unitOfWork.SaveChanges();
+
+                                mwRFU.MwRFULibraryId = editMWRFUInstallationObject.civilType.MwRFULibraryId;
+                                mwRFU.MwPortId = tLImwPort.Id;
+                                _unitOfWork.MW_RFURepository.AddWithHistory(UserId, mwRFU);
+                                _unitOfWork.SaveChanges();
+                                int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwRFU.ToString(), mwRFU.Id);
+
+                                if (editMWRFUInstallationObject.civilLoads != null && Id != 0)
+                                {
+                                    TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                    {
+                                        InstallationDate = editMWRFUInstallationObject.civilLoads.InstallationDate,
+                                        allLoadInstId = Id,
+                                        legId = MWBU?.legId,
+                                        allCivilInstId = MWBU.allCivilInst.Id,
+                                        sideArmId = MWBU?.sideArmId,
+                                        sideArm2Id = MWBU?.sideArm2Id,
+                                        ItemOnCivilStatus = editMWRFUInstallationObject.civilLoads.ItemOnCivilStatus,
+                                        ItemStatus = editMWRFUInstallationObject.civilLoads?.ItemStatus,
+                                        Dismantle = false,
+                                        ReservedSpace = editMWRFUInstallationObject.civilLoads.ReservedSpace,
+                                        SiteCode = SiteCode,
+
+
+                                    };
+                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                    _unitOfWork.SaveChanges();
+
+                                }
+                                if (editMWRFUInstallationObject.dynamicAttribute != null ? editMWRFUInstallationObject.dynamicAttribute.Count > 0 : false)
+                                {
+
+                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, editMWRFUInstallationObject.dynamicAttribute, TableNameEntity.Id, mwRFU.Id, ConnectionString);
+
+                                }
+
+                            }
+
+                            if (TaskId != null)
+                            {
+                                var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
+                                var result = Submit.Result;
+                                if (result.result == true && result.errorMessage == null)
+                                {
+                                    _unitOfWork.SaveChanges();
+                                    transaction.Complete();
+                                }
+                                else
+                                {
+                                    transaction.Dispose();
+                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, result.errorMessage.ToString(), (int)ApiReturnCode.fail);
+                                }
+                            }
+                            else
+                            {
+                                _unitOfWork.SaveChanges();
+                                transaction.Complete();
+                            }
+
+                            Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
+
+                            return new Response<GetForAddMWDishInstallationObject>();
+                        }
+                        catch (Exception err)
+                        {
+                            tran.Rollback();
+                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
+                        }
+                    }
+                }
+            }
+
+
+        }
         //Function take 3 parameters MWInstallationViewModel, TableName, SiteCode
         //First get table name Entity depened on TableName
         //Second specify the table i deal with depened on TableName
@@ -28000,7 +28491,7 @@ namespace TLIS_Service.Services
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
                                     Key = "PortMWBUId",
-                                    Value = PortCascade.Id,
+                                    Value = sectionsLegTypeViewModel,
                                     Label = "Select Mw Bu",
                                     Options = sectionsLegTypeViewModel,
                                     DataType = "list",
@@ -28010,10 +28501,10 @@ namespace TLIS_Service.Services
 
                                 BaseInstAttViews baseInstAttViewss = new BaseInstAttViews
                                 {
-                                    Key = "TX_Frequence",
+                                    Key = "TX_Frequency",
                                     Value = port.TX_Frequency,
-                                    Label = "TX Frequence",
-                                    Options = new object[0],
+                                    Label = "TX_Frequency",
+                                    Options = null,
                                     DataType = "string",
                                     visible = false
                                 };
