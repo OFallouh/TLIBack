@@ -28481,12 +28481,11 @@ namespace TLIS_Service.Services
 
                             if (PortCascade != null)
                             {
-                                List<SectionsLegTypeViewModel> sectionsLegTypeViewModel = new List<SectionsLegTypeViewModel>();
-                                sectionsLegTypeViewModel.Add(new SectionsLegTypeViewModel
-                                {
+                                SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
+                                { 
                                     Id = PortCascade.Id,
                                     Name = PortCascade.Name
-                                });
+                                };
 
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
@@ -28495,7 +28494,7 @@ namespace TLIS_Service.Services
                                     Label = "Select Mw Bu",
                                     Options = sectionsLegTypeViewModel,
                                     DataType = "list",
-                                    visible = false
+                                    visible = true
                                 };
                                 Config.Add(baseInstAttViews);
 
@@ -28506,7 +28505,7 @@ namespace TLIS_Service.Services
                                     Label = "TX_Frequency",
                                     Options = null,
                                     DataType = "string",
-                                    visible = false
+                                    visible = true
                                 };
                                 Config.Add(baseInstAttViewss);
                             }

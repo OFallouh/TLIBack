@@ -12,7 +12,7 @@ namespace TLIS_DAL.ViewModels.MW_RFUDTOs
     {
         public InstallationMWDRFUConfigObject installationConfig { get; set; }
         public LibraryAttributesMWDRFUObject civilType { get; set; }
-        public AddCivilLoadObject civilLoads { get; set; }
+        public AddCivilLoadObjectMWRFU civilLoads { get; set; }
         public installationAttributesMWDRFUObject installationAttributes { get; set; }
         public List<AddDdynamicAttributeInstallationValueViewModel> dynamicAttribute { get; set; }
         public class installationAttributesMWDRFUObject
@@ -36,7 +36,7 @@ namespace TLIS_DAL.ViewModels.MW_RFUDTOs
             public int MwRFULibraryId { get; set; }
 
         }
-        public class AddCivilLoadObject
+        public class AddCivilLoadObjectMWRFU
         {
             public DateTime InstallationDate { get; set; } = DateTime.Now;
             public string? ItemOnCivilStatus { get; set; } = null;
