@@ -194,7 +194,14 @@ namespace TLIS_Service.Services
                     OutPut.TLIloadOther = GetMappedLocationTypeViewModelList(civilSiteDates, x => x.allLoadInstId != null && x.allLoadInst?.loadOtherId != null, x => _dbContext.MV_LOAD_OTHER_VIEW.FirstOrDefault(y => y.Id == x.allLoadInst.loadOther.Id));
                     Response.Loads = OutPut;
                 }
-              
+                if (CivilType == "TLIcivilWithLegs")
+                {
+                    _unitOfWork.CivilWithLegsRepository.RecalculatSpace(CivilId, "TLIcivilWithLegs");
+                }
+                else if (CivilType == "TLIcivilWithoutLeg")
+                {
+                    _unitOfWork.CivilWithLegsRepository.RecalculatSpace(CivilId, "TLIcivilWithoutLeg");
+                }
                 if (CivilType == "TLIcivilWithLegs")
                 {
                     var CivilWithLeg = _unitOfWork.CivilWithLegsRepository.GetIncludeWhereFirst(x => x.Id == CivilId, x => x.CivilWithLegsLib);

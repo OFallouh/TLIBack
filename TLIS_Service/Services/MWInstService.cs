@@ -28481,18 +28481,19 @@ namespace TLIS_Service.Services
 
                             if (PortCascade != null)
                             {
+                                List<SectionsLegTypeViewModel> sectionsLegTypeViewModelLisrt = new List<SectionsLegTypeViewModel>();
                                 SectionsLegTypeViewModel sectionsLegTypeViewModel = new SectionsLegTypeViewModel()
                                 { 
                                     Id = PortCascade.Id,
                                     Name = PortCascade.Name
                                 };
-
+                                sectionsLegTypeViewModelLisrt.Add(sectionsLegTypeViewModel);
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
                                     Key = "PortMWBUId",
-                                    Value = sectionsLegTypeViewModel,
+                                    Value = sectionsLegTypeViewModelLisrt,
                                     Label = "Select Mw Bu",
-                                    Options = sectionsLegTypeViewModel,
+                                    Options = sectionsLegTypeViewModelLisrt,
                                     DataType = "list",
                                     visible = true
                                 };
