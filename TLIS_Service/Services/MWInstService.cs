@@ -1311,7 +1311,7 @@ namespace TLIS_Service.Services
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The MWBU is not found", (int)ApiReturnCode.fail);
 
                             var MWRFUCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwRFU.MwPort.MwBUId == editMWRFUInstallationObject.installationConfig.mwBUId
-                            && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwRFU
+                            && !x.Dismantle && x.SiteCode.ToLower() == MWBU.SiteCode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwRFU
                             , x => x.allLoadInst.mwRFU.MwPort).ToList();
 
                             if (MWRFUCount.Count > MWBU.allLoadInst.mwBU.MwBULibrary.NumOfRFU)
@@ -1362,7 +1362,7 @@ namespace TLIS_Service.Services
                                 if (MWBU.allLoadInst.mwBU.InstallationPlaceId == 1)
                                 {
                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                             null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                             null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                         , null, MWBU.allCivilInst.civilWithLegsId, null, null, null, null, mwRFU.Azimuth
                                         , mwRFU.heightBase, 1).Data;
 
@@ -1378,7 +1378,7 @@ namespace TLIS_Service.Services
                                         if (MWBU.sideArm2Id != null)
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null,null,mwRFU.Id,
-                                             null,null,null,null,null,null,null, "TLImwRFU", SiteCode, MWBU.legId
+                                             null,null,null,null,null,null,null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                            , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                            MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                            , mwRFU.heightBase, 3).Data;
@@ -1391,7 +1391,7 @@ namespace TLIS_Service.Services
                                         else
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                           null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                           null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                          , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                          MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                          , mwRFU.heightBase, 2).Data;
@@ -1407,7 +1407,7 @@ namespace TLIS_Service.Services
                                         if (MWBU.sideArm2Id != null)
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                        null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                        null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                           , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                           MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                           , mwRFU.heightBase, 3).Data;
@@ -1420,7 +1420,7 @@ namespace TLIS_Service.Services
                                         else
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                       null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                       null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                          , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                          MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                          , mwRFU.heightBase, 2).Data;
@@ -1436,7 +1436,7 @@ namespace TLIS_Service.Services
                                         if (MWBU.sideArm2Id != null)
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                      null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                      null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                           , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                           MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                           , mwRFU.heightBase, 3).Data;
@@ -1449,7 +1449,7 @@ namespace TLIS_Service.Services
                                         else
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                      null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                      null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                            , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                            MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                            , mwRFU.heightBase, 2).Data;
@@ -1464,7 +1464,7 @@ namespace TLIS_Service.Services
                                 var CheckName = _dbContext.MV_MWRFU_VIEW.FirstOrDefault(x =>
                                     !x.Dismantle &&
                                     x.Name.ToLower() == mwRFU.Name.ToLower() &&
-                                    x.SiteCode.ToLower() == SiteCode.ToLower() && x.Id != mwRFU.Id);
+                                    x.SiteCode.ToLower() == MWBU.SiteCode.ToLower() && x.Id != mwRFU.Id);
 
                                 if (CheckName != null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1524,7 +1524,7 @@ namespace TLIS_Service.Services
                                         ItemStatus = editMWRFUInstallationObject.civilLoads?.ItemStatus,
                                         Dismantle = false,
                                         ReservedSpace = editMWRFUInstallationObject.civilLoads.ReservedSpace,
-                                        SiteCode = SiteCode,
+                                        SiteCode = MWBU.SiteCode,
 
 
                                     };
@@ -1576,7 +1576,7 @@ namespace TLIS_Service.Services
                                 if (MWBU.allLoadInst.mwBU.InstallationPlaceId == 1)
                                 {
                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                             null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                             null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                         , null, MWBU.allCivilInst.civilWithLegsId, null, null, null, null, mwRFU.Azimuth
                                         , mwRFU.heightBase, 1).Data;
 
@@ -1592,7 +1592,7 @@ namespace TLIS_Service.Services
                                         if (MWBU.sideArm2Id != null)
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                             null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                             null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                            , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                            MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                            , mwRFU.heightBase, 3).Data;
@@ -1605,7 +1605,7 @@ namespace TLIS_Service.Services
                                         else
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                           null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                           null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                          , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                          MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                          , mwRFU.heightBase, 2).Data;
@@ -1621,7 +1621,7 @@ namespace TLIS_Service.Services
                                         if (MWBU.sideArm2Id != null)
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                        null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                        null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                           , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                           MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                           , mwRFU.heightBase, 3).Data;
@@ -1634,7 +1634,7 @@ namespace TLIS_Service.Services
                                         else
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                       null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                       null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                          , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                          MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                          , mwRFU.heightBase, 2).Data;
@@ -1650,7 +1650,7 @@ namespace TLIS_Service.Services
                                         if (MWBU.sideArm2Id != null)
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                      null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                      null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                           , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                           MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                           , mwRFU.heightBase, 3).Data;
@@ -1663,7 +1663,7 @@ namespace TLIS_Service.Services
                                         else
                                         {
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, mwRFU.Id,
-                                      null, null, null, null, null, null, null, "TLImwRFU", SiteCode, MWBU.legId
+                                      null, null, null, null, null, null, null, "TLImwRFU", MWBU.SiteCode, MWBU.legId
                                            , MWBU.Leg2Id, MWBU.allCivilInst.civilWithLegsId, MWBU.allCivilInst.civilWithoutLegId,
                                            MWBU.allCivilInst.civilNonSteelId, MWBU.sideArmId, MWBU.sideArm2Id, mwRFU.Azimuth
                                            , mwRFU.heightBase, 2).Data;
@@ -1678,7 +1678,7 @@ namespace TLIS_Service.Services
                                 var CheckName = _dbContext.MV_MWRFU_VIEW.FirstOrDefault(x =>
                                     !x.Dismantle &&
                                     x.Name.ToLower() == mwRFU.Name.ToLower() &&
-                                    x.SiteCode.ToLower() == SiteCode.ToLower() && x.Id != mwRFU.Id);
+                                    x.SiteCode.ToLower() == MWBU.SiteCode.ToLower() && x.Id != mwRFU.Id);
 
                                 if (CheckName != null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1713,7 +1713,7 @@ namespace TLIS_Service.Services
                                         ItemStatus = editMWRFUInstallationObject.civilLoads?.ItemStatus,
                                         Dismantle = false,
                                         ReservedSpace = editMWRFUInstallationObject.civilLoads.ReservedSpace,
-                                        SiteCode = SiteCode,
+                                       SiteCode = MWBU.SiteCode,
 
 
                                     };
