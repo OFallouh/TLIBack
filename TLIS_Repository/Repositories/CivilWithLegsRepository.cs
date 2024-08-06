@@ -331,7 +331,7 @@ namespace TLIS_Repository.Repositories
                                 else if (item.allLoadInst.mwDish != null)
                                 {
                                     var LibraryInfo = _context.TLImwDishLibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwDish.MwDishLibraryId);
-                                    if (item.allLoadInst.mwBU.Azimuth == 0)
+                                    if (item.allLoadInst.mwDish.Azimuth == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -343,7 +343,7 @@ namespace TLIS_Repository.Repositories
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    if (item.allLoadInst.mwBU.Height == 0)
+                                    if (item.allLoadInst.mwDish.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -510,9 +510,9 @@ namespace TLIS_Repository.Repositories
                                 }
                                 else if (item.allLoadInst.mwODU != null)
                                 {
-                                    if (item.allLoadInst.mwODU.OduInstallationTypeId == 1)
+                                    if (item.allLoadInst.mwODU.OduInstallationTypeId == 2)
                                     {
-                                        var LibraryInfo = _context.TLImwODULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwOther.mwOtherLibraryId);
+                                        var LibraryInfo = _context.TLImwODULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwODU.MwODULibraryId);
                                         if (item.allLoadInst.mwODU.Azimuth == 0)
                                         {
                                             RecalculatSpace recalculat = new RecalculatSpace()
@@ -581,7 +581,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         else
                                         {
-                                            CenterHigh = item.allLoadInst.mwOther.CenterHigh;
+                                            CenterHigh = item.allLoadInst.mwODU.CenterHigh;
                                         }
 
                                         if (AllCivilInst.civilWithLegs.HeightBase == 0)
@@ -1176,7 +1176,7 @@ namespace TLIS_Repository.Repositories
                                 else if (item.allLoadInst.mwDish != null)
                                 {
                                     var LibraryInfo = _context.TLImwDishLibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwDish.MwDishLibraryId);
-                                    if (item.allLoadInst.mwBU.Azimuth == 0)
+                                    if (item.allLoadInst.mwDish.Azimuth == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -1188,7 +1188,7 @@ namespace TLIS_Repository.Repositories
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    if (item.allLoadInst.mwBU.Height == 0)
+                                    if (item.allLoadInst.mwDish.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -1355,9 +1355,9 @@ namespace TLIS_Repository.Repositories
                                 }
                                 else if (item.allLoadInst.mwODU != null)
                                 {
-                                    if (item.allLoadInst.mwODU.OduInstallationTypeId == 1)
+                                    if (item.allLoadInst.mwODU.OduInstallationTypeId == 2)
                                     {
-                                        var LibraryInfo = _context.TLImwODULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwOther.mwOtherLibraryId);
+                                        var LibraryInfo = _context.TLImwODULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwODU.MwODULibraryId);
                                         if (item.allLoadInst.mwODU.Azimuth == 0)
                                         {
                                             RecalculatSpace recalculat = new RecalculatSpace()
@@ -1426,7 +1426,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         else
                                         {
-                                            CenterHigh = item.allLoadInst.mwOther.CenterHigh;
+                                            CenterHigh = item.allLoadInst.mwODU.CenterHigh;
                                         }
 
                                         if (AllCivilInst.civilWithoutLeg.HeightBase == 0)

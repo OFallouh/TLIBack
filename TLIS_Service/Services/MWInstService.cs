@@ -823,17 +823,17 @@ namespace TLIS_Service.Services
                             if (mwRFULibrary == null)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "mwRFULibrary is not found", (int)ApiReturnCode.fail);
 
-                            if (AddmwRFU.installationConfig.mwBUId == null)
+                            if (AddmwRFU.installationConfig.PortMWBUId == null)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected MWBU to installed the MWRFU", (int)ApiReturnCode.fail);
 
                            var MWBU = _unitOfWork.CivilLoadsRepository
-                                .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.mwBUId
+                                .GetIncludeWhereFirst(x => x.allLoadInst.mwBUId == AddmwRFU.installationConfig.PortMWBUId
                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allLoadInst,
                                 x => x.allCivilInst, x => x.allLoadInst, x => x.allLoadInst.mwBU,x=>x.allLoadInst.mwBU.MwBULibrary);
 
                             if (MWBU == null)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The MWBU is not found", (int)ApiReturnCode.fail);
-                            var MWRFUCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwRFU.MwPort.MwBUId == AddmwRFU.installationConfig.mwBUId
+                            var MWRFUCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwRFU.MwPort.MwBUId == AddmwRFU.installationConfig.PortMWBUId
                             && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwRFU
                             , x => x.allLoadInst.mwRFU.MwPort).ToList();
 
@@ -1010,7 +1010,7 @@ namespace TLIS_Service.Services
 
                                 TLImwPort tLImwPort = new TLImwPort()
                                 {
-                                    MwBUId = AddmwRFU.installationConfig.mwBUId,
+                                    MwBUId = AddmwRFU.installationConfig.PortMWBUId,
                                     Port_Name = "RFUPort",
                                     Port_Type = 2,
                                     TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
@@ -1192,7 +1192,7 @@ namespace TLIS_Service.Services
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                 TLImwPort tLImwPort = new TLImwPort()
                                 {
-                                    MwBUId = AddmwRFU.installationConfig.mwBUId,
+                                    MwBUId = AddmwRFU.installationConfig.PortMWBUId,
                                     Port_Name = "RFUPort",
                                     Port_Type = 2,
                                     TX_Frequency = AddmwRFU.installationConfig.TX_Frequency,
@@ -1311,9 +1311,9 @@ namespace TLIS_Service.Services
                             if (MWBU == null)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The MWBU is not found", (int)ApiReturnCode.fail);
 
-                            var MWRFUCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwRFU.MwPort.MwBUId == editMWRFUInstallationObject.installationConfig.PortMWBUId
-                            && !x.Dismantle && x.SiteCode.ToLower() == MWBU.SiteCode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwRFU
-                            , x => x.allLoadInst.mwRFU.MwPort).ToList();
+                            var MWRFUCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking().Where(x => x.allLoadInst.mwRFU.MwPort.MwBUId == editMWRFUInstallationObject.installationConfig.PortMWBUId
+                            && !x.Dismantle && x.SiteCode.ToLower() == MWBU.SiteCode.ToLower()).Include( x => x.allLoadInst).Include( x => x.allLoadInst.mwRFU)
+                            .Include(x => x.allLoadInst.mwRFU.MwPort).ToList();
 
                             if (MWRFUCount.Count > MWBU.allLoadInst.mwBU.MwBULibrary.NumOfRFU)
                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not install the MWRFU item on this MWBU because not found port not busy", (int)ApiReturnCode.fail);
@@ -1521,8 +1521,13 @@ namespace TLIS_Service.Services
                                         _unitOfWork.SaveChanges();
                                     }
                                 }
+                                TLIcivilLoads OldMWRFU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwRFU).Include(x => x.allLoadInst.mwRFU.MwRFULibrary).Include(x => x.allCivilInst)
+                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwRFUId == mwRFU.Id && !x.Dismantle);
+
                                 var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                  MWRFU.allLoadInst.mwRFU.MwPortId);
+                                                  OldMWRFU.allLoadInst.mwRFU.MwPortId);
                                 var oldportCascuded = _unitOfWork.MW_PortRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id ==
                                  MWRFU.allLoadInst.mwRFU.MwPortId);
                                 if (portCascuded != null)
@@ -1712,20 +1717,25 @@ namespace TLIS_Service.Services
 
                                 if (CheckName != null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
+                                TLIcivilLoads OldMWRFU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                 .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwRFU).Include(x => x.allLoadInst.mwRFU.MwRFULibrary).Include(x => x.allCivilInst)
+                                 .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                 .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwRFUId == mwRFU.Id && !x.Dismantle);
+
                                 var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                  MWRFU.allLoadInst.mwRFU.MwPortId);
+                                                  OldMWRFU.allLoadInst.mwRFU.MwPortId);
                                 var oldportCascuded = _unitOfWork.MW_PortRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id ==
                                  MWRFU.allLoadInst.mwRFU.MwPortId);
                                 if (portCascuded != null)
                                 {
-                                 
+
                                     portCascuded.MwBUId = Convert.ToInt32(editMWRFUInstallationObject.installationConfig.PortMWBUId);
                                     portCascuded.MwBULibraryId = MWBU.allLoadInst.mwBU.MwBULibraryId;
                                     _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
                                     _unitOfWork.SaveChanges();
                                     mwRFU.MwPortId = portCascuded.Id;
                                 }
-                    
+
                                 mwRFU.MwRFULibraryId = editMWRFUInstallationObject.civilType.MwRFULibraryId;
                                 _unitOfWork.MW_RFURepository.UpdateWithHistory(UserId, MWRFU.allLoadInst.mwRFU, mwRFU);
                                 _unitOfWork.SaveChanges();
@@ -28388,7 +28398,7 @@ namespace TLIS_Service.Services
                                 BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                                 {
                                     Key = "PortMWBUId",
-                                    Value = sectionsLegTypeViewModelLisrt,
+                                    Value = sectionsLegTypeViewModel,
                                     Label = "Select Mw Bu",
                                     Options = sectionsLegTypeViewModelLisrt,
                                     DataType = "list",

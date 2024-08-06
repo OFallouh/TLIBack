@@ -798,7 +798,7 @@ namespace TLIS_Service.Services
 
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(TablePartName.Radio.ToString(), TablesNames.TLIloadOther.ToString(), LoadOther.allLoadInst.loadOther.loadOtherLibrary.Id).ToList());
+                        .GetLogisticals(TablePartName.LoadOther.ToString(), TablesNames.TLIloadOther.ToString(), LoadOther.allLoadInst.loadOther.loadOtherLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 
@@ -4293,7 +4293,7 @@ namespace TLIS_Service.Services
 
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(TablePartName.Radio.ToString(), Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString(), LoadOtherLibrary.Id).ToList());
+                        .GetLogisticals(TablePartName.LoadOther.ToString(), Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString(), LoadOtherLibrary.Id).ToList());
 
                     LibraryAttributes.AddRange(LogisticalAttributes);
 

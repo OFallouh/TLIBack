@@ -12892,17 +12892,18 @@ namespace TLIS_Service.Services
                 {
                     float EquivalentSpace = 0;
                     float CenterHigh = 0;
-                    var AllCivilInst = _unitOfWork.AllCivilInstRepository.GetWhereAndInclude(x => x.civilWithLegsId == CivilId && x.Draft == false, x => x.civilWithLegs
-                    , x => x.civilLoads, x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
+                    var AllCivilInst = _dbContext.TLIallCivilInst.Include(
+                        x => x.civilWithLegs).Include(x => x.civilLoads).Include(x => x.civilWithoutLeg).Include(x => x.civilNonSteel)
+                        .FirstOrDefault(x => x.civilWithLegsId == CivilId && x.Draft == false);
                     if (AllCivilInst != null)
                     {
-                        List<TLIcivilLoads> AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allCivilInstId == AllCivilInst.Id &&x.ReservedSpace==true&&
-                        x.Dismantle == false && x.allLoadInstId != null,x=>x.allLoadInst,x=>x.allLoadInst.mwBU,x=>x.allLoadInst.mwRFU
-                        ,x=>x.allLoadInst.mwODU,x=>x.allLoadInst.mwOther,x=>x.allLoadInst.radioAntenna, x => x.allLoadInst.radioOther
-                        , x => x.allLoadInst.radioRRU
-                        , x => x.allLoadInst.loadOther, x => x.allLoadInst.power).ToList();
+                        List<TLIcivilLoads> AllLoadOnCivil = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == AllCivilInst.Id && x.ReservedSpace == true &&
+                        x.Dismantle == false && x.allLoadInstId != null).Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwBU)
+                        .Include(x => x.allLoadInst.mwRFU).Include(x => x.allLoadInst.mwODU).Include(x => x.allLoadInst.mwOther)
+                        .Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna).Include(x => x.allLoadInst.radioRRU)
+                        .Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.power).Include(x => x.allLoadInst.loadOther).ToList();
                         AllCivilInst.civilWithLegs.CurrentLoads = 0;
-                        if(AllLoadOnCivil.Count == 0)
+                        if (AllLoadOnCivil.Count == 0)
                         {
                             AllCivilInst.civilWithLegs.CurrentLoads = 0;
                             _dbContext.TLIcivilWithLegs.Update(AllCivilInst.civilWithLegs);
@@ -12914,7 +12915,7 @@ namespace TLIS_Service.Services
                             {
                                 if (item.allLoadInst.mwBUId != null)
                                 {
-                                    var LibraryInfo = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == item.allLoadInst.mwBU.MwBULibraryId);
+                                    var LibraryInfo = _dbContext.TLImwBULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwBU.MwBULibraryId);
                                     if (LibraryInfo != null)
                                     {
                                         if (item.allLoadInst.mwBU.Azimuth == 0)
@@ -13008,7 +13009,7 @@ namespace TLIS_Service.Services
                                 else if (item.allLoadInst.mwDish != null)
                                 {
                                     var LibraryInfo = _dbContext.TLImwDishLibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwDish.MwDishLibraryId);
-                                    if (item.allLoadInst.mwBU.Azimuth == 0)
+                                    if (item.allLoadInst.mwDish.Azimuth == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -13020,7 +13021,7 @@ namespace TLIS_Service.Services
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    if (item.allLoadInst.mwBU.Height == 0)
+                                    if (item.allLoadInst.mwDish.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -13187,9 +13188,9 @@ namespace TLIS_Service.Services
                                 }
                                 else if (item.allLoadInst.mwODU != null)
                                 {
-                                    if (item.allLoadInst.mwODU.OduInstallationTypeId == 1)
+                                    if (item.allLoadInst.mwODU.OduInstallationTypeId == 2)
                                     {
-                                        var LibraryInfo = _dbContext.TLImwODULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwOther.mwOtherLibraryId);
+                                        var LibraryInfo = _dbContext.TLImwODULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwODU.MwODULibraryId);
                                         if (item.allLoadInst.mwODU.Azimuth == 0)
                                         {
                                             RecalculatSpace recalculat = new RecalculatSpace()
@@ -13258,7 +13259,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            CenterHigh = item.allLoadInst.mwOther.CenterHigh;
+                                            CenterHigh = item.allLoadInst.mwODU.CenterHigh;
                                         }
 
                                         if (AllCivilInst.civilWithLegs.HeightBase == 0)
@@ -13736,15 +13737,16 @@ namespace TLIS_Service.Services
                 {
                     float EquivalentSpace = 0;
                     float CenterHigh = 0;
-                    var AllCivilInst = _unitOfWork.AllCivilInstRepository.
-                    GetWhereAndInclude(x => x.civilWithoutLegId == CivilId && x.Draft == false,
-                     x => x.civilWithLegs,x => x.civilWithoutLeg, x => x.civilNonSteel).FirstOrDefault();
+                    var AllCivilInst = _dbContext.TLIallCivilInst.Include(x => x.civilWithLegs)
+                        .Include(x => x.civilWithoutLeg).Include(x => x.civilNonSteel)
+                    .FirstOrDefault(x => x.civilWithoutLegId == CivilId && x.Draft == false);
                     if (AllCivilInst != null)
                     {
-                        List<TLIcivilLoads> AllLoadOnCivil = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allCivilInstId == AllCivilInst.Id 
-                        && x.ReservedSpace == true && !x.Dismantle && x.allLoadInstId != null, x => x.allLoadInst, x => x.allLoadInst.mwBU,
-                        x => x.allLoadInst.mwRFU , x => x.allLoadInst.mwODU, x => x.allLoadInst.mwOther, x => x.allLoadInst.radioAntenna,
-                        x => x.allLoadInst.radioOther , x => x.allLoadInst.radioRRU, x => x.allLoadInst.loadOther, x => x.allLoadInst.power).ToList();
+                        List<TLIcivilLoads> AllLoadOnCivil = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == AllCivilInst.Id && x.ReservedSpace == true &&
+                          x.Dismantle == false && x.allLoadInstId != null).Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwBU)
+                          .Include(x => x.allLoadInst.mwRFU).Include(x => x.allLoadInst.mwODU).Include(x => x.allLoadInst.mwOther)
+                          .Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna).Include(x => x.allLoadInst.radioRRU)
+                          .Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.power).Include(x => x.allLoadInst.loadOther).ToList();
                         AllCivilInst.civilWithLegs.CurrentLoads = 0;
                         if (AllLoadOnCivil.Count == 0)
                         {
@@ -13758,7 +13760,7 @@ namespace TLIS_Service.Services
                             {
                                 if (item.allLoadInst.mwBUId != null)
                                 {
-                                    var LibraryInfo = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == item.allLoadInst.mwBU.MwBULibraryId);
+                                    var LibraryInfo = _dbContext.TLImwBULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwBU.MwBULibraryId);
                                     if (LibraryInfo != null)
                                     {
                                         if (item.allLoadInst.mwBU.Azimuth == 0)
@@ -13852,7 +13854,7 @@ namespace TLIS_Service.Services
                                 else if (item.allLoadInst.mwDish != null)
                                 {
                                     var LibraryInfo = _dbContext.TLImwDishLibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwDish.MwDishLibraryId);
-                                    if (item.allLoadInst.mwBU.Azimuth == 0)
+                                    if (item.allLoadInst.mwDish.Azimuth == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -13864,7 +13866,7 @@ namespace TLIS_Service.Services
                                         };
                                         recalculatSpaces.Add(recalculat);
                                     }
-                                    if (item.allLoadInst.mwBU.Height == 0)
+                                    if (item.allLoadInst.mwDish.HeightBase == 0)
                                     {
                                         RecalculatSpace recalculat = new RecalculatSpace()
                                         {
@@ -14031,9 +14033,9 @@ namespace TLIS_Service.Services
                                 }
                                 else if (item.allLoadInst.mwODU != null)
                                 {
-                                    if (item.allLoadInst.mwODU.OduInstallationTypeId == 1)
+                                    if (item.allLoadInst.mwODU.OduInstallationTypeId == 2)
                                     {
-                                        var LibraryInfo = _dbContext.TLImwODULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwOther.mwOtherLibraryId);
+                                        var LibraryInfo = _dbContext.TLImwODULibrary.FirstOrDefault(x => x.Id == item.allLoadInst.mwODU.MwODULibraryId);
                                         if (item.allLoadInst.mwODU.Azimuth == 0)
                                         {
                                             RecalculatSpace recalculat = new RecalculatSpace()
@@ -14102,7 +14104,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            CenterHigh = item.allLoadInst.mwOther.CenterHigh;
+                                            CenterHigh = item.allLoadInst.mwODU.CenterHigh;
                                         }
 
                                         if (AllCivilInst.civilWithoutLeg.HeightBase == 0)
