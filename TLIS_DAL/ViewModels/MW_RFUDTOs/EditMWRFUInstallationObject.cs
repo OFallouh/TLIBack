@@ -46,7 +46,7 @@ namespace TLIS_DAL.ViewModels.MW_RFUDTOs
         }
         public class InstallationMWDRFUConfigObject
         {
-            public int mwBUId { get; set; }
+            public int PortMWBUId { get; set; }
             public string? TX_Frequency { get; set; }
         }
     }
