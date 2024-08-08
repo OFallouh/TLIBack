@@ -28,7 +28,7 @@ namespace TLIS_DAL.Models
         public TLIsolarLibrary SolarLibrary { get; set; }
         public int SolarLibraryId { get; set; }
         public TLIcabinet Cabinet { get; set; }
-        public int CabinetId { get; set; }
+        public int? CabinetId { get; set; }
         public float CenterHigh { get; set; }
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
