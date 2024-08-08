@@ -78,8 +78,8 @@ namespace TLIS_Service.Services
                     using (var transaction = connection.BeginTransaction())
                     {
                         // التحقق من صحة المستخدم
-                      //  var validationResponse = ValidateUserInAdAndDb(model.UserName, domain);
-                        if (true)
+                        var validationResponse = ValidateUserInAdAndDb(model.UserName, domain);
+                        if (validationResponse.Data)
                         {
                             // إدراج المستخدم
                             var userId = await InsertUserAsync(connection, model);
@@ -104,7 +104,7 @@ namespace TLIS_Service.Services
                         {
                             // التراجع عن المعاملة إذا لم يكن المستخدم صالحًا
                             transaction.Rollback();
-                            return new Response<UserViewModel>(false, null, null, "validationResponse.Message", (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                            return new Response<UserViewModel>(false, null, null, validationResponse.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
                         }
                     }
                 }

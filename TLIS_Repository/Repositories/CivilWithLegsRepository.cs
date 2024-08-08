@@ -2086,6 +2086,16 @@ namespace TLIS_Repository.Repositories
 
                 );
             }
+            if (LoadName == "TLIsideArm")
+            {
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.FIRST_SIDEARM_ID != SideArmId &&( x.STATUS_NUMBER==4 || x.STATUS_NUMBER == 5)
+
+               );
+            }
             var cc = Check.ToList();
             if (FirstLegId != null)
             {

@@ -2121,6 +2121,7 @@ namespace TLIS_Service.Services
                                                 if (OldVcivilinfo != null)
                                                 {
                                                     var EquivalentSpace = loadOther.SpaceInstallation * (loadOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= loadOtherInst.allLoadInst.loadOther.EquivalentSpace;
                                                     AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                     loadOther.EquivalentSpace = EquivalentSpace;
                                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -2353,6 +2354,7 @@ namespace TLIS_Service.Services
                                                 if (OldVcivilinfo != null)
                                                 {
                                                     var EquivalentSpace = loadOther.SpaceInstallation * (loadOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= loadOtherInst.allLoadInst.loadOther.EquivalentSpace;
                                                     AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                     loadOther.EquivalentSpace = EquivalentSpace;
                                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -2646,6 +2648,7 @@ namespace TLIS_Service.Services
                                                         if (OldVcivilinfo != null)
                                                         {
                                                             var EquivalentSpace = loadOther.SpaceInstallation * (loadOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= loadOtherInst.allLoadInst.loadOther.EquivalentSpace;
                                                             AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                             loadOther.EquivalentSpace = EquivalentSpace;
                                                             var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -2877,6 +2880,7 @@ namespace TLIS_Service.Services
                                                         if (OldVcivilinfo != null)
                                                         {
                                                             var EquivalentSpace = loadOther.SpaceInstallation * (loadOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= loadOtherInst.allLoadInst.loadOther.EquivalentSpace;
                                                             AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                             loadOther.EquivalentSpace = EquivalentSpace;
                                                             var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -3165,6 +3169,7 @@ namespace TLIS_Service.Services
                                                     if (OldVcivilinfo != null)
                                                     {
                                                         var EquivalentSpace = loadOther.SpaceInstallation * (loadOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
+                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -= loadOtherInst.allLoadInst.loadOther.EquivalentSpace;
                                                         AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                         loadOther.EquivalentSpace = EquivalentSpace;
                                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -3397,6 +3402,7 @@ namespace TLIS_Service.Services
                                                     if (OldVcivilinfo != null)
                                                     {
                                                         var EquivalentSpace = loadOther.SpaceInstallation * (loadOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
+                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -= loadOtherInst.allLoadInst.loadOther.EquivalentSpace;
                                                         AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                         loadOther.EquivalentSpace = EquivalentSpace;
                                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
