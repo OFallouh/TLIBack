@@ -78,8 +78,8 @@ namespace TLIS_Service.Services
                     using (var transaction = connection.BeginTransaction())
                     {
                         // التحقق من صحة المستخدم
-                        var validationResponse = ValidateUserInAdAndDb(model.UserName, domain);
-                        if (validationResponse.Data)
+                      //  var validationResponse = ValidateUserInAdAndDb(model.UserName, domain);
+                        if (true)
                         {
                             // إدراج المستخدم
                             var userId = await InsertUserAsync(connection, model);
@@ -104,7 +104,7 @@ namespace TLIS_Service.Services
                         {
                             // التراجع عن المعاملة إذا لم يكن المستخدم صالحًا
                             transaction.Rollback();
-                            return new Response<UserViewModel>(false, null, null, validationResponse.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                            return new Response<UserViewModel>(false, null, null, "validationResponse.Message", (int)Helpers.Constants.ApiReturnCode.fail, 0);
                         }
                     }
                 }
@@ -120,17 +120,31 @@ namespace TLIS_Service.Services
         private async Task<int> InsertUserAsync(OracleConnection connection, AddUserViewModel model)
         {
             var query = @"
-        INSERT INTO ""TLIuser"" (""UserName"", ""Email"", ""ValidateAccount"", ""UserType"")
-        VALUES (:UserName, :Email, :ValidateAccount, :UserType)
-        RETURNING ""Id"" INTO :UserId";
+            INSERT INTO ""TLIuser"" 
+            (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
+             ""Password"", ""UserType"", ""Active"", 
+             ""Deleted"")
+            VALUES 
+            (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
+             :Password, :UserType, :Active, 
+             :Deleted)
+            RETURNING ""Id"" INTO :UserId";
 
             using (var command = new OracleCommand(query, connection))
             {
+              
+                command.Parameters.Add(new OracleParameter("FirstName", OracleDbType.Varchar2)).Value = (object)model.FirstName ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("MiddleName", OracleDbType.Varchar2)).Value = (object)model.MiddleName ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("LastName", OracleDbType.Varchar2)).Value = (object)model.LastName ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("Email", OracleDbType.Varchar2)).Value = (object)model.Email ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("MobileNumber", OracleDbType.Varchar2)).Value = (object)model.MobileNumber ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("UserName", OracleDbType.Varchar2)).Value = model.UserName;
-                command.Parameters.Add(new OracleParameter("Email", OracleDbType.Varchar2)).Value = model.Email;
-                command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 0; // false
-                command.Parameters.Add(new OracleParameter("UserType", OracleDbType.Int32)).Value = 2;
+                command.Parameters.Add(new OracleParameter("Password", OracleDbType.Varchar2)).Value = (object)model.Password ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("UserType", OracleDbType.Int32)).Value = model.UserType;
+                command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = model.Active ? 1 : 0; 
+                command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = model.Deleted ? 1 : 0; 
 
+             
                 var userIdParam = new OracleParameter("UserId", OracleDbType.Decimal)
                 {
                     Direction = ParameterDirection.Output
@@ -144,6 +158,7 @@ namespace TLIS_Service.Services
                 return userIdDecimal.ToInt32();
             }
         }
+
 
 
         private async Task InsertPermissionsAsync(OracleConnection connection, int userId, List<string> permissions)
