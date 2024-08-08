@@ -120,15 +120,15 @@ namespace TLIS_Service.Services
         private async Task<int> InsertUserAsync(OracleConnection connection, AddUserViewModel model)
         {
             var query = @"
-            INSERT INTO ""TLIuser"" 
-            (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
-             ""Password"", ""UserType"", ""Active"", 
-             ""Deleted"")
-            VALUES 
-            (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
-             :Password, :UserType, :Active, 
-             :Deleted)
-            RETURNING ""Id"" INTO :UserId";
+    INSERT INTO ""TLIuser"" 
+    (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
+     ""Password"", ""UserType"", ""Active"", 
+     ""Deleted"", ""ValidateAccount"")
+    VALUES 
+    (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
+     :Password, :UserType, :Active, 
+     :Deleted, :ValidateAccount)
+    RETURNING ""Id"" INTO :UserId";
 
             using (var command = new OracleCommand(query, connection))
             {
@@ -141,10 +141,13 @@ namespace TLIS_Service.Services
                 command.Parameters.Add(new OracleParameter("UserName", OracleDbType.Varchar2)).Value = model.UserName;
                 command.Parameters.Add(new OracleParameter("Password", OracleDbType.Varchar2)).Value = (object)model.Password ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("UserType", OracleDbType.Int32)).Value = model.UserType;
-                command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = model.Active ? 1 : 0; 
-                command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = model.Deleted ? 1 : 0; 
 
-             
+               
+                command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = 1;
+                command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = 0; 
+                command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 1; 
+
+           
                 var userIdParam = new OracleParameter("UserId", OracleDbType.Decimal)
                 {
                     Direction = ParameterDirection.Output
@@ -153,11 +156,12 @@ namespace TLIS_Service.Services
 
                 await command.ExecuteNonQueryAsync();
 
-                // معالجة OracleDecimal وتحديد القيمة
+       
                 var userIdDecimal = (OracleDecimal)userIdParam.Value;
                 return userIdDecimal.ToInt32();
             }
         }
+
 
 
 
