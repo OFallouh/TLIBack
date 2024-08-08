@@ -1374,7 +1374,7 @@ namespace TLIS_Service.Services
                             if (OldLogisticalItemIds.Vendor != null ? OldLogisticalItemIds.Vendor != 0 : false)
                             {
                                 TLIlogistical OldLogisticalObject = _unitOfWork.LogistcalRepository
-                                    .GetWhereFirst(x => x.Id == LogisticalItemIds.Vendor);
+                                    .GetWhereFirst(x => x.Id == OldLogisticalItemIds.Vendor);
 
                                 int CivilId = MainEntity.Id;
 

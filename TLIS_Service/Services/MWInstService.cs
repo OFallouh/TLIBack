@@ -5336,16 +5336,14 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                            x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
-                                                            x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                            mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                           .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                .Select(g => g.First())
-                                                                .ToList();
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_ODU.installationConfig.LegId
+                                                            , null, AddMW_ODU.installationConfig.civilWithLegId, AddMW_ODU.installationConfig.civilWithoutLegId,
+                                                            AddMW_ODU.installationConfig.civilNonSteelId, AddMW_ODU.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                            , mwODU.Height, 2).Data;
+
+                                                            if (Data == false)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                             }
 
                                                             if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
@@ -5451,18 +5449,14 @@ namespace TLIS_Service.Services
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
 
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                           x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
-                                                           x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                           mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                               .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_ODU.installationConfig.LegId
+                                                            , null, AddMW_ODU.installationConfig.civilWithLegId, AddMW_ODU.installationConfig.civilWithoutLegId,
+                                                            AddMW_ODU.installationConfig.civilNonSteelId, AddMW_ODU.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                            , mwODU.Height, 2).Data;
 
-
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                                            if (Data == false)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                             }
 
                                                             if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
@@ -5617,18 +5611,14 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                        x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
-                                                        x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                        mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                       .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_ODU.installationConfig.LegId
+                                                             , null, AddMW_ODU.installationConfig.civilWithLegId, AddMW_ODU.installationConfig.civilWithoutLegId,
+                                                             AddMW_ODU.installationConfig.civilNonSteelId, AddMW_ODU.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                             , mwODU.Height, 2).Data;
 
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                                        if (Data == false)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                         }
 
                                                         if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
@@ -5734,18 +5724,14 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                       x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
-                                                       x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                       mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                         .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_ODU.installationConfig.LegId
+                                                              , null, AddMW_ODU.installationConfig.civilWithLegId, AddMW_ODU.installationConfig.civilWithoutLegId,
+                                                              AddMW_ODU.installationConfig.civilNonSteelId, AddMW_ODU.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                              , mwODU.Height, 2).Data;
 
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                                        if (Data == false)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                         }
 
                                                         if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
@@ -5893,18 +5879,14 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                    x => x.ALLCIVILID == CivilFound.allCivilInst.Id &&
-                                                    x.SIDEARMID == AddMW_ODU.installationConfig.sideArmId && x.Azimuth ==
-                                                    mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() == SiteCode.ToLower())
-                                                         .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_ODU.installationConfig.LegId
+                                                              , null, AddMW_ODU.installationConfig.civilWithLegId, AddMW_ODU.installationConfig.civilWithoutLegId,
+                                                              AddMW_ODU.installationConfig.civilNonSteelId, AddMW_ODU.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                              , mwODU.Height, 2).Data;
 
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    if (Data == false)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
 
                                                     if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
@@ -6099,22 +6081,16 @@ namespace TLIS_Service.Services
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
 
-                                                       
-                                                            var CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEG_ID == AddMW_BU.installationConfig.legId && x.SIDEARM_ID == null
-                                                                && x.SideArmSec_Id == null && x.SiteCode.ToLower()
-                                                                == SiteCode.ToLower() && x.Azimuth ==
-                                                            mwBU.Azimuth && x.Height == mwBU.Height)
-                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.Height })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                                 , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                                 AddMW_BU.installationConfig.civilNonSteelId, null, null, mwBU.Azimuth
+                                                                 , mwBU.Height, 1).Data;
 
-                                                            if (CheckAzimuthAndHeight.Count > 0)
+                                                            if (Data == false)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                             }
-                                                           
+
                                                             else
                                                             {
                                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_BU.installationConfig.legId);
@@ -6229,22 +6205,17 @@ namespace TLIS_Service.Services
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
 
-                                                          
 
-                                                            var CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEG_ID == AddMW_BU.installationConfig.legId&& x.SIDEARM_ID ==null
-                                                                && x.SideArmSec_Id ==null&& x.SiteCode.ToLower()
-                                                                == SiteCode.ToLower() && x.Azimuth ==
-                                                            mwBU.Azimuth && x.Height == mwBU.Height)
-                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.Height })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
-                                                            if (CheckAzimuthAndHeight.Count > 0)
+
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                                 , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                                 AddMW_BU.installationConfig.civilNonSteelId, null, null, mwBU.Azimuth
+                                                                 , mwBU.Height, 1).Data;
+
+                                                            if (Data == false)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                             }
-                                                           
                                                             else
                                                             {
                                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_BU.installationConfig.legId);
@@ -6487,7 +6458,8 @@ namespace TLIS_Service.Services
                                                                 x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
                                                                 && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                                == AddMW_BU.installationConfig.sideArmId[1]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                                == AddMW_BU.installationConfig.sideArmId[1] )||(x.sideArmId== AddMW_BU.installationConfig.sideArmId[1]
+                                                                && x.sideArm2Id== AddMW_BU.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                , x => x.allLoadInst.mwBU.MwBULibrary);
                                                             if (CascededBu == null)
                                                             {
@@ -6559,23 +6531,18 @@ namespace TLIS_Service.Services
                                                         if (AddMW_BU.installationConfig.sideArmId.Count == 1)
                                                         {
 
-                                                           
-
-                                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                              (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                              x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && 
-                                                               x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                               .Select(g => g.First())
-                                                               .ToList();
 
 
-                                                            if (CheckAzimuthAndHeight.Count > 0)
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                                  , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                                  AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                                  , mwBU.Height, 2).Data;
+
+                                                            if (Data == false)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                             }
-                                                           
+
                                                             else
                                                             {
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
@@ -6588,24 +6555,18 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (AddMW_BU.installationConfig.sideArmId.Count == 2)
                                                         {
-                                                          
 
-                                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                              x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                              (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0]
-                                                              && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[1])
-                                                              || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
-                                                              && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
-                                                              x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                               .Select(g => g.First())
-                                                               .ToList();
 
-                                                            if (CheckAzimuthAndHeight.Count > 0)
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                                  , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                                  AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], AddMW_BU.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                                  , mwBU.Height, 3).Data;
+
+                                                            if (Data == false)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not install the dish on the same azimuth and height because another dish was found at the same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                             }
-                                                            
+
                                                             else
                                                             {
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
@@ -6723,23 +6684,18 @@ namespace TLIS_Service.Services
 
                                                         if (AddMW_BU.installationConfig.sideArmId.Count == 1)
                                                         {
-                                                         
-
-                                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                              (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                              x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
-                                                               x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                               .Select(g => g.First())
-                                                               .ToList();
 
 
-                                                            if (CheckAzimuthAndHeight.Count > 0)
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                              , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                              AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                              , mwBU.Height, 2).Data;
+
+                                                            if (Data == false)
                                                             {
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                             }
-                                                          
+
                                                             else
                                                             {
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
@@ -6751,25 +6707,19 @@ namespace TLIS_Service.Services
                                                         }
                                                         if (AddMW_BU.installationConfig.sideArmId.Count == 2)
                                                         {
-                                                         
 
-                                                            //List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                            //  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                            //  (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0]
-                                                            //  && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[1])
-                                                            //  || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
-                                                            //  && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
-                                                            //  x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                            //    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                            //   .Select(g => g.First())
-                                                            //   .ToList();
 
-                                                            //if (CheckAzimuthAndHeight.Count > 0)
-                                                            //{
-                                                            //    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
-                                                            //}
-                                                         
-                                                            
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                                    , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                                    AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], AddMW_BU.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                                    , mwBU.Height, 3).Data;
+
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
+                                                            }
+
+
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                             if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
@@ -6972,9 +6922,10 @@ namespace TLIS_Service.Services
                                                     {
                                                         var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                     x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
-                                                                    && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
+                                                                    && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
                                                                     && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                                    == AddMW_BU.installationConfig.sideArmId[1]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                                == AddMW_BU.installationConfig.sideArmId[1]) || (x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
+                                                                && x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                    , x => x.allLoadInst.mwBU.MwBULibrary);
                                                         if (CascededBu == null)
                                                         {
@@ -7037,21 +6988,18 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (AddMW_BU.installationConfig.sideArmId.Count == 1)
                                                     {
-                                                       
 
-                                                        List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                           x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                          (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                          x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
-                                                           x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id ,x.SiteCode, x.Azimuth, x.Height })
-                                                           .Select(g => g.First())
-                                                           .ToList();
-                                                        if (CheckAzimuthAndHeight.Count > 0)
+
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                          , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                          AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                          , mwBU.Height, 2).Data;
+
+                                                        if (Data == false)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                         }
-                                                     
+
                                                         else
                                                         {
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
@@ -7063,33 +7011,26 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (AddMW_BU.installationConfig.sideArmId.Count == 2)
                                                     {
-                                                      
-                                                        List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                          (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0]
-                                                          && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[1])
-                                                          || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
-                                                          && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
-                                                          x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id ,x.SiteCode, x.Azimuth, x.Height })
-                                                           .Select(g => g.First())
-                                                           .ToList();
 
-                                                        if (CheckAzimuthAndHeight.Count > 0)
-                                                        {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
-                                                        }
-                                                      
-                                                        else
-                                                        {
-                                                            var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
 
-                                                            var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
-                                                            if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
-                                                            {
-                                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
-                                                            }
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                                , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                                AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], AddMW_BU.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                                , mwBU.Height, 3).Data;
+
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                         }
+
+
+                                                        var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
+                                                        var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                        if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
+                                                        {
+                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                        }
+
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                                      !x.Dismantle &&
@@ -7192,21 +7133,18 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (AddMW_BU.installationConfig.sideArmId.Count == 1)
                                                     {
-                                                        
 
-                                                        List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                           x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                          (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                          x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && 
-                                                           x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                           .Select(g => g.First())
-                                                           .ToList();
-                                                        if (CheckAzimuthAndHeight.Count > 0)
+
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                          , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                          AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                          , mwBU.Height, 2).Data;
+
+                                                        if (Data == false)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                         }
-                                                        
+
                                                         else
                                                         {
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
@@ -7218,35 +7156,26 @@ namespace TLIS_Service.Services
                                                     }
                                                     if (AddMW_BU.installationConfig.sideArmId.Count == 2)
                                                     {
-                                                       
-
-                                                        List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                          (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0]
-                                                          && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[1])
-                                                          || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
-                                                          && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
-                                                          x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                           .Select(g => g.First())
-                                                           .ToList();
 
 
-                                                        if (CheckAzimuthAndHeight.Count > 0)
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                                , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                                AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], AddMW_BU.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                                , mwBU.Height, 3).Data;
+
+                                                        if (Data == false)
                                                         {
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                         }
-                                                       
-                                                        else
-                                                        {
-                                                            var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
 
-                                                            var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
-                                                            if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
-                                                            {
-                                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
-                                                            }
+
+                                                        var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
+                                                        var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                        if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
+                                                        {
+                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
                                                         }
+
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                        !x.Dismantle &&
@@ -7438,9 +7367,10 @@ namespace TLIS_Service.Services
                                                     {
                                                         var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                  x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
-                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                                 && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                                 == AddMW_BU.installationConfig.sideArmId[1]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                                 && x.allCivilInst.civilNonSteelId == AddMW_BU.installationConfig.civilNonSteelId
+                                                                  && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                                == AddMW_BU.installationConfig.sideArmId[1]) || (x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
+                                                                && x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                 , x => x.allLoadInst.mwBU.MwBULibrary);
                                                         if (CascededBu == null)
                                                         {
@@ -7507,21 +7437,18 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (AddMW_BU.installationConfig.sideArmId.Count == 1)
                                                 {
-                                                
 
-                                                    List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                      (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0] ||
-                                                      x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) && 
-                                                       x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                       .Select(g => g.First())
-                                                       .ToList();
-                                                    if (CheckAzimuthAndHeight.Count > 0)
+
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                      , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                      AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                      , mwBU.Height, 2).Data;
+
+                                                    if (Data == false)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                     }
-                                                 
+
                                                     else
                                                     {
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
@@ -7533,34 +7460,26 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (AddMW_BU.installationConfig.sideArmId.Count == 2)
                                                 {
-                                                  
 
-                                                    List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                      (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[0]
-                                                      && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[1])
-                                                      || (x.SIDEARM_ID == AddMW_BU.installationConfig.sideArmId[1]
-                                                      && x.SideArmSec_Id == AddMW_BU.installationConfig.sideArmId[0]) &&
-                                                      x.SiteCode.ToLower() == SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                       .Select(g => g.First())
-                                                       .ToList();
 
-                                                    if (CheckAzimuthAndHeight.Count > 0)
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_BU.installationConfig.legId
+                                                            , null, AddMW_BU.installationConfig.civilWithLegId, AddMW_BU.installationConfig.civilWithoutLegId,
+                                                            AddMW_BU.installationConfig.civilNonSteelId, AddMW_BU.installationConfig.sideArmId[0], AddMW_BU.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                            , mwBU.Height, 3).Data;
+
+                                                    if (Data == false)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBUon same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                     }
-                                                  
-                                                    else
-                                                    {
-                                                        var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
 
-                                                        var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
-                                                        if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
-                                                        {
-                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
-                                                        }
+
+                                                    var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
+                                                    var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
+                                                    if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
+                                                    {
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
                                                     }
+
                                                 }
                                                 var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle &&
@@ -9297,20 +9216,15 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEG_ID == AddMWOther.installationConfig.legId && x.SIDEARM_ID == null
-                                                                && x.SideArmSec_Id == null && x.SiteCode.ToLower()==SiteCode.ToLower()
-                                                                && x.Azimuth == MWOther.Azimuth && x.HeightBase == MWOther.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMWOther.installationConfig.legId
+                                                             , null, AddMWOther.installationConfig.civilWithLegId, null, null, null, null, MWOther.Azimuth
+                                                             , MWOther.HeightBase, 1).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
-
-                                                       
 
 
                                                         var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
@@ -9411,18 +9325,15 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEG_ID == AddMWOther.installationConfig.legId && x.SIDEARM_ID == null
-                                                                && x.SideArmSec_Id == null && x.SiteCode.ToLower() == SiteCode.ToLower()
-                                                                && x.Azimuth == MWOther.Azimuth && x.HeightBase == MWOther.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                .Select(g => g.First())
-                                                                .ToList();
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMWOther.installationConfig.legId
+                                                             , null, AddMWOther.installationConfig.civilWithLegId, null, null, null, null, MWOther.Azimuth
+                                                             , MWOther.HeightBase, 1).Data;
 
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                                    !x.Dismantle &&
                                                                    x.Name.ToLower() == MWOther.Name.ToLower() &&
@@ -9563,21 +9474,15 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddMWOther.installationConfig.sideArmId
-                                                                          && x.Azimuth == MWOther.Azimuth && x.HeightBase ==
-                                                                          MWOther.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMWOther.installationConfig.legId
+                                                                     , null, AddMWOther.installationConfig.civilWithLegId, AddMWOther.installationConfig.civilWithoutLegId, AddMWOther.installationConfig.civilNonSteelId
+                                                                     , AddMWOther.installationConfig.sideArmId, null, MWOther.Azimuth
+                                                                     , MWOther.HeightBase, 2).Data;
 
-                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                                   
-
+                                                                    if (Data == false)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                                    }
 
                                                                     var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                                                !x.Dismantle &&
@@ -9676,20 +9581,16 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddMWOther.installationConfig.sideArmId
-                                                                          && x.Azimuth == MWOther.Azimuth && x.HeightBase ==
-                                                                          MWOther.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMWOther.installationConfig.legId
+                                                                      , null, AddMWOther.installationConfig.civilWithLegId, AddMWOther.installationConfig.civilWithoutLegId, AddMWOther.installationConfig.civilNonSteelId
+                                                                      , AddMWOther.installationConfig.sideArmId, null, MWOther.Azimuth
+                                                                      , MWOther.HeightBase, 2).Data;
 
+                                                                    if (Data == false)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                                    }
 
-                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                                 
 
                                                                     var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                                                !x.Dismantle &&
@@ -9826,23 +9727,15 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                         x.SIDEARM_ID == AddMWOther.installationConfig.sideArmId
-                                                                         && x.Azimuth == MWOther.Azimuth && x.HeightBase ==
-                                                                         MWOther.HeightBase && !x.Dismantle).
-                                                                         GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                           .Select(g => g.First())
-                                                                           .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMWOther.installationConfig.legId
+                                                                       , null, AddMWOther.installationConfig.civilWithLegId, AddMWOther.installationConfig.civilWithoutLegId, AddMWOther.installationConfig.civilNonSteelId
+                                                                       , AddMWOther.installationConfig.sideArmId, null, MWOther.Azimuth
+                                                                       , MWOther.HeightBase, 2).Data;
 
-
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                        
-
-
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                            }
 
                                                             var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                                        !x.Dismantle &&
@@ -9942,22 +9835,15 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                        x.SIDEARM_ID == AddMWOther.installationConfig.sideArmId
-                                                                        && x.Azimuth == MWOther.Azimuth && x.HeightBase ==
-                                                                        MWOther.HeightBase && !x.Dismantle).
-                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                          .Select(g => g.First())
-                                                                          .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMWOther.installationConfig.legId
+                                                                     , null, AddMWOther.installationConfig.civilWithLegId, AddMWOther.installationConfig.civilWithoutLegId, AddMWOther.installationConfig.civilNonSteelId
+                                                                     , AddMWOther.installationConfig.sideArmId, null, MWOther.Azimuth
+                                                                     , MWOther.HeightBase, 2).Data;
 
-
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-
-
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                            }
 
                                                             var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                                        !x.Dismantle &&
@@ -10089,19 +9975,15 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddMWOther.installationConfig.sideArmId
-                                                                          && x.Azimuth == MWOther.Azimuth && x.HeightBase ==
-                                                                          MWOther.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMWOther.installationConfig.legId
+                                                                          , null, AddMWOther.installationConfig.civilWithLegId, AddMWOther.installationConfig.civilWithoutLegId, AddMWOther.installationConfig.civilNonSteelId
+                                                                          , AddMWOther.installationConfig.sideArmId, null, MWOther.Azimuth
+                                                                          , MWOther.HeightBase, 2).Data;
 
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
 
 
@@ -10311,13 +10193,13 @@ namespace TLIS_Service.Services
 
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
-                                            , null, MWDishInst.allCivilInst.civilWithLegsId, null, null, null, null, mwDish.Azimuth
+                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
                                             , mwDish.HeightBase, 1).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                             {
@@ -10511,13 +10393,13 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
-                                             , null, MWDishInst.allCivilInst.civilWithLegsId, null, null, null, null, mwDish.Azimuth
-                                             , mwDish.HeightBase, 1).Data;
+                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
+                                            , mwDish.HeightBase, 1).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                             {
@@ -10698,13 +10580,13 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
-                                             , null, MWDishInst.allCivilInst.civilWithLegsId, null, null, null, null, mwDish.Azimuth
-                                             , mwDish.HeightBase, 1).Data;
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                           , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
+                                           , mwDish.HeightBase, 1).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                             {
@@ -10895,13 +10777,13 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
-                                             , null, MWDishInst.allCivilInst.civilWithLegsId, null, null, null, null, mwDish.Azimuth
-                                             , mwDish.HeightBase, 1).Data;
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                           , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
+                                           , mwDish.HeightBase, 1).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                             {
@@ -11158,14 +11040,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                              , mwDish.HeightBase, 2).Data;
 
                                                 if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                                 {
@@ -11194,14 +11076,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
 
                                                 if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                                 {
@@ -11394,14 +11276,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                              , mwDish.HeightBase, 2).Data;
 
                                                 if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                                 {
@@ -11430,14 +11312,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
 
                                                 if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                                 {
@@ -11619,14 +11501,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                              , mwDish.HeightBase, 2).Data;
 
                                                 if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                                 {
@@ -11655,14 +11537,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
 
                                                 if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                                 {
@@ -11858,14 +11740,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                              , mwDish.HeightBase, 2).Data;
 
                                                 if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                                 {
@@ -11894,14 +11776,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
 
                                                 if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                                 }
                                                 else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                                 {
@@ -12124,14 +12006,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                             , mwDish.HeightBase, 2).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                             {
@@ -12160,14 +12042,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                             {
@@ -12361,14 +12243,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                             , mwDish.HeightBase, 2).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                             {
@@ -12397,14 +12279,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                             {
@@ -12592,14 +12474,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                             , mwDish.HeightBase, 2).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                             {
@@ -12628,14 +12510,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                             {
@@ -12829,14 +12711,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                             , mwDish.HeightBase, 2).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                             {
@@ -12865,14 +12747,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
 
                                             if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                             }
                                             else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                             {
@@ -13086,14 +12968,14 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                         null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                         null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                          , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                          MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                          , mwDish.HeightBase, 2).Data;
 
                                         if (Data == false)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                         }
                                         else if (Checkinstallationplace != null && Checkinstallationplace.Count >= 3)
                                         {
@@ -13123,14 +13005,14 @@ namespace TLIS_Service.Services
                                                                 .ToList();
 
                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                         null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                         null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                          , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                          MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                          , mwDish.HeightBase, 3).Data;
 
                                         if (Data == false)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWRFU on same azimuth and height because found other MWRFU in same angle", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWDish on same azimuth and height because found other MWDish in same angle", (int)ApiReturnCode.fail);
                                         }
                                         else if (Checkinstallationplace2 != null && Checkinstallationplace2.Count >= 3)
                                         {
@@ -13444,21 +13326,17 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                              
-                                                var CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwBU.Id &&
-                                                    x.LEG_ID == mwBUInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null 
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() &&
-                                                    x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.Height })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
 
-                                                if (CheckAzimuthAndHeight.Count > 0)
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwBU.Azimuth
+                                                , mwBU.Height, 1).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                                
+
                                                 else
                                                 {
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == mwBUInst.legId);
@@ -13575,20 +13453,17 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                            
-                                                var CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwBU.Id &&
-                                                   x.LEG_ID == mwBUInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null &&
-                                                   x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() &&
-                                                   x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.Height })
-                                                                   .Select(g => g.First())
-                                                                   .ToList();
-                                                if (CheckAzimuthAndHeight.Count > 0)
+
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwBU.Azimuth
+                                                 , mwBU.Height, 1).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == mwBUInst.legId);
@@ -13693,20 +13568,17 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                           
-                                                var CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwBU.Id &&
-                                                  x.LEG_ID == mwBUInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null 
-                                                  && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() &&
-                                                  x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.Height })
-                                                                  .Select(g => g.First())
-                                                                  .ToList();
-                                                if (CheckAzimuthAndHeight.Count > 0)
+
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwBU.Azimuth
+                                                 , mwBU.Height, 1).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == mwBUInst.legId);
@@ -13822,20 +13694,17 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                           
-                                                var CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwBU.Id &&
-                                                  x.LEG_ID == mwBUInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null 
-                                                  && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() &&
-                                                  x.Azimuth == mwBU.Azimuth && x.Height == mwBU.Height)
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.Height })
-                                                                  .Select(g => g.First())
-                                                                  .ToList();
-                                                if (CheckAzimuthAndHeight.Count > 0)
+
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwBU.Azimuth
+                                                 , mwBU.Height, 1).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == mwBUInst.legId);
@@ -14147,22 +14016,18 @@ namespace TLIS_Service.Services
                                             if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                                 MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                             {
-                                               
-                                                List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                    .Select(g => g.First())
-                                                    .ToList();
 
-                                                if (CheckAzimuthAndHeight.Count > 0)
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                                 MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                , mwBU.Height, 2).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -14176,23 +14041,18 @@ namespace TLIS_Service.Services
                                             if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                                 MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                             {
-                                               
-                                                List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                    (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                                    x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                    || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                    && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                    .Select(g => g.First())
-                                                    .ToList();
-                                                if (CheckAzimuthAndHeight.Count > 0)
+
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                                  MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                 , mwBU.Height, 3).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -14308,51 +14168,43 @@ namespace TLIS_Service.Services
                                             if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                                 MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                             {
-                                               
-                                                List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                    .Select(g => g.First())
-                                                    .ToList();
 
-                                                if (CheckAzimuthAndHeight.Count > 0)
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                                 MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                , mwBU.Height, 2).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
                                                         mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+
                                                     }
                                                 }
                                             }
                                             if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                                 MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                             {
-                                               
-                                                List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                    (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                                    x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                    || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                    && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                    .Select(g => g.First())
-                                                    .ToList();
-                                                if (CheckAzimuthAndHeight.Count > 0)
+
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                                  MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                 , mwBU.Height, 3).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -14363,7 +14215,6 @@ namespace TLIS_Service.Services
                                                     }
                                                 }
                                             }
-
                                             var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
@@ -14456,51 +14307,43 @@ namespace TLIS_Service.Services
                                             if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                                 MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                             {
-                                               
-                                                List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                    .Select(g => g.First())
-                                                    .ToList();
 
-                                                if (CheckAzimuthAndHeight.Count > 0)
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                                 MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                , mwBU.Height, 2).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                                
+
                                                 else
                                                 {
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
                                                         mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+
                                                     }
                                                 }
                                             }
                                             if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                                 MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                             {
-                                               
-                                                List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                    (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                                    x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                    || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                    && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                    .Select(g => g.First())
-                                                    .ToList();
-                                                if (CheckAzimuthAndHeight.Count > 0)
+
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                                  MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                 , mwBU.Height, 3).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -14511,7 +14354,6 @@ namespace TLIS_Service.Services
                                                     }
                                                 }
                                             }
-
                                             var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
@@ -14615,53 +14457,45 @@ namespace TLIS_Service.Services
                                             }
 
                                             if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
-                                                MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
+                                               MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                             {
-                                                
-                                                List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                    .Select(g => g.First())
-                                                    .ToList();
 
-                                                if (CheckAzimuthAndHeight.Count > 0)
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                                 MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                                , mwBU.Height, 2).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                               
+
                                                 else
                                                 {
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
                                                         mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+
                                                     }
                                                 }
                                             }
                                             if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                                 MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                             {
-                                              
-                                                List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                    (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                                    x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                    || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                    && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                    .Select(g => g.First())
-                                                    .ToList();
-                                                if (CheckAzimuthAndHeight.Count > 0)
+
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                                  MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                                 , mwBU.Height, 3).Data;
+
+                                                if (Data == false)
                                                 {
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                                 }
-                                              
+
                                                 else
                                                 {
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -14672,7 +14506,6 @@ namespace TLIS_Service.Services
                                                     }
                                                 }
                                             }
-
                                             var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
@@ -14874,7 +14707,7 @@ namespace TLIS_Service.Services
                                         {
                                             var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                       x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
-                                                      && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
+                                                      && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId
                                                       && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
                                                       == MWInstallationViewModel.installationConfig.sideArmId[1]), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                  , x => x.allLoadInst.mwBU.MwBULibrary);
@@ -14934,53 +14767,45 @@ namespace TLIS_Service.Services
                                         }
 
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
-                                            MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
+                                               MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
-                                            
-                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                .Select(g => g.First())
-                                                .ToList();
 
-                                            if (CheckAzimuthAndHeight.Count > 0)
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                             mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                            , mwBU.Height, 2).Data;
+
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                           
+
                                             else
                                             {
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
                                                     mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+
                                                 }
                                             }
                                         }
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                         {
-                                            
-                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                                x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                && x.Height == mwBU.Height)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                .Select(g => g.First())
-                                                .ToList();
-                                            if (CheckAzimuthAndHeight.Count > 0)
+
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                              mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                             , mwBU.Height, 3).Data;
+
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                           
+
                                             else
                                             {
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -14991,7 +14816,6 @@ namespace TLIS_Service.Services
                                                 }
                                             }
                                         }
-
                                         var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
@@ -15095,53 +14919,45 @@ namespace TLIS_Service.Services
                                         }
 
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
-                                            MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
+                                                 MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
-                                       
-                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                        && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                        || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                        && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                        && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                .Select(g => g.First())
-                                                .ToList();
 
-                                            if (CheckAzimuthAndHeight.Count > 0)
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                             mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                            , mwBU.Height, 2).Data;
+
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                         
+
                                             else
                                             {
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
                                                     mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+
                                                 }
                                             }
                                         }
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                         {
-                                         
-                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                                x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                && x.Height == mwBU.Height)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                .Select(g => g.First())
-                                                .ToList();
-                                            if (CheckAzimuthAndHeight.Count > 0)
+
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                              mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                             , mwBU.Height, 3).Data;
+
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                           
+
                                             else
                                             {
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -15248,55 +15064,46 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
-                                            MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
+                                                                                       MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
-                                         
-                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                .Select(g => g.First())
-                                                .ToList();
 
-                                            if (CheckAzimuthAndHeight.Count > 0)
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                             mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                            , mwBU.Height, 2).Data;
+
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                          
+
                                             else
                                             {
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
                                                     mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+
                                                 }
                                             }
                                         }
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                         {
-                                           
-                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                                x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                && x.Height == mwBU.Height)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                .Select(g => g.First())
-                                                .ToList();
-                                            if (CheckAzimuthAndHeight.Count > 0)
+
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                              mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                             , mwBU.Height, 3).Data;
+
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                          
+
                                             else
                                             {
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -15412,53 +15219,45 @@ namespace TLIS_Service.Services
                                         }
 
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
-                                            MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
+                                               MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                         {
-                                          
-                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                .Select(g => g.First())
-                                                .ToList();
 
-                                            if (CheckAzimuthAndHeight.Count > 0)
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                             mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                            , mwBU.Height, 2).Data;
+
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                           
+
                                             else
                                             {
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
                                                     mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+
                                                 }
                                             }
                                         }
                                         if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                             MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                         {
-                                            
-                                            List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                                x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                                || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                                && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                && x.Height == mwBU.Height)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                                .Select(g => g.First())
-                                                .ToList();
-                                            if (CheckAzimuthAndHeight.Count > 0)
+
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                              mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                             , mwBU.Height, 3).Data;
+
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                           
+
                                             else
                                             {
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -15668,7 +15467,7 @@ namespace TLIS_Service.Services
                                         {
                                             var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                     x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
-                                                    && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
+                                                    && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
                                                     && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
                                                     == MWInstallationViewModel.installationConfig.sideArmId[1]), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                , x => x.allLoadInst.mwBU.MwBULibrary);
@@ -15725,54 +15524,45 @@ namespace TLIS_Service.Services
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                     }
                                     if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
-                                        MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
+                                                MWInstallationViewModel.installationConfig.sideArmId.Count() == 1)
                                     {
-                                      
-                                        List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                                    x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
-                                                    && x.Id != mwBU.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
-                                                    || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                                    && x.Height == mwBU.Height)
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                            .Select(g => g.First())
-                                            .ToList();
 
-                                        if (CheckAzimuthAndHeight.Count > 0)
+                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                         mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                        , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                         MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
+                                        , mwBU.Height, 2).Data;
+
+                                        if (Data == false)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                         }
-                                       
+
                                         else
                                         {
                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                             if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                             {
                                                 mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+
                                             }
                                         }
                                     }
                                     if (MWInstallationViewModel.installationConfig.sideArmId.Count() != 0 &&
                                         MWInstallationViewModel.installationConfig.sideArmId.Count() == 2)
                                     {
-                                     
 
-                                        List<MV_MWBU_VIEW> CheckAzimuthAndHeight = _dbContext.MV_MWBU_VIEW.Where(
-                                            x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                            (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0] &&
-                                            x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
-                                            || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
-                                            && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && x.Azimuth == mwBU.Azimuth
-                                            && x.Height == mwBU.Height)
-                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Azimuth, x.Height })
-                                            .Select(g => g.First())
-                                            .ToList();
-                                        if (CheckAzimuthAndHeight.Count > 0)
+                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                          mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                         , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
+                                          MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
+                                         , mwBU.Height, 3).Data;
+
+                                        if (Data == false)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBUin same angle", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWBU on same azimuth and height because found other MWBU in same angle", (int)ApiReturnCode.fail);
                                         }
-                                        
+
                                         else
                                         {
                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
@@ -15975,20 +15765,18 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == editmwOtherInstallationObject.installationConfig.legId
-                                                        && x.Id != mwOther.Id && x.SIDEARM_ID == null && x.SideArmSec_Id == null
-                                                        && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, null, null, null, null, mwOther.Azimuth
+                                                , mwOther.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
-                                         
-                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+
+                                            var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != mwOther.Id &&
                                                            x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -16099,22 +15887,17 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                x.LEG_ID == editmwOtherInstallationObject.installationConfig.legId
-                                                && x.Id != mwOther.Id && x.SIDEARM_ID == null && x.SideArmSec_Id == null
-                                                && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, null, null, null, null, mwOther.Azimuth
+                                                , mwOther.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                            }
 
-
-                                            
-
-                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                            var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle && x.Id != mwOther.Id &&
                                                               x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                               x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -16213,22 +15996,18 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == editmwOtherInstallationObject.installationConfig.legId &&
-                                                        x.Id != mwOther.Id && x.SIDEARM_ID == null && x.SideArmSec_Id == null
-                                                        && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                            null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                           , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, null, null, null, null, mwOther.Azimuth
+                                           , mwOther.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                            }
 
 
-                                            
-
-                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                            var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                        !x.Dismantle && x.Id != mwOther.Id &&
                                                        x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                        x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -16341,22 +16120,18 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == editmwOtherInstallationObject.installationConfig.legId
-                                                        && x.Id != mwOther.Id && x.SIDEARM_ID == null && x.SideArmSec_Id == null
-                                                        && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                            null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                           , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, null, null, null, null, mwOther.Azimuth
+                                           , mwOther.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                            }
 
 
-                                            
-
-                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                            var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != mwOther.Id &&
                                                            x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -16514,20 +16289,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                                && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                  
-
-                                                        var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                     null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                    , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                                    , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                                    , mwOther.HeightBase, 2).Data;
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                    }
+                                                    var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                                   !x.Dismantle && x.Id != mwOther.Id &&
                                                                   x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                                   x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -16638,18 +16409,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                               x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                               && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                        var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                                , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                                , mwOther.HeightBase, 2).Data;
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                    }
+                                                    var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != mwOther.Id &&
                                                            x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                            x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -16748,19 +16517,17 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                   x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                                   && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                               null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                              , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                              , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                              , mwOther.HeightBase, 2).Data;
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                    }
 
-                                                  
-
-                                                        var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                                    var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle && x.Id != mwOther.Id &&
                                                             x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                             x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -16873,18 +16640,17 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                          x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                          && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                         .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                                    
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                               , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                               , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                               , mwOther.HeightBase, 2).Data;
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                    }
 
-                                                        var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                                    var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle && x.Id != mwOther.Id &&
                                                               x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                               x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -17037,20 +16803,17 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                         x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                         && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                                , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                                , mwOther.HeightBase, 2).Data;
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                               
-                                                    var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                                !x.Dismantle && x.Id != mwOther.Id &&
                                                                x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                                x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -17162,19 +16925,17 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                       && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                    null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                    , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                                    , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                                    , mwOther.HeightBase, 2).Data;
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                    var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle && x.Id != mwOther.Id &&
                                                         x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                         x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -17272,18 +17033,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                         x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                         && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                    var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                                , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                                , mwOther.HeightBase, 2).Data;
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                }
+                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != mwOther.Id &&
                                                          x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                          x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -17396,20 +17155,17 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                       && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                  null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                  , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                                  , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                                  , mwOther.HeightBase, 2).Data;
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                  
-
-                                                    var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle && x.Id != mwOther.Id &&
                                                             x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                             x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -17554,20 +17310,17 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_MWOTHER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.SIDEARM_ID == editmwOtherInstallationObject.installationConfig.sideArmId && x.Id != mwOther.Id
-                                                        && x.Azimuth == mwOther.Azimuth && x.HeightBase == mwOther.HeightBase && !x.Dismantle)
-                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                null, mwOther.Id, null, null, null, null, null,null, "TLImwOther", mwOtherInst.SiteCode, editmwOtherInstallationObject.installationConfig.legId
+                                                , null, editmwOtherInstallationObject.installationConfig.civilWithLegId, editmwOtherInstallationObject.installationConfig.civilWithoutLegId
+                                                , editmwOtherInstallationObject.installationConfig.civilNonSteelId, editmwOtherInstallationObject.installationConfig.sideArmId, null, mwOther.Azimuth
+                                                , mwOther.HeightBase, 2).Data;
+                                            if (Data == false)
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOther on same azimuth and height because found other MWOther in same angle", (int)ApiReturnCode.fail);
+                                            }
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWOtheron same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                             
-
-                                                var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
+                                            var CheckName = _dbContext.MV_MWOTHER_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != mwOther.Id &&
                                                          x.Name.ToLower() == mwOther.Name.ToLower() &&
                                                          x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower());
@@ -18122,21 +17875,15 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                    x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                    x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                    mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                    CivilFound.SiteCode.ToLower())
-                                                         .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
-
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                    null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                    , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                    , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                    , mwODU.Height, 2).Data;
+                                                    if (Data == false)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
-
                                                     if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
                                                     {
                                                         mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
@@ -18240,19 +17987,14 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                       x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                       x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                       mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                       CivilFound.SiteCode.ToLower())
-                                                            .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                       .Select(g => g.First())
-                                                                       .ToList();
-
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                    null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                    , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                    , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                    , mwODU.Height, 2).Data;
+                                                    if (Data == false)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
 
                                                     if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
@@ -18355,19 +18097,14 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                        x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                        x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                        mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                        CivilFound.SiteCode.ToLower())
-                                                             .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                        .Select(g => g.First())
-                                                                        .ToList();
-
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                    null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                    , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                    , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                    , mwODU.Height, 2).Data;
+                                                    if (Data == false)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
 
                                                     if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
@@ -18463,18 +18200,14 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                     x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                     x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                     mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                     CivilFound.SiteCode.ToLower())
-                                                          .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                     .Select(g => g.First())
-                                                                     .ToList();
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                   null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                   , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                   , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                   , mwODU.Height, 2).Data;
+                                                    if (Data == false)
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
 
                                                     if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
@@ -18627,18 +18360,14 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                       x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                       x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                       mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                       CivilFound.SiteCode.ToLower())
-                                                            .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                       .Select(g => g.First())
-                                                                       .ToList();
-
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                    null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                    , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                    , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                    , mwODU.Height, 2).Data;
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                             }
                                             if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
                                             {
@@ -18741,19 +18470,14 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                     x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                     x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                     mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                     CivilFound.SiteCode.ToLower())
-                                                          .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                     .Select(g => g.First())
-                                                                     .ToList();
-
-
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                     null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                     , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                     , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                     , mwODU.Height, 2).Data;
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                             }
 
                                             if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
@@ -18858,19 +18582,14 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                     x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                     x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                     mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                     CivilFound.SiteCode.ToLower())
-                                                          .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                     .Select(g => g.First())
-                                                                     .ToList();
-
-
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                   null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                   , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                   , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                   , mwODU.Height, 2).Data;
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                             }
 
                                             if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
@@ -18963,19 +18682,14 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                             }
-                                            var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                    x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                    x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                    mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                    CivilFound.SiteCode.ToLower())
-                                                         .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
-
-
-                                            if (CheckAzimuthAndHeightBase.Count > 0)
+                                            var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                   null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                   , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                   , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                   , mwODU.Height, 2).Data;
+                                            if (Data == false)
                                             {
-                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                             }
 
                                             if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
@@ -19121,19 +18835,14 @@ namespace TLIS_Service.Services
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                         }
-                                        var CheckAzimuthAndHeightBase = _dbContext.MV_MWODU_VIEW.Where(
-                                                       x => x.ALLCIVILID == CivilFound.allCivilInst.Id && x.Id != mwODU.Id &&
-                                                       x.SIDEARMID == MWInstallationViewModel.installationConfig.sideArmId && x.Azimuth ==
-                                                       mwODU.Azimuth && x.Height == mwODU.Height && x.SiteCode.ToLower() ==
-                                                       CivilFound.SiteCode.ToLower())
-                                                            .GroupBy(x => new { x.ALLCIVILID, x.SIDEARMID, x.SiteCode, x.Azimuth, x.Height })
-                                                                       .Select(g => g.First())
-                                                                       .ToList();
-
-
-                                        if (CheckAzimuthAndHeightBase.Count > 0)
+                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, mwODU.Id, null,
+                                                     null, null, null, null, null, null, null,null, "TLImwODU", TLIMWODU.SiteCode, MWInstallationViewModel.installationConfig.LegId
+                                                     , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId
+                                                     , MWInstallationViewModel.installationConfig.civilNonSteelId, MWInstallationViewModel.installationConfig.sideArmId, null, mwODU.Azimuth
+                                                     , mwODU.Height, 2).Data;
+                                        if (Data == false)
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the ODU on same azimuth and height because found other ODU in same angle", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                         }
 
                                         if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)

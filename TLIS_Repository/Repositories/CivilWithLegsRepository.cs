@@ -1952,11 +1952,14 @@ namespace TLIS_Repository.Repositories
                     ).ToList();
                     break;
                 case 4:
+                    Result = Check.Where(x =>
+                      ((x.STATUS_NUMBER == 1 || x.STATUS_NUMBER == 4) && x.AZIMUTH == Azimuth && x.HEIGHT == Height) ||
+                      (x.STATUS_NUMBER == 5 && x.HEIGHT == Height)
+                  ).ToList();
+                    break;
                 case 5:
                     Result = Check.Where(x =>
-                        ((x.STATUS_NUMBER == 1 || x.STATUS_NUMBER == 4) && x.AZIMUTH == Azimuth && x.HEIGHT == Height) ||
-                        (x.STATUS_NUMBER == 5 && x.HEIGHT == Height)
-                    ).ToList();
+                        ((x.STATUS_NUMBER == 1 || x.STATUS_NUMBER == 4 || x.STATUS_NUMBER == 5) && x.HEIGHT == Height)).ToList();
                     break;
                 default:
 
@@ -1977,7 +1980,7 @@ namespace TLIS_Repository.Repositories
         }
 
         public Response<bool> EditFilterAzimuthAndHeight(int? MWDishID, int? MWODUID, int? MWRFUID, int? MWBUID, int? MWOTHERID, int? RadioAntennaID
-            , int? RadioRRUID, int? RadioOtherID, int? LOADOTHERID, int? PowerID,string LoadName,
+            , int? RadioRRUID, int? RadioOtherID, int? LOADOTHERID, int? PowerID,int?SideArmId,string LoadName,
             string? SiteCode, int? FirstLegId, int? SecondLegId, int? CivilwithLegId, int? CivilWithoutLegId, int? CivilNonSteelId, int? FirstSideArmId, int? SecondSideArmId,
         float Azimuth, float Height, int switchValue)
         {

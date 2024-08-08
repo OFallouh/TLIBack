@@ -51,6 +51,7 @@ using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using static TLIS_DAL.ViewModels.RadioRRULibraryDTOs.EditRadioRRULibraryObject;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using static TLIS_DAL.ViewModels.RadioOtherLibraryDTOs.EditRadioOtherLibraryObject;
+using TLIS_DAL.ViewModels.Mw_OtherDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -1634,17 +1635,14 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEGID == AddRadioAntenna.installationConfig.legId&& x.SIDEARM_ID == null
-                                                                && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode,x.Azimuth,x.HeightBase })
-                                                                .Select(g => g.First())
-                                                                .ToList(); 
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioAntenna.installationConfig.legId
+                                                           , null, AddRadioAntenna.installationConfig.civilWithLegId, null, null, null, null, RadioAntenna.Azimuth
+                                                           , RadioAntenna.HeightBase, 1).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count >0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
                                                         TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddRadioAntenna.installationConfig.legId);
                                                         if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -1752,17 +1750,14 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEGID == AddRadioAntenna.installationConfig.legId && x.SIDEARM_ID == null
-                                                                && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioAntenna.installationConfig.legId
+                                                           , null, AddRadioAntenna.installationConfig.civilWithLegId, null, null, null, null, RadioAntenna.Azimuth
+                                                           , RadioAntenna.HeightBase, 1).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count >0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
                                                         TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddRadioAntenna.installationConfig.legId);
                                                         if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -1911,18 +1906,15 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                          && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase ==
-                                                                          RadioAntenna.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode,x.Azimuth,x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioAntenna.installationConfig.legId
+                                                                    , null, AddRadioAntenna.installationConfig.civilWithLegId, AddRadioAntenna.installationConfig.civilWithoutLegId,
+                                                                    AddRadioAntenna.installationConfig.civilNonSteelId, AddRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                                    , RadioAntenna.HeightBase, 2).Data;
 
-                                                                    if (CheckAzimuthAndHeightBase.Count >0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                                    if (Data == false)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                                    }
 
                                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                                     if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -2028,19 +2020,15 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                          && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase ==
-                                                                          RadioAntenna.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioAntenna.installationConfig.legId
+                                                                     , null, AddRadioAntenna.installationConfig.civilWithLegId, AddRadioAntenna.installationConfig.civilWithoutLegId,
+                                                                     AddRadioAntenna.installationConfig.civilNonSteelId, AddRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                                     , RadioAntenna.HeightBase, 2).Data;
 
-
-                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                                    if (Data == false)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                                    }
                                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                                     if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                                     {
@@ -2183,19 +2171,15 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                         x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                         && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase ==
-                                                                         RadioAntenna.HeightBase && !x.Dismantle).
-                                                                         GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                           .Select(g => g.First())
-                                                                           .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioAntenna.installationConfig.legId
+                                                                    , null, AddRadioAntenna.installationConfig.civilWithLegId, AddRadioAntenna.installationConfig.civilWithoutLegId,
+                                                                    AddRadioAntenna.installationConfig.civilNonSteelId, AddRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                                    , RadioAntenna.HeightBase, 2).Data;
 
-
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                            }
 
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                             if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -2303,19 +2287,15 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                        x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                        && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase ==
-                                                                        RadioAntenna.HeightBase && !x.Dismantle).
-                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                          .Select(g => g.First())
-                                                                          .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioAntenna.installationConfig.legId
+                                                                      , null, AddRadioAntenna.installationConfig.civilWithLegId, AddRadioAntenna.installationConfig.civilWithoutLegId,
+                                                                      AddRadioAntenna.installationConfig.civilNonSteelId, AddRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                                      , RadioAntenna.HeightBase, 2).Data;
 
-
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                            }
 
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                             if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -2455,20 +2435,15 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddRadioAntenna.installationConfig.sideArmId
-                                                                          && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase ==
-                                                                          RadioAntenna.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioAntenna.installationConfig.legId
+                                                                      , null, AddRadioAntenna.installationConfig.civilWithLegId, AddRadioAntenna.installationConfig.civilWithoutLegId,
+                                                                      AddRadioAntenna.installationConfig.civilNonSteelId, AddRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                                      , RadioAntenna.HeightBase, 2).Data;
 
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName1 != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
@@ -2632,16 +2607,15 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEGID == AddRadioRRU.installationConfig.legId && x.SIDEARM_ID == null
-                                                                && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode ,x.Azimuth, x.HeightBase })
-                                                               .Select(g => g.First())
-                                                               .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioRRU.installationConfig.legId
+                                                                      , null, AddRadioRRU.installationConfig.civilWithLegId, null,
+                                                                      null, null, null, RadioRRU.Azimuth
+                                                                      , RadioRRU.HeightBase, 1).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                     !x.Dismantle &&
                                                                     x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -2758,17 +2732,15 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.LEGID == AddRadioRRU.installationConfig.legId && x.SIDEARM_ID == null
-                                                       && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                          .Select(g => g.First())
-                                                          .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioRRU.installationConfig.legId
+                                                                       , null, AddRadioRRU.installationConfig.civilWithLegId, null,
+                                                                       null, null, null, RadioRRU.Azimuth
+                                                                       , RadioRRU.HeightBase, 1).Data;
 
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                     !x.Dismantle &&
                                                                     x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -2936,19 +2908,15 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                          && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode,x.Azimuth,x.HeightBase })
-                                                                       .Select(g => g.First())
-                                                                       .ToList();
+                                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioRRU.installationConfig.legId
+                                                                      , null, AddRadioRRU.installationConfig.civilWithLegId, AddRadioRRU.installationConfig.civilWithoutLegId,
+                                                                      AddRadioRRU.installationConfig.civilNonSteelId, AddRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                                      , RadioRRU.HeightBase, 2).Data;
 
-
-
-                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                                    if (Data == false)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                                    }
                                                                     var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                        !x.Dismantle &&
                                                                        x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -3064,18 +3032,15 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                          && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                                        .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                       .Select(g => g.First())
-                                                                       .ToList();
+                                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioRRU.installationConfig.legId
+                                                                        , null, AddRadioRRU.installationConfig.civilWithLegId, AddRadioRRU.installationConfig.civilWithoutLegId,
+                                                                        AddRadioRRU.installationConfig.civilNonSteelId, AddRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                                        , RadioRRU.HeightBase, 2).Data;
 
-
-                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                                    if (Data == false)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                                    }
 
                                                                     var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                           !x.Dismantle &&
@@ -3237,17 +3202,15 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                           x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                           x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                           && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                                         .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                        .Select(g => g.First())
-                                                                        .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioRRU.installationConfig.legId
+                                                                      , null, AddRadioRRU.installationConfig.civilWithLegId, AddRadioRRU.installationConfig.civilWithoutLegId,
+                                                                      AddRadioRRU.installationConfig.civilNonSteelId, AddRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                                      , RadioRRU.HeightBase, 2).Data;
 
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                            }
 
                                                             var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                           !x.Dismantle &&
@@ -3363,17 +3326,15 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                        x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                        && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                     .Select(g => g.First())
-                                                                     .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioRRU.installationConfig.legId
+                                                                       , null, AddRadioRRU.installationConfig.civilWithLegId, AddRadioRRU.installationConfig.civilWithoutLegId,
+                                                                       AddRadioRRU.installationConfig.civilNonSteelId, AddRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                                       , RadioRRU.HeightBase, 2).Data;
 
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                            }
                                                             var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                     !x.Dismantle &&
                                                                     x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -3528,17 +3489,15 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                        x.SIDEARM_ID == AddRadioRRU.installationConfig.sideArmId
-                                                                        && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                     .Select(g => g.First())
-                                                                     .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioRRU.installationConfig.legId
+                                                                      , null, AddRadioRRU.installationConfig.civilWithLegId, AddRadioRRU.installationConfig.civilWithoutLegId,
+                                                                      AddRadioRRU.installationConfig.civilNonSteelId, AddRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                                      , RadioRRU.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                       !x.Dismantle &&
                                                                       x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -3696,18 +3655,15 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEG_ID == AddRadioOther.installationConfig.legId && x.SIDEARM_ID == null
-                                                                && x.Azimuth == RadioOther.Azimuth && x.HeightBase == RadioOther.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioOther.installationConfig.legId
+                                                                       , null, AddRadioOther.installationConfig.civilWithLegId, null,
+                                                                       null, null, null, RadioOther.Azimuth
+                                                                       , RadioOther.HeightBase, 1).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
 
                                                         var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
@@ -3808,19 +3764,15 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.LEG_ID == AddRadioOther.installationConfig.legId && x.SIDEARM_ID == null
-                                                                && x.Azimuth == RadioOther.Azimuth && x.HeightBase == RadioOther.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioOther.installationConfig.legId
+                                                                        , null, AddRadioOther.installationConfig.civilWithLegId, null,
+                                                                        null, null, null, RadioOther.Azimuth
+                                                                        , RadioOther.HeightBase, 1).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                  
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
                                                         var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                                    !x.Dismantle &&
@@ -3962,20 +3914,17 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddRadioOther.installationConfig.sideArmId
-                                                                          && x.Azimuth == RadioOther.Azimuth && x.HeightBase ==
-                                                                          RadioOther.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioOther.installationConfig.legId
+                                                                       , null, AddRadioOther.installationConfig.civilWithLegId, AddRadioOther.installationConfig.civilWithoutLegId,
+                                                                       AddRadioOther.installationConfig.civilNonSteelId, AddRadioOther.installationConfig.sideArmId, null, RadioOther.Azimuth
+                                                                       , RadioOther.HeightBase, 2).Data;
 
-                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                                    if (Data == false)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                                    }
 
 
-                                                              
 
                                                                     var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                                                !x.Dismantle &&
@@ -4074,21 +4023,15 @@ namespace TLIS_Service.Services
                                                                     {
                                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                                     }
-                                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddRadioOther.installationConfig.sideArmId
-                                                                          && x.Azimuth == RadioOther.Azimuth && x.HeightBase ==
-                                                                          RadioOther.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                                    var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioOther.installationConfig.legId
+                                                                       , null, AddRadioOther.installationConfig.civilWithLegId, AddRadioOther.installationConfig.civilWithoutLegId,
+                                                                       AddRadioOther.installationConfig.civilNonSteelId, AddRadioOther.installationConfig.sideArmId, null, RadioOther.Azimuth
+                                                                       , RadioOther.HeightBase, 2).Data;
 
-
-                                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-                                                               
-
+                                                                    if (Data == false)
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                                    }
                                                                     var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                                                !x.Dismantle &&
                                                                                x.Name.ToLower() == RadioOther.Name.ToLower() &&
@@ -4224,21 +4167,15 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                         x.SIDEARM_ID == AddRadioOther.installationConfig.sideArmId
-                                                                         && x.Azimuth == RadioOther.Azimuth && x.HeightBase ==
-                                                                         RadioOther.HeightBase && !x.Dismantle).
-                                                                         GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                           .Select(g => g.First())
-                                                                           .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioOther.installationConfig.legId
+                                                                        , null, AddRadioOther.installationConfig.civilWithLegId, AddRadioOther.installationConfig.civilWithoutLegId,
+                                                                        AddRadioOther.installationConfig.civilNonSteelId, AddRadioOther.installationConfig.sideArmId, null, RadioOther.Azimuth
+                                                                        , RadioOther.HeightBase, 2).Data;
 
-
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                          
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                            }
 
 
                                                             var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
@@ -4339,21 +4276,15 @@ namespace TLIS_Service.Services
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                             }
-                                                            var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                        x.SIDEARM_ID == AddRadioOther.installationConfig.sideArmId
-                                                                        && x.Azimuth == RadioOther.Azimuth && x.HeightBase ==
-                                                                        RadioOther.HeightBase && !x.Dismantle).
-                                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                          .Select(g => g.First())
-                                                                          .ToList();
+                                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioOther.installationConfig.legId
+                                                                       , null, AddRadioOther.installationConfig.civilWithLegId, AddRadioOther.installationConfig.civilWithoutLegId,
+                                                                       AddRadioOther.installationConfig.civilNonSteelId, AddRadioOther.installationConfig.sideArmId, null, RadioOther.Azimuth
+                                                                       , RadioOther.HeightBase, 2).Data;
 
-
-                                                            if (CheckAzimuthAndHeightBase.Count > 0)
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-
+                                                            if (Data == false)
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                            }
 
 
                                                             var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
@@ -4486,21 +4417,15 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                          x.SIDEARM_ID == AddRadioOther.installationConfig.sideArmId
-                                                                          && x.Azimuth == RadioOther.Azimuth && x.HeightBase ==
-                                                                          RadioOther.HeightBase && !x.Dismantle).
-                                                                          GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddRadioOther.installationConfig.legId
+                                                                        , null, AddRadioOther.installationConfig.civilWithLegId, AddRadioOther.installationConfig.civilWithoutLegId,
+                                                                        AddRadioOther.installationConfig.civilNonSteelId, AddRadioOther.installationConfig.sideArmId, null, RadioOther.Azimuth
+                                                                        , RadioOther.HeightBase, 2).Data;
 
-
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
-                                                     
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
                                                         var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                                    !x.Dismantle &&
@@ -4709,18 +4634,15 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == EditRadioAntenna.installationConfig.legId && x.SIDEARM_ID == null
-                                                        && x.Id != RadioAntenna.Id
-                                                        && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode,x.Azimuth,x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                , null, EditRadioAntenna.installationConfig.civilWithLegId, null, null, null, null, RadioAntenna.Azimuth
+                                                , RadioAntenna.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                }
 
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == EditRadioAntenna.installationConfig.legId);
                                                 if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -4839,17 +4761,15 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                x.LEGID == EditRadioAntenna.installationConfig.legId && x.SIDEARM_ID == null && x.Id != RadioAntenna.Id
-                                                && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                 null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                , null, EditRadioAntenna.installationConfig.civilWithLegId, null, null, null, null, RadioAntenna.Azimuth
+                                                , RadioAntenna.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count >0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                }
 
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == EditRadioAntenna.installationConfig.legId);
                                                 if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -4957,18 +4877,15 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == EditRadioAntenna.installationConfig.legId && x.SIDEARM_ID == null && x.Id != RadioAntenna.Id
-                                                        && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                               null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                              , null, EditRadioAntenna.installationConfig.civilWithLegId, null, null, null, null, RadioAntenna.Azimuth
+                                              , RadioAntenna.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                }
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == EditRadioAntenna.installationConfig.legId);
                                                 if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                 {
@@ -5089,17 +5006,15 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == EditRadioAntenna.installationConfig.legId && x.SIDEARM_ID == null && x.Id != RadioAntenna.Id
-                                                        && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                               , null, EditRadioAntenna.installationConfig.civilWithLegId, null, null, null, null, RadioAntenna.Azimuth
+                                               , RadioAntenna.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                }
 
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == EditRadioAntenna.installationConfig.legId);
                                                 if (legname != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -5266,17 +5181,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                                && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode,x.Azimuth,x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                       , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                        EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                       , RadioAntenna.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
@@ -5394,17 +5308,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                               x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                               && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                      null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                     , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                      EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                     , RadioAntenna.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
@@ -5510,16 +5423,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                   x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                                   && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                       null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                      , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                       EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                      , RadioAntenna.HeightBase, 2).Data;
 
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
@@ -5640,15 +5553,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                          x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                          && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                         .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                         null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                        , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                         EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                        , RadioAntenna.HeightBase, 2).Data;
+
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                         if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                         {
@@ -5808,17 +5722,16 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                         x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                         && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                      null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                     , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                      EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                     , RadioAntenna.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                    }
 
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                     if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
@@ -5937,17 +5850,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                       && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                       , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                        EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                       , RadioAntenna.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                    }
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                     if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                     {
@@ -6052,17 +5964,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                         x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                         && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                       null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                      , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                       EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                      , RadioAntenna.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                    }
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                     if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                     {
@@ -6182,17 +6093,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                       && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                       null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                      , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                       EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                      , RadioAntenna.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                    }
                                                     var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                     if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                     {
@@ -6344,17 +6254,16 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_ANTENNA_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.SIDEARM_ID == EditRadioAntenna.installationConfig.sideArmId && x.Id != RadioAntenna.Id
-                                                        && x.Azimuth == RadioAntenna.Azimuth && x.HeightBase == RadioAntenna.HeightBase && !x.Dismantle)
-                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                      null, null, RadioAntenna.Id, null, null, null, null,null, "TLIradioAntenna", RadioAntennaInst.SiteCode, EditRadioAntenna.installationConfig.legId
+                                                     , null, EditRadioAntenna.installationConfig.civilWithLegId, EditRadioAntenna.installationConfig.civilWithoutLegId,
+                                                      EditRadioAntenna.installationConfig.civilNonSteelId, EditRadioAntenna.installationConfig.sideArmId, null, RadioAntenna.Azimuth
+                                                     , RadioAntenna.HeightBase, 2).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioAntenna on same azimuth and height because found other RadioAntenna in same angle", (int)ApiReturnCode.fail);
+                                                }
                                                 var SideArmName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == EditRadioAntenna.installationConfig.sideArmId);
                                                 if (SideArmName != null && RadioAntenna.Azimuth > 0 && RadioAntenna.HeightBase > 0)
                                                 {
@@ -6527,18 +6436,17 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == EditRadioRRU.installationConfig.legId && x.SIDEARM_ID == null && x.Id != RadioRRU.Id
-                                                        && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        , null, EditRadioRRU.installationConfig.civilWithLegId,null,
+                                                         null, null, null, RadioRRU.Azimuth
+                                                        , RadioRRU.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count>0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-                                        
-                                              
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                }
+
                                                 var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                        !x.Dismantle && x.Id != RadioRRU.Id &&
                                                        x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -6648,17 +6556,16 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == EditRadioRRU.installationConfig.legId && x.SIDEARM_ID == null && x.Id != RadioRRU.Id
-                                                        && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle).
-                                                        GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                          null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                         , null, EditRadioRRU.installationConfig.civilWithLegId, null,
+                                                          null, null, null, RadioRRU.Azimuth
+                                                         , RadioRRU.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                }
                                                 var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle && x.Id != RadioRRU.Id &&
                                                         x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -6755,17 +6662,16 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == EditRadioRRU.installationConfig.legId && x.SIDEARM_ID == null && x.Id != RadioRRU.Id
-                                                        && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, null,
+                                                         null, null, null, RadioRRU.Azimuth
+                                                        , RadioRRU.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                }
                                                 var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                       !x.Dismantle && x.Id != RadioRRU.Id &&
                                                       x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -6877,17 +6783,16 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEGID == EditRadioRRU.installationConfig.legId && x.SIDEARM_ID == null && x.Id != RadioRRU.Id
-                                                        && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEGID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, null,
+                                                         null, null, null, RadioRRU.Azimuth
+                                                        , RadioRRU.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                }
                                                 var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle && x.Id != RadioRRU.Id &&
                                                     x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -7051,17 +6956,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                                && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                         EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                        , RadioRRU.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != RadioRRU.Id &&
                                                          x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -7189,17 +7093,16 @@ namespace TLIS_Service.Services
                                                         }
 
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                              x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                              x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                              && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                          .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                            .Select(g => g.First())
-                                                            .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                       , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                        EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                       , RadioRRU.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                              !x.Dismantle && x.Id != RadioRRU.Id &&
                                                              x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -7291,18 +7194,16 @@ namespace TLIS_Service.Services
                                                         }
 
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                 x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                                 && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                             .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                               .Select(g => g.First())
-                                                               .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                       , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                        EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                       , RadioRRU.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                 !x.Dismantle && x.Id != RadioRRU.Id &&
                                                                 x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -7429,17 +7330,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                                                                     x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                                                                                     && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                                                                   .Select(g => g.First())
-                                                                                                                   .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                         EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                        , RadioRRU.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle && x.Id != RadioRRU.Id &&
                                                         x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -7600,18 +7500,16 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                                                                           null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                                                                          , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                                                                           EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                                                                          , RadioRRU.HeightBase, 2).Data;
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                     x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                                     && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                   .Select(g => g.First())
-                                                                   .ToList();
-
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                    }
                                                     var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle && x.Id != RadioRRU.Id &&
                                                             x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -7722,17 +7620,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                  x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                                  && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                              .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                .Select(g => g.First())
-                                                                .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                           null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                          , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                           EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                          , RadioRRU.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                    }
                                                     var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                              !x.Dismantle && x.Id != RadioRRU.Id &&
                                                              x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -7829,17 +7726,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                   x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                                   && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                 .Select(g => g.First())
-                                                                 .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                          null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                         , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                          EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                         , RadioRRU.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                    }
                                                     var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle && x.Id != RadioRRU.Id &&
                                                               x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -7950,18 +7846,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                               x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                               && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                             .Select(g => g.First())
-                                                             .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                       , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                        EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                       , RadioRRU.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                    }
                                                     var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                                   !x.Dismantle && x.Id != RadioRRU.Id &&
                                                                   x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -8116,17 +8010,16 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_RRU_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.SIDEARM_ID == EditRadioRRU.installationConfig.sideArmId && x.Id != RadioRRU.Id
-                                                                && x.Azimuth == RadioRRU.Azimuth && x.HeightBase == RadioRRU.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
+                                                         EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
+                                                        , RadioRRU.HeightBase, 2).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the dish on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioRRU on same azimuth and height because found other RadioRRU in same angle", (int)ApiReturnCode.fail);
+                                                }
                                                 var CheckName = _dbContext.MV_RADIO_RRU_VIEW.FirstOrDefault(x =>
                                                              !x.Dismantle && x.Id != RadioRRU.Id &&
                                                              x.Name.ToLower() == RadioRRU.Name.ToLower() &&
@@ -8309,19 +8202,17 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == EditradioOther.installationConfig.legId && x.SIDEARM_ID == null && x.Id != radioOther.Id
-                                                        && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                            .Select(g => g.First())
-                                                                            .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                       , null, EditradioOther.installationConfig.civilWithLegId, null,
+                                                      null, null, null, radioOther.Azimuth
+                                                       , radioOther.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
-
-                                               
                                                 var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != radioOther.Id &&
                                                            x.Name.ToLower() == radioOther.Name.ToLower() &&
@@ -8433,19 +8324,18 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                x.LEG_ID == EditradioOther.installationConfig.legId && x.SIDEARM_ID == null && x.Id != radioOther.Id
-                                                && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                         null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                        , null, EditradioOther.installationConfig.civilWithLegId, null,
+                                                       null, null, null, radioOther.Azimuth
+                                                        , radioOther.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
 
-                                            
 
                                                 var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle && x.Id != radioOther.Id &&
@@ -8546,19 +8436,18 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == EditradioOther.installationConfig.legId && x.SIDEARM_ID == null && x.Id != radioOther.Id
-                                                        && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                       .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                       null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                      , null, EditradioOther.installationConfig.civilWithLegId, null,
+                                                     null, null, null, radioOther.Azimuth
+                                                      , radioOther.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
 
-                                         
                                                 var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                        !x.Dismantle && x.Id != radioOther.Id &&
                                                        x.Name.ToLower() == radioOther.Name.ToLower() &&
@@ -8672,19 +8561,17 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
 
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.LEG_ID == EditradioOther.installationConfig.legId && x.SIDEARM_ID == null && x.Id != radioOther.Id
-                                                        && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                 .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                                    .Select(g => g.First())
-                                                                    .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                       , null, EditradioOther.installationConfig.civilWithLegId, null,
+                                                      null, null, null, radioOther.Azimuth
+                                                       , radioOther.HeightBase, 1).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
-
-                                              
 
                                                 var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != radioOther.Id &&
@@ -8844,18 +8731,17 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                                && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                       , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                      EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                       , radioOther.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
-                                                    
 
                                                         var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                                   !x.Dismantle && x.Id != radioOther.Id &&
@@ -8968,17 +8854,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                               x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                               && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                      null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                     , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                    EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                     , radioOther.HeightBase, 2).Data;
 
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
-
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                            !x.Dismantle && x.Id != radioOther.Id &&
                                                            x.Name.ToLower() == radioOther.Name.ToLower() &&
@@ -9078,17 +8963,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                                   x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                                   x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                                   && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                               .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                       null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                      , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                     EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                      , radioOther.HeightBase, 2).Data;
 
-                                                     
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
 
                                                         var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle && x.Id != radioOther.Id &&
@@ -9203,16 +9087,16 @@ namespace TLIS_Service.Services
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
 
-                                                        var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                          x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                          x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                          && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                         .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
-                                                        if (CheckAzimuthAndHeightBase.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
-                                                     
+                                                        var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                       null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                      , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                     EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                      , radioOther.HeightBase, 2).Data;
+
+                                                        if (Data == false)
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                        }
                                                         var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle && x.Id != radioOther.Id &&
                                                               x.Name.ToLower() == radioOther.Name.ToLower() &&
@@ -9366,19 +9250,17 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                         x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                         && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                       , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                      EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                       , radioOther.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                    }
 
-
-                                                 
                                                     var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                                !x.Dismantle && x.Id != radioOther.Id &&
                                                                x.Name.ToLower() == radioOther.Name.ToLower() &&
@@ -9491,18 +9373,17 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                       && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                       null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                      , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                     EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                      , radioOther.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                    }
 
-                                             
                                                     var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle && x.Id != radioOther.Id &&
                                                         x.Name.ToLower() == radioOther.Name.ToLower() &&
@@ -9601,18 +9482,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                         x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                         && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                      .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                       , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                      EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                       , radioOther.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
-
-                                              
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                    }
 
                                                     var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != radioOther.Id &&
@@ -9727,18 +9606,16 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                       x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                       x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                       && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                    var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                        null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                       , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                      EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                       , radioOther.HeightBase, 2).Data;
 
-                                                    if (CheckAzimuthAndHeightBase.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
-
-                                            
+                                                    if (Data == false)
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                    }
 
                                                     var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle && x.Id != radioOther.Id &&
@@ -9885,18 +9762,17 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
-                                                var CheckAzimuthAndHeightBase = _dbContext.MV_RADIO_OTHER_VIEW.Where(
-                                                        x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
-                                                        x.SIDEARM_ID == EditradioOther.installationConfig.sideArmId && x.Id != radioOther.Id
-                                                        && x.Azimuth == radioOther.Azimuth && x.HeightBase == radioOther.HeightBase && !x.Dismantle)
-                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SiteCode, x.Azimuth, x.HeightBase })
-                                                              .Select(g => g.First())
-                                                              .ToList();
+                                                var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
+                                                      null, null, null, null, radioOther.Id, null, null,null, "TLIradioOther", radioOtherInst.SiteCode, EditradioOther.installationConfig.legId
+                                                     , null, EditradioOther.installationConfig.civilWithLegId, EditradioOther.installationConfig.civilWithoutLegId,
+                                                    EditradioOther.installationConfig.civilNonSteelId, EditradioOther.installationConfig.sideArmId, null, radioOther.Azimuth
+                                                     , radioOther.HeightBase, 2).Data;
 
-                                                if (CheckAzimuthAndHeightBase.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Radio on same azimuth and height because found other Radio in same angle", (int)ApiReturnCode.fail);
+                                                if (Data == false)
+                                                {
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the RadioOther on same azimuth and height because found other RadioOther in same angle", (int)ApiReturnCode.fail);
+                                                }
 
-                                          
                                                 var CheckName = _dbContext.MV_RADIO_OTHER_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle && x.Id != radioOther.Id &&
                                                          x.Name.ToLower() == radioOther.Name.ToLower() &&

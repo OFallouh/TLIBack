@@ -35,6 +35,10 @@ using LinqToExcel.Extensions;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using TLIS_DAL.ViewModels.wf;
 using static TLIS_Service.Services.UserService;
+using Oracle.ManagedDataAccess.Client;
+using System.Data;
+using Oracle.ManagedDataAccess.Types;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TLIS_Service.Services
 {
@@ -60,91 +64,132 @@ namespace TLIS_Service.Services
         }
         //Function to add external user 
         //usually external user type is 2
-       
+
         public async Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain)
         {
+            var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+
             try
             {
-                using (TransactionScope transaction = new TransactionScope())
+                using (var connection = new OracleConnection(connectionString))
                 {
-                    Response<bool> test = ValidateUserInAdAndDb(model.UserName, domain);
-                    if (test.Data == true)
+                    await connection.OpenAsync();
+
+                    using (var transaction = connection.BeginTransaction())
                     {
-                        byte[] salt = new byte[16] { 41, 214, 78, 222, 28, 87, 170, 211, 217, 125, 200, 214, 185, 144, 44, 34 };
-
-                        // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
-                        //model.Password = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                        //    password: model.Password,
-                        //    salt: salt,
-                        //    prf: KeyDerivationPrf.HMACSHA256,
-                        //    iterationCount: 100000,
-                        //    numBytesRequested: 256 / 8));
-
-                         //model.Password = Encrypt(model.Password);
-
-                        TLIuser UserEntity = _mapper.Map<TLIuser>(model);
-
-                        //Response<string> CheckEmail = SendConfirmationCode(model.Email, null);
-                        //if (!string.IsNullOrEmpty(CheckEmail.Data))
-                        //{
-                        //    UserEntity.ConfirmationCode = CheckEmail.Data;
-                        //}
-                        //else
-                        //{
-                        //    return new Response<UserViewModel>(true, null, null, CheckEmail.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
-                        //}
-                        UserEntity.ValidateAccount = false;
-                        UserEntity.UserType = 2;
-                        await _unitOfWork.UserRepository.AddAsync(UserEntity);
-                        await _unitOfWork.SaveChangesAsync();
-                        if (model.Permissions != null)
+                        // التحقق من صحة المستخدم
+                        var validationResponse = ValidateUserInAdAndDb(model.UserName, domain);
+                        if (validationResponse.Data)
                         {
-                            var userPermissionsList = new List<TLIuser_Permissions>();
-                            foreach (var Permission in model.Permissions)
-                            {
-                                TLIuser_Permissions UserPermission = new TLIuser_Permissions();
-                                UserPermission = new TLIuser_Permissions()
-                                {
-                                    UserId = UserEntity.Id,
-                                    PageUrl = Permission,
-                                    Active = true,
-                                    Delete = false,
-                                    user = UserEntity
-                                };
-                                userPermissionsList.Add(UserPermission);
+                            // إدراج المستخدم
+                            var userId = await InsertUserAsync(connection, model);
 
-                            }
-                            _dbContext.TLIuser_Permissions.AddRange(userPermissionsList);
-                            _dbContext.SaveChanges();
-                        }
-                        if (model.Groups != null)
-                        {
-                            List<int> GroupsIds = model.Groups.Select(x => x.Id).ToList();
-                            foreach (int GroupId in GroupsIds)
+                            // إدراج الصلاحيات إذا كانت موجودة
+                            if (model.Permissions != null && model.Permissions.Count > 0)
                             {
-                                if (GroupId > 0)
-                                {
-                                    TLIgroupUser GroupUser = new TLIgroupUser();
-                                    GroupUser.groupId = GroupId;
-                                    GroupUser.userId = UserEntity.Id;
-                                    GroupUser.user = UserEntity;
-                                    _unitOfWork.GroupUserRepository.Add(GroupUser);
-                                }
+                                await InsertPermissionsAsync(connection, userId, model.Permissions);
                             }
+
+                            // إدراج المجموعات إذا كانت موجودة
+                            if (model.Groups != null && model.Groups.Count > 0)
+                            {
+                                await InsertGroupsAsync(connection, userId, model.Groups);
+                            }
+
+                            // تأكيد المعاملة
+                            transaction.Commit();
+                            return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
                         }
-                        _dbContext.SaveChanges();
-                        transaction.Complete();
-                        return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
-                    }
-                    else
-                    {
-                        return new Response<UserViewModel>(false, null, null, test.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                        else
+                        {
+                            // التراجع عن المعاملة إذا لم يكن المستخدم صالحًا
+                            transaction.Rollback();
+                            return new Response<UserViewModel>(false, null, null, validationResponse.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                        }
                     }
                 }
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                // في حالة حدوث استثناء، سجل رسالة الخطأ
+                return new Response<UserViewModel>(false, null, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+            }
+        }
+
+
+        private async Task<int> InsertUserAsync(OracleConnection connection, AddUserViewModel model)
+        {
+            var query = @"
+        INSERT INTO ""TLIuser"" (""UserName"", ""Email"", ""ValidateAccount"", ""UserType"")
+        VALUES (:UserName, :Email, :ValidateAccount, :UserType)
+        RETURNING ""Id"" INTO :UserId";
+
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter("UserName", OracleDbType.Varchar2)).Value = model.UserName;
+                command.Parameters.Add(new OracleParameter("Email", OracleDbType.Varchar2)).Value = model.Email;
+                command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 0; // false
+                command.Parameters.Add(new OracleParameter("UserType", OracleDbType.Int32)).Value = 2;
+
+                var userIdParam = new OracleParameter("UserId", OracleDbType.Decimal)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(userIdParam);
+
+                await command.ExecuteNonQueryAsync();
+
+                // معالجة OracleDecimal وتحديد القيمة
+                var userIdDecimal = (OracleDecimal)userIdParam.Value;
+                return userIdDecimal.ToInt32();
+            }
+        }
+
+
+        private async Task InsertPermissionsAsync(OracleConnection connection, int userId, List<string> permissions)
+        {
+            var query = @"
+            INSERT INTO ""TLIuser_Permissions"" (""UserId"", ""PageUrl"", ""Active"", ""Delete"")
+            VALUES (:pUserId, :pPageUrl, :pActive, :pDelete)";
+
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter("pUserId", OracleDbType.Int32)).Value = userId;
+                var pageUrlParam = new OracleParameter("pPageUrl", OracleDbType.Varchar2);
+                command.Parameters.Add(pageUrlParam);
+                command.Parameters.Add(new OracleParameter("pActive", OracleDbType.Int32)).Value = 1; // true
+                command.Parameters.Add(new OracleParameter("pDeleted", OracleDbType.Int32)).Value = 0; // false
+
+
+                foreach (var permission in permissions)
+                {
+                    pageUrlParam.Value = permission;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+
+
+        private async Task InsertGroupsAsync(OracleConnection connection, int userId, List<GroupNamesViewModel> groups)
+        {
+            var query = @"
+        INSERT INTO ""TLIgroupUser"" (""GroupId"", ""UserId"")
+        VALUES (:GroupId, :UserId)";
+
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter("GroupId", OracleDbType.Int32));
+                command.Parameters.Add(new OracleParameter("UserId", OracleDbType.Int32)).Value = userId;
+
+                foreach (var group in groups)
+                {
+                    if (group.Id > 0)
+                    {
+                        command.Parameters["GroupId"].Value = group.Id;
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
             }
         }
 
@@ -221,71 +266,67 @@ namespace TLIS_Service.Services
         {
             try
             {
-                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind, null, null))
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                using (var connection = new OracleConnection(ConnectionString))
                 {
-                    //TLIuser CheckUser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == UserName.ToLower());
-                    //if (CheckUser != null)
-                    //    return new Response<UserViewModel>(true, null, null, $"This User {UserName} is already Exist in TLIS", (int)Helpers.Constants.ApiReturnCode.fail);
+                    await connection.OpenAsync();
 
-                    UserPrincipal principal = new UserPrincipal(context);
-                    UserViewModel userModel = null;
-                    if (context != null)
+                    using (var transaction = connection.BeginTransaction())
                     {
-                        GroupPrincipal group = GroupPrincipal.FindByIdentity(context, "TLI");
-                        principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
-                        if (principal != null && principal.IsMemberOf(group))
-                        {
-                            if (principal.Name.Replace($" {principal.Surname}", "")==null|| principal.Surname==null||
-                               principal.EmailAddress==null|| principal.SamAccountName==null)
-                            {
-                                return new Response<UserViewModel>(true, null, null, "This user information is insufficient in Active Directory", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
-                            TLIuser user = new TLIuser();
-                            user.FirstName = principal.Name.Replace($" {principal.Surname}", "");
-                            user.MiddleName = principal.MiddleName;
-                            user.LastName = principal.Surname;
-                            user.Email = principal.EmailAddress;
-                            user.MobileNumber = principal.VoiceTelephoneNumber;
-                            user.UserName = principal.SamAccountName;
-                            var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == UserName && !x.Deleted);
-                            if (tliuser != null)
-                            {
-                                return new Response<UserViewModel>(false, null, null, $"This User {UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
-                            }
-                            user.Domain = null;
-                            user.AdGUID = principal.Guid.ToString();
-                            user.UserType = 1;
-                            await _unitOfWork.UserRepository.AddAsync(user);
-                            await _unitOfWork.SaveChangesAsync();
 
-                            if (Permissions != null)
+                     
+                        using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind, null, null))
+                        {
+                            //TLIuser CheckUser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == UserName.ToLower());
+                            //if (CheckUser != null)
+                            //    return new Response<UserViewModel>(true, null, null, $"This User {UserName} is already Exist in TLIS", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                            UserPrincipal principal = new UserPrincipal(context);
+                            UserViewModel userModel = null;
+                            if (context != null)
                             {
-                                var userPermissionsList = new List<TLIuser_Permissions>();
-                                foreach (var Permission in Permissions)
+                                GroupPrincipal group = GroupPrincipal.FindByIdentity(context, "TLI");
+                                principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
+                                if (principal != null && principal.IsMemberOf(group))
                                 {
-                                    TLIuser_Permissions UserPermission = new TLIuser_Permissions();
-                                    UserPermission = new TLIuser_Permissions()
+                                    if (principal.Name.Replace($" {principal.Surname}", "") == null || principal.Surname == null ||
+                                       principal.EmailAddress == null || principal.SamAccountName == null)
                                     {
-                                        UserId = user.Id,
-                                        PageUrl = Permission,
-                                        Active = true,
-                                        Delete = false,
-                                        user = user
-                                    };
-                                    userPermissionsList.Add(UserPermission);
+                                        return new Response<UserViewModel>(true, null, null, "This user information is insufficient in Active Directory", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    TLIuser user = new TLIuser();
+                                    user.FirstName = principal.Name.Replace($" {principal.Surname}", "");
+                                    user.MiddleName = principal.MiddleName;
+                                    user.LastName = principal.Surname;
+                                    user.Email = principal.EmailAddress;
+                                    user.MobileNumber = principal.VoiceTelephoneNumber;
+                                    user.UserName = principal.SamAccountName;
+                                    var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == UserName && !x.Deleted);
+                                    if (tliuser != null)
+                                    {
+                                        return new Response<UserViewModel>(false, null, null, $"This User {UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    user.Domain = null;
+                                    user.AdGUID = principal.Guid.ToString();
+                                    user.UserType = 1;
+                                    await _unitOfWork.UserRepository.AddAsync(user);
+                                    await _unitOfWork.SaveChangesAsync();
 
+                                    if (Permissions != null)
+                                    {
+                                        await InsertPermissionsAsync(connection, user.Id, Permissions);
+                                    }
+                                 
                                 }
-                                _dbContext.TLIuser_Permissions.AddRange(userPermissionsList);
-                                _dbContext.SaveChanges();
+                                else
+                                {
+                                    return new Response<UserViewModel>(false, null, null, $"This User {UserName} is Not Exist in AD", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
                             }
-
-                        }
-                        else
-                        {
-                            return new Response<UserViewModel>(false, null, null, $"This User {UserName} is Not Exist in AD", (int)Helpers.Constants.ApiReturnCode.fail);
+                            transaction.Commit();
+                            return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                         }
                     }
-                    return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
             }
             catch (Exception err)
@@ -589,138 +630,129 @@ namespace TLIS_Service.Services
         {
             string OldP = null;
             string NewP = null;
-            using (TransactionScope transaction = new TransactionScope())
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            using (var connection = new OracleConnection(ConnectionString))
             {
-                try
+                await connection.OpenAsync();
+
+                using (var transaction = connection.BeginTransaction())
                 {
-                    if (model.UserType == 2)
+                    try
                     {
-                        var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == model.UserName && x.Id != model.Id);
-                        if (UserName != null)
+                        if (model.UserType == 2)
                         {
-                            return new Response<UserViewModel>(false, null, null, $"This User Name {model.UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        TLIuser UserEntity = _mapper.Map<TLIuser>(model);
-
-                        UserEntity.Password = null;
-
-                        string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id).Password;
-                        if (!string.IsNullOrEmpty(model.Password))
-                        {
-                            OldP = Decrypt(OldPassword);
-                            NewP = Decrypt(model.Password);
-                            if (NewP != OldP)
+                            var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == model.UserName && x.Id != model.Id);
+                            if (UserName != null)
                             {
-                                UserEntity.Password = model.Password;
-                                UserEntity.ChangedPasswordDate = DateTime.Now;
+                                return new Response<UserViewModel>(false, null, null, $"This User Name {model.UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                            }
+                            TLIuser UserEntity = _mapper.Map<TLIuser>(model);
+
+                            UserEntity.Password = null;
+
+                            string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id).Password;
+                            if (!string.IsNullOrEmpty(model.Password))
+                            {
+                                OldP = Decrypt(OldPassword);
+                                NewP = Decrypt(model.Password);
+                                if (NewP != OldP)
+                                {
+                                    UserEntity.Password = model.Password;
+                                    UserEntity.ChangedPasswordDate = DateTime.Now;
+                                }
+                                else
+                                {
+                                    UserEntity.Password = OldPassword;
+                                }
                             }
                             else
                             {
                                 UserEntity.Password = OldPassword;
                             }
-                        }
-                        else
-                        {
-                            UserEntity.Password = OldPassword;
-                        }
-                        _unitOfWork.UserRepository.Update(UserEntity);
-                        await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.UserRepository.Update(UserEntity);
+                            await _unitOfWork.SaveChangesAsync();
 
-                        List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
-                          .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
+                            List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
+                              .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
 
-                        var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
-                        _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
-                        await _unitOfWork.SaveChangesAsync();
+                            var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
+                            _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
+                            await _unitOfWork.SaveChangesAsync();
 
-                        foreach (var item in model.permissions)
-                        {
-                            TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
-                            tLIuserPermissions = new TLIuser_Permissions()
+                            if (model.permissions != null)
                             {
-                                UserId = model.Id,
-                                PageUrl = item,
-                                Active = true,
-                                Delete = false
-                            };
-                            _unitOfWork.UserPermissionssRepository.Add(tLIuserPermissions);
-                        }
-                        await _unitOfWork.SaveChangesAsync();
-                        List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
-                            x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
-                        List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
+                                await InsertPermissionsAsync(connection, model.Id, model.permissions);
+                            }
+                            List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
+                                x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
+                            List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
 
-                        List<int> GroupsToDelete = UserGroups.Except(ModelGroups).ToList();
-                        foreach (var GroupId in GroupsToDelete)
+                            List<int> GroupsToDelete = UserGroups.Except(ModelGroups).ToList();
+                            foreach (var GroupId in GroupsToDelete)
+                            {
+                                TLIgroupUser UserGroup = _unitOfWork.GroupUserRepository.GetWhereFirst(u => u.groupId == GroupId && u.userId == model.Id);
+                                _unitOfWork.GroupUserRepository.RemoveItem(UserGroup);
+                            }
+
+                            List<int> GroupsToAdd = ModelGroups.Except(UserGroups).ToList();
+                            foreach (var GroupId in GroupsToAdd)
+                            {
+                                TLIgroupUser GroupUser = new TLIgroupUser();
+                                GroupUser.userId = UserEntity.Id;
+                                GroupUser.groupId = GroupId;
+                                _unitOfWork.GroupUserRepository.Add(GroupUser);
+                            }
+
+                            await _unitOfWork.SaveChangesAsync();
+                         
+                        }
+                        else if (model.UserType == 1)
                         {
-                            TLIgroupUser UserGroup = _unitOfWork.GroupUserRepository.GetWhereFirst(u => u.groupId == GroupId && u.userId == model.Id);
-                            _unitOfWork.GroupUserRepository.RemoveItem(UserGroup);
-                        }
+                            List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
+                             .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
 
-                        List<int> GroupsToAdd = ModelGroups.Except(UserGroups).ToList();
-                        foreach (var GroupId in GroupsToAdd)
-                        {
-                            TLIgroupUser GroupUser = new TLIgroupUser();
-                            GroupUser.userId = UserEntity.Id;
-                            GroupUser.groupId = GroupId;
-                            _unitOfWork.GroupUserRepository.Add(GroupUser);
-                        }
+                            var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
+                            _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
+                            await _unitOfWork.SaveChangesAsync();
 
-                        await _unitOfWork.SaveChangesAsync();
-                        transaction.Complete();
+                             if (model.permissions != null)
+                            {
+                                await InsertPermissionsAsync(connection, model.Id, model.permissions);
+                            }
+                            await _unitOfWork.SaveChangesAsync();
+                            List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
+                                x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
+                            List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
+
+                            List<int> GroupsToDelete = UserGroups.Except(ModelGroups).ToList();
+                            foreach (var GroupId in GroupsToDelete)
+                            {
+                                TLIgroupUser UserGroup = _unitOfWork.GroupUserRepository.GetWhereFirst(u => u.groupId == GroupId && u.userId == model.Id);
+                                _unitOfWork.GroupUserRepository.RemoveItem(UserGroup);
+                            }
+
+                            List<int> GroupsToAdd = ModelGroups.Except(UserGroups).ToList();
+                            foreach (var GroupId in GroupsToAdd)
+                            {
+                                TLIgroupUser GroupUser = new TLIgroupUser();
+                                GroupUser.userId = model.Id;
+                                GroupUser.groupId = GroupId;
+                                _unitOfWork.GroupUserRepository.Add(GroupUser);
+                            }
+
+                            await _unitOfWork.SaveChangesAsync();
+                          
+                        }
+                        transaction.Commit();
+                        return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                     }
-                    else if(model.UserType == 1)
+                    catch (Exception err)
                     {
-                        List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
-                         .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
-
-                        var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
-                        _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
-                        await _unitOfWork.SaveChangesAsync();
-
-                        foreach (var item in model.permissions)
-                        {
-                            TLIuser_Permissions tLIuserPermissions = new TLIuser_Permissions();
-                            tLIuserPermissions = new TLIuser_Permissions()
-                            {
-                                UserId = model.Id,
-                                PageUrl = item,
-                                Active = true,
-                                Delete = false
-                            };
-                            _unitOfWork.UserPermissionssRepository.Add(tLIuserPermissions);
-                        }
-                        await _unitOfWork.SaveChangesAsync();
-                        List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
-                            x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
-                        List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
-
-                        List<int> GroupsToDelete = UserGroups.Except(ModelGroups).ToList();
-                        foreach (var GroupId in GroupsToDelete)
-                        {
-                            TLIgroupUser UserGroup = _unitOfWork.GroupUserRepository.GetWhereFirst(u => u.groupId == GroupId && u.userId == model.Id);
-                            _unitOfWork.GroupUserRepository.RemoveItem(UserGroup);
-                        }
-
-                        List<int> GroupsToAdd = ModelGroups.Except(UserGroups).ToList();
-                        foreach (var GroupId in GroupsToAdd)
-                        {
-                            TLIgroupUser GroupUser = new TLIgroupUser();
-                            GroupUser.userId = model.Id;
-                            GroupUser.groupId = GroupId;
-                            _unitOfWork.GroupUserRepository.Add(GroupUser);
-                        }
-
-                        await _unitOfWork.SaveChangesAsync();
-                        transaction.Complete();
+                        return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                }
-                catch (Exception err)
-                {
-                    return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
+        
         }
 
         //Function to check if the user not exist in active directory and database
