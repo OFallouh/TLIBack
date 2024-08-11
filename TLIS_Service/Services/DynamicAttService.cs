@@ -8379,271 +8379,30 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<DynamicAttViewModel>>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName,bool IsLibrary,int? CategoryId)
+        public Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId)
         {
             try
             {
-                List<BaseInstAttViews> baseInstAttView = new List<BaseInstAttViews>();
-                GetForAddDynamicAttribute attributes = new GetForAddDynamicAttribute();
+                var attributes = new GetForAddDynamicAttribute();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TabelName.ToLower());
-                var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TabelName, null, null);
-                attributes.AttributesActivated = ListAttributesActivated;
-                if (IsLibrary == true)
+                attributes.AttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TabelName, null, null);
+
+                IEnumerable<BaseInstAttViewDynamic> dynamicAttributes;
+                var ownerViewModels = GetOwnerViewModels();
+
+                if (IsLibrary)
                 {
-                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                   .GetDynamicLibAtt(TableNameEntity.Id, CategoryId)
-                   .Select(DynamicAttribute =>
-                   {
-                       TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-                       if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                       {
-                           switch (DynamicAttribute.DataType.ToLower())
-                           {
-                               case "string":
-                                   DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-                                   break;
-                               case "int":
-                                   DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-                                   break;
-                               case "double":
-                                   DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-                                   break;
-                               case "bool":
-                                   DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-                                   break;
-                               case "datetime":
-                                   DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                                   break;
-                           }
-                       }
-                       else
-                       {
-                           DynamicAttribute.Value = " ".Split(' ')[0];
-                       }
-                       return DynamicAttribute;
-                   });
-                    List<OwnerViewModel> ownerViewModels = new List<OwnerViewModel>();
-                    List<OwnerViewModel> ownerViewModels2 = new List<OwnerViewModel>();
-                    List<OwnerViewModel> ownerViewModels3 = new List<OwnerViewModel>();
-                    OwnerViewModel ownerViewModel1 = new OwnerViewModel()
-                    {
-                        Id = 1,
-                        Name = "==",
-                    };
-                    OwnerViewModel ownerViewModel2 = new OwnerViewModel()
-                    {
-                        Id = 2,
-                        Name = "!=",
-                    };
-                    OwnerViewModel ownerViewModel3 = new OwnerViewModel()
-                    {
-                        Id = 3,
-                        Name = "<",
-                    };
-                    OwnerViewModel ownerViewModel4 = new OwnerViewModel()
-                    {
-                        Id = 4,
-                        Name = ">",
-                    };
-                    OwnerViewModel ownerViewModel5 = new OwnerViewModel()
-                    {
-                        Id = 5,
-                        Name = "<=",
-                    };
-                    OwnerViewModel ownerViewModel6 = new OwnerViewModel()
-                    {
-                        Id = 6,
-                        Name = ">=",
-                    };
-                    OwnerViewModel ownerViewModel7 = new OwnerViewModel()
-                    {
-                        Id = 7,
-                        Name = "Include",
-                    };
-                    OwnerViewModel ownerViewModel8 = new OwnerViewModel()
-                    {
-                        Id = 1,
-                        Name = "StartWith",
-
-                    };
-                    OwnerViewModel ownerViewModel9 = new OwnerViewModel()
-                    {
-                        Id = 1,
-                        Name = "EndWith",
-                    };
-                    ownerViewModels.Add(ownerViewModel1);
-                    ownerViewModels.Add(ownerViewModel2);
-                    ownerViewModels.Add(ownerViewModel7);
-                    ownerViewModels.Add(ownerViewModel8);
-                    ownerViewModels.Add(ownerViewModel9);
-                    ownerViewModels2.Add(ownerViewModel1);
-                    ownerViewModels2.Add(ownerViewModel2);
-                    ownerViewModels2.Add(ownerViewModel3);
-                    ownerViewModels2.Add(ownerViewModel4);
-                    ownerViewModels2.Add(ownerViewModel5);
-                    ownerViewModels2.Add(ownerViewModel6);
-
-                    ownerViewModels3.Add(ownerViewModel1);
-                    ownerViewModels3.Add(ownerViewModel2);
-
-                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-                    BaseInstAttViews baseInstAttViews1 = new BaseInstAttViews()
-                    {
-                        Key= "string",
-                        Value= ownerViewModels,
-                        DataType="string",
-                        DataTypeId=1,
-                    };
-                    BaseInstAttViews baseInstAttViews2 = new BaseInstAttViews()
-                    {
-                        Key = "int",
-                        Value = ownerViewModels2,
-                        DataType = "int",
-                        DataTypeId = 21,
-                    };
-                    BaseInstAttViews baseInstAttViews3 = new BaseInstAttViews()
-                    {
-                        Key = "double",
-                        Value = ownerViewModels2,
-                        DataType = "double",
-                        DataTypeId = 22,
-                    };
-                    BaseInstAttViews baseInstAttViews4 = new BaseInstAttViews()
-                    {
-                        Key = "bool",
-                        Value = ownerViewModels3,
-                        DataType = "bool",
-                        DataTypeId = 24,
-                    };
-                    BaseInstAttViews baseInstAttViews5 = new BaseInstAttViews()
-                    {
-                        Key = "DateTime",
-                        Value = ownerViewModels2,
-                        DataType = "DateTime",
-                        DataTypeId = 25,
-                    };
-                    baseInstAttView.Add(baseInstAttViews1);
-                    baseInstAttView.Add(baseInstAttViews2);
-                    baseInstAttView.Add(baseInstAttViews3);
-                    baseInstAttView.Add(baseInstAttViews4);
-                    baseInstAttView.Add(baseInstAttViews5);
-                    attributes.Operation = baseInstAttView;
+                    dynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicLibAtt(TableNameEntity.Id, CategoryId)
+                        .Select(DynamicAttribute => SetDynamicAttributeValue(DynamicAttribute));
                 }
                 else
                 {
-
-                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                    .GetDynamicInstAttInst(TableNameEntity.Id, CategoryId);
-
-
-                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-                    List<OwnerViewModel> ownerViewModels = new List<OwnerViewModel>();
-                    List<OwnerViewModel> ownerViewModels2 = new List<OwnerViewModel>();
-                    List<OwnerViewModel> ownerViewModels3 = new List<OwnerViewModel>();
-                    OwnerViewModel ownerViewModel1 = new OwnerViewModel()
-                    {
-                        Id = 1,
-                        Name = "==",
-                    };
-                    OwnerViewModel ownerViewModel2 = new OwnerViewModel()
-                    {
-                        Id = 2,
-                        Name = "!=",
-                    };
-                    OwnerViewModel ownerViewModel3 = new OwnerViewModel()
-                    {
-                        Id = 3,
-                        Name = "<",
-                    };
-                    OwnerViewModel ownerViewModel4 = new OwnerViewModel()
-                    {
-                        Id = 4,
-                        Name = ">",
-                    };
-                    OwnerViewModel ownerViewModel5 = new OwnerViewModel()
-                    {
-                        Id = 5,
-                        Name = "<=",
-                    };
-                    OwnerViewModel ownerViewModel6 = new OwnerViewModel()
-                    {
-                        Id = 6,
-                        Name = ">=",
-                    };
-                    OwnerViewModel ownerViewModel7 = new OwnerViewModel()
-                    {
-                        Id = 7,
-                        Name = "Include",
-                    };
-                    OwnerViewModel ownerViewModel8 = new OwnerViewModel()
-                    {
-                        Id = 8,
-                        Name = "StartWith",
-
-                    };
-                    OwnerViewModel ownerViewModel9 = new OwnerViewModel()
-                    {
-                        Id = 9,
-                        Name = "EndWith",
-                    };
-                    ownerViewModels.Add(ownerViewModel1);
-                    ownerViewModels.Add(ownerViewModel2);
-                    ownerViewModels.Add(ownerViewModel7);
-                    ownerViewModels.Add(ownerViewModel8);
-                    ownerViewModels.Add(ownerViewModel9);
-                    ownerViewModels2.Add(ownerViewModel1);
-                    ownerViewModels2.Add(ownerViewModel2);
-                    ownerViewModels2.Add(ownerViewModel3);
-                    ownerViewModels2.Add(ownerViewModel4);
-                    ownerViewModels2.Add(ownerViewModel5);
-                    ownerViewModels2.Add(ownerViewModel6);
-
-                    ownerViewModels3.Add(ownerViewModel1);
-                    ownerViewModels3.Add(ownerViewModel2);
-
-                    attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-                    BaseInstAttViews baseInstAttViews1 = new BaseInstAttViews()
-                    {
-                        Key = "string",
-                        Value = ownerViewModels,
-                        DataType = "string",
-                        DataTypeId = 1,
-                    };
-                    BaseInstAttViews baseInstAttViews2 = new BaseInstAttViews()
-                    {
-                        Key = "int",
-                        Value = ownerViewModels2,
-                        DataType = "int",
-                        DataTypeId = 21,
-                    };
-                    BaseInstAttViews baseInstAttViews3 = new BaseInstAttViews()
-                    {
-                        Key = "double",
-                        Value = ownerViewModels2,
-                        DataType = "double",
-                        DataTypeId = 22,
-                    };
-                    BaseInstAttViews baseInstAttViews4 = new BaseInstAttViews()
-                    {
-                        Key = "bool",
-                        Value = ownerViewModels3,
-                        DataType = "bool",
-                        DataTypeId = 24,
-                    };
-                    BaseInstAttViews baseInstAttViews5 = new BaseInstAttViews()
-                    {
-                        Key = "DateTime",
-                        Value = ownerViewModels2,
-                        DataType = "DateTime",
-                        DataTypeId = 25,
-                    };
-                    baseInstAttView.Add(baseInstAttViews1);
-                    baseInstAttView.Add(baseInstAttViews2);
-                    baseInstAttView.Add(baseInstAttViews3);
-                    baseInstAttView.Add(baseInstAttViews4);
-                    baseInstAttView.Add(baseInstAttViews5);
-                    attributes.Operation = baseInstAttView;
+                    dynamicAttributes = _unitOfWork.DynamicAttRepository.GetDynamicInstAttInst(TableNameEntity.Id, CategoryId);
                 }
+
+                attributes.DynamicAttributes = dynamicAttributes;
+                attributes.Operation = GetBaseInstAttViews(ownerViewModels);
+
                 return new Response<GetForAddDynamicAttribute>(true, attributes, null, null, (int)Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -8651,6 +8410,57 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddDynamicAttribute>(false, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
             }
         }
+
+        private BaseInstAttViewDynamic SetDynamicAttributeValue(BaseInstAttViewDynamic DynamicAttribute)
+        {
+            var DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
+            if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
+            {
+                DynamicAttribute.Value = DynamicAttribute.DataType.ToLower() switch
+                {
+                    "string" => DynamicAttributeEntity.DefaultValue,
+                    "int" => int.Parse(DynamicAttributeEntity.DefaultValue),
+                    "double" => double.Parse(DynamicAttributeEntity.DefaultValue),
+                    "bool" => bool.Parse(DynamicAttributeEntity.DefaultValue),
+                    "datetime" => DateTime.Parse(DynamicAttributeEntity.DefaultValue),
+                    _ => DynamicAttribute.Value
+                };
+            }
+            else
+            {
+                DynamicAttribute.Value = string.Empty;
+            }
+            return DynamicAttribute;
+        }
+
+        private List<OwnerViewModel> GetOwnerViewModels()
+        {
+            return new List<OwnerViewModel>
+    {
+        new OwnerViewModel { Id = 1, Name = "==" },
+        new OwnerViewModel { Id = 2, Name = "!=" },
+        new OwnerViewModel { Id = 3, Name = "<" },
+        new OwnerViewModel { Id = 4, Name = ">" },
+        new OwnerViewModel { Id = 5, Name = "<=" },
+        new OwnerViewModel { Id = 6, Name = ">=" },
+        new OwnerViewModel { Id = 7, Name = "Include" },
+        new OwnerViewModel { Id = 8, Name = "StartWith" },
+        new OwnerViewModel { Id = 9, Name = "EndWith" }
+    };
+        }
+
+        private List<BaseInstAttViews> GetBaseInstAttViews(List<OwnerViewModel> ownerViewModels)
+        {
+            return new List<BaseInstAttViews>
+    {
+        new BaseInstAttViews { Key = "string", Value = ownerViewModels, DataType = "string", DataTypeId = 1 },
+        new BaseInstAttViews { Key = "int", Value = ownerViewModels, DataType = "int", DataTypeId = 21 },
+        new BaseInstAttViews { Key = "double", Value = ownerViewModels, DataType = "double", DataTypeId = 22 },
+        new BaseInstAttViews { Key = "bool", Value = ownerViewModels, DataType = "bool", DataTypeId = 24 },
+        new BaseInstAttViews { Key = "DateTime", Value = ownerViewModels, DataType = "DateTime", DataTypeId = 25 }
+    };
+        }
+
 
         //Function get dynamic attribute by Id
         public Response<DynamicAttViewModel> GetById(int Id)
