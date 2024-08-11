@@ -150,6 +150,13 @@ namespace TLIS_API.Controllers.DynamicAtt
             var response = _unitOfWorkService.DynamicAttService.GetDynamicAttsByTableName(filters, parameters, TableName, CategoryId);
             return Ok(response);
         }
+        [HttpPost("GeStaticAttsAndDynamicAttsByTableName")]
+        [ProducesResponseType(200, Type = typeof(List<DynamicAttViewModel>))]
+        public IActionResult GeStaticAttsAndDynamicAttsByTableName( String TabelName,bool IsLibrary,int? CategoryId)
+        {
+            var response = _unitOfWorkService.DynamicAttService.GeStaticAttsAndDynamicAttsByTableName(TabelName, IsLibrary, CategoryId);
+            return Ok(response);
+        }
         [HttpGet("GetById")]
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
         public IActionResult GetById(int Id)
