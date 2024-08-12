@@ -1069,11 +1069,11 @@ namespace TLIS_Repository.Repositories
                           .Include(x => x.allLoadInst.mwRFU).Include(x => x.allLoadInst.mwODU).Include(x => x.allLoadInst.mwOther)
                           .Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna).Include(x => x.allLoadInst.radioRRU)
                           .Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.power).Include(x => x.allLoadInst.loadOther).ToList();
-                        AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                        AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
                         if (AllLoadOnCivil.Count == 0)
                         {
-                            AllCivilInst.civilWithLegs.CurrentLoads = 0;
-                            _context.TLIcivilWithLegs.Update(AllCivilInst.civilWithLegs);
+                            AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                            _context.TLIcivilWithoutLeg.Update(AllCivilInst.civilWithoutLeg);
                             _context.SaveChanges();
                         }
                         foreach (var item in AllLoadOnCivil)
@@ -2046,7 +2046,7 @@ namespace TLIS_Repository.Repositories
 
                 );
             }
-            if (LoadName == "TLIradioRRU")
+            if (LoadName == "TLIRadioRRU")
             {
                  Check = _context.INSTALLATION_PLACE.Where(x =>
                     x.SITECODE.ToLower() == SiteCode.ToLower() &&

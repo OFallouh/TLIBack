@@ -8241,7 +8241,7 @@ namespace TLIS_Service.Services
                                                 if (OldVcivilinfo != null)
                                                 {
                                                     var EquivalentSpace = radioOther.Spaceinstallation * (radioOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= radioOtherInst.allLoadInst.radioRRU.EquivalentSpace;
+                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= radioOtherInst.allLoadInst.radioOther.EquivalentSpace;
                                                     AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                     radioOther.EquivalentSpace = EquivalentSpace;
                                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -8478,7 +8478,7 @@ namespace TLIS_Service.Services
                                                 if (OldVcivilinfo != null)
                                                 {
                                                     var EquivalentSpace = radioOther.Spaceinstallation * (radioOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= radioOtherInst.allLoadInst.radioRRU.EquivalentSpace;
+                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= radioOtherInst.allLoadInst.radioOther.EquivalentSpace;
                                                     AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                     radioOther.EquivalentSpace = EquivalentSpace;
                                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -8774,7 +8774,7 @@ namespace TLIS_Service.Services
                                                         if (OldVcivilinfo != null)
                                                         {
                                                             var EquivalentSpace = radioOther.Spaceinstallation * (radioOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= radioOtherInst.allLoadInst.radioRRU.EquivalentSpace;
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= radioOtherInst.allLoadInst.radioOther.EquivalentSpace;
                                                             AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                             radioOther.EquivalentSpace = EquivalentSpace;
                                                             var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -9006,7 +9006,7 @@ namespace TLIS_Service.Services
                                                         if (OldVcivilinfo != null)
                                                         {
                                                             var EquivalentSpace = radioOther.Spaceinstallation * (radioOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithLegs.HeightBase);
-                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= radioOtherInst.allLoadInst.radioRRU.EquivalentSpace;
+                                                            AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -= radioOtherInst.allLoadInst.radioOther.EquivalentSpace;
                                                             AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
                                                             radioOther.EquivalentSpace = EquivalentSpace;
                                                             var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -9294,7 +9294,7 @@ namespace TLIS_Service.Services
                                                     if (OldVcivilinfo != null)
                                                     {
                                                         var EquivalentSpace = radioOther.Spaceinstallation * (radioOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
-                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -= radioOtherInst.allLoadInst.radioRRU.EquivalentSpace;
+                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -= radioOtherInst.allLoadInst.radioOther.EquivalentSpace;
                                                         AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                         radioOther.EquivalentSpace = EquivalentSpace;
                                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
@@ -9527,7 +9527,7 @@ namespace TLIS_Service.Services
                                                     if (OldVcivilinfo != null)
                                                     {
                                                         var EquivalentSpace = radioOther.Spaceinstallation * (radioOther.CenterHigh / (float)AllcivilinstId.allCivilInst.civilWithoutLeg.HeightBase);
-                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -= radioOtherInst.allLoadInst.radioRRU.EquivalentSpace;
+                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -= radioOtherInst.allLoadInst.radioOther.EquivalentSpace;
                                                         AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
                                                         radioOther.EquivalentSpace = EquivalentSpace;
                                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(AllcivilinstId.allCivilInst).Message;
