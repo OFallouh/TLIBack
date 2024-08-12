@@ -160,7 +160,7 @@ namespace TLIS_Service.Services
                                     return new Response<AddCivilWithLegsLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
 
-                                _unitOfWork.CivilWithLegLibraryRepository.AddWithHistory(UserId, CivilWithLegEntites);
+                                _unitOfWork.CivilWithLegLibraryRepository.AddWithH(UserId,null, CivilWithLegEntites);
                                     
                                 _unitOfWork.SaveChanges();
 
@@ -1652,7 +1652,7 @@ namespace TLIS_Service.Services
                     CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
                     CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;
                     
-                    _unitOfWork.CivilWithLegLibraryRepository.UpdateWithHistory(userId, CivilWithLegLib, CivilWithLegLibraryEntites);
+                    _unitOfWork.CivilWithLegLibraryRepository.UpdateWithH(userId,null, CivilWithLegLib, CivilWithLegLibraryEntites);
 
 
                     string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);

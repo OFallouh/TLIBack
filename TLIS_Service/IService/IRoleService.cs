@@ -13,11 +13,8 @@ namespace TLIS_Service.IService
     public interface IRoleService
     {
         Task<Response<IEnumerable<RoleViewModel>>> GetRoles(List<FilterObjectList> filters);
-
-        Response<RoleViewModel> AddRole(AddRoleViewModel addRole);
-
         Task<Response<RoleViewModel>> EditRole(EditRoleViewModel editRole);
-
+        Task<Response<RoleViewModel>> AddRole(AddRoleViewModel addRole);
         bool CheckRoleNameInDatabaseAdd(string RoleName);
         bool CheckRoleNameInDatabaseUpdate(string RoleName, int RoleId);
         Response<RoleViewModel> DeleteRole(int RoleId);

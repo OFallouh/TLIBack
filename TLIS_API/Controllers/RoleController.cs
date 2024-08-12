@@ -62,11 +62,11 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddRolePermissionList")]
         [ProducesResponseType(200, Type = typeof(AddRoleViewModel))]
-        public IActionResult AddRolePermissionList(AddRoleViewModel addRole)
+        public async Task<IActionResult> AddRolePermissionList(AddRoleViewModel addRole)
         {
             if (TryValidateModel(addRole, nameof(AddRoleViewModel)))
             {
-                var response = _unitOfWorkService.RoleService.AddRole(addRole);
+                var response = await _unitOfWorkService.RoleService.AddRole(addRole);
                 return Ok(response);
             }
             else

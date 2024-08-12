@@ -18,6 +18,8 @@ using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
+using static Dapper.SqlMapper;
+using Castle.Components.DictionaryAdapter;
 
 namespace TLIS_Repository.Base
 {
@@ -535,6 +537,350 @@ namespace TLIS_Repository.Base
                 _context.SaveChanges();
             }
         }
+
+
+        //-----------------------------------------------------------------------------------
+        public virtual void AddWithH(int? UserId, int? SecRecordId, TEntity AddObject)
+        {
+
+            dataTable.Add(AddObject);
+            _context.SaveChanges();
+            if (UserId != null)
+            {
+                TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == AddObject.GetType().Name.ToLower());
+
+                int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
+                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Add.ToString().ToLower()).Id;
+
+                int entityId = (int)AddObject.GetType().GetProperty("Id").GetValue(AddObject, null);
+                string entityIdString = entityId.ToString();
+
+                TLIhistory AddTablesHistory = new TLIhistory
+                {
+                    HistoryTypeId = HistoryTypeId,
+                    RecordId = entityIdString,
+                    TablesNameId = EntityTableNameModel.Id,
+                    UserId = UserId.Value
+                };
+
+                _context.TLIhistory.Add(AddTablesHistory);
+                _context.SaveChanges();
+
+                List<PropertyInfo> Attributes = AddObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
+                    (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
+                        (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
+                    (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
+                     x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
+                     x.PropertyType == typeof(Single))).ToList();
+
+                List<TLIhistoryDet> ListOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+
+                foreach (PropertyInfo Attribute in Attributes)
+                {
+                    object NewAttributeValue = Attribute.GetValue(AddObject, null);
+                    if (SecRecordId != null)
+                    {
+                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                        {
+                            TablesNameId = EntityTableNameModel.Id,
+                            RecordId = SecRecordId.ToString(),
+                            HistoryId = AddTablesHistory.Id,
+                            AttributeName = Attribute.Name,
+                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                            AttributeType = AttributeType.Static
+                        };
+
+                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                    }
+                    else
+                    {
+                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                        {
+                            TablesNameId = EntityTableNameModel.Id,
+                            RecordId = entityIdString,
+                            HistoryId = AddTablesHistory.Id,
+                            AttributeName = Attribute.Name,
+                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                            AttributeType = AttributeType.Static
+                        };
+
+                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                    }
+                        
+                }
+
+                _context.TLIhistoryDet.AddRange(ListOfHistoryDetailsToAdd);
+                _context.SaveChanges();
+            }
+        }
+        public virtual async Task AddAsyncWithH(int? UserId, int? SecRecordId, TEntity AddObject)
+        {
+
+            await dataTable.AddAsync(AddObject);
+            await _context.SaveChangesAsync();
+            if (UserId != null)
+            {
+                TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == AddObject.GetType().Name.ToLower());
+
+                int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
+                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Add.ToString().ToLower()).Id;
+
+                int entityId = (int)AddObject.GetType().GetProperty("Id").GetValue(AddObject, null);
+                string entityIdString = entityId.ToString();
+                TLIhistory AddTablesHistory = new TLIhistory
+                {
+                    HistoryTypeId = HistoryTypeId,
+                    RecordId = entityIdString,
+                    TablesNameId = EntityTableNameModel.Id,
+                    UserId = UserId.Value
+                };
+
+                await _context.TLIhistory.AddAsync(AddTablesHistory);
+                await _context.SaveChangesAsync();
+
+                List<PropertyInfo> Attributes = AddObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
+                    (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
+                        (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
+                    (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
+                     x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
+                     x.PropertyType == typeof(Single))).ToList();
+
+                List<TLIhistoryDet> ListOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+
+                foreach (PropertyInfo Attribute in Attributes)
+                {
+                    object NewAttributeValue = Attribute.GetValue(AddObject, null);
+                    if (SecRecordId != null)
+                    {
+                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                        {
+                            TablesNameId = EntityTableNameModel.Id,
+                            RecordId = SecRecordId.ToString(),
+                            HistoryId = AddTablesHistory.Id,
+                            AttributeName = Attribute.Name,
+                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                            AttributeType = AttributeType.Static
+                        };
+
+                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                    }
+                    else
+                    {
+                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                        {
+                            TablesNameId = EntityTableNameModel.Id,
+                            RecordId = entityIdString,
+                            HistoryId = AddTablesHistory.Id,
+                            AttributeName = Attribute.Name,
+                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                            AttributeType = AttributeType.Static
+                        };
+
+                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                    }
+
+                }
+
+                await _context.TLIhistoryDet.AddRangeAsync(ListOfHistoryDetailsToAdd);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public void AddRangeWithHistory(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities)
+        {
+            foreach (TEntity Entity in Entities)
+            {
+                AddWithH(UserId, SecRecordId, Entity);
+            }
+            _context.SaveChanges();
+        }
+        public virtual void UpdateWithH(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject)
+        {
+          
+            TEntity entity = _mapper.Map<TEntity>(NewObject);
+            if (UserId != null)
+            {
+                TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == entity.GetType().Name.ToLower());
+
+                int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
+                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Edit.ToString().ToLower()).Id;
+
+                int entityId = (int)entity.GetType().GetProperty("Id").GetValue(entity, null);
+                string entityIdString = entityId.ToString();
+
+
+                TLItablesHistory PreviousHistory = _context.TLItablesHistory.OrderBy(x => x.Date).LastOrDefault(x => x.RecordId == entityId.ToString() &&
+                    x.TablesNameId == EntityTableNameModel.Id);
+
+                int? PreviousHistoryId = null;
+                if (PreviousHistory != null)
+                    PreviousHistoryId = PreviousHistory.Id;
+
+                TLIhistory AddTablesHistory = new TLIhistory
+                {
+                    HistoryTypeId = HistoryTypeId,
+                    RecordId = entityIdString,
+                    TablesNameId = EntityTableNameModel.Id,
+                    UserId = UserId.Value
+                };
+
+                _context.TLIhistory.Add(AddTablesHistory);
+                _context.SaveChanges();
+
+                List<PropertyInfo> Attributes = OldObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
+                    (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
+                        (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
+                    (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
+                     x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
+                     x.PropertyType == typeof(Single))).ToList();
+
+                List<TLIhistoryDet> ListOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+
+                foreach (PropertyInfo Attribute in Attributes)
+                {
+                    object OldAttributeValue = Attribute.GetValue(OldObject, null);
+                    object NewAttributeValue = Attribute.GetValue(NewObject, null);
+
+                    if (((OldAttributeValue != null && NewAttributeValue != null) ? OldAttributeValue.ToString() == NewAttributeValue.ToString() : false) ||
+                        (OldAttributeValue == null && NewAttributeValue == null))
+                        continue;
+                    if (SecRecordId != null)
+                    {
+                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                        {
+                            TablesNameId = EntityTableNameModel.Id,
+                            RecordId = SecRecordId.ToString(),
+                            HistoryId = AddTablesHistory.Id,
+                            AttributeName = Attribute.Name,
+                            OldValue = OldAttributeValue != null ? OldAttributeValue.ToString() : null,
+                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                            AttributeType = AttributeType.Static
+                        };
+
+                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                    }
+                    else
+                    {
+                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                        {
+                            TablesNameId = EntityTableNameModel.Id,
+                            RecordId = entityIdString,
+                            HistoryId = AddTablesHistory.Id,
+                            AttributeName = Attribute.Name,
+                            OldValue = OldAttributeValue != null ? OldAttributeValue.ToString() : null,
+                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                            AttributeType = AttributeType.Static
+                        };
+
+                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                    }
+
+                }
+                _context.TLIhistoryDet.AddRange(ListOfHistoryDetailsToAdd);
+                _context.SaveChanges();
+            }
+            OldObject = NewObject;
+            _context.Entry<TEntity>(OldObject).State = EntityState.Detached;
+            dataTable.Update(OldObject);
+            _context.SaveChanges();
+        }
+        public virtual void RemoveItemWithH(int? UserId, int? SecRecordId, TEntity OldObject)
+        {
+            dataTable.Remove(OldObject);
+            _context.SaveChanges();
+
+            if (UserId != null)
+            {
+                TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == OldObject.GetType().Name.ToLower());
+
+                int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
+                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Delete.ToString().ToLower()).Id;
+
+                int entityId = (int)OldObject.GetType().GetProperty("Id").GetValue(OldObject, null);
+                string entityIdString = entityId.ToString();
+                TLIhistory AddTablesHistory = new TLIhistory
+                {
+                    HistoryTypeId = HistoryTypeId,
+                    RecordId = entityIdString,
+                    TablesNameId = EntityTableNameModel.Id,
+                    UserId = UserId.Value
+                };
+
+                _context.TLIhistory.Add(AddTablesHistory);
+                _context.SaveChanges();
+
+                List<PropertyInfo> Attributes = OldObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
+                    (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
+                        (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
+                    (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
+                     x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
+                     x.PropertyType == typeof(Single))).ToList();
+
+                List<TLIhistoryDet> ListOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+
+                foreach (PropertyInfo Attribute in Attributes)
+                {
+                    object NewAttributeValue = Attribute.GetValue(OldObject, null);
+                    if (SecRecordId != null)
+                    {
+                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                        {
+                            TablesNameId = EntityTableNameModel.Id,
+                            RecordId = SecRecordId.ToString(),
+                            HistoryId = AddTablesHistory.Id,
+                            AttributeName = Attribute.Name,
+                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                            AttributeType = AttributeType.Static
+                        };
+
+                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                    }
+                    else
+                    {
+                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                        {
+                            TablesNameId = EntityTableNameModel.Id,
+                            RecordId = entityIdString,
+                            HistoryId = AddTablesHistory.Id,
+                            AttributeName = Attribute.Name,
+                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                            AttributeType = AttributeType.Static
+                        };
+
+                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                    }
+
+                }
+
+                _context.TLIhistoryDet.AddRange(ListOfHistoryDetailsToAdd);
+                _context.SaveChanges();
+            }
+        }
+        public virtual void RemoveRangeItemsWithHistory(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities)
+        {
+            foreach (TEntity Entity in Entities)
+            {
+                RemoveItemWithH(UserId, SecRecordId, Entity);
+            }
+            _context.SaveChanges();
+        }
+
+        // ---------------------------------------------------------------------------------------
+
+
+
+
         public virtual void AddSiteWithHistory(int? UserId, TEntity entity)
         {
             //if (UserId == null)
@@ -1210,7 +1556,7 @@ namespace TLIS_Repository.Base
             dataTable.Update(OldObject);
             _context.SaveChanges();
         }
-        
+
         public virtual void UpdateSiteWithHistory(int? UserId, TEntity OldObject, TEntity NewObject)
         {
             //if (UserId == null)
@@ -1316,8 +1662,10 @@ namespace TLIS_Repository.Base
                 };
                 _context.TLItablesHistory.Add(AddTablesHistory);
                 _context.SaveChanges();
+
             }
         }
+        
         public virtual void RemoveRangeItemsWithHistory(int? UserId, IEnumerable<TEntity> Entities)
         {
             foreach (TEntity Entity in Entities)

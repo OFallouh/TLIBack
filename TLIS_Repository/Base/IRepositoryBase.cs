@@ -17,8 +17,14 @@ namespace TLIS_Repository.Base
         IQueryable<TEntity> GetAllIncludeMultiple(ParameterPagination parameterPagination, List<FilterObjectList> filter, out int count, params Expression<Func<TEntity, object>>[] includes);
         Task<IEnumerable<TEntity>> GetAllAsync(ParameterPagination parameterPagination = null, List<FilterObjectList> filter = null);
         IEnumerable<TEntity> GetAll(out int count);
+        Task AddAsyncWithH(int? UserId, int? SecRecordId, TEntity AddObject);
+        void AddRangeWithHistory(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities);
+        void UpdateWithH(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject);
         IEnumerable<TEntity> GetAllWithoutCount();
+        void AddWithH(int? UserId, int? SecRecordId, TEntity AddObject);
         void RemoveItemWithHistory(int? UserId, TEntity Entity);
+        void RemoveItemWithH(int? UserId, int? SecRecordId, TEntity OldObject);
+        void RemoveRangeItemsWithHistory(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities);
         int GetCount();
         TEntity GetByID(TKey id);
         IQueryable<TEntity> GetAllAsQueryable(out int count);

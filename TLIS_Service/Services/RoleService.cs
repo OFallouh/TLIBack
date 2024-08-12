@@ -20,6 +20,11 @@ using Nancy;
 using AutoMapper;
 using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Oracle.ManagedDataAccess.Client;
+using Microsoft.Extensions.Configuration;
+using System.DirectoryServices.ActiveDirectory;
+using TLIS_DAL.ViewModels.UserDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -28,71 +33,87 @@ namespace TLIS_Service.Services
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
-        public RoleService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper)
+        IConfiguration _configuration;
+        public RoleService(IUnitOfWork unitOfWork, IServiceCollection services, IConfiguration configuration, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _services = services;
+            _configuration = configuration;
             ServiceProvider serviceProvider = _services.BuildServiceProvider();
             _mapper = mapper;
         }
         //Function take 1 parameter
         //check the name of the role if already exists the return error message
         //else add role and permissions to the role
-        public Response<RoleViewModel> AddRole(AddRoleViewModel addRole)
+        public async Task<Response<RoleViewModel>> AddRole(AddRoleViewModel addRole)
         {
             try
             {
-                TLIrole CheckRoleNameIfAlreadyExist = _unitOfWork.RoleRepository.GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == addRole.Name.ToLower());
-
-                if (CheckRoleNameIfAlreadyExist != null)
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                using (var connection = new OracleConnection(connectionString))
                 {
-                    return new Response<RoleViewModel>(true, null, null, $"Role {addRole.Name} is already exists in database", (int)Constants.ApiReturnCode.fail);
-                }
+                    await connection.OpenAsync();
 
-
-                using (TransactionScope transaction = new TransactionScope())
-                {
-                    TLIrole role = new TLIrole()
+                    using (var transaction = connection.BeginTransaction())
                     {
-                        Name = addRole.Name,
-                        Deleted = false,
-                        Active = true
-                    };
+                        TLIrole CheckRoleNameIfAlreadyExist = _unitOfWork.RoleRepository.GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == addRole.Name.ToLower());
 
-                    _unitOfWork.RoleRepository.Add(role);
-                    _unitOfWork.SaveChanges();
-
-                    if (addRole.permissions != null)
-                    {
-                        var Rolepermission = new List<TLIrole_Permissions>();
-                        foreach (var Permission in addRole.permissions)
+                        if (CheckRoleNameIfAlreadyExist != null)
                         {
-                            TLIrole_Permissions tLIrolePermissions = new TLIrole_Permissions();
-                            tLIrolePermissions = new TLIrole_Permissions()
-                            {
-                                RoleId = role.Id,
-                                PageUrl = Permission,
-                                Active = true,
-                                Delete = false
-                            };
-                            Rolepermission.Add(tLIrolePermissions);
+                            return new Response<RoleViewModel>(true, null, null, $"Role {addRole.Name} is already exists in database", (int)Constants.ApiReturnCode.fail);
                         }
-                        _unitOfWork.RolePermissionsRepository.AddRange(Rolepermission);
+                       
+                        TLIrole role = new TLIrole()
+                        {
+                            Name = addRole.Name,
+                            Deleted = false,
+                            Active = true
+                        };
+
+                        _unitOfWork.RoleRepository.Add(role);
                         _unitOfWork.SaveChanges();
+
+                        if (addRole.permissions != null)
+                        {
+
+                          await InsertPermissionsAsync(connection, role.Id, addRole.permissions);
+
+                        }
+
+                        transaction.Commit();
+                        return new Response<RoleViewModel>(false, null, null, "This Role Is Not Found", (int)Helpers.Constants.ApiReturnCode.success);
                     }
-
-
-                    transaction.Complete();
-                    return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                 }
             }
             catch (Exception err)
-            {               
-                return new Response<RoleViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
+            {
+                return new Response<RoleViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
            
             
         }
+        private async Task InsertPermissionsAsync(OracleConnection connection, int roleId, List<string> permissions)
+        {
+            var query = @"
+            INSERT INTO ""TLIrole_Permissions"" (""RoleId"", ""PageUrl"", ""Active"", ""Delete"")
+            VALUES (:pRoleId, :pPageUrl, :pActive, :pDelete)";
+
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter("pRoleId", OracleDbType.Int32)).Value = roleId;
+                var pageUrlParam = new OracleParameter("pPageUrl", OracleDbType.Varchar2);
+                command.Parameters.Add(pageUrlParam);
+                command.Parameters.Add(new OracleParameter("pActive", OracleDbType.Int32)).Value = 1; // true
+                command.Parameters.Add(new OracleParameter("pDeleted", OracleDbType.Int32)).Value = 0; // false
+
+                foreach (var permission in permissions)
+                {
+                    pageUrlParam.Value = permission;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
         //Function check if there are groups take role 
         //Function return true or false
         public Response<bool> CheckRoleGroups(int RoleId)
@@ -138,7 +159,16 @@ namespace TLIS_Service.Services
                 var RoleGroups = _unitOfWork.GroupRoleRepository.GetWhere(x => x.roleId == RoleId).ToList();
                 if (RoleGroups.Count == 0)
                 {
-                    _unitOfWork.RoleRepository.DeleteRole(RoleId);
+                    var RoleName = _unitOfWork.RoleRepository.GetWhereFirst(x => x.Id == RoleId);
+                    if (RoleName != null)
+                    {
+                        RoleName.Name = RoleName.Name + DateTime.Now;
+                        _unitOfWork.RoleRepository.DeleteRole(RoleId);
+                    }
+                    else
+                    {
+                        return new Response<RoleViewModel>(true, null, null, "This Role Is Not Found", (int)Constants.ApiReturnCode.fail);
+                    }
                     return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                 }
                 else
@@ -167,6 +197,7 @@ namespace TLIS_Service.Services
                 // _unitOfWork.GroupRoleRepository.RemoveRangeItems(RoleGroups);
                 _unitOfWork.SaveChanges();
                 var Role = _unitOfWork.RoleRepository.GetByID(RoleId);
+                Role.Name = Role.Name + DateTime.Now;
                 Role.Deleted = true;
                 // _unitOfWork.RoleRepository.RemoveItem(Role);
                 _unitOfWork.SaveChanges();
@@ -186,48 +217,54 @@ namespace TLIS_Service.Services
         //update permissions
         public async Task<Response<RoleViewModel>> EditRole(EditRoleViewModel editRole)
         {
-            TLIrole CheckRoleNameIfExist = _unitOfWork.RoleRepository
-                .GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == editRole.Name.ToLower() && x.Id != editRole.Id);
-
-            if (CheckRoleNameIfExist != null)
+            var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            using (var connection = new OracleConnection(connectionString))
             {
-                return new Response<RoleViewModel>(true, null, null, $"Role {editRole.Name} is already exists in database", (int)Constants.ApiReturnCode.fail);
-            }
+                await connection.OpenAsync();
 
-            TLIrole RoleEntity = _unitOfWork.RoleRepository.GetByID(editRole.Id);
-            RoleEntity.Name = editRole.Name;
-
-            _unitOfWork.RoleRepository.Update(RoleEntity);
-            await _unitOfWork.SaveChangesAsync();
-
-            List<string> AllRolePermissionsIn = _unitOfWork.RolePermissionsRepository
-                      .GetWhere(x => x.RoleId == editRole.Id && x.Delete==false && x.Active==true).Select(x => x.PageUrl).ToList();
-
-            var DeletePermissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == editRole.Id);
-            _unitOfWork.RolePermissionsRepository.RemoveRangeItems(DeletePermissions);
-            await _unitOfWork.SaveChangesAsync();
-
-            foreach (var item in editRole.permissions)
-            {
-                TLIrole_Permissions tLIrolePermissions = new TLIrole_Permissions();
-                tLIrolePermissions = new TLIrole_Permissions()
+                using (var transaction = connection.BeginTransaction())
                 {
-                    RoleId = editRole.Id,
-                    PageUrl = item,
-                    Active = true,
-                    Delete = false
-                };
-                _unitOfWork.RolePermissionsRepository.Add(tLIrolePermissions);
-            }
+                    TLIrole CheckRoleNameIfExist = _unitOfWork.RoleRepository
+                   .GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == editRole.Name.ToLower() && x.Id != editRole.Id);
 
-            using (TransactionScope transaction = new TransactionScope())
-            {
-               
-               
-                await _unitOfWork.SaveChangesAsync();
-                transaction.Complete();
+                    if (CheckRoleNameIfExist != null)
+                    {
+                        return new Response<RoleViewModel>(true, null, null, $"Role {editRole.Name} is already exists in database", (int)Constants.ApiReturnCode.fail);
+                    }
+
+                    TLIrole RoleEntity = _unitOfWork.RoleRepository.GetByID(editRole.Id);
+                    if (RoleEntity != null)
+                    {
+                        RoleEntity.Name = editRole.Name;
+
+                        _unitOfWork.RoleRepository.Update(RoleEntity);
+                        await _unitOfWork.SaveChangesAsync();
+
+                        List<string> AllRolePermissionsIn = _unitOfWork.RolePermissionsRepository
+                                  .GetWhere(x => x.RoleId == editRole.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
+
+                        var DeletePermissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == editRole.Id);
+                        _unitOfWork.RolePermissionsRepository.RemoveRangeItems(DeletePermissions);
+                        await _unitOfWork.SaveChangesAsync();
+
+                        if (editRole.permissions != null)
+                        {
+                            await InsertPermissionsAsync(connection, editRole.Id, editRole.permissions);
+                        }
+                        await _unitOfWork.SaveChangesAsync();
+                        transaction.Commit();
+                        return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
+                    }
+                    else
+                    {
+             
+                        transaction.Rollback();
+                        return new Response<RoleViewModel>(false, null, null, "This Role Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail, 0);
+                    }
+                    
+                    
+                }
             }
-            return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
         }
         //Function take 1 parameter
         //Function return all roles depened on filters

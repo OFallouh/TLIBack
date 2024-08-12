@@ -4248,7 +4248,7 @@ namespace TLIS_Service.Services
                                       x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                                         if (civilwithlegname != null)
                                         {
-                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, addSideArms.installationConfig.legId[0]
+                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, null
                                                               , null, null, addSideArms.installationConfig.civilWithoutLegId, null, null, null, SideArm.Azimuth
                                                               , SideArm.HeightBase, 4).Data;
 
@@ -4380,7 +4380,7 @@ namespace TLIS_Service.Services
                                          x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
                                         if (civilwithlegname != null)
                                         {
-                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, addSideArms.installationConfig.legId[0]
+                                            var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, null
                                                              , null, null,null, addSideArms.installationConfig.civilNonSteelId, null, null, SideArm.Azimuth
                                                              , SideArm.HeightBase, 4).Data;
 

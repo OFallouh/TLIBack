@@ -288,7 +288,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_RoleService == null)
-                    _RoleService = new RoleService(_unitOfWork, _services,_mapper);
+                    _RoleService = new RoleService(_unitOfWork, _services, _config, _mapper);
                 return _RoleService;
             }
         }

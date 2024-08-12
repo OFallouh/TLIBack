@@ -852,7 +852,7 @@ namespace TLIS_Repository.Repositories
                                     }
                                     else
                                     {
-                                        CenterHigh = item.allLoadInst.radioRRU.CenterHigh;
+                                        CenterHigh = item.allLoadInst.radioOther.CenterHigh;
                                     }
                                     if (AllCivilInst.civilWithLegs.HeightBase == 0)
                                     {
@@ -1697,7 +1697,7 @@ namespace TLIS_Repository.Repositories
                                     }
                                     else
                                     {
-                                        CenterHigh = item.allLoadInst.radioRRU.CenterHigh;
+                                        CenterHigh = item.allLoadInst.radioOther.CenterHigh;
                                     }
                                     if (AllCivilInst.civilWithoutLeg.HeightBase == 0)
                                     {
