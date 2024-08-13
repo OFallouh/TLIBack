@@ -128,6 +128,7 @@ namespace TLIS_Service.Services
                     var groups = _unitOfWork.GroupRepository.GetWhere(g => g.ActorId == actorViewModel.Id).ToList();
                     _unitOfWork.GroupRepository.UpdateRange(groups);
                     var actor = _mapper.Map<TLIactor>(actorViewModel);
+                    actor.Name = actor.Name + DateTime.Now;
                     _unitOfWork.ActorRepository.RemoveItem(actor);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
@@ -218,7 +219,7 @@ namespace TLIS_Service.Services
         //else return false
         private bool CheckNameForAdd(string Name)
         {
-            var Actor = _unitOfWork.ActorRepository.GetWhereFirst(a => a.Name == Name);
+            var Actor = _unitOfWork.ActorRepository.GetWhereFirst(a => a.Name.ToLower() == Name.ToLower());
             if (Actor == null)
             {
                 return true;
@@ -232,7 +233,7 @@ namespace TLIS_Service.Services
         //else return false
         private async Task<bool> CheckNameForUpdate(string Name, int Id)
         {
-            var Actor = await _unitOfWork.ActorRepository.SingleOrDefaultAsync(x => x.Name == Name && x.Id != Id);
+            var Actor = await _unitOfWork.ActorRepository.SingleOrDefaultAsync(x => x.Name.ToLower() == Name.ToLower() && x.Id != Id);
             if (Actor == null)
             {
                 return true;

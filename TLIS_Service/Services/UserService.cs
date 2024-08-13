@@ -120,15 +120,15 @@ namespace TLIS_Service.Services
         private async Task<int> InsertUserAsync(OracleConnection connection, AddUserViewModel model)
         {
             var query = @"
-    INSERT INTO ""TLIuser"" 
-    (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
-     ""Password"", ""UserType"", ""Active"", 
-     ""Deleted"", ""ValidateAccount"")
-    VALUES 
-    (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
-     :Password, :UserType, :Active, 
-     :Deleted, :ValidateAccount)
-    RETURNING ""Id"" INTO :UserId";
+            INSERT INTO ""TLIuser"" 
+            (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
+             ""Password"", ""UserType"", ""Active"", 
+             ""Deleted"", ""ValidateAccount"")
+            VALUES 
+            (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
+             :Password, :UserType, :Active, 
+             :Deleted, :ValidateAccount)
+            RETURNING ""Id"" INTO :UserId";
 
             using (var command = new OracleCommand(query, connection))
             {
@@ -660,7 +660,7 @@ namespace TLIS_Service.Services
                     {
                         if (model.UserType == 2)
                         {
-                            var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == model.UserName && x.Id != model.Id);
+                            var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == model.UserName.ToLower() && x.Id != model.Id);
                             if (UserName != null)
                             {
                                 return new Response<UserViewModel>(false, null, null, $"This User Name {model.UserName} Is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -787,7 +787,7 @@ namespace TLIS_Service.Services
                         //ValidateUserNameInAd = null;
                         ValidateUserNameInAd = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
                     }
-                    TLIuser ValidateUserNameInDatabase = _unitOfWork.UserRepository.GetWhereFirst(u => u.UserName == UserName);
+                    TLIuser ValidateUserNameInDatabase = _unitOfWork.UserRepository.GetWhereFirst(u => u.UserName.ToLower() == UserName.ToLower());
                     if (ValidateUserNameInAd == null && ValidateUserNameInDatabase == null)
                     {
                         return new Response<bool>(true, true, null, "", (int)Helpers.Constants.ApiReturnCode.success);

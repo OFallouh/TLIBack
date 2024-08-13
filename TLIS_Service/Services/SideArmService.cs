@@ -2971,7 +2971,7 @@ namespace TLIS_Service.Services
                                             if (civilwithlegname != null)
                                             {
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                    null, null, null, null, null, null, null, SideArm.Id, "TLIsideArm", CivilLoads.SiteCode, SideArmViewModel.installationConfig.legId[0]
+                                                    null, null, null, null, null, null, null, SideArm.Id, "TLIsideArm", CivilLoads.SiteCode, null
                                                    , null, null, SideArmViewModel.installationConfig.civilWithoutLegId, null, null, null, SideArm.Azimuth
                                                    , SideArm.HeightBase, 4).Data;
 
@@ -3065,8 +3065,8 @@ namespace TLIS_Service.Services
                                             if (civilwithlegname != null)
                                             {
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                   null, null, null, null, null, null, null, SideArm.Id, "TLIsideArm", CivilLoads.SiteCode, SideArmViewModel.installationConfig.legId[0]
-                                                  , null,null, null, SideArmViewModel.installationConfig.civilNonSteelId, null, null, SideArm.Azimuth
+                                                   null, null, null, null, null, null, null, SideArm.Id, "TLIsideArm", CivilLoads.SiteCode,
+                                                  null, null,null, null, SideArmViewModel.installationConfig.civilNonSteelId, null, null, SideArm.Azimuth
                                                   , SideArm.HeightBase, 4).Data;
 
                                                 if (Data == false)

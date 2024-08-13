@@ -6847,7 +6847,7 @@ namespace TLIS_Service.Services
 
                                 if (support != null && support.ReferenceCivilId != null)
                                 {
-                                    var supportReferenceAllCivilInst = _unitOfWork.CivilLoadsRepository
+                                    var supportReferenceAllCivilInst = _unitOfWork.CivilSiteDateRepository
                                          .GetIncludeWhereFirst(x => x.allCivilInstId == support.ReferenceCivilId && !x.Dismantle && x.SiteCode.ToLower() == siteCode.ToLower(),
                                              x => x.allCivilInst.civilWithLegs,
                                              x => x.allCivilInst.civilNonSteel,
@@ -7162,7 +7162,7 @@ namespace TLIS_Service.Services
 
                                 if (support != null && support.ReferenceCivilId != null)
                                 {
-                                    var supportReferenceAllCivilInst = _unitOfWork.CivilLoadsRepository
+                                    var supportReferenceAllCivilInst = _unitOfWork.CivilSiteDateRepository
                                          .GetIncludeWhereFirst(x => x.allCivilInstId == support.ReferenceCivilId && !x.Dismantle && x.SiteCode.ToLower() == siteCode.ToLower(),
                                              x => x.allCivilInst.civilWithLegs,
                                              x => x.allCivilInst.civilNonSteel,
@@ -7450,7 +7450,7 @@ namespace TLIS_Service.Services
 
                                 if (support != null && support.ReferenceCivilId != null)
                                 {
-                                    var supportReferenceAllCivilInst = _unitOfWork.CivilLoadsRepository
+                                    var supportReferenceAllCivilInst = _unitOfWork.CivilSiteDateRepository
                                          .GetIncludeWhereFirst(x => x.allCivilInstId == support.ReferenceCivilId && !x.Dismantle && x.SiteCode.ToLower() == siteCode.ToLower(),
                                              x => x.allCivilInst.civilWithLegs,
                                              x => x.allCivilInst.civilNonSteel,
