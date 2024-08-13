@@ -554,14 +554,14 @@ namespace TLIS_Service.Services
                         {
                             TLIgroup objL1 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1 && x.Active && !x.Deleted);
                             L1Name = objL1?.Name;
-                          L2 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1).UpperId;
+                          L2 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1)?.UpperId;
 
                         }
                         if (L2 != null)
                         {
                             TLIgroup objl2 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2 && x.Active && !x.Deleted);
                             L2Name = objl2?.Name;
-                          L3 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2 && x.Active && !x.Deleted).UpperId;
+                          L3 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2 && x.Active && !x.Deleted)?.UpperId;
 
                         }
                         if (L3 != null)
@@ -618,7 +618,7 @@ namespace TLIS_Service.Services
                         (x => x.groupId == Group.Id && x.Active && !x.Deleted).ToList();
                     foreach (var item in Users)
                     {
-                        int? UserType = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == item.userId).UserType;
+                        int? UserType = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == item.userId)?.UserType;
                         userNameViewModels.Add(new UserNameViewModel()
                         {
                             Id = item.userId,

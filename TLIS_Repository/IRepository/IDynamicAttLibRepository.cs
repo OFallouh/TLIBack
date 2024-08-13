@@ -17,9 +17,12 @@ namespace TLIS_Repository.IRepository
        // void UpdateDynamicLibAtts(List<DynamicAttLibViewModel> DynamicLibAttValues, int TablesNameId, int LibId);
         void UpdateDynamicLibAttsWithHistory(List<DynamicAttLibViewModel> DynamicLibAttValues, int TablesNameId, int LibId, int? UserId, int? TableHistoryId = null, int EntitesId = 0);
         List<DynamicAttLibViewModel> GetDynamicLibAtts(int TableNameId, int Id, int? CategoryId);
-
+      
         void DisableDynamicAttLibValues(int TableNameId, int Id);
         List<BaseInstAttViewDynamic> GetDynamicLibAtt(int TableNameId, int Id, int? CategoryId);
         void UpdateDynamicLibAttsWithHistorys(List<AddDdynamicAttributeInstallationValueViewModel> DynamicLibAttValues, string connectionString, int TablesNameId, int LibId, int? UserId, int? TableHistoryId = null, int EntitesId = 0);
+        
+        void UpdateDynamicLibAttsWithH(List<AddDdynamicAttributeInstallationValueViewModel> DynamicLibAttValues, string connectionString, int TablesNameId, int LibId, int? UserId, int HistoryId);
+        void AddDynamicLibraryAtt(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int? RecordId, int TableNameId, int Id, string connectionString, int HistoryId);
     }
 }

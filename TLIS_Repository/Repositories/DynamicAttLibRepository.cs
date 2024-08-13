@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using TLIS_DAL;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
@@ -73,7 +74,7 @@ namespace TLIS_Repository.Repositories
                 _context.SaveChanges();
             }
         }
-        public void AddDynamicLibAtt(int UserId,List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int TableNameId, int Id,string connectionString)
+        public void AddDynamicLibAtt(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int TableNameId, int Id, string connectionString)
         {
             var TablesName = _context.TLItablesNames.FirstOrDefault(x => x.Id == TableNameId)?.TableName;
             var dynamicAttLibValueEntities = addDynamicLibAttValues.Select(DynamicLibAttValue =>
@@ -153,12 +154,240 @@ namespace TLIS_Repository.Repositories
                             break;
                     }
                 }
-              
+
                 dynamicAttLibValueEntity.disable = false;
                 return dynamicAttLibValueEntity;
-            }).ToList(); 
+            }).ToList();
 
             AddRangeWithHistory(UserId, dynamicAttLibValueEntities);
+            _context.SaveChanges();
+            if (TablesName == "TLIcivilWithLegs")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLIcivilWithoutLeg")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLIcivilNonSteel")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLIcivilNonSteelLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLIcivilWithLegLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLIcivilWithoutLegLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLIsideArm")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLIsideArmLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLIradioAntenna")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            //else if (TablesName == "TLIradioOther")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIradioRRU")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIradioOtherLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            else if (TablesName == "TLIradioAntennaLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            //else if (TablesName == "TLIradioRRULibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLImwBU")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLImwRFU")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            else if (TablesName == "TLImwDish")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLImwODU")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            //else if (TablesName == "TLImwOther")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLImwBULibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLImwRFULibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            else if (TablesName == "TLImwDishLibrary")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            else if (TablesName == "TLImwODULibrary")
+            {
+                Task.Run(() => RefreshView(connectionString));
+            }
+            //else if (TablesName == "TLImwOtherLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIpower")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIpowerLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIloadOther")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIloadOtherLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIcabinet")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIsolar")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIgenerator")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIsolarLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIgeneratorLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIcabinetPowerLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+            //else if (TablesName == "TLIcabinetTelecomLibrary")
+            //{
+            //    Task.Run(() => RefreshView(connectionString, "MV_CIVIL_WITHLEGS_VIEW"));
+            //}
+        }
+        public void AddDynamicLibraryAtt(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int? RecordId, int TableNameId, int Id, string connectionString,int HistoryId)
+        {
+            var TablesName = _context.TLItablesNames.FirstOrDefault(x => x.Id == TableNameId)?.TableName;
+            var dynamicAttLibValueEntities = addDynamicLibAttValues.Select(DynamicLibAttValue =>
+            {
+                var dynamicAttEntity = _context.TLIdynamicAtt
+                    .Where(x => x.Id == DynamicLibAttValue.id)
+                    .Include(x => x.DataType)
+                    .FirstOrDefault();
+                TLIdynamicAttLibValue dynamicAttLibValueEntity = new TLIdynamicAttLibValue();
+                dynamicAttLibValueEntity.InventoryId = Id;
+                dynamicAttLibValueEntity.tablesNamesId = TableNameId;
+                dynamicAttLibValueEntity.DynamicAttId = dynamicAttEntity.Id;
+                dynamic value = DynamicLibAttValue.value.ToString();
+                if (value != null)
+                {
+                    string dataType = dynamicAttEntity.DataType.Name.ToLower();
+
+                    switch (dataType)
+                    {
+                        case "bool":
+                            bool boolValue;
+                            if (bool.TryParse(value, out boolValue))
+                            {
+                                dynamicAttLibValueEntity.ValueBoolean = boolValue;
+                            }
+                            else
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid boolean value.");
+                            }
+                            break;
+                        case "datetime":
+                            DateTime dateTimeValue;
+                            if (DateTime.TryParse(value, out dateTimeValue))
+                            {
+                                dynamicAttLibValueEntity.ValueDateTime = dateTimeValue;
+                            }
+                            else
+                            {
+                                dynamicAttLibValueEntity.ValueDateTime = null;
+
+                                throw new ArgumentException("Invalid datetime value.");
+                            }
+                            break;
+                        case "double":
+                            double doubleValue;
+                            if (double.TryParse(value, out doubleValue))
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = doubleValue;
+                            }
+                            else
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid double value.");
+                            }
+                            break;
+                        case "int":
+                            int intValue;
+                            if (int.TryParse(value, out intValue))
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = intValue;
+                            }
+                            else
+                            {
+                                dynamicAttLibValueEntity.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid int value.");
+                            }
+                            break;
+                        case "string":
+                            dynamicAttLibValueEntity.ValueString = value;
+                            break;
+                        default:
+
+                            break;
+                    }
+                }
+
+                dynamicAttLibValueEntity.disable = false;
+                return dynamicAttLibValueEntity;
+            }).ToList();
+
+            AddRangeWithHDynamic(UserId, HistoryId, TableNameId, RecordId, dynamicAttLibValueEntities);
             _context.SaveChanges();
             if (TablesName == "TLIcivilWithLegs")
             {
@@ -410,10 +639,10 @@ namespace TLIS_Repository.Repositories
                     Key = DynamicAtt.Key,
                     DataTypeId = DynamicAtt.DataTypeId,
                     DataType = DynamicAtt.DataType.Name,
-                    Label= DynamicAtt.Key,
+                    Label = DynamicAtt.Key,
                     Required = DynamicAtt.Required,
-                    enable =  !DynamicAtt.disable,
-                    Options = new object[] { } 
+                    enable = !DynamicAtt.disable,
+                    Options = new object[] { }
 
                 };
 
@@ -1018,7 +1247,7 @@ namespace TLIS_Repository.Repositories
                                     break;
                             }
 
-                        _context.TLIdynamicAttLibValue.Add(dynamicAttLibValuenew);
+                            _context.TLIdynamicAttLibValue.Add(dynamicAttLibValuenew);
                             _context.SaveChanges();
                             if (TableHistoryId == null || TableHistoryId == 0)
                             {
@@ -1084,6 +1313,132 @@ namespace TLIS_Repository.Repositories
                 }
             }
             Task.Run(() => RefreshView(connectionString));
+        }
+        public void UpdateDynamicLibAttsWithH(List<AddDdynamicAttributeInstallationValueViewModel> DynamicLibAttValues, string connectionString, int TablesNameId, int LibId, int? UserId,int HistoryId)
+        {
+           
+                var TabelName = _context.TLItablesNames.FirstOrDefault(x => x.Id == TablesNameId)?.TableName;
+                string AttName = "";
+                string test;
+                foreach (var DynamicLibAttValue in DynamicLibAttValues)
+                {
+
+                    TLIdynamicAtt dynamicatt = _context.TLIdynamicAtt.FirstOrDefault(x => x.Id == DynamicLibAttValue.id);
+                  
+                    TLIdynamicAttLibValue dynamicAttLibValue = _context.TLIdynamicAttLibValue
+                        .Where(d => d.DynamicAttId == DynamicLibAttValue.id && d.tablesNamesId == TablesNameId && d.InventoryId == LibId)
+                        .FirstOrDefault();
+                    var TabelNamesec = _context.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIdynamicAttLibValue").Id;
+                    if (dynamicAttLibValue != null)
+                    {
+                        if (DynamicLibAttValue.value == null)
+                        {
+                            continue;
+                        }
+                      
+                        var Old = dynamicAttLibValue.Value;
+
+                        var New = DynamicLibAttValue.value.ToString();
+
+                        if (Old != New)
+                        {
+                            dynamicAttLibValue.Value = DynamicLibAttValue.value.ToString();
+                            if (dynamicAttLibValue.ValueString != null && dynamicAttLibValue.ValueString != "")
+                            {
+                                string test1 = New.ToString().Trim().ToString();
+                                dynamicAttLibValue.ValueString = test1;
+                                dynamicAttLibValue.Value = test1;
+                            }
+                            else if (dynamicAttLibValue.ValueDouble != null)
+                            {
+                                dynamicAttLibValue.ValueDouble = double.Parse(New.ToString());
+                            }
+                            else if (dynamicAttLibValue.ValueDateTime != null)
+                            {
+                                dynamicAttLibValue.ValueDateTime = DateTime.Parse(New.ToString());
+                            }
+                            else if (dynamicAttLibValue.ValueBoolean != null)
+                            {
+                                dynamicAttLibValue.ValueBoolean = bool.Parse(New.ToString());
+                            }
+                            _context.TLIdynamicAttLibValue.Update(dynamicAttLibValue);
+                            var CheckTableHistoryForEdit = _context.TLItablesHistory.Where(x => x.TablesNameId == TablesNameId).Select(x => x.Id).ToList();
+                            TLIhistoryDet historyDetails = new TLIhistoryDet();
+                            AttName = _context.TLIdynamicAtt.Where(x => x.Id == dynamicAttLibValue.DynamicAttId).Select(x => x.Key).FirstOrDefault();
+                            historyDetails.AttributeName = AttName;
+                            historyDetails.TablesNameId = TabelNamesec;
+                            historyDetails.OldValue = Old;
+                            historyDetails.NewValue = New.ToString();
+                            historyDetails.HistoryId = HistoryId;
+                            historyDetails.AttributeType = AttributeType.Dynamic;
+                            historyDetails.RecordId = dynamicAttLibValue.Id.ToString();
+                            _context.TLIhistoryDet.Add(historyDetails);
+                            _context.SaveChanges();
+
+
+                        }
+
+                        
+                    }
+                    else
+                    {
+                        if (DynamicLibAttValue.value == null)
+                        {
+                            continue;
+                        }
+                        var Check = _context.TLIdynamicAtt.Where(x => x.Id == DynamicLibAttValue.id).FirstOrDefault();
+                        if (Check != null)
+                        {
+                            if (Check.tablesNamesId == TablesNameId && Check.LibraryAtt == true && Check.Id == DynamicLibAttValue.id)
+                            {
+                                TLIdynamicAttLibValue dynamicAttLibValuenew = new TLIdynamicAttLibValue();
+                                dynamicAttLibValuenew.InventoryId = LibId;
+                                dynamicAttLibValuenew.DynamicAttId = DynamicLibAttValue.id;
+                                dynamicAttLibValuenew.tablesNamesId = TablesNameId;
+                                dynamicAttLibValuenew.Value = DynamicLibAttValue.value.ToString();
+                                dynamic value = DynamicLibAttValue.value;
+                                switch (value)
+                                {
+                                    case int NumberValue:
+                                        dynamicAttLibValuenew.ValueDouble = NumberValue;
+                                        break;
+                                    case string stringValue:
+                                        dynamicAttLibValuenew.ValueString = stringValue;
+                                        break;
+                                    case double doubleValue:
+                                        dynamicAttLibValuenew.ValueDouble = doubleValue;
+                                        break;
+                                    case DateTime dateTimeValue:
+                                        dynamicAttLibValuenew.ValueDateTime = dateTimeValue;
+                                        break;
+                                    case bool booleanValue:
+                                        dynamicAttLibValuenew.ValueBoolean = booleanValue;
+                                        break;
+                                }
+
+                                _context.TLIdynamicAttLibValue.Add(dynamicAttLibValuenew);
+                                _context.SaveChanges();
+                                var New = DynamicLibAttValue.value;
+
+                                TLIhistoryDet historyDetails = new TLIhistoryDet();
+                                AttName = _context.TLIdynamicAtt.Where(x => x.Id == DynamicLibAttValue.id).Select(x => x.Key).FirstOrDefault();
+                                historyDetails.AttributeName = AttName;
+                                historyDetails.TablesNameId = TabelNamesec;
+                                historyDetails.RecordId = dynamicAttLibValuenew.Id.ToString();
+                                historyDetails.HistoryId = HistoryId;
+
+                                historyDetails.OldValue = null;
+                                historyDetails.NewValue = New.ToString();
+                                historyDetails.AttributeType = AttributeType.Dynamic;
+                                _context.TLIhistoryDet.Add(historyDetails);
+                                _context.SaveChanges();
+
+                            }
+                        }
+                    }
+           
+                Task.Run(() => RefreshView(connectionString));
+            }
         }
     }
 }
