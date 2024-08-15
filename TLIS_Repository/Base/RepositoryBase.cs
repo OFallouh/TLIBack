@@ -661,20 +661,29 @@ namespace TLIS_Repository.Base
                 _context.SaveChanges();
             }
         }
-        public virtual async Task AddAsyncWithH(int? UserId, int? SecRecordId, TEntity AddObject)
+        public async Task<int> AddAsyncWithH(int? UserId, int? SecRecordId, TEntity AddObject)
         {
+            int HistoryId = 0;
 
+            // Add the object to the table
             await dataTable.AddAsync(AddObject);
             await _context.SaveChangesAsync();
+
             if (UserId != null)
             {
-                TLItablesNames EntityTableNameModel = _context.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == AddObject.GetType().Name.ToLower());
+                // Retrieve the table name entity
+                TLItablesNames EntityTableNameModel = _context.TLItablesNames
+                    .FirstOrDefault(x => x.TableName.ToLower() == AddObject.GetType().Name.ToLower());
 
-                int HistoryTypeId = _context.TLIhistoryType.FirstOrDefault(x =>
-                    x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Add.ToString().ToLower()).Id;
+                // Retrieve the history type ID for "Add" operation
+                int HistoryTypeId = _context.TLIhistoryType
+                    .FirstOrDefault(x => x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Add.ToString().ToLower()).Id;
 
+                // Retrieve the entity ID
                 int entityId = (int)AddObject.GetType().GetProperty("Id").GetValue(AddObject, null);
                 string entityIdString = entityId.ToString();
+
+                // Create a new history record
                 TLIhistory AddTablesHistory = new TLIhistory
                 {
                     HistoryTypeId = HistoryTypeId,
@@ -683,59 +692,57 @@ namespace TLIS_Repository.Base
                     UserId = UserId.Value
                 };
 
+                // Add the history record to the table
                 await _context.TLIhistory.AddAsync(AddTablesHistory);
                 await _context.SaveChangesAsync();
+                HistoryId = AddTablesHistory.Id;
 
-                List<PropertyInfo> Attributes = AddObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
-                    (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
-                        (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
-                         x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
-                         x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
-                         x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
-                    (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
-                     x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
-                     x.PropertyType == typeof(Single))).ToList();
+                // Get the properties of the entity to track
+                List<PropertyInfo> Attributes = AddObject.GetType().GetProperties().Where(x =>
+                    x.PropertyType.IsGenericType ?
+                        (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                         (x.PropertyType.GetGenericArguments()[0] == typeof(int) ||
+                          x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                          x.PropertyType.GetGenericArguments()[0] == typeof(double) ||
+                          x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                          x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                          x.PropertyType.GetGenericArguments()[0] == typeof(DateTime))) :
+                        (x.PropertyType == typeof(int) ||
+                         x.PropertyType == typeof(double) ||
+                         x.PropertyType == typeof(string) ||
+                         x.PropertyType == typeof(bool) ||
+                         x.PropertyType == typeof(DateTime) ||
+                         x.PropertyType == typeof(float)))
+                    .ToList();
 
+                // Create a list to hold history details
                 List<TLIhistoryDet> ListOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
 
+                // Add history details for each property
                 foreach (PropertyInfo Attribute in Attributes)
                 {
                     object NewAttributeValue = Attribute.GetValue(AddObject, null);
-                    if (SecRecordId != null)
+                    TLIhistoryDet HistoryDetails = new TLIhistoryDet
                     {
-                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
-                        {
-                            TablesNameId = EntityTableNameModel.Id,
-                            RecordId = SecRecordId.ToString(),
-                            HistoryId = AddTablesHistory.Id,
-                            AttributeName = Attribute.Name,
-                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
-                            AttributeType = AttributeType.Static
-                        };
+                        TablesNameId = EntityTableNameModel.Id,
+                        RecordId = SecRecordId != null ? SecRecordId.ToString() : entityIdString,
+                        HistoryId = AddTablesHistory.Id,
+                        AttributeName = Attribute.Name,
+                        NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                        AttributeType = AttributeType.Static
+                    };
 
-                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
-                    }
-                    else
-                    {
-                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
-                        {
-                            TablesNameId = EntityTableNameModel.Id,
-                            RecordId = entityIdString,
-                            HistoryId = AddTablesHistory.Id,
-                            AttributeName = Attribute.Name,
-                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
-                            AttributeType = AttributeType.Static
-                        };
-
-                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
-                    }
-
+                    ListOfHistoryDetailsToAdd.Add(HistoryDetails);
                 }
 
+                // Add all history details to the table
                 await _context.TLIhistoryDet.AddRangeAsync(ListOfHistoryDetailsToAdd);
                 await _context.SaveChangesAsync();
             }
+
+            return HistoryId;
         }
+
         public void AddRangeWithH(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities)
         {
             foreach (TEntity Entity in Entities)

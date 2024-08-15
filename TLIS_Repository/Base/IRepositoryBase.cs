@@ -19,7 +19,7 @@ namespace TLIS_Repository.Base
         Task<IEnumerable<TEntity>> GetAllAsync(ParameterPagination parameterPagination = null, List<FilterObjectList> filter = null);
         IEnumerable<TEntity> GetAll(out int count);
         void UpdateWithHLogic(int? UserId, int HistoryId, int TabelNameId, TEntity OldObject, TEntity NewObject);
-        Task AddAsyncWithH(int? UserId, int? SecRecordId, TEntity AddObject);
+        Task<int> AddAsyncWithH(int? UserId, int? SecRecordId, TEntity AddObject);
         void AddRangeWithH(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities);
         int UpdateWithH(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject);
         IEnumerable<TEntity> GetAllWithoutCount();

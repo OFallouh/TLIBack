@@ -148,7 +148,25 @@ namespace TLIS_API.Controllers.OtherInventory
         public async Task<IActionResult> DisableCabinetPowerLibrary(int Id)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), ConnectionString);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.OtherInventoryLibraryService.Disable(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), ConnectionString, userId);
             return Ok(response);
         }
         [HttpPost("DeleteCabinetPowerLibrary/{Id}")]
@@ -156,7 +174,25 @@ namespace TLIS_API.Controllers.OtherInventory
         public async Task<IActionResult> DeleteCabinetPowerLibrary(int Id)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), ConnectionString);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.OtherInventoryLibraryService.Delete(Id, Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString(), ConnectionString, userId);
             return Ok(response);
         }
     }

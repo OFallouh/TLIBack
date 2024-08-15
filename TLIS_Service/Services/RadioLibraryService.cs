@@ -2000,19 +2000,18 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                                 return new Response<AddRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                            _unitOfWork.RadioAntennaLibraryRepository.AddWithHistory(UserId, radioAntennaLibrary);
+                           var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.AddWithH(UserId,null, radioAntennaLibrary);
                             _unitOfWork.SaveChanges();
 
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = RadioLibraryViewModel.LogisticalItems;
-                            AddLogisticalItemWithCivil(UserId,LogisticalItemIds, radioAntennaLibrary, TableNameEntity.Id);
+                            AddLogisticalItemWithCivilH(UserId,LogisticalItemIds, radioAntennaLibrary, TableNameEntity.Id, HistoryId);
 
                             if (RadioLibraryViewModel.DynamicAttributes.Count > 0)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id, connectionString);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id, connectionString,HistoryId);
                             }
-                            _unitOfWork.TablesHistoryRepository.AddHistory(radioAntennaLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIradioAntennaLibrary.ToString().ToLower());
-                            
+                           
                           
                             transaction.Complete();
                             tran.Commit();
@@ -2030,6 +2029,127 @@ namespace TLIS_Service.Services
                 }
             }
 
+        }
+        public void AddLogisticalItemWithCivilH(int UserId, dynamic LogisticalItemIds, dynamic CivilEntity, int TableNameEntityId, int HistoryId)
+        {
+            using (TransactionScope transaction = new TransactionScope())
+            {
+                try
+                {
+                    if (LogisticalItemIds != null)
+                    {
+                        if (LogisticalItemIds.Vendor != null && LogisticalItemIds.Vendor != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Vendor);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TableNameEntityId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Supplier != null && LogisticalItemIds.Supplier != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Supplier);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TableNameEntityId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Designer != null && LogisticalItemIds.Designer != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Designer);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TableNameEntityId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Manufacturer != null && LogisticalItemIds.Manufacturer != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Manufacturer);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TableNameEntityId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Contractor != null && LogisticalItemIds.Contractor != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Contractor);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TableNameEntityId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+
+                        }
+                        if (LogisticalItemIds.Consultant != null && LogisticalItemIds.Consultant != 0)
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository.GetByID(LogisticalItemIds.Consultant);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = CivilEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TableNameEntityId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                    }
+
+                    transaction.Complete();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
         }
         public Response<AddRadioOtherLibraryObject> AddRadioOtherLibrary(string TableName, AddRadioOtherLibraryObject addRadioOtherLibraryObject, string connectionString, int UserId)
         {
@@ -2077,20 +2197,18 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                                 return new Response<AddRadioOtherLibraryObject>(true, null, null, $"This model {radioOtherLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                            _unitOfWork.RadioOtherLibraryRepository.AddWithHistory(UserId, radioOtherLibrary);
+                           var HistoryId= _unitOfWork.RadioOtherLibraryRepository.AddWithH(UserId,null, radioOtherLibrary);
                             _unitOfWork.SaveChanges();
 
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = addRadioOtherLibraryObject.LogisticalItems;
-                            AddLogisticalItemWithCivil(UserId, LogisticalItemIds, radioOtherLibrary, TableNameEntity.Id);
+                            AddLogisticalItemWithCivilH(UserId, LogisticalItemIds, radioOtherLibrary, TableNameEntity.Id, HistoryId);
 
                             if (addRadioOtherLibraryObject.DynamicAttributes.Count > 0)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, addRadioOtherLibraryObject.DynamicAttributes, TableNameEntity.Id, radioOtherLibrary.Id, connectionString);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, addRadioOtherLibraryObject.DynamicAttributes, TableNameEntity.Id, radioOtherLibrary.Id, connectionString, HistoryId);
                             }
-                            _unitOfWork.TablesHistoryRepository.AddHistory(radioOtherLibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIradioOtherLibrary.ToString().ToLower());
-
-
+                          
                             transaction.Complete();
                             tran.Commit();
 
@@ -2154,19 +2272,18 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                                 return new Response<AddRadioRRULibraryObject>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                            _unitOfWork.RadioRRULibraryRepository.AddWithHistory(UserId, radioRRULibrary);
+                           var HistoryId= _unitOfWork.RadioRRULibraryRepository.AddWithH(UserId,null, radioRRULibrary);
                             _unitOfWork.SaveChanges();
 
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = RadioLibraryViewModel.LogisticalItems;
-                            AddLogisticalItemWithCivil(UserId, LogisticalItemIds, radioRRULibrary, TableNameEntity.Id);
+                            AddLogisticalItemWithCivilH(UserId, LogisticalItemIds, radioRRULibrary, TableNameEntity.Id,HistoryId);
 
                             if (RadioLibraryViewModel.DynamicAttributes.Count > 0)
                             {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioRRULibrary.Id, connectionString);
+                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioRRULibrary.Id, connectionString, HistoryId);
                             }
-                            _unitOfWork.TablesHistoryRepository.AddHistory(radioRRULibrary.Id, Helpers.Constants.HistoryType.Add.ToString().ToLower(), TablesNames.TLIradioRRULibrary.ToString().ToLower());
-
+                       
 
                             transaction.Complete();
                             tran.Commit();
@@ -3471,7 +3588,7 @@ namespace TLIS_Service.Services
                          return new Response<EditRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                         radioAntennaLibrary.Active = OldRadioAntenna.Active;
                         radioAntennaLibrary.Deleted = OldRadioAntenna.Deleted;
-                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, OldRadioAntenna, radioAntennaLibrary);
+                        var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntenna, radioAntennaLibrary);
                         await _unitOfWork.SaveChangesAsync();
                         //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
                         //if (!string.IsNullOrEmpty(CheckDependency))
@@ -3542,11 +3659,11 @@ namespace TLIS_Service.Services
                         OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
 
 
-                    EditLogisticalItemss(UserId, RadioLibraryViewModel.LogisticalItems, radioAntennaLibrary, TableNameEntity.Id, OldLogisticalItemIds);
+                    EditLogisticalItemH(UserId, RadioLibraryViewModel.LogisticalItems, radioAntennaLibrary, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
 
                     if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, connectionString ,TableNameEntity.Id, radioAntennaLibrary.Id, UserId, resultId, radioAntennaLibrary.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(RadioLibraryViewModel.DynamicAttributes, connectionString ,TableNameEntity.Id, radioAntennaLibrary.Id, UserId, HistoryId);
                     }
 
                     await _unitOfWork.SaveChangesAsync();
@@ -3560,6 +3677,365 @@ namespace TLIS_Service.Services
                     return new Response<EditRadioAntennaLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
+        }
+        public void EditLogisticalItemH(int UserId, AddLogisticalViewModel LogisticalItemIds, dynamic MainEntity, int TableNameEntityId, AddLogisticalViewModel OldLogisticalItemIds, int HistoryId)
+        {
+
+            try
+            {
+                if (LogisticalItemIds != null)
+                {
+                    var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIlogisticalitem").Id;
+                    if (LogisticalItemIds.Vendor != null && LogisticalItemIds.Vendor != 0 || LogisticalItemIds.Vendor == null)
+                    {
+                        if (OldLogisticalItemIds.Vendor != null ? OldLogisticalItemIds.Vendor != 0 : false)
+                        {
+                            TLIlogistical OldLogisticalObject = _unitOfWork.LogistcalRepository
+                                .GetByID(OldLogisticalItemIds.Vendor);
+
+                            int CivilId = MainEntity.Id;
+
+                            var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id
+                            && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            if (LogisticalItem != null)
+                            {
+                                LogisticalItem.logisticalId = LogisticalItemIds.Vendor;
+
+                                _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    logisticalId = LogisticalItemIds.Vendor,
+                                    Name = OldLogisticalObject.Name,
+                                    RecordId = CivilId,
+                                    tablesNamesId = TableNameEntityId
+                                };
+
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository
+                                .GetByID(LogisticalItemIds.Vendor);
+
+                            TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                            {
+                                Name = "",
+                                IsLib = true,
+                                logisticalId = LogisticalObject.Id,
+                                RecordId = MainEntity.Id,
+                                tablesNamesId = TableNameEntityId
+                            };
+                            _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                            _unitOfWork.SaveChangesAsync();
+                        }
+                    }
+                    if ((LogisticalItemIds.Supplier != null && LogisticalItemIds.Supplier != 0) || LogisticalItemIds.Supplier == null)
+                    {
+                        if (OldLogisticalItemIds.Supplier != null ? OldLogisticalItemIds.Supplier != 0 : false)
+                        {
+                            TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Supplier);
+
+                            int CivilId = MainEntity.Id;
+
+                            var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id
+                            && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            if (LogisticalItem != null)
+                            {
+                                LogisticalItem.logisticalId = LogisticalItemIds.Supplier;
+
+                                _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    logisticalId = LogisticalItemIds.Supplier,
+                                    Name = OldLogisticalObject.Name,
+                                    RecordId = CivilId,
+                                    tablesNamesId = TableNameEntityId
+                                };
+
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Supplier);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = MainEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                    }
+                    if (LogisticalItemIds.Designer != null && LogisticalItemIds.Designer != 0 || LogisticalItemIds.Designer == null)
+                    {
+                        if (OldLogisticalItemIds.Designer != null ? OldLogisticalItemIds.Designer != 0 : false)
+                        {
+                            TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Designer);
+
+                            int CivilId = MainEntity.Id;
+
+                            var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id
+                            && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            if (LogisticalItem != null)
+                            {
+                                LogisticalItem.logisticalId = LogisticalItemIds.Designer;
+
+                                _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    logisticalId = LogisticalItemIds.Designer,
+                                    Name = OldLogisticalObject.Name,
+                                    RecordId = CivilId,
+                                    tablesNamesId = TableNameEntityId
+                                };
+
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            TLIlogistical LogisticalObject = db.TLIlogistical
+                                .FirstOrDefault(x => x.Id == LogisticalItemIds.Designer);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = MainEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                    }
+                    if (LogisticalItemIds.Manufacturer != null && LogisticalItemIds.Manufacturer != 0 || LogisticalItemIds.Manufacturer == null)
+                    {
+                        if (OldLogisticalItemIds.Manufacturer != null ? OldLogisticalItemIds.Manufacturer != 0 : false)
+                        {
+                            TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Manufacturer);
+
+                            int CivilId = MainEntity.Id;
+
+                            var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id &&
+                            x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            if (LogisticalItem != null)
+                            {
+                                LogisticalItem.logisticalId = LogisticalItemIds.Manufacturer;
+
+                                _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    logisticalId = LogisticalItemIds.Manufacturer,
+                                    Name = OldLogisticalObject.Name,
+                                    RecordId = CivilId,
+                                    tablesNamesId = TableNameEntityId
+                                };
+
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Manufacturer);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = MainEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                    }
+                    if (LogisticalItemIds.Consultant != null && LogisticalItemIds.Consultant != 0 || LogisticalItemIds.Consultant == null)
+                    {
+                        if (OldLogisticalItemIds.Consultant != null ? OldLogisticalItemIds.Consultant != 0 : false)
+                        {
+                            TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Consultant);
+
+                            int CivilId = MainEntity.Id;
+
+                            var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id &&
+                            x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            if (LogisticalItem != null)
+                            {
+                                LogisticalItem.logisticalId = LogisticalItemIds.Consultant;
+
+                                _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    logisticalId = LogisticalItemIds.Manufacturer,
+                                    Name = OldLogisticalObject.Name,
+                                    RecordId = CivilId,
+                                    tablesNamesId = TableNameEntityId
+                                };
+
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Consultant);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = MainEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                    }
+                    if (LogisticalItemIds.Contractor != null && LogisticalItemIds.Contractor != 0 || LogisticalItemIds.Contractor == null)
+                    {
+                        if (OldLogisticalItemIds.Contractor != null ? OldLogisticalItemIds.Contractor != 0 : false)
+                        {
+                            TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Contractor);
+
+                            int CivilId = MainEntity.Id;
+
+                            var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id &&
+                            x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                    x.tablesNamesId == TableNameEntityId);
+
+                            if (LogisticalItem != null)
+                            {
+                                LogisticalItem.logisticalId = LogisticalItemIds.Contractor;
+
+                                _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    logisticalId = LogisticalItemIds.Manufacturer,
+                                    Name = OldLogisticalObject.Name,
+                                    RecordId = CivilId,
+                                    tablesNamesId = TableNameEntityId
+                                };
+
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        else
+                        {
+                            TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Contractor);
+                            if (LogisticalObject != null)
+                            {
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = MainEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                            }
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
         public async Task<Response<EditRadioOtherLibraryObject>> EditRadioOtherLibrary(string TableName, EditRadioOtherLibraryObject editRadioOtherLibraryObject, int UserId, string connectionString)
         {
@@ -3595,7 +4071,7 @@ namespace TLIS_Service.Services
 
                     radioOtherLibrary.Active = OldRadioOther.Active;
                     radioOtherLibrary.Deleted = OldRadioOther.Deleted;
-                    _unitOfWork.RadioOtherLibraryRepository.UpdateWithHistory(UserId, OldRadioOther, radioOtherLibrary);
+                   var HistoryId= _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId,null, OldRadioOther, radioOtherLibrary);
                     await _unitOfWork.SaveChangesAsync();
                     //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
                     //if (!string.IsNullOrEmpty(CheckDependency))
@@ -3666,11 +4142,11 @@ namespace TLIS_Service.Services
                         OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
 
 
-                    EditLogisticalItems(UserId, editRadioOtherLibraryObject.LogisticalItems, radioOtherLibrary, TableNameEntity.Id, OldLogisticalItemIds);
+                    EditLogisticalItemsH(UserId, editRadioOtherLibraryObject.LogisticalItems, radioOtherLibrary, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
 
                     if (editRadioOtherLibraryObject.DynamicAttributes != null ? editRadioOtherLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(editRadioOtherLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, radioOtherLibrary.Id, UserId, resultId, radioOtherLibrary.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(editRadioOtherLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, radioOtherLibrary.Id, UserId,HistoryId);
                     }
 
                     await _unitOfWork.SaveChangesAsync();
@@ -3682,6 +4158,370 @@ namespace TLIS_Service.Services
                 catch (Exception err)
                 {
                     return new Response<EditRadioOtherLibraryObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+        public void EditLogisticalItemsH(int UserId, LogisticalObject LogisticalItemIds, dynamic MainEntity, int TableNameEntityId, LogisticalObject OldLogisticalItemIds, int HistoryId)
+        {
+            using (TransactionScope transaction2 =
+                new TransactionScope(TransactionScopeOption.Required,
+                                   new System.TimeSpan(0, 15, 0)))
+            {
+                try
+                {
+                    if (LogisticalItemIds != null)
+                    {
+                        var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIlogisticalitem").Id;
+                        if (LogisticalItemIds.Vendor != null && LogisticalItemIds.Vendor != 0)
+                        {
+                            if (OldLogisticalItemIds.Vendor != null ? OldLogisticalItemIds.Vendor != 0 : false)
+                            {
+                                TLIlogistical OldLogisticalObject = _unitOfWork.LogistcalRepository
+                                    .GetWhereFirst(x => x.Id == LogisticalItemIds.Vendor);
+
+                                int CivilId = MainEntity.Id;
+
+                                var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id
+                                && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                    .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Vendor;
+
+                                    _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.Vendor,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                            else
+                            {
+                                TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository
+                                    .GetWhereFirst(x => x.Id == LogisticalItemIds.Vendor);
+
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = MainEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
+                        }
+                        if (LogisticalItemIds.Supplier != null && LogisticalItemIds.Supplier != 0)
+                        {
+                            if (OldLogisticalItemIds.Supplier != null ? OldLogisticalItemIds.Supplier != 0 : false)
+                            {
+                                TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Supplier);
+
+                                int CivilId = MainEntity.Id;
+
+                                var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id
+                                && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                    .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Supplier;
+
+                                    _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.Supplier,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                            else
+                            {
+                                TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Supplier);
+                                if (LogisticalObject != null)
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                    {
+                                        Name = "",
+                                        IsLib = true,
+                                        logisticalId = LogisticalObject.Id,
+                                        RecordId = MainEntity.Id,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                        }
+                        if (LogisticalItemIds.Designer != null && LogisticalItemIds.Designer != 0)
+                        {
+                            if (OldLogisticalItemIds.Designer != null ? OldLogisticalItemIds.Designer != 0 : false)
+                            {
+                                TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Designer);
+
+                                int CivilId = MainEntity.Id;
+
+                                var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id
+                                && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                    .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Designer;
+
+                                    _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.Designer,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                            else
+                            {
+                                TLIlogistical LogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == LogisticalItemIds.Designer);
+                                if (LogisticalObject != null)
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                    {
+                                        Name = "",
+                                        IsLib = true,
+                                        logisticalId = LogisticalObject.Id,
+                                        RecordId = MainEntity.Id,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                        }
+                        if (LogisticalItemIds.Manufacturer != null && LogisticalItemIds.Manufacturer != 0)
+                        {
+                            if (OldLogisticalItemIds.Manufacturer != null ? OldLogisticalItemIds.Manufacturer != 0 : false)
+                            {
+                                TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Manufacturer);
+
+                                int CivilId = MainEntity.Id;
+
+                                var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id &&
+                                x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                    .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Manufacturer;
+
+                                    _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.Manufacturer,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                            else
+                            {
+                                TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Manufacturer);
+                                if (LogisticalObject != null)
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                    {
+                                        Name = "",
+                                        IsLib = true,
+                                        logisticalId = LogisticalObject.Id,
+                                        RecordId = MainEntity.Id,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                        }
+                        if (LogisticalItemIds.Consultant != null && LogisticalItemIds.Consultant != 0)
+                        {
+                            if (OldLogisticalItemIds.Consultant != null ? OldLogisticalItemIds.Consultant != 0 : false)
+                            {
+                                TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Consultant);
+
+                                int CivilId = MainEntity.Id;
+
+                                var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id &&
+                                x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                    .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Consultant;
+
+                                    _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.Manufacturer,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                            else
+                            {
+                                TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Consultant);
+                                if (LogisticalObject != null)
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                    {
+                                        Name = "",
+                                        IsLib = true,
+                                        logisticalId = LogisticalObject.Id,
+                                        RecordId = MainEntity.Id,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                        }
+                        if (LogisticalItemIds.Contractor != null && LogisticalItemIds.Contractor != 0)
+                        {
+                            if (OldLogisticalItemIds.Contractor != null ? OldLogisticalItemIds.Contractor != 0 : false)
+                            {
+                                TLIlogistical OldLogisticalObject = db.TLIlogistical
+                                    .FirstOrDefault(x => x.Id == OldLogisticalItemIds.Contractor);
+
+                                int CivilId = MainEntity.Id;
+
+                                var OldValueMWRFU = db.TLIlogisticalitem.AsNoTracking().FirstOrDefault(x => x.logisticalId == OldLogisticalObject.Id &&
+                                x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                TLIlogisticalitem? LogisticalItem = _unitOfWork.LogisticalitemRepository
+                                    .GetWhereFirst(x => x.logisticalId == OldLogisticalObject.Id && x.IsLib && x.RecordId == CivilId &&
+                                        x.tablesNamesId == TableNameEntityId);
+
+                                if (LogisticalItem != null)
+                                {
+                                    LogisticalItem.logisticalId = LogisticalItemIds.Contractor;
+
+                                    _unitOfWork.LogisticalitemRepository.UpdateWithHLogic(UserId, HistoryId, TabelNameId, OldValueMWRFU, LogisticalItem);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        logisticalId = LogisticalItemIds.Manufacturer,
+                                        Name = OldLogisticalObject.Name,
+                                        RecordId = CivilId,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                            else
+                            {
+                                TLIlogistical LogisticalObject = db.TLIlogistical.FirstOrDefault(x => x.Id == LogisticalItemIds.Contractor);
+                                if (LogisticalObject != null)
+                                {
+                                    TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                    {
+                                        Name = "",
+                                        IsLib = true,
+                                        logisticalId = LogisticalObject.Id,
+                                        RecordId = MainEntity.Id,
+                                        tablesNamesId = TableNameEntityId
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                    _unitOfWork.SaveChangesAsync();
+                                }
+                            }
+                        }
+                    }
+
+                    transaction2.Complete();
+                }
+                catch (Exception)
+                {
+                    throw;
                 }
             }
         }
@@ -4083,7 +4923,7 @@ namespace TLIS_Service.Services
 
                     radioRRULibrary.Active = OldRadioRRU.Active;
                     radioRRULibrary.Deleted = OldRadioRRU.Deleted;
-                    _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(UserId, OldRadioRRU, radioRRULibrary);
+                    var HistoryId= _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId,null, OldRadioRRU, radioRRULibrary);
                     await _unitOfWork.SaveChangesAsync();
                     //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
                     //if (!string.IsNullOrEmpty(CheckDependency))
@@ -4154,11 +4994,11 @@ namespace TLIS_Service.Services
                         OldLogisticalItemIds.Consultant = CheckConsultantId.logisticalId;
 
 
-                    EditLogisticalItemss(UserId, RadioLibraryViewModel.LogisticalItems, radioRRULibrary, TableNameEntity.Id, OldLogisticalItemIds);
+                    EditLogisticalItemH(UserId, RadioLibraryViewModel.LogisticalItems, radioRRULibrary, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
 
                     if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                     {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithHistorys(RadioLibraryViewModel.DynamicAttributes, connectionString, TableNameEntity.Id, radioRRULibrary.Id, UserId, resultId, radioRRULibrary.Id);
+                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(RadioLibraryViewModel.DynamicAttributes, connectionString, TableNameEntity.Id, radioRRULibrary.Id, UserId,HistoryId);
                     }
 
                     await _unitOfWork.SaveChangesAsync();
@@ -5261,7 +6101,7 @@ namespace TLIS_Service.Services
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         var NewRadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
                         NewRadioAntennaEntity.Active = !(NewRadioAntennaEntity.Active);
-                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, OldRadioAntennaLibrary, NewRadioAntennaEntity);
+                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntennaLibrary, NewRadioAntennaEntity);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
@@ -5275,7 +6115,7 @@ namespace TLIS_Service.Services
                         TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetByID(Id);
                       
                         NewRadioOtherLibrary.Active = !(NewRadioOtherLibrary.Active);
-                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithHistory(UserId, OldRadioOtherLibrary, NewRadioOtherLibrary);
+                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId, null, OldRadioOtherLibrary, NewRadioOtherLibrary);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
@@ -5288,7 +6128,7 @@ namespace TLIS_Service.Services
                         TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetByID(Id);
                  
                         NewRadioRRULibrary.Active = !(NewRadioRRULibrary.Active);
-                        _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(UserId, OldRadioRRULibrary, NewRadioRRULibrary);
+                        _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId, null, OldRadioRRULibrary, NewRadioRRULibrary);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
@@ -5472,8 +6312,8 @@ namespace TLIS_Service.Services
                         var NewRadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
                         NewRadioAntennaEntity.Deleted = true;
                         NewRadioAntennaEntity.Model = NewRadioAntennaEntity.Model + "_" + DateTime.Now.ToString();
-                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithHistory(UserId, OldRadioAntennaLibrary, NewRadioAntennaEntity);
-                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
+                        var HistoryId = _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntennaLibrary, NewRadioAntennaEntity);
+                        DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId,HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         AddHistory(NewRadioAntennaEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString());
                     }
@@ -5488,8 +6328,8 @@ namespace TLIS_Service.Services
                         TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetByID(Id);
                         NewRadioOtherLibrary.Deleted = true;
                         NewRadioOtherLibrary.Model = NewRadioOtherLibrary.Model + "_" + DateTime.Now.ToString();
-                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithHistory(UserId, OldRadioOtherLibrary, NewRadioOtherLibrary);
-                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
+                        var HistoryId = _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId, null, OldRadioOtherLibrary, NewRadioOtherLibrary);
+                        DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId,HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         AddHistory(NewRadioOtherLibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString());
                     }
@@ -5503,8 +6343,8 @@ namespace TLIS_Service.Services
                         TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetByID(Id);
                         NewRadioRRULibrary.Deleted = true;
                         NewRadioRRULibrary.Model = NewRadioRRULibrary.Model + "_" + DateTime.Now.ToString();
-                        _unitOfWork.RadioRRULibraryRepository.UpdateWithHistory(UserId, OldRadioRRULibrary, NewRadioRRULibrary);
-                        DisableDynamicAttLibValues(TableNameEntity.Id, Id, UserId);
+                        var HistoryId = _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId,null, OldRadioRRULibrary, NewRadioRRULibrary);
+                        DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         AddHistory(NewRadioRRULibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString());
                     }
@@ -5518,6 +6358,20 @@ namespace TLIS_Service.Services
 
                     return new Response<AllItemAttributes>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
+            }
+        }
+        private void DisableDynamicAttLibValuesH(int TableNameId, int Id, int UserId, int HistorId)
+        {
+            var DynamiAttLibValues = db.TLIdynamicAttLibValue
+                .Where(d => d.InventoryId == Id && d.tablesNamesId == TableNameId)
+                .ToList();
+            var TabelName = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIdynamicAttLibValue").Id;
+            foreach (var DynamiAttLibValue in DynamiAttLibValues)
+            {
+                var OldDynamiAttLibValues = _unitOfWork.DynamicAttLibValueRepository.GetAllAsQueryable().AsNoTracking()
+                .FirstOrDefault(d => d.Id == DynamiAttLibValue.Id);
+                DynamiAttLibValue.disable = true;
+                _unitOfWork.DynamicAttLibValueRepository.UpdateWithHLogic(UserId, HistorId, TabelName, OldDynamiAttLibValues, DynamiAttLibValue);
             }
         }
         private void DisableDynamicAttLibValues(int TableNameId, int Id, int UserId)
