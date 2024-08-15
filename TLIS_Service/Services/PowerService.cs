@@ -2951,6 +2951,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEGID");
                     propertyNamesStatic.Add("LEGNAME");
+                    propertyNamesStatic.Add("SiteCode");
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)

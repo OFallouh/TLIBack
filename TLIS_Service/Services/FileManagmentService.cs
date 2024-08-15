@@ -11805,8 +11805,10 @@ namespace TLIS_Service.Services
                 {
                     if (IsImg == true)
                     {
-                        DirectoryPath = Path.Combine(fileDirectory, "AttachFiles", "Site");
-                        FilePath = Path.Combine(DirectoryPath, $"{FileName}.{FileType}");
+                        fileDirectory = asset;
+                        DirectoryPath = fileDirectory;
+                        FilePath = Path.Combine(fileDirectory, $"{FileName}.{FileType}");
+
                     }
                     else
                     {
@@ -11851,7 +11853,7 @@ namespace TLIS_Service.Services
                 {
                     if (IsImg == true)
                     {
-                        FilePath = Path.Combine("assets\\galleria", $"{FileName}.{FileType}");
+                        FilePath = Path.Combine($"{asset}\\galleria", $"{FileName}.{FileType}");
                         cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
                    " VALUES ('" + FullFileName + "','" + FilePath + "','0'," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
 

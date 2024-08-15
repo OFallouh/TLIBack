@@ -4345,6 +4345,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SIDEARM_ID");
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEG_ID");
+                    propertyNamesStatic.Add("SiteCode");
 
                     if (SiteCode == null)
                     {
