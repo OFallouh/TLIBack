@@ -321,38 +321,56 @@ namespace TLIS_Service.Services
                 return new Response<List<RoleViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<RoleViewModel> GetRoleByRoleName(string RoleName)
+        public Response<List<RoleViewModel>> GetRoleByRoleName(string RoleName)
         {
-            try
+            try 
             {
+                List<RoleViewModel > Response = new List<RoleViewModel>();
+                RoleViewModel roleViewModel = new RoleViewModel();
                 List<string> newPermissionsViewModels = new List<string>();
                 string newPermissionsViewModel = null;
-                RoleViewModel Response = _mapper.Map<RoleViewModel>(_unitOfWork.RoleRepository.GetWhereFirst(x =>
-                    x.Name.ToLower() == RoleName.ToLower()));
-                if (Response != null)
+                if (RoleName == null)
                 {
-                    int RoleId = _unitOfWork.RoleRepository.GetWhereFirst(x => x.Name == RoleName).Id;
-                    List<TLIrole_Permissions> Permissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == RoleId).ToList();
-                    foreach (var item in Permissions)
-                    {
-                        newPermissionsViewModel = item.PageUrl;
-                        newPermissionsViewModels.Add(newPermissionsViewModel);
-
-                    }
-
-                    Response.Permissions = newPermissionsViewModels;
-
-                    return new Response<RoleViewModel>(true, Response, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                    Response = _mapper.Map<List<RoleViewModel>>(_unitOfWork.RoleRepository.GetAllAsQueryable().ToList());
+                    return new Response<List<RoleViewModel>>(true, Response, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
                 {
-                    return new Response<RoleViewModel>(true, null, null, "The Name Is Not Exist", (int)Helpers.Constants.ApiReturnCode.fail); ;
+                    var Roles = _mapper.Map<List<RoleViewModel>>(_unitOfWork.RoleRepository.GetWhere(x=>x.Name.ToLower()==RoleName.ToLower()));
+                    if (Roles.Count() > 0)
+                    {
+                        foreach (var item in Roles)
+                        {
+                            int RoleId = _unitOfWork.RoleRepository.GetWhereFirst(x => x.Name == item.Name).Id;
+                            List<TLIrole_Permissions> Permissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == item.Id).ToList();
+                            foreach (var itemPermissions in Permissions)
+                            {
+                                newPermissionsViewModel = itemPermissions.PageUrl;
+                                newPermissionsViewModels.Add(newPermissionsViewModel);
+
+                            }
+                            roleViewModel.Id = item.Id;
+                            roleViewModel.Name = item.Name;
+                            roleViewModel.Active = item.Active;
+                            roleViewModel.Deleted = item.Deleted;
+                            roleViewModel.Permissions = newPermissionsViewModels;
+                            Response.Add(roleViewModel);
+                        }
+
+
+                        return new Response<List<RoleViewModel>>(true, Response, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                    }
+                    else
+                    {
+                        return new Response<List<RoleViewModel>>(true, null, null, "The Name Is Not Exist", (int)Helpers.Constants.ApiReturnCode.fail); ;
+                    }
                 }
+               
             }
             
             catch (Exception err)
             {
-                return new Response<RoleViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<List<RoleViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
 
         }

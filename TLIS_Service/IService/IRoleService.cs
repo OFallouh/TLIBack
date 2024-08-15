@@ -22,6 +22,6 @@ namespace TLIS_Service.IService
         Response<bool> CheckRoleGroups(int RoleId);
         Response<List<RoleViewModel>> GetRoleByName(string RoleName);
         Task<Response<IEnumerable<RoleViewModel>>> GetRolesFor_WF();
-        Response<RoleViewModel> GetRoleByRoleName(string RoleName);
+        Response<List<RoleViewModel>> GetRoleByRoleName(string RoleName);
     }
 }

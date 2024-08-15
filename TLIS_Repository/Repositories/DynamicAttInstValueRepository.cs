@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using TLIS_DAL;
@@ -255,6 +256,96 @@ namespace TLIS_Repository.Repositories
             _context.SaveChanges();
             Task.Run(() =>RefreshView(connectionString));
         }
+        public void AddDdynamicAttributeInstallationsH(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicInstAttValue, int TableNameId, int Id, string connectionString,int HistoryId)
+        {
+            var TabelName = _context.TLItablesNames.FirstOrDefault(x => x.Id == TableNameId)?.TableName;
+            var TabelNameId = _context.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIdynamicAttInstValue").Id;
+            var dynamicAttLibValueEntities = addDynamicInstAttValue.Select(DynamicLibAttValue =>
+            {
+                var DynamicAtt = _context.TLIdynamicAtt
+                   .Where(x => x.Id == DynamicLibAttValue.id)
+                   .Include(x => x.DataType).Include(x => x.tablesNames)
+                   .FirstOrDefault();
+                TLIdynamicAttInstValue dynamicAttInstValue = new TLIdynamicAttInstValue();
+                dynamicAttInstValue.InventoryId = Id;
+                dynamicAttInstValue.tablesNamesId = TableNameId;
+                dynamicAttInstValue.DynamicAttId = DynamicAtt.Id;
+                dynamic value = DynamicLibAttValue.value?.ToString();
+                if (value != null)
+                {
+                    string dataType = DynamicAtt.DataType.Name.ToLower();
+
+                    switch (dataType)
+                    {
+                        case "bool":
+                            bool boolValue;
+                            if (bool.TryParse(value, out boolValue))
+                            {
+                                dynamicAttInstValue.ValueBoolean = boolValue;
+                            }
+                            else
+                            {
+                                dynamicAttInstValue.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid boolean value.");
+                            }
+                            break;
+                        case "datetime":
+                            DateTime dateTimeValue;
+                            if (DateTime.TryParse(value, out dateTimeValue))
+                            {
+                                dynamicAttInstValue.ValueDateTime = dateTimeValue;
+                            }
+                            else
+                            {
+                                dynamicAttInstValue.ValueDateTime = null;
+
+                                throw new ArgumentException("Invalid datetime value.");
+                            }
+                            break;
+                        case "double":
+                            double doubleValue;
+                            if (double.TryParse(value, out doubleValue))
+                            {
+                                dynamicAttInstValue.ValueDouble = doubleValue;
+                            }
+                            else
+                            {
+                                dynamicAttInstValue.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid double value.");
+                            }
+                            break;
+                        case "int":
+                            int intValue;
+                            if (int.TryParse(value, out intValue))
+                            {
+                                dynamicAttInstValue.ValueDouble = intValue;
+                            }
+                            else
+                            {
+                                dynamicAttInstValue.ValueDouble = null;
+
+                                throw new ArgumentException("Invalid int value.");
+                            }
+                            break;
+                        case "string":
+                            dynamicAttInstValue.ValueString = value;
+                            break;
+                        default:
+
+                            break;
+                    }
+                }
+                dynamicAttInstValue.disable = false;
+                return dynamicAttInstValue;
+            }).ToList();
+
+            AddRangeWithHDynamic(UserId, HistoryId, TabelNameId, dynamicAttLibValueEntities);
+            _context.SaveChanges();
+            Task.Run(() => RefreshView(connectionString));
+        }
+
         public List<BaseInstAttViewDynamic> GetDynamicInstAtt(int TableNameId, int Id, int? CategoryId = null)
         {
             List<BaseInstAttViewDynamic> dynamicAttInstViewModels = new List<BaseInstAttViewDynamic>();
@@ -458,6 +549,103 @@ namespace TLIS_Repository.Repositories
                         dynamicAttInstValue.tablesNames.TableName = _context.TLItablesNames.FirstOrDefault(x=>x.Id== TableNameId)?.TableName;
                         dynamicAttInstValue.InventoryId = InstId;
                         AddWithHistorys(UserId,dynamicAttInstValue);
+                        _context.SaveChanges();
+
+                        Task.Run(() => RefreshView(connectionString));
+                    }
+
+
+                }
+            }
+
+        }
+        public void UpdateDynamicValuesH(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> DynamicInstAttsValue, int TableNameId, int InstId, string connectionString,int HistoryId)
+        {
+            foreach (var DynamicIns in DynamicInstAttsValue)
+            {
+                if (DynamicIns.value != null)
+                {
+                    var DynamicAttInstValue = _context.TLIdynamicAttInstValue
+                        .Where(x => x.DynamicAttId == DynamicIns.id && x.InventoryId == InstId && x.tablesNamesId == TableNameId)
+                        .Include(x => x.DynamicAtt).ThenInclude(x => x.tablesNames).FirstOrDefault();
+                    var tablesNames = _context.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIdynamicAttInstValue").Id;
+                    if (DynamicAttInstValue != null)
+                    {
+
+                        var Old = DynamicAttInstValue.Value;
+
+                        var New = DynamicIns.value.ToString();
+                        if (DynamicAttInstValue.ValueString != null && DynamicAttInstValue.ValueString != "")
+                        {
+                            string tests = DynamicIns.value.ToString().Trim();
+                            if (tests != "")
+                                DynamicAttInstValue.ValueString = tests;
+                        }
+                        else if (DynamicAttInstValue.ValueDouble != null)
+                        {
+                            DynamicAttInstValue.ValueDouble = double.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (DynamicAttInstValue.ValueDateTime != null)
+                        {
+                            DynamicAttInstValue.ValueDateTime = DateTime.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (DynamicAttInstValue.ValueBoolean != null)
+                        {
+                            DynamicAttInstValue.ValueBoolean = bool.Parse(DynamicIns.value.ToString());
+                        }
+
+                        TLIhistoryDet historyDetails = new TLIhistoryDet();
+                        var AttName = _context.TLIdynamicAtt.Where(x => x.Id == DynamicAttInstValue.DynamicAttId).Select(x => x.Key).FirstOrDefault();
+                        historyDetails.AttributeName = AttName;
+                        historyDetails.TablesNameId = tablesNames;
+                        historyDetails.OldValue = Old;
+                        historyDetails.NewValue = New.ToString();
+                        historyDetails.HistoryId = HistoryId;
+                        historyDetails.AttributeType = AttributeType.Dynamic;
+                        historyDetails.RecordId = DynamicAttInstValue.Id.ToString();
+                        _context.TLIhistoryDet.Add(historyDetails);
+                        _context.SaveChanges();
+                        Task.Run(() => RefreshView(connectionString));
+                    }
+                    else if (DynamicAttInstValue == null)
+                    {
+                        TLIdynamicAttInstValue dynamicAttInstValue = new TLIdynamicAttInstValue();
+                        var datatypes = _context.TLIdynamicAtt.FirstOrDefault(x => x.Id == DynamicIns.id);
+                        var datatype = _context.TLIdataType.Where(x => x.Id == datatypes.DataTypeId).Select(x => x.Name).FirstOrDefault();
+
+                        if (datatype.ToLower() == "string")
+                        {
+                            string test = DynamicIns.value.ToString().Trim();
+                            if (test != "")
+                            {
+                                dynamicAttInstValue.ValueString = test;
+                            }
+                            // test.Trim().ToString();
+                            //dynamicAttInstValue.Value = test.ToString();
+                        }
+                        else if (datatype.ToLower() == "double")
+                        {
+                            dynamicAttInstValue.ValueDouble = double.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (datatype.ToLower() == "int")
+                        {
+                            dynamicAttInstValue.ValueDouble = double.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (datatype.ToLower() == "datetime")
+                        {
+                            dynamicAttInstValue.ValueDateTime = DateTime.Parse(DynamicIns.value.ToString());
+                        }
+                        else if (datatype.ToLower() == "boolean")
+                        {
+                            dynamicAttInstValue.ValueBoolean = bool.Parse(DynamicIns.value.ToString());
+                        }
+                        dynamicAttInstValue.DynamicAttId = DynamicIns.id;
+                        dynamicAttInstValue.tablesNamesId = TableNameId;
+                        dynamicAttInstValue.tablesNames = _context.TLItablesNames.FirstOrDefault(x => x.Id == TableNameId);
+                        dynamicAttInstValue.tablesNames.TableName = _context.TLItablesNames.FirstOrDefault(x => x.Id == TableNameId)?.TableName;
+                        dynamicAttInstValue.InventoryId = InstId;
+                        
+                        AddWithHDynamic(UserId, tablesNames, dynamicAttInstValue, HistoryId);
                         _context.SaveChanges();
 
                         Task.Run(() => RefreshView(connectionString));

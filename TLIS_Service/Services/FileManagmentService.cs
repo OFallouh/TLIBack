@@ -11806,8 +11806,7 @@ namespace TLIS_Service.Services
                     if (IsImg == true)
                     {
                         //fileDirectory = "\\\\192.168.1.6\\Users\\DELL\\Desktop\\TliFront\\assets\\galleria";
-                        fileDirectory = asset;
-                        DirectoryPath = fileDirectory;
+                        DirectoryPath = Path.Combine(fileDirectory, "AttachFiles", "Site");
                         FilePath = Path.Combine(fileDirectory, $"{FileName}.{FileType}");
                     }
                     else

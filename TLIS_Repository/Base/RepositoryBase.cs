@@ -573,6 +573,8 @@ namespace TLIS_Repository.Base
                 UserId = UserId.Value
             };
             _context.TLIhistory.Add(addTablesHistory);
+            _context.SaveChanges();
+            HistoryId = addTablesHistory.Id;
 
             var attributes = AddObject.GetType().GetProperties()
                 .Where(x => x.PropertyType.IsGenericType
@@ -606,10 +608,10 @@ namespace TLIS_Repository.Base
             _context.TLIhistoryDet.AddRange(listOfHistoryDetailsToAdd);
             _context.SaveChanges();
 
-            return addTablesHistory.Id;
+            return HistoryId;
         }
 
-        public virtual void AddWithHDynamic(int? UserId,int TabelNameId, int? RecordId, TEntity AddObject,int HistoryId)
+        public virtual void AddWithHDynamic(int? UserId,int TabelNameId, TEntity AddObject,int HistoryId)
         {
 
             dataTable.Add(AddObject);
@@ -623,7 +625,6 @@ namespace TLIS_Repository.Base
 
                 int entityId = (int)AddObject.GetType().GetProperty("Id").GetValue(AddObject, null);
                 string entityIdString = entityId.ToString();
-                string Record = RecordId.ToString();
   
                 List<PropertyInfo> Attributes = AddObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
                     (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
@@ -743,15 +744,15 @@ namespace TLIS_Repository.Base
             }
             _context.SaveChanges();
         }
-        public void AddRangeWithHDynamic(int? UserId,int HistoryId,int TabelNameId,int? RecordId, IEnumerable<TEntity> Entities)
+        public void AddRangeWithHDynamic(int? UserId,int HistoryId,int TabelNameId, IEnumerable<TEntity> Entities)
         {
             foreach (TEntity Entity in Entities)
             {
-                AddWithHDynamic(UserId, TabelNameId, RecordId, Entity, HistoryId);
+                AddWithHDynamic(UserId, TabelNameId, Entity, HistoryId);
             }
             _context.SaveChanges();
         }
-        public virtual void UpdateWithHLogic(int? UserId,int RecordId,int HistoryId,int TabelNameId, TEntity OldObject, TEntity NewObject)
+        public virtual void UpdateWithHLogic(int? UserId,int HistoryId,int TabelNameId, TEntity OldObject, TEntity NewObject)
         {
 
             TEntity entity = _mapper.Map<TEntity>(NewObject);

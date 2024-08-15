@@ -2711,13 +2711,14 @@ namespace TLIS_Service.Services
                             return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
                         civilWithLegs.CivilWithLegsLibId = AddCivilWithLegsViewModel.civilType.civilWithLegsLibId;
-                        _unitOfWork.CivilWithLegsRepository.AddWithHistory(UserId, civilWithLegs);
+                        var HistoryId=_unitOfWork.CivilWithLegsRepository.AddWithH(UserId,null, civilWithLegs);
                         _unitOfWork.SaveChanges();
 
                         TLIallCivilInst allCivilInst = new TLIallCivilInst();
                         allCivilInst.civilWithLegsId = civilWithLegs.Id;
                         allCivilInst.Draft = false;
-                        _unitOfWork.AllCivilInstRepository.AddWithHistory(UserId, allCivilInst);
+                        var TabelALLCivil = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIallCivilInst").Id;
+                        _unitOfWork.AllCivilInstRepository.AddWithHDynamic(UserId, TabelALLCivil, allCivilInst, HistoryId);
                         _unitOfWork.SaveChanges();
                         allCivilInstId = allCivilInst.Id;
 
@@ -2730,7 +2731,8 @@ namespace TLIS_Service.Services
                             civilSiteDate.LongitudinalSpindleLengthm = AddCivilWithLegsViewModel.civilSiteDate.LongitudinalSpindleLengthm;
                             civilSiteDate.HorizontalSpindleLengthm = AddCivilWithLegsViewModel.civilSiteDate.HorizontalSpindleLengthm;
                             civilSiteDate.ReservedSpace = AddCivilWithLegsViewModel.civilSiteDate.ReservedSpace;
-                            _unitOfWork.CivilSiteDateRepository.AddWithHistory(UserId, civilSiteDate);
+                            var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
+                            _unitOfWork.CivilSiteDateRepository.AddWithHDynamic(UserId, TabelTLIcivilSiteDate, civilSiteDate, HistoryId);
                             _unitOfWork.SaveChanges();
                         }
                         if (AddCivilWithLegsViewModel.civilSupportDistance != null)
@@ -2751,7 +2753,8 @@ namespace TLIS_Service.Services
                             civilSupportDistance.SiteCode = SiteCode;
                             civilSupportDistance.ReferenceCivilId = AddCivilWithLegsViewModel.civilSupportDistance?.ReferenceCivilId;
                             civilSupportDistance.CivilInstId = allCivilInst.Id;
-                            _unitOfWork.CivilSupportDistanceRepository.AddWithHistory(UserId, civilSupportDistance);
+                            var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
+                            _unitOfWork.CivilSupportDistanceRepository.AddWithHDynamic(UserId, TabelTLIcivilSupportDistance, civilSupportDistance, HistoryId);
                             _unitOfWork.SaveChanges();
                         }
                         var structureType = _dbContext.TLIstructureType.FirstOrDefault(x => x.Id == civilwithleglibrary.structureTypeId);
@@ -2780,8 +2783,8 @@ namespace TLIS_Service.Services
 
                                         legEntities.Add(legEntity);
                                     }
-
-                                    _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                    var TabelTLIleg = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIleg").Id;
+                                    _unitOfWork.LegRepository.AddRangeWithHDynamic(UserId,HistoryId, TabelTLIleg, legEntities);
                                     _unitOfWork.SaveChanges();
                                 }
                                 else
@@ -2819,8 +2822,9 @@ namespace TLIS_Service.Services
 
                                         legEntities.Add(legEntity);
                                     }
-
-                                    _unitOfWork.LegRepository.AddRangeWithHistory(UserId, legEntities);
+                                    var TabelTLIleg = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIleg").Id;
+                                    _unitOfWork.LegRepository.AddRangeWithHDynamic(UserId, HistoryId, TabelTLIleg, legEntities);
+                                 
                                     _unitOfWork.SaveChanges();
                                 }
                                 else
@@ -3317,7 +3321,7 @@ namespace TLIS_Service.Services
                                         var OldValueMWBU = _dbContext.TLImwBU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwBUId);
                                         TLImwBU tLImwBU = allloadinst.mwBU;
                                         tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.MW_BURepository.UpdateWithHistory(userId, OldValueMWBU, tLImwBU);
+                                        _unitOfWork.MW_BURepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValueMWBU, tLImwBU);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWBU.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
@@ -3327,7 +3331,7 @@ namespace TLIS_Service.Services
                                         var OldValueMWDish = _dbContext.TLImwDish.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwDishId);
                                         TLImwDish tLImwDish = allloadinst.mwDish;
                                         tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.MW_DishRepository.UpdateWithHistory(userId, OldValueMWDish, tLImwDish);
+                                        _unitOfWork.MW_DishRepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValueMWDish, tLImwDish);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWDish.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
@@ -3343,7 +3347,7 @@ namespace TLIS_Service.Services
                                             var OldValueMWODU = _dbContext.TLImwODU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwODUId);
                                             TLImwODU tLImwODU = allloadinst.mwODU;
                                             tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                            _unitOfWork.MW_ODURepository.UpdateWithHistory(userId, OldValueMWODU, tLImwODU);
+                                            _unitOfWork.MW_ODURepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValueMWODU, tLImwODU);
                                             _dbContext.SaveChanges();
                                             civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWODU.EquivalentSpace;
                                             civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
@@ -3354,7 +3358,7 @@ namespace TLIS_Service.Services
                                         var OldValueMWOther = _dbContext.TLImwOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwOtherId);
                                         TLImwOther tLImwOther = allloadinst.mwOther;
                                         tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.Mw_OtherRepository.UpdateWithHistory(userId, OldValueMWOther, tLImwOther);
+                                        _unitOfWork.Mw_OtherRepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValueMWOther, tLImwOther);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWOther.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
@@ -3364,7 +3368,7 @@ namespace TLIS_Service.Services
                                         var OldValueRadioAntenna = _dbContext.TLIradioAntenna.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioAntennaId);
                                         TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
                                         tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.RadioAntennaRepository.UpdateWithHistory(userId, OldValueRadioAntenna, tLIradioAntenna);
+                                        _unitOfWork.RadioAntennaRepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValueRadioAntenna, tLIradioAntenna);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioAntenna.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
@@ -3374,7 +3378,7 @@ namespace TLIS_Service.Services
                                         var OldValueRadioRRU = _dbContext.TLIRadioRRU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioRRUId);
                                         TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
                                         tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.RadioRRURepository.UpdateWithHistory(userId, OldValueRadioRRU, tLIRadioRRU);
+                                        _unitOfWork.RadioRRURepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValueRadioRRU, tLIRadioRRU);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioRRU.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
@@ -3384,7 +3388,7 @@ namespace TLIS_Service.Services
                                         var OldValueRadioOther = _dbContext.TLIradioOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioOtherId);
                                         TLIradioOther tLIradioOther = allloadinst.radioOther;
                                         tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.RadioOtherRepository.UpdateWithHistory(userId, OldValueRadioOther, tLIradioOther);
+                                        _unitOfWork.RadioOtherRepository.UpdateWithH(userId,null, OldValueRadioOther, tLIradioOther);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioOther.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
@@ -3394,7 +3398,7 @@ namespace TLIS_Service.Services
                                         var OldValuePower = _dbContext.TLIpower.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.powerId);
                                         TLIpower tLIpower = allloadinst.power;
                                         tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.PowerRepository.UpdateWithHistory(userId, OldValuePower, tLIpower);
+                                        _unitOfWork.PowerRepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValuePower, tLIpower);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValuePower.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
@@ -3404,7 +3408,7 @@ namespace TLIS_Service.Services
                                         var OldValueloadOther = _dbContext.TLIloadOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.loadOtherId);
                                         TLIloadOther tLIloadOther = allloadinst.loadOther;
                                         tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.LoadOtherRepository.UpdateWithHistory(userId, OldValueloadOther, tLIloadOther);
+                                        _unitOfWork.LoadOtherRepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValueloadOther, tLIloadOther);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueloadOther.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
@@ -3422,7 +3426,7 @@ namespace TLIS_Service.Services
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithLegInst.SpaceInstallation;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilWithLegsEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, OldValueSite, SiteCode.Site);
+                                _unitOfWork.SiteRepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldValueSite, SiteCode.Site);
                                 _dbContext.SaveChanges();
                             }
                         }
@@ -3431,7 +3435,7 @@ namespace TLIS_Service.Services
                            var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking()
                                 .FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower());
                             SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithLegInst.SpaceInstallation;
-                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, OldSite, SiteCode.Site);
+                            _unitOfWork.SiteRepository.UpdateWithH(userId, civilWithLegsEntity.Id, OldSite, SiteCode.Site);
                             _dbContext.SaveChanges();
                         }
                         else if (SiteCode.ReservedSpace == false && editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace == true)
@@ -3453,7 +3457,7 @@ namespace TLIS_Service.Services
                         if (!string.IsNullOrEmpty(CheckDependencyValidation))
                             return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
                         civilWithLegsEntity.CivilWithLegsLibId = editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId;
-                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(userId, CivilWithLegInst, civilWithLegsEntity);
+                        var HistoryId= _unitOfWork.CivilWithLegsRepository.UpdateWithH(userId,null, CivilWithLegInst, civilWithLegsEntity);
                         ////////////////////////UpdateCivilSiteDate=////////////////////////
                         var OldValuecivilsitedate = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInst.civilWithLegsId == civilWithLegsEntity.Id);
                         var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId == civilWithLegsEntity.Id);
@@ -3462,7 +3466,8 @@ namespace TLIS_Service.Services
                         civilsitedate.ReservedSpace = editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace;
                         civilsitedate.Dismantle = editCivilWithLegsInstallationObject.civilSiteDate.Dismantle;
                         civilsitedate.InstallationDate = editCivilWithLegsInstallationObject.civilSiteDate.InstallationDate;
-                        _unitOfWork.CivilSiteDateRepository.UpdateWithHistory(userId, OldValuecivilsitedate, civilsitedate);
+                        var TabelNameTLIcivilSiteDate = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilSiteDate").Id;
+                        _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(userId,HistoryId, TabelNameTLIcivilSiteDate, OldValuecivilsitedate, civilsitedate);
                         _unitOfWork.SaveChanges();
 
                         //////////////UpdateCivilSupportDistance/////////////////////////////////
@@ -3489,7 +3494,8 @@ namespace TLIS_Service.Services
                             civilsupportdistance.Azimuth = editCivilWithLegsInstallationObject.civilSupportDistance.Azimuth;
                             civilsupportdistance.Distance = editCivilWithLegsInstallationObject.civilSupportDistance.Distance;
                             civilsupportdistance.ReferenceCivilId = editCivilWithLegsInstallationObject.civilSupportDistance?.ReferenceCivilId;
-                            _unitOfWork.CivilSupportDistanceRepository.UpdateWithHistory(userId, OldValuecivilsupportdistance, civilsupportdistance);
+                            var TabelNameTLIcivilSupportDistance = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilSupportDistance").Id;
+                            _unitOfWork.CivilSupportDistanceRepository.UpdateWithHLogic(userId, HistoryId, TabelNameTLIcivilSupportDistance, OldValuecivilsupportdistance, civilsupportdistance);
                             _unitOfWork.SaveChanges();
                         }
                         var oldLegs = _unitOfWork.LegRepository.GetAllAsQueryable()
@@ -3527,8 +3533,8 @@ namespace TLIS_Service.Services
                                     oldLeg.LegLetter = newLegInfo.LegLetter;
                                     oldLeg.Notes = newLegInfo.Notes;
                                     oldLeg.CivilWithLegInstId = civilWithLegsEntity.Id;
-
-                                    _unitOfWork.LegRepository.UpdateWithHistory(userId, oldLegEntity, oldLeg);
+                                    var TabelNameTLIleg = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIleg").Id;
+                                    _unitOfWork.LegRepository.UpdateWithHLogic(userId, HistoryId, TabelNameTLIleg, oldLegEntity, oldLeg);
                                     _unitOfWork.SaveChanges();
                                 }
                             }
@@ -3565,7 +3571,8 @@ namespace TLIS_Service.Services
                                     oldLeg.Notes = newLegInfo.Notes;
                                     oldLeg.CivilWithLegInstId = civilWithLegsEntity.Id;
 
-                                    _unitOfWork.LegRepository.UpdateWithHistory(userId, oldLegEntity, oldLeg);
+                                    var TabelNameTLIleg = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIleg").Id;
+                                    _unitOfWork.LegRepository.UpdateWithHLogic(userId, HistoryId, TabelNameTLIleg, oldLegEntity, oldLeg);
                                     _unitOfWork.SaveChanges();
                                 }
                             }
@@ -3573,7 +3580,7 @@ namespace TLIS_Service.Services
 
                         if (editCivilWithLegsInstallationObject.dynamicAttribute.Count > 0)
                         {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(userId, editCivilWithLegsInstallationObject.dynamicAttribute, TableNameId, civilWithLegsEntity.Id,connectionString);
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(userId, editCivilWithLegsInstallationObject.dynamicAttribute, TableNameId, civilWithLegsEntity.Id,connectionString,HistoryId);
                         }
                         await _unitOfWork.SaveChangesAsync();
 

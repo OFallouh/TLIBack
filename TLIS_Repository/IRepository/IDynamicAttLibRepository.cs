@@ -23,6 +23,6 @@ namespace TLIS_Repository.IRepository
         void UpdateDynamicLibAttsWithHistorys(List<AddDdynamicAttributeInstallationValueViewModel> DynamicLibAttValues, string connectionString, int TablesNameId, int LibId, int? UserId, int? TableHistoryId = null, int EntitesId = 0);
         
         void UpdateDynamicLibAttsWithH(List<AddDdynamicAttributeInstallationValueViewModel> DynamicLibAttValues, string connectionString, int TablesNameId, int LibId, int? UserId, int HistoryId);
-        void AddDynamicLibraryAtt(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int? RecordId, int TableNameId, int Id, string connectionString, int HistoryId);
+        void AddDynamicLibraryAtt(int UserId, List<AddDdynamicAttributeInstallationValueViewModel> addDynamicLibAttValues, int TableNameId, int Id, string connectionString, int HistoryId);
     }
 }
