@@ -11805,9 +11805,8 @@ namespace TLIS_Service.Services
                 {
                     if (IsImg == true)
                     {
-                        //fileDirectory = "\\\\192.168.1.6\\Users\\DELL\\Desktop\\TliFront\\assets\\galleria";
                         DirectoryPath = Path.Combine(fileDirectory, "AttachFiles", "Site");
-                        FilePath = Path.Combine(fileDirectory, $"{FileName}.{FileType}");
+                        FilePath = Path.Combine(DirectoryPath, $"{FileName}.{FileType}");
                     }
                     else
                     {
@@ -11928,21 +11927,29 @@ namespace TLIS_Service.Services
             }
         }
         //Get files specific record related to specific table
-        public Response<IEnumerable<AttachedFilesViewModel>> GetFilesByRecordIdAndTableName(int RecordId, string TableName, ParameterPagination parameterPagination)
+        public Response<IEnumerable<AttachedFilesViewModel>> GetFilesByRecordIdAndTableName(int RecordId, string TableName, ParameterPagination parameterPagination,string SiteCode)
         {
             try
             {
-                if (TableName.ToLower() == "TLIcabinetPower".ToLower() || TableName.ToLower() == "TLIcabinetTelecom".ToLower())
-                    TableName = "TLIcabinet";
-
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetIncludeWhereFirst(x => x.TableName == TableName);
-                var AttachFiles = _unitOfWork.AttachedFilesRepository.GetWhere(x => x.RecordId == RecordId && x.tablesNamesId == TableNameEntity.Id).ToList();
+                
+                if (SiteCode != null)
+                {
 
-                int Count = AttachFiles.Count();
-
-                var AttachFileViewModels = _mapper.Map<List<AttachedFilesViewModel>>(AttachFiles.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                    .Take(parameterPagination.PageSize).ToList().ToList());
-                return new Response<IEnumerable<AttachedFilesViewModel>>(true, AttachFileViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                    var AttachFiles = _unitOfWork.AttachedFilesRepository.GetWhere(x => x.SiteCode.ToLower() == SiteCode.ToLower() && x.tablesNamesId == TableNameEntity.Id).ToList();
+                    var AttachFileViewModels = _mapper.Map<List<AttachedFilesViewModel>>(AttachFiles.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                   .Take(parameterPagination.PageSize).ToList().ToList());
+                    int Count = AttachFiles.Count();
+                    return new Response<IEnumerable<AttachedFilesViewModel>>(true, AttachFileViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                }
+                else
+                {
+                   var  AttachFiles = _unitOfWork.AttachedFilesRepository.GetWhere(x => x.RecordId == RecordId && x.tablesNamesId == TableNameEntity.Id).ToList();
+                    var AttachFileViewModels = _mapper.Map<List<AttachedFilesViewModel>>(AttachFiles.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                        .Take(parameterPagination.PageSize).ToList().ToList());
+                    int Count = AttachFiles.Count();
+                    return new Response<IEnumerable<AttachedFilesViewModel>>(true, AttachFileViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                }
             }
             catch (Exception err)
             {

@@ -6888,7 +6888,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (referencesValue == null)
                                     {
-                                        attr.Value = new object[0];
+                                        attr.Value = null;
                                     }
                                     var allCivil = _unitOfWork.CivilSiteDateRepository
                                             .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
@@ -7203,7 +7203,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (referencesValue == null)
                                     {
-                                        attr.Value = new object[0];
+                                        attr.Value = null;
                                     }
                                     var allCivil = _unitOfWork.CivilSiteDateRepository
                                             .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
@@ -7491,7 +7491,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (referencesValue == null)
                                     {
-                                        attr.Value = new object[0];
+                                        attr.Value = null;
                                     }
                                     var allCivil = _unitOfWork.CivilSiteDateRepository
                                             .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,

@@ -169,17 +169,17 @@ namespace TLIS_API.Controllers
        // [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("GetFilesByRecordIdAndTableNameInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult GetFilesByRecordIdAndTableName(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetFilesByRecordIdAndTableName(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination, string SiteCode)
         {
-            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, parameterPagination);
+            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, parameterPagination, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetFilesByRecordIdAndTableNameLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult GetFilesByRecordIdAndTableNameLibrary(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetFilesByRecordIdAndTableNameLibrary(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination,string SiteCode)
         {
-            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, parameterPagination);
+            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, parameterPagination, SiteCode);
             return Ok(response);
         }
         [HttpPost("GetAttachecdFiles")]

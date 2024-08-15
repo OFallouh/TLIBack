@@ -15,7 +15,7 @@ namespace TLIS_Service.IService
         Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, int? CategoryId, string ConnectionString);
         Response<string> AttachFile(IFormFile file, int documenttypeId, string Model, string Name, string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset);
         Response<string> DeleteFile(string FileName, int RecordId, string TableName, string SiteCode);
-        Response<IEnumerable<AttachedFilesViewModel>> GetFilesByRecordIdAndTableName(int RecordId, string TableName, ParameterPagination parameterPagination);
+        Response<IEnumerable<AttachedFilesViewModel>> GetFilesByRecordIdAndTableName(int RecordId, string TableName, ParameterPagination parameterPagination,string SiteCode);
         Response<List<AttachedFilesViewModel>> GetAttachecdFiles(int RecordId, string TableName);
         Response<List<AttachedFilesViewModel>> GetAttachecdFilesBySite(string SiteCode, ParameterPagination parameterPagination);
         Response<AttachedFilesViewModel> AttachedUnAttached(int Id);
