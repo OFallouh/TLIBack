@@ -288,7 +288,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_RoleService == null)
-                    _RoleService = new RoleService(_unitOfWork, _services, _config, _mapper);
+                    _RoleService = new RoleService(_unitOfWork, _services, _config,db, _mapper);
                 return _RoleService;
             }
         }
@@ -297,7 +297,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_GroupService == null)
-                    _GroupService = new GroupService(_unitOfWork, _services,_mapper);
+                    _GroupService = new GroupService(_unitOfWork, _services,db,_mapper);
                 return _GroupService;
             }
         }

@@ -21,10 +21,10 @@ namespace TLIS_Service.IService
         bool ValidateGroupNameFromADAdd(string GroupName, string domain);
         bool ValidateGroupNameFromDatabaseAdd(string GroupName);
         Task<bool> ValidateGroupNameFromDatabaseUpdate(string GroupName, int GroupId);
-        Task<Response<GroupViewModel>> EditGroup([FromBody]GroupViewModel model, string domain);
+        Task<Response<GroupViewModel>> EditGroup([FromBody]GroupViewModel model, string domain,int UserId);
         void UpdateGroupRoles(List<RoleViewModel> roles, int groupId);
         void UpdateGroupUsers(List<UserNameViewModel> users, int groupId);
-        Task<Response<GroupViewModel>> DeleteGroup(int GrouId);
+        Task<Response<GroupViewModel>> DeleteGroup(int GrouId, int UserId);
         Task<Response<GroupViewModel>> AddActorToGroup(int GroupId, int ActorId);
         Task<Response<GroupViewModel>> UpdateActorToGroup(int GroupId, int ActorId);
         Task<Response<GroupViewModel>> DeleteActorToGroup(int GroupId);
@@ -39,7 +39,7 @@ namespace TLIS_Service.IService
        // Response<GroupChildsViewModel> CheckGroupForParent(int GroupId);
         Response<List<GroupViewModel>> CheckGroup(int groupId);
         Response<string> DeleteGroupWithItsChildren(int GroupId, bool DeleteChilds);
-        Response<AddGroupViewModel> AddGroup(AddGroupViewModel model);
+        Response<AddGroupViewModel> AddGroup(AddGroupViewModel model, int UserId);
         Response<GroupViewModel> UnAssignParentRleation(int GroupId);
         Response<string> DeleteGroupChildren(int GroupId);
         Response<IEnumerable<GroupViewModel>> GetGroupByName_WFVersion();

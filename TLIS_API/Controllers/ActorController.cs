@@ -48,7 +48,25 @@ namespace TLIS_API.Controllers
         {
             if (TryValidateModel(Actor, nameof(AddActorViewModel)))
             {
-                var response = await _unitOfWorkService.ActorService.AddActor(Actor);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.ActorService.AddActor(Actor, userId);
 
                 return Ok(response);
             }
@@ -64,15 +82,51 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ActorViewModel))]
         public async Task<IActionResult> UpdateActor([FromBody] EditActorViewModel Actor)
         {
-            var response = await _unitOfWorkService.ActorService.UpdateActor(Actor);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.ActorService.UpdateActor(Actor, userId);
             return Ok(response);
         }
         [HttpPost("DeleteActor")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<GroupViewModel>))]
         public async Task<IActionResult> DeleteActor([FromBody] ActorViewModel actorViewModel)
         {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
             //var userId = HttpContext.Session.GetString("UserId");
-            var response = await _unitOfWorkService.ActorService.DeleteActor(actorViewModel);
+            var response = await _unitOfWorkService.ActorService.DeleteActor(actorViewModel,userId);
             return Ok(response);
         }
         [HttpPost("CheckIfActorIsExistInWorkflow")]

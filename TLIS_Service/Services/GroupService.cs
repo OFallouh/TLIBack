@@ -29,6 +29,7 @@ using System.ComponentModel;
 using TLIS_DAL.ViewModels.StepActionDTOs;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace TLIS_Service.Services
 {
@@ -36,9 +37,11 @@ namespace TLIS_Service.Services
     {
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
+        private readonly ApplicationDbContext _dbContext;
         private IMapper _mapper;
-        public GroupService(IUnitOfWork unitOfWork, IServiceCollection services, IMapper mapper)
+        public GroupService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper)
         {
+            _dbContext = context;
             _unitOfWork = unitOfWork;
             _services = services;
             _mapper = mapper;
@@ -155,7 +158,7 @@ namespace TLIS_Service.Services
         //        }               
         //    }
         //}
-        public Response<AddGroupViewModel> AddGroup(AddGroupViewModel model)
+        public Response<AddGroupViewModel> AddGroup(AddGroupViewModel model,int UserId)
         {
             using (TransactionScope Transaction = new TransactionScope())
             {
@@ -182,7 +185,7 @@ namespace TLIS_Service.Services
                     else
                     {
                         Group = _mapper.Map<TLIgroup>(model);
-                        _unitOfWork.GroupRepository.Add(Group);
+                        _unitOfWork.GroupRepository.AddWithH(UserId,null,Group);
                         _unitOfWork.SaveChanges();
 
 
@@ -306,7 +309,7 @@ namespace TLIS_Service.Services
         //First GrouId 
         //If group don't have childrens then delete group and relations
         //Else return group childrens
-        public async Task<Response<GroupViewModel>> DeleteGroup(int GroupId)
+        public async Task<Response<GroupViewModel>> DeleteGroup(int GroupId,int UserId)
         {
             try
             {
@@ -326,6 +329,18 @@ namespace TLIS_Service.Services
                     DeleteGroup.Name = DeleteGroup.Name + DateTime.Now.ToString();
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
                     await _unitOfWork.SaveChangesAsync();
+                    var TabelNameRole = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgroup").Id;
+                    TLIhistory AddTablesHistory = new TLIhistory
+                    {
+                        HistoryTypeId = 3,
+                        RecordId = GroupId.ToString(),
+                        TablesNameId = TabelNameRole,
+                        UserId = UserId
+                    };
+
+
+                    _dbContext.TLIhistory.Add(AddTablesHistory);
+                    _dbContext.SaveChanges();
                 }
 
                 List<TLIgroup> GroupLowers = _unitOfWork.GroupRepository.GetWhere(x => x.UpperId == GroupId).ToList();
@@ -435,8 +450,11 @@ namespace TLIS_Service.Services
                 throw;
             }
         }
-        public async Task<Response<GroupViewModel>> EditGroup(GroupViewModel model, string domain)
+        public async Task<Response<GroupViewModel>> EditGroup(GroupViewModel model, string domain,int UserId)
         {
+            var OldGroup = _unitOfWork.GroupRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
+            if(OldGroup == null)
+                return new Response<GroupViewModel>(true, null, null, "this group is not found", (int)Constants.ApiReturnCode.fail);
             bool DatabaseExists = await ValidateGroupNameFromDatabaseUpdate(model.Name, model.Id);
             if (DatabaseExists)
             {
@@ -450,7 +468,7 @@ namespace TLIS_Service.Services
             try
             {
                 TLIgroup groupEntity = _mapper.Map<TLIgroup>(model);
-                _unitOfWork.GroupRepository.Update(groupEntity);
+                _unitOfWork.GroupRepository.UpdateWithH(UserId,null, OldGroup,groupEntity);
 
                 List<int> AllChildsIds = new List<int>();
                 LoopForChilds(groupEntity.Id, AllChildsIds);

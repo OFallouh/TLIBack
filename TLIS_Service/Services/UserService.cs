@@ -39,6 +39,7 @@ using Oracle.ManagedDataAccess.Client;
 using System.Data;
 using Oracle.ManagedDataAccess.Types;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static TLIS_Service.Helpers.Constants;
 
 namespace TLIS_Service.Services
 {
@@ -65,7 +66,7 @@ namespace TLIS_Service.Services
         //Function to add external user 
         //usually external user type is 2
 
-        public async Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain)
+        public async Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain,int UserId)
         {
             var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
 
@@ -95,8 +96,19 @@ namespace TLIS_Service.Services
                             {
                                 await InsertGroupsAsync(connection, userId, model.Groups);
                             }
+                            
+                            var TabelNameUser = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIuser").Id;
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = 1,
+                                RecordId = userId.ToString(),
+                                TablesNameId = TabelNameUser,
+                                UserId = UserId
+                            };
 
-                            // تأكيد المعاملة
+                       
+                            await _dbContext.TLIhistory.AddAsync(AddTablesHistory);
+                            await _dbContext.SaveChangesAsync();
                             transaction.Commit();
                             return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
                         }
@@ -156,9 +168,10 @@ namespace TLIS_Service.Services
 
                 await command.ExecuteNonQueryAsync();
 
-       
+              
                 var userIdDecimal = (OracleDecimal)userIdParam.Value;
                 return userIdDecimal.ToInt32();
+
             }
         }
 
@@ -281,7 +294,7 @@ namespace TLIS_Service.Services
 
         //Function to add internal userpublic 
         //usually internal user type is 1
-        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<String> Permissions, string domain)
+        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<String> Permissions, string domain,int UserId)
         {
             try
             {
@@ -328,7 +341,7 @@ namespace TLIS_Service.Services
                                     user.Domain = null;
                                     user.AdGUID = principal.Guid.ToString();
                                     user.UserType = 1;
-                                    await _unitOfWork.UserRepository.AddAsync(user);
+                                    await _unitOfWork.UserRepository.AddAsyncWithH(UserId,null,user);
                                     await _unitOfWork.SaveChangesAsync();
 
                                     if (Permissions != null)
@@ -645,7 +658,7 @@ namespace TLIS_Service.Services
         }
 
         //Function to update user and his permissions
-        public async Task<Response<UserViewModel>> Updateuser(EditUserViewModel model)
+        public async Task<Response<UserViewModel>> Updateuser(EditUserViewModel model,int UserId)
         {
             string OldP = null;
             string NewP = null;
@@ -660,6 +673,9 @@ namespace TLIS_Service.Services
                     {
                         if (model.UserType == 2)
                         {
+                            var OldUserInfo = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
+                            if(OldUserInfo ==null)
+                                return new Response<UserViewModel>(false, null, null, $"This User is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                             var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == model.UserName.ToLower() && x.Id != model.Id);
                             if (UserName != null)
                             {
@@ -669,7 +685,7 @@ namespace TLIS_Service.Services
 
                             UserEntity.Password = null;
 
-                            string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id).Password;
+                            string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id)?.Password;
                             if (!string.IsNullOrEmpty(model.Password))
                             {
                                 OldP = Decrypt(OldPassword);
@@ -688,7 +704,8 @@ namespace TLIS_Service.Services
                             {
                                 UserEntity.Password = OldPassword;
                             }
-                            _unitOfWork.UserRepository.Update(UserEntity);
+                      
+                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity);
                             await _unitOfWork.SaveChangesAsync();
 
                             List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository

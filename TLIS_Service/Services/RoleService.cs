@@ -25,6 +25,8 @@ using Oracle.ManagedDataAccess.Client;
 using Microsoft.Extensions.Configuration;
 using System.DirectoryServices.ActiveDirectory;
 using TLIS_DAL.ViewModels.UserDTOs;
+using static TLIS_Service.Helpers.Constants;
+using TLIS_DAL;
 
 namespace TLIS_Service.Services
 {
@@ -34,18 +36,20 @@ namespace TLIS_Service.Services
         IServiceCollection _services;
         private IMapper _mapper;
         IConfiguration _configuration;
-        public RoleService(IUnitOfWork unitOfWork, IServiceCollection services, IConfiguration configuration, IMapper mapper)
+        private readonly ApplicationDbContext _dbContext;
+        public RoleService(IUnitOfWork unitOfWork, IServiceCollection services, IConfiguration configuration, ApplicationDbContext context, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _services = services;
             _configuration = configuration;
             ServiceProvider serviceProvider = _services.BuildServiceProvider();
             _mapper = mapper;
+            _dbContext = context;
         }
         //Function take 1 parameter
         //check the name of the role if already exists the return error message
         //else add role and permissions to the role
-        public async Task<Response<RoleViewModel>> AddRole(AddRoleViewModel addRole)
+        public async Task<Response<RoleViewModel>> AddRole(AddRoleViewModel addRole,int UserId)
         {
             try
             {
@@ -70,7 +74,7 @@ namespace TLIS_Service.Services
                             Active = true
                         };
 
-                        _unitOfWork.RoleRepository.Add(role);
+                        _unitOfWork.RoleRepository.AddWithH(UserId,null,role);
                         _unitOfWork.SaveChanges();
 
                         if (addRole.permissions != null)
@@ -152,29 +156,46 @@ namespace TLIS_Service.Services
         //check if there are groups take that role
         //if not then delete the role
         //else delete all groupsrole for this role then delete role
-        public Response<RoleViewModel> DeleteRole(int RoleId)
+        public Response<RoleViewModel> DeleteRole(int RoleId,int UserId)
         {
             try
             {
-                var RoleGroups = _unitOfWork.GroupRoleRepository.GetWhere(x => x.roleId == RoleId).ToList();
-                if (RoleGroups.Count == 0)
+                using (TransactionScope transaction = new TransactionScope())
                 {
-                    var RoleName = _unitOfWork.RoleRepository.GetWhereFirst(x => x.Id == RoleId);
-                    if (RoleName != null)
+                    var RoleGroups = _unitOfWork.GroupRoleRepository.GetWhere(x => x.roleId == RoleId).ToList();
+                    if (RoleGroups.Count == 0)
                     {
-                        RoleName.Name = RoleName.Name + DateTime.Now;
-                        _unitOfWork.RoleRepository.DeleteRole(RoleId);
+                        var RoleName = _unitOfWork.RoleRepository.GetWhereFirst(x => x.Id == RoleId);
+                        if (RoleName != null)
+                        {
+                            RoleName.Name = RoleName.Name + DateTime.Now;
+                            _unitOfWork.RoleRepository.DeleteRole(RoleId);
+
+                            var TabelNameRole = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIrole").Id;
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = 3,
+                                RecordId = RoleId.ToString(),
+                                TablesNameId = TabelNameRole,
+                                UserId = UserId
+                            };
+
+
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                        }
+                        else
+                        {
+                            return new Response<RoleViewModel>(true, null, null, "This Role Is Not Found", (int)Constants.ApiReturnCode.fail);
+                        }
+                        return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                     }
                     else
                     {
-                        return new Response<RoleViewModel>(true, null, null, "This Role Is Not Found", (int)Constants.ApiReturnCode.fail);
+                        DeleteRoleGroups(RoleId);
+                        return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                     }
-                    return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
-                }
-                else
-                {
-                    DeleteRoleGroups(RoleId);
-                    return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
+                    transaction.Complete();
                 }
             }
             catch (Exception err)
@@ -215,7 +236,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //update Entity
         //update permissions
-        public async Task<Response<RoleViewModel>> EditRole(EditRoleViewModel editRole)
+        public async Task<Response<RoleViewModel>> EditRole(EditRoleViewModel editRole,int UserId)
         {
             var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
             using (var connection = new OracleConnection(connectionString))
@@ -224,6 +245,9 @@ namespace TLIS_Service.Services
 
                 using (var transaction = connection.BeginTransaction())
                 {
+                    var OldRole = _unitOfWork.RoleRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == editRole.Id);
+                    if(OldRole==null)
+                        return new Response<RoleViewModel>(true, null, null, "this role is not found", (int)Constants.ApiReturnCode.success);
                     TLIrole CheckRoleNameIfExist = _unitOfWork.RoleRepository
                    .GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == editRole.Name.ToLower() && x.Id != editRole.Id);
 
@@ -237,7 +261,7 @@ namespace TLIS_Service.Services
                     {
                         RoleEntity.Name = editRole.Name;
 
-                        _unitOfWork.RoleRepository.Update(RoleEntity);
+                        _unitOfWork.RoleRepository.UpdateWithH(UserId, null, OldRole, RoleEntity);
                         await _unitOfWork.SaveChangesAsync();
 
                         List<string> AllRolePermissionsIn = _unitOfWork.RolePermissionsRepository
@@ -336,7 +360,7 @@ namespace TLIS_Service.Services
                 }
                 else
                 {
-                    var Roles = _mapper.Map<List<RoleViewModel>>(_unitOfWork.RoleRepository.GetWhere(x=>x.Name.ToLower()==RoleName.ToLower()));
+                    var Roles = _unitOfWork.RoleRepository.GetWhere(x => x.Name.ToLower().Contains(RoleName.ToLower()));
                     if (Roles.Count() > 0)
                     {
                         foreach (var item in Roles)

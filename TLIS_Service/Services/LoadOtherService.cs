@@ -1174,7 +1174,7 @@ namespace TLIS_Service.Services
 
                                                         LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                         LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.LoadOtherRepository.AddWithHistory(UserId, LoadOther);
+                                                       var HistoryId= _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId,null, LoadOther,SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
                                                         if (LoadOtherViewModel.civilLoads != null && Id != 0)
@@ -1194,7 +1194,8 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads,HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
@@ -1202,7 +1203,7 @@ namespace TLIS_Service.Services
                                                         if (LoadOtherViewModel.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString,HistoryId);
 
                                                         }
                                                     }
@@ -1256,40 +1257,40 @@ namespace TLIS_Service.Services
 
                                                         LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                         LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.LoadOtherRepository.AddWithHistory(UserId, LoadOther);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                    _unitOfWork.SaveChanges();
+                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
+                                                    if (LoadOtherViewModel.civilLoads != null && Id != 0)
+                                                    {
+                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                        {
+                                                            InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
+                                                            allLoadInstId = Id,
+                                                            legId = LoadOtherViewModel.installationConfig?.legId,
+                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                            sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
+                                                            ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
+                                                            ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
+                                                            Dismantle = false,
+                                                            ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
+                                                            SiteCode = SiteCode,
+
+
+                                                        };
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                         _unitOfWork.SaveChanges();
-                                                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
-                                                        if (LoadOtherViewModel.civilLoads != null && Id != 0)
-                                                        {
-                                                            TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                            {
-                                                                InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
-                                                                allLoadInstId = Id,
-                                                                legId = LoadOtherViewModel.installationConfig?.legId,
-                                                                allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
-                                                                ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
-                                                                ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
-                                                                Dismantle = false,
-                                                                ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
-                                                                SiteCode = SiteCode,
-
-
-                                                            };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-
-
-                                                        if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count > 0 : false)
-                                                        {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString);
-
-                                                        }
 
                                                     }
+
+                                                    if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    {
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
+
+                                                    }
+
+                                                }
                                                 }
                                                 else
                                                 {
@@ -1430,38 +1431,39 @@ namespace TLIS_Service.Services
 
                                                                     LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                                     LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                                    _unitOfWork.LoadOtherRepository.AddWithHistory(UserId, LoadOther);
+                                                                var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                                _unitOfWork.SaveChanges();
+                                                                int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
+                                                                if (LoadOtherViewModel.civilLoads != null && Id != 0)
+                                                                {
+                                                                    TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                    {
+                                                                        InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
+                                                                        allLoadInstId = Id,
+                                                                        legId = LoadOtherViewModel.installationConfig?.legId,
+                                                                        allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                        sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
+                                                                        ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
+                                                                        ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
+                                                                        Dismantle = false,
+                                                                        ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
+                                                                        SiteCode = SiteCode,
+
+
+                                                                    };
+                                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                     _unitOfWork.SaveChanges();
-                                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
-                                                                    if (LoadOtherViewModel.civilLoads != null && Id != 0)
-                                                                    {
-                                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                                        {
-                                                                            InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
-                                                                            allLoadInstId = Id,
-                                                                            legId = LoadOtherViewModel.installationConfig?.legId,
-                                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                            sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
-                                                                            ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
-                                                                            ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
-                                                                            Dismantle = false,
-                                                                            ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
-                                                                            SiteCode = SiteCode,
 
-
-                                                                        };
-                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                                        _unitOfWork.SaveChanges();
-
-                                                                    }
-
-                                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count > 0 : false)
-                                                                    {
-
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString);
-
-                                                                    }
                                                                 }
+
+                                                                if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                                {
+
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
+
+                                                                }
+                                                            }
                                                                 else
                                                                 {
                                                                     if (LoadOther.CenterHigh <= 0)
@@ -1514,39 +1516,40 @@ namespace TLIS_Service.Services
 
                                                                     LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                                     LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                                    _unitOfWork.LoadOtherRepository.AddWithHistory(UserId, LoadOther);
+                                                                var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                                _unitOfWork.SaveChanges();
+                                                                int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
+                                                                if (LoadOtherViewModel.civilLoads != null && Id != 0)
+                                                                {
+                                                                    TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                                    {
+                                                                        InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
+                                                                        allLoadInstId = Id,
+                                                                        legId = LoadOtherViewModel.installationConfig?.legId,
+                                                                        allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                        sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
+                                                                        ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
+                                                                        ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
+                                                                        Dismantle = false,
+                                                                        ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
+                                                                        SiteCode = SiteCode,
+
+
+                                                                    };
+                                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                     _unitOfWork.SaveChanges();
-                                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
-                                                                    if (LoadOtherViewModel.civilLoads != null && Id != 0)
-                                                                    {
-                                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                                        {
-                                                                            InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
-                                                                            allLoadInstId = Id,
-                                                                            legId = LoadOtherViewModel.installationConfig?.legId,
-                                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                            sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
-                                                                            ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
-                                                                            ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
-                                                                            Dismantle = false,
-                                                                            ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
-                                                                            SiteCode = SiteCode,
-
-
-                                                                        };
-                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                                        _unitOfWork.SaveChanges();
-
-                                                                    }
-
-                                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count > 0 : false)
-                                                                    {
-
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString);
-
-                                                                    }
 
                                                                 }
+
+                                                                if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                                {
+
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
+
+                                                                }
+
+                                                            }
                                                             }
                                                         }
                                                         else
@@ -1685,38 +1688,39 @@ namespace TLIS_Service.Services
 
                                                             LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                             LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                            _unitOfWork.LoadOtherRepository.AddWithHistory(UserId, LoadOther);
+                                                        var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                        _unitOfWork.SaveChanges();
+                                                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
+                                                        if (LoadOtherViewModel.civilLoads != null && Id != 0)
+                                                        {
+                                                            TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                            {
+                                                                InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
+                                                                allLoadInstId = Id,
+                                                                legId = LoadOtherViewModel.installationConfig?.legId,
+                                                                allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
+                                                                ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
+                                                                ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
+                                                                Dismantle = false,
+                                                                ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
+                                                                SiteCode = SiteCode,
+
+
+                                                            };
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
-                                                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
-                                                            if (LoadOtherViewModel.civilLoads != null && Id != 0)
-                                                            {
-                                                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                                {
-                                                                    InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
-                                                                    allLoadInstId = Id,
-                                                                    legId = LoadOtherViewModel.installationConfig?.legId,
-                                                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                    sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
-                                                                    ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
-                                                                    ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
-                                                                    Dismantle = false,
-                                                                    ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
-                                                                    SiteCode = SiteCode,
 
-
-                                                                };
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                                _unitOfWork.SaveChanges();
-
-                                                            }
-
-                                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count > 0 : false)
-                                                            {
-
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString);
-
-                                                            }
                                                         }
+
+                                                        if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                        {
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
+
+                                                        }
+                                                    }
                                                         else
                                                         {
                                                             if (LoadOther.CenterHigh <= 0)
@@ -1769,39 +1773,40 @@ namespace TLIS_Service.Services
 
                                                             LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                             LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                            _unitOfWork.LoadOtherRepository.AddWithHistory(UserId, LoadOther);
+                                                        var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                        _unitOfWork.SaveChanges();
+                                                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
+                                                        if (LoadOtherViewModel.civilLoads != null && Id != 0)
+                                                        {
+                                                            TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                            {
+                                                                InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
+                                                                allLoadInstId = Id,
+                                                                legId = LoadOtherViewModel.installationConfig?.legId,
+                                                                allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                                sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
+                                                                ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
+                                                                ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
+                                                                Dismantle = false,
+                                                                ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
+                                                                SiteCode = SiteCode,
+
+
+                                                            };
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
-                                                            int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
-                                                            if (LoadOtherViewModel.civilLoads != null && Id != 0)
-                                                            {
-                                                                TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                                {
-                                                                    InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
-                                                                    allLoadInstId = Id,
-                                                                    legId = LoadOtherViewModel.installationConfig?.legId,
-                                                                    allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                    sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
-                                                                    ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
-                                                                    ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
-                                                                    Dismantle = false,
-                                                                    ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
-                                                                    SiteCode = SiteCode,
-
-
-                                                                };
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                                _unitOfWork.SaveChanges();
-
-                                                            }
-
-                                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count > 0 : false)
-                                                            {
-
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString);
-
-                                                            }
 
                                                         }
+
+                                                        if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                        {
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
+
+                                                        }
+
+                                                    }
                                                     }
                                                     else
                                                     {
@@ -1908,39 +1913,40 @@ namespace TLIS_Service.Services
 
                                                         LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                         LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.LoadOtherRepository.AddWithHistory(UserId, LoadOther);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                    _unitOfWork.SaveChanges();
+                                                    int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
+                                                    if (LoadOtherViewModel.civilLoads != null && Id != 0)
+                                                    {
+                                                        TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
+                                                        {
+                                                            InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
+                                                            allLoadInstId = Id,
+                                                            legId = LoadOtherViewModel.installationConfig?.legId,
+                                                            allCivilInstId = AllcivilinstId.allCivilInst.Id,
+                                                            sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
+                                                            ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
+                                                            ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
+                                                            Dismantle = false,
+                                                            ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
+                                                            SiteCode = SiteCode,
+
+
+                                                        };
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                         _unitOfWork.SaveChanges();
-                                                        int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
-                                                        if (LoadOtherViewModel.civilLoads != null && Id != 0)
-                                                        {
-                                                            TLIcivilLoads tLIcivilLoads = new TLIcivilLoads()
-                                                            {
-                                                                InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate,
-                                                                allLoadInstId = Id,
-                                                                legId = null,
-                                                                allCivilInstId = AllcivilinstId.allCivilInst.Id,
-                                                                sideArmId = LoadOtherViewModel.installationConfig?.sideArmId,
-                                                                ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus,
-                                                                ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus,
-                                                                Dismantle = false,
-                                                                ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace,
-                                                                SiteCode = SiteCode,
-
-
-                                                            };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-
-                                                        if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count > 0 : false)
-                                                        {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString);
-
-                                                        }
 
                                                     }
+
+                                                    if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    {
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
+
+                                                    }
+
+                                                }
                                                     else
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
@@ -2136,7 +2142,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                               var HistoryId= _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId,null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (LoadOtherViewModel.civilLoads != null)
                                                 {
@@ -2160,13 +2166,14 @@ namespace TLIS_Service.Services
                                                     NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
                                                     NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
                                                     NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString,HistoryId);
 
                                             }
                                             else if (loadOtherInst.ReservedSpace == true && LoadOtherViewModel.civilLoads.ReservedSpace == false)
@@ -2246,39 +2253,40 @@ namespace TLIS_Service.Services
                                                 }
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                            _unitOfWork.SaveChanges();
+                                            if (LoadOtherViewModel.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                NewloadOtherInst.sideArm2Id = null;
+                                                NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                 _unitOfWork.SaveChanges();
-                                                if (LoadOtherViewModel.civilLoads != null)
-                                                {
 
-                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                        .GetAllAsQueryable()
-                                                        .AsNoTracking()
-                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                    TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                    NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                    NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                    NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                    NewloadOtherInst.sideArm2Id = null;
-                                                    NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                    NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                    NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                    NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                    _unitOfWork.SaveChanges();
-
-                                                }
-
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                             }
-                                            else if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
+
+                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                        }
+                                        else if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
                                             {
                                                 if (loadOther.CenterHigh <= 0)
                                                 {
@@ -2370,39 +2378,40 @@ namespace TLIS_Service.Services
 
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                            _unitOfWork.SaveChanges();
+                                            if (LoadOtherViewModel.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                NewloadOtherInst.sideArm2Id = null;
+                                                NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                 _unitOfWork.SaveChanges();
-                                                if (LoadOtherViewModel.civilLoads != null)
-                                                {
 
-                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                        .GetAllAsQueryable()
-                                                        .AsNoTracking()
-                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                    TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                    NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                    NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                    NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                    NewloadOtherInst.sideArm2Id = null;
-                                                    NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                    NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                    NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                    NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                    _unitOfWork.SaveChanges();
-
-                                                }
-
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                             }
-                                            else if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
+
+                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                        }
+                                        else if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                             {
                                                 if (loadOther.CenterHigh <= 0)
                                                 {
@@ -2472,39 +2481,40 @@ namespace TLIS_Service.Services
 
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                            _unitOfWork.SaveChanges();
+                                            if (LoadOtherViewModel.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                NewloadOtherInst.sideArm2Id = null;
+                                                NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                 _unitOfWork.SaveChanges();
-                                                if (LoadOtherViewModel.civilLoads != null)
-                                                {
 
-                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                        .GetAllAsQueryable()
-                                                        .AsNoTracking()
-                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                    TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                    NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                    NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                    NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                    NewloadOtherInst.sideArm2Id = null;
-                                                    NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                    NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                    NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                    NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                    _unitOfWork.SaveChanges();
-
-                                                }
-
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                             }
+
+                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
                                         }
+                                    }
                                         else
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this leg is not found", (int)ApiReturnCode.fail);
@@ -2663,38 +2673,40 @@ namespace TLIS_Service.Services
                                                         }
                                                         loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                         loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                    _unitOfWork.SaveChanges();
+                                                    if (LoadOtherViewModel.civilLoads != null)
+                                                    {
+
+                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                        TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                        NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                        NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                        NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                        NewloadOtherInst.sideArm2Id = null;
+                                                        NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                        NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                        NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                        NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                         _unitOfWork.SaveChanges();
-                                                        if (LoadOtherViewModel.civilLoads != null)
-                                                        {
 
-                                                            var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                                .GetAllAsQueryable()
-                                                                .AsNoTracking()
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                            TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                            NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                            NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                            NewloadOtherInst.sideArm2Id = null;
-                                                            NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                            NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                            NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                            NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-                                                        if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                                     }
-                                                    if (loadOtherInst.ReservedSpace == true && LoadOtherViewModel.civilLoads.ReservedSpace == false)
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                }
+                                                if (loadOtherInst.ReservedSpace == true && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (loadOther.CenterHigh <= 0)
                                                         {
@@ -2770,39 +2782,40 @@ namespace TLIS_Service.Services
                                                         }
                                                         loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                         loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                    _unitOfWork.SaveChanges();
+                                                    if (LoadOtherViewModel.civilLoads != null)
+                                                    {
+
+                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                        TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                        NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                        NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                        NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                        NewloadOtherInst.sideArm2Id = null;
+                                                        NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                        NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                        NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                        NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                         _unitOfWork.SaveChanges();
-                                                        if (LoadOtherViewModel.civilLoads != null)
-                                                        {
 
-                                                            var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                                .GetAllAsQueryable()
-                                                                .AsNoTracking()
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                            TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                            NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                            NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                            NewloadOtherInst.sideArm2Id = null;
-                                                            NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                            NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                            NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                            NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-
-                                                        if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                                     }
-                                                    if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                }
+                                                if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
                                                     {
                                                         if (loadOther.CenterHigh <= 0)
                                                         {
@@ -2896,39 +2909,40 @@ namespace TLIS_Service.Services
 
                                                         loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                         loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                    _unitOfWork.SaveChanges();
+                                                    if (LoadOtherViewModel.civilLoads != null)
+                                                    {
+
+                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                        TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                        NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                        NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                        NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                        NewloadOtherInst.sideArm2Id = null;
+                                                        NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                        NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                        NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                        NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                         _unitOfWork.SaveChanges();
-                                                        if (LoadOtherViewModel.civilLoads != null)
-                                                        {
 
-                                                            var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                                .GetAllAsQueryable()
-                                                                .AsNoTracking()
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                            TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                            NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                            NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                            NewloadOtherInst.sideArm2Id = null;
-                                                            NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                            NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                            NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                            NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-
-                                                        if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                                     }
-                                                    if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                }
+                                                if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (loadOther.CenterHigh <= 0)
                                                         {
@@ -2998,42 +3012,43 @@ namespace TLIS_Service.Services
 
                                                         loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                         loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                    _unitOfWork.SaveChanges();
+                                                    if (LoadOtherViewModel.civilLoads != null)
+                                                    {
+
+                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                            .GetAllAsQueryable()
+                                                            .AsNoTracking()
+                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                        TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                        NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                        NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                        NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                        NewloadOtherInst.sideArm2Id = null;
+                                                        NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                        NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                        NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                        NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                         _unitOfWork.SaveChanges();
-                                                        if (LoadOtherViewModel.civilLoads != null)
-                                                        {
 
-                                                            var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                                .GetAllAsQueryable()
-                                                                .AsNoTracking()
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                            TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                            NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                            NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                            NewloadOtherInst.sideArm2Id = null;
-                                                            NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                            NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                            NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                            NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                            _unitOfWork.SaveChanges();
-
-                                                        }
-
-                                                        if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                                     }
 
-
-
+                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
                                                 }
+
+
+
+                                            }
 
                                                 else
                                                 {
@@ -3184,39 +3199,40 @@ namespace TLIS_Service.Services
                                                     }
                                                     loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                     loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                _unitOfWork.SaveChanges();
+                                                if (LoadOtherViewModel.civilLoads != null)
+                                                {
+
+                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                    TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                    NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                    NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                    NewloadOtherInst.sideArm2Id = null;
+                                                    NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                    NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                    NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                    NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                     _unitOfWork.SaveChanges();
-                                                    if (LoadOtherViewModel.civilLoads != null)
-                                                    {
 
-                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                            .GetAllAsQueryable()
-                                                            .AsNoTracking()
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                        TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                        NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                        NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                        NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                        NewloadOtherInst.sideArm2Id = null;
-                                                        NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                        NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                        NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                        NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                        _unitOfWork.SaveChanges();
-
-                                                    }
-
-                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                                 }
-                                                if (loadOtherInst.ReservedSpace == true && LoadOtherViewModel.civilLoads.ReservedSpace == false)
+
+                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                            }
+                                            if (loadOtherInst.ReservedSpace == true && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (loadOther.CenterHigh <= 0)
                                                     {
@@ -3295,38 +3311,40 @@ namespace TLIS_Service.Services
                                                     }
                                                     loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                     loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                _unitOfWork.SaveChanges();
+                                                if (LoadOtherViewModel.civilLoads != null)
+                                                {
+
+                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                    TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                    NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                    NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                    NewloadOtherInst.sideArm2Id = null;
+                                                    NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                    NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                    NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                    NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                     _unitOfWork.SaveChanges();
-                                                    if (LoadOtherViewModel.civilLoads != null)
-                                                    {
 
-                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                            .GetAllAsQueryable()
-                                                            .AsNoTracking()
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                        TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                        NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                        NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                        NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                        NewloadOtherInst.sideArm2Id = null;
-                                                        NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                        NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                        NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                        NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                        _unitOfWork.SaveChanges();
-
-                                                    }
-                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                                 }
-                                                if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
+
+                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                            }
+                                            if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
                                                 {
                                                     if (loadOther.CenterHigh <= 0)
                                                     {
@@ -3418,39 +3436,40 @@ namespace TLIS_Service.Services
 
                                                     loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                     loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                _unitOfWork.SaveChanges();
+                                                if (LoadOtherViewModel.civilLoads != null)
+                                                {
+
+                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                    TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                    NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                    NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                    NewloadOtherInst.sideArm2Id = null;
+                                                    NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                    NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                    NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                    NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                     _unitOfWork.SaveChanges();
-                                                    if (LoadOtherViewModel.civilLoads != null)
-                                                    {
 
-                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                            .GetAllAsQueryable()
-                                                            .AsNoTracking()
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                        TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                        NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                        NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                        NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                        NewloadOtherInst.sideArm2Id = null;
-                                                        NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                        NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                        NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                        NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                        _unitOfWork.SaveChanges();
-
-                                                    }
-
-                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                                 }
-                                                if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
+
+                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                            }
+                                            if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (loadOther.CenterHigh <= 0)
                                                     {
@@ -3521,40 +3540,42 @@ namespace TLIS_Service.Services
 
                                                     loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                     loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                _unitOfWork.SaveChanges();
+                                                if (LoadOtherViewModel.civilLoads != null)
+                                                {
+
+                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                        .GetAllAsQueryable()
+                                                        .AsNoTracking()
+                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                    TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                    NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                    NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                    NewloadOtherInst.sideArm2Id = null;
+                                                    NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                    NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                    NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                    NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                     _unitOfWork.SaveChanges();
-                                                    if (LoadOtherViewModel.civilLoads != null)
-                                                    {
 
-                                                        var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                            .GetAllAsQueryable()
-                                                            .AsNoTracking()
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                        TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                        NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                        NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                        NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                        NewloadOtherInst.sideArm2Id = null;
-                                                        NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
-                                                        NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                        NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                        NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                        _unitOfWork.SaveChanges();
-
-                                                    }
-
-                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                                 }
 
-
+                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
                                             }
+
+
+                                        }
                                             else
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
@@ -3678,39 +3699,40 @@ namespace TLIS_Service.Services
 
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.LoadOtherRepository.UpdateWithHistory(UserId, loadOtherInst.allLoadInst.loadOther, loadOther);
+                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                            _unitOfWork.SaveChanges();
+                                            if (LoadOtherViewModel.civilLoads != null)
+                                            {
+
+                                                var existingEntity = _unitOfWork.CivilLoadsRepository
+                                                    .GetAllAsQueryable()
+                                                    .AsNoTracking()
+                                                    .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+
+                                                TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
+                                                  .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
+                                                  .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                  .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
+
+                                                NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
+                                                NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
+                                                NewloadOtherInst.sideArm2Id = null;
+                                                NewloadOtherInst.legId = LoadOtherViewModel.installationConfig?.legId ?? null;
+                                                NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
+                                                NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
+                                                NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewloadOtherInst);
                                                 _unitOfWork.SaveChanges();
-                                                if (LoadOtherViewModel.civilLoads != null)
-                                                {
 
-                                                    var existingEntity = _unitOfWork.CivilLoadsRepository
-                                                        .GetAllAsQueryable()
-                                                        .AsNoTracking()
-                                                        .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-
-                                                    TLIcivilLoads NewloadOtherInst = _dbContext.TLIcivilLoads
-                                                      .Include(x => x.allLoadInst).Include(x => x.allLoadInst.loadOther).Include(x => x.allLoadInst.loadOther.loadOtherLibrary).Include(x => x.allCivilInst)
-                                                      .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                      .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.loadOtherId == loadOther.Id && !x.Dismantle);
-
-                                                    NewloadOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                    NewloadOtherInst.InstallationDate = LoadOtherViewModel.civilLoads.InstallationDate;
-                                                    NewloadOtherInst.sideArmId = LoadOtherViewModel.installationConfig?.sideArmId ?? null;
-                                                    NewloadOtherInst.sideArm2Id = null;
-                                                    NewloadOtherInst.legId = null;
-                                                    NewloadOtherInst.ItemOnCivilStatus = LoadOtherViewModel.civilLoads.ItemOnCivilStatus;
-                                                    NewloadOtherInst.ItemStatus = LoadOtherViewModel.civilLoads?.ItemStatus;
-                                                    NewloadOtherInst.ReservedSpace = LoadOtherViewModel.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewloadOtherInst);
-                                                    _unitOfWork.SaveChanges();
-
-                                                }
-
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString);
                                             }
-                                            else
+
+                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                        }
+                                        else
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
                                             }
@@ -4345,7 +4367,6 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("SIDEARM_ID");
                     propertyNamesStatic.Add("ALLCIVILINST_ID");
                     propertyNamesStatic.Add("LEG_ID");
-                    propertyNamesStatic.Add("SiteCode");
 
                     if (SiteCode == null)
                     {

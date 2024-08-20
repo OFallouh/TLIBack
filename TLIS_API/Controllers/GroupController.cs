@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -68,9 +69,28 @@ namespace TLIS_API.Controllers
         public async Task<IActionResult> EditGroup([FromBody]GroupViewModel groupViewModel)
         {
             if(TryValidateModel(groupViewModel, nameof(GroupViewModel)))
+
             {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
                 var domain = _configuration["Domain"];
-                var response = await _unitOfWorkService.GroupService.EditGroup(groupViewModel, domain);
+                var response = await _unitOfWorkService.GroupService.EditGroup(groupViewModel, domain,userId);
                 return Ok(response);
             }
             else
@@ -88,8 +108,25 @@ namespace TLIS_API.Controllers
         {
             if(TryValidateModel(addGroupViewModel, nameof(AddGroupViewModel)))
             {
-                //var domain = _configuration["Domain"];
-                var response = _unitOfWorkService.GroupService.AddGroup(addGroupViewModel);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.GroupService.AddGroup(addGroupViewModel,userId);
                 return Ok(response);
             }
             else
@@ -122,7 +159,25 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(GroupViewModel))]
         public async Task<IActionResult> DeleteGroup(int GroupId)
         {
-            var response = await _unitOfWorkService.GroupService.DeleteGroup(GroupId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = await _unitOfWorkService.GroupService.DeleteGroup(GroupId, userId);
             return Ok(response);
         }
 

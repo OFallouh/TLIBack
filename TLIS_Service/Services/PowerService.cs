@@ -3201,7 +3201,7 @@ namespace TLIS_Service.Services
 
                                                     Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
+                                                    var HistoryId= _unitOfWork.PowerRepository.AddWithHInsatallation(UserId,null, Power,SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                     if (AddPower.civilLoads != null && Id != 0)
@@ -3221,7 +3221,8 @@ namespace TLIS_Service.Services
 
 
                                                         };
-                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads,HistoryId);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
@@ -3229,7 +3230,7 @@ namespace TLIS_Service.Services
                                                     if (AddPower.dynamicAttribute.Count > 0)
                                                     {
 
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString,HistoryId);
 
                                                     }
                                                 }
@@ -3290,7 +3291,7 @@ namespace TLIS_Service.Services
 
                                                     Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
+                                                    var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                     if (AddPower.civilLoads != null && Id != 0)
@@ -3310,16 +3311,16 @@ namespace TLIS_Service.Services
 
 
                                                         };
-                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
-
-                                                    if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
+                                                    if (AddPower.dynamicAttribute.Count > 0)
                                                     {
 
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString, HistoryId);
 
                                                     }
 
@@ -3473,7 +3474,7 @@ namespace TLIS_Service.Services
 
                                                                 Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                                 Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                                _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
+                                                                var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
                                                                 _unitOfWork.SaveChanges();
                                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                                 if (AddPower.civilLoads != null && Id != 0)
@@ -3493,15 +3494,16 @@ namespace TLIS_Service.Services
 
 
                                                                     };
-                                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                     _unitOfWork.SaveChanges();
 
                                                                 }
 
-                                                                if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
+                                                                if (AddPower.dynamicAttribute.Count > 0)
                                                                 {
 
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString, HistoryId);
 
                                                                 }
                                                             }
@@ -3565,7 +3567,7 @@ namespace TLIS_Service.Services
 
                                                                 Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                                 Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                                _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
+                                                                var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
                                                                 _unitOfWork.SaveChanges();
                                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                                 if (AddPower.civilLoads != null && Id != 0)
@@ -3585,15 +3587,16 @@ namespace TLIS_Service.Services
 
 
                                                                     };
-                                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                     _unitOfWork.SaveChanges();
 
                                                                 }
 
-                                                                if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
+                                                                if (AddPower.dynamicAttribute.Count > 0)
                                                                 {
 
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString, HistoryId);
 
                                                                 }
 
@@ -3742,7 +3745,7 @@ namespace TLIS_Service.Services
 
                                                         Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                         Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
+                                                        var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                         if (AddPower.civilLoads != null && Id != 0)
@@ -3762,15 +3765,16 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
-                                                        if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
+                                                        if (AddPower.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString, HistoryId);
 
                                                         }
                                                     }
@@ -3834,7 +3838,7 @@ namespace TLIS_Service.Services
 
                                                         Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                         Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
+                                                        var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                         if (AddPower.civilLoads != null && Id != 0)
@@ -3854,15 +3858,16 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
-                                                        if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
+                                                        if (AddPower.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString, HistoryId);
 
                                                         }
 
@@ -3980,7 +3985,7 @@ namespace TLIS_Service.Services
 
                                                     Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.AddWithHistory(UserId, Power);
+                                                    var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                     if (AddPower.civilLoads != null && Id != 0)
@@ -3989,7 +3994,7 @@ namespace TLIS_Service.Services
                                                         {
                                                             InstallationDate = AddPower.civilLoads.InstallationDate,
                                                             allLoadInstId = Id,
-                                                            legId = null,
+                                                            legId = AddPower.installationConfig?.legId,
                                                             allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                             sideArmId = AddPower.installationConfig?.sideArmId,
                                                             ItemOnCivilStatus = AddPower.civilLoads.ItemOnCivilStatus,
@@ -4000,15 +4005,16 @@ namespace TLIS_Service.Services
 
 
                                                         };
-                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
-                                                    if (AddPower.dynamicAttribute != null ? AddPower.dynamicAttribute.Count > 0 : false)
+                                                    if (AddPower.dynamicAttribute.Count > 0)
                                                     {
 
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddPower.dynamicAttribute, TableNameEntity.Id, Power.Id, ConnectionString, HistoryId);
 
                                                     }
 
@@ -4201,7 +4207,7 @@ namespace TLIS_Service.Services
                                             }
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                           var HistoryId= _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId,null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4225,13 +4231,14 @@ namespace TLIS_Service.Services
                                                 NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                 NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                 NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                 _unitOfWork.SaveChanges();
 
                                             }
 
                                             if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString,HistoryId);
 
                                         }
                                         else if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
@@ -4300,7 +4307,7 @@ namespace TLIS_Service.Services
                                             }
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4324,13 +4331,14 @@ namespace TLIS_Service.Services
                                                 NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                 NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                 NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                 _unitOfWork.SaveChanges();
 
                                             }
 
                                             if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                         }
                                         else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
                                         {
@@ -4414,7 +4422,7 @@ namespace TLIS_Service.Services
 
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4438,13 +4446,15 @@ namespace TLIS_Service.Services
                                                 NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                 NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                 NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                 _unitOfWork.SaveChanges();
 
                                             }
 
                                             if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
+                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
                                         }
                                         else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
                                         {
@@ -4505,7 +4515,7 @@ namespace TLIS_Service.Services
 
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4529,13 +4539,14 @@ namespace TLIS_Service.Services
                                                 NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                 NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                 NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                 _unitOfWork.SaveChanges();
 
                                             }
 
                                             if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                         }
                                     }
                                     else
@@ -4684,7 +4695,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                     power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (Editpower.civilLoads != null)
                                                     {
@@ -4696,9 +4707,9 @@ namespace TLIS_Service.Services
 
 
                                                         TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                            .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                            .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
 
                                                         NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                         NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
@@ -4708,12 +4719,14 @@ namespace TLIS_Service.Services
                                                         NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                         NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                         NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
+
                                                     if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                                 }
                                                 else if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
                                                 {
@@ -4782,7 +4795,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                     power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (Editpower.civilLoads != null)
                                                     {
@@ -4794,9 +4807,9 @@ namespace TLIS_Service.Services
 
 
                                                         TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                            .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                            .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
 
                                                         NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                         NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
@@ -4806,13 +4819,14 @@ namespace TLIS_Service.Services
                                                         NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                         NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                         NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                                 }
                                                 else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
                                                 {
@@ -4897,7 +4911,7 @@ namespace TLIS_Service.Services
 
                                                     power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                     power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (Editpower.civilLoads != null)
                                                     {
@@ -4909,9 +4923,9 @@ namespace TLIS_Service.Services
 
 
                                                         TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                            .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                            .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
 
                                                         NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                         NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
@@ -4921,13 +4935,14 @@ namespace TLIS_Service.Services
                                                         NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                         NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                         NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                                 }
                                                 else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
                                                 {
@@ -4987,7 +5002,7 @@ namespace TLIS_Service.Services
 
                                                     power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                     power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (Editpower.civilLoads != null)
                                                     {
@@ -4999,9 +5014,9 @@ namespace TLIS_Service.Services
 
 
                                                         TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
-                                                            .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
-                                                            .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                            .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+                                                          .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
+                                                          .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                          .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
 
                                                         NewpowerInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                         NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
@@ -5011,13 +5026,14 @@ namespace TLIS_Service.Services
                                                         NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                         NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                         NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                                 }
 
 
@@ -5162,7 +5178,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                 power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (Editpower.civilLoads != null)
                                                 {
@@ -5186,13 +5202,14 @@ namespace TLIS_Service.Services
                                                     NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                     NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                     NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                             }
                                             else if (powerInst.ReservedSpace == true && Editpower.civilLoads.ReservedSpace == false)
                                             {
@@ -5261,7 +5278,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                 power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (Editpower.civilLoads != null)
                                                 {
@@ -5285,12 +5302,14 @@ namespace TLIS_Service.Services
                                                     NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                     NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                     NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
+
                                                 if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                             }
                                             else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == true)
                                             {
@@ -5374,7 +5393,7 @@ namespace TLIS_Service.Services
 
                                                 power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                 power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (Editpower.civilLoads != null)
                                                 {
@@ -5398,13 +5417,14 @@ namespace TLIS_Service.Services
                                                     NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                     NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                     NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                             }
                                             else if (powerInst.ReservedSpace == false && Editpower.civilLoads.ReservedSpace == false)
                                             {
@@ -5464,7 +5484,7 @@ namespace TLIS_Service.Services
 
                                                 power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                 power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (Editpower.civilLoads != null)
                                                 {
@@ -5473,6 +5493,7 @@ namespace TLIS_Service.Services
                                                         .GetAllAsQueryable()
                                                         .AsNoTracking()
                                                         .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.powerId == power.Id && !x.Dismantle);
+
 
                                                     TLIcivilLoads NewpowerInst = _dbContext.TLIcivilLoads
                                                       .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.power.powerLibrary).Include(x => x.allCivilInst)
@@ -5487,13 +5508,14 @@ namespace TLIS_Service.Services
                                                     NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                     NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                     NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString, HistoryId);
                                             }
 
 
@@ -5609,7 +5631,7 @@ namespace TLIS_Service.Services
 
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            _unitOfWork.PowerRepository.UpdateWithHistory(UserId, powerInst.allLoadInst.power, power);
+                                             var HistoryId= _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId,null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -5629,18 +5651,19 @@ namespace TLIS_Service.Services
                                                 NewpowerInst.InstallationDate = Editpower.civilLoads.InstallationDate;
                                                 NewpowerInst.sideArmId = Editpower.installationConfig?.sideArmId ?? null;
                                                 NewpowerInst.sideArm2Id = null;
-                                                NewpowerInst.legId = null;
+                                                NewpowerInst.legId = Editpower.installationConfig?.legId ?? null;
                                                 NewpowerInst.ItemOnCivilStatus = Editpower.civilLoads.ItemOnCivilStatus;
                                                 NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                 NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewpowerInst);
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                 _unitOfWork.SaveChanges();
 
                                             }
 
                                             if (Editpower.dynamicAttribute != null ? Editpower.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString);
-                                        }
+                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, Editpower.dynamicAttribute, TableNameId, power.Id, ConnectionString,HistoryId);
+           }
                                         else
                                         {
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);

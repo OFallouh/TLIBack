@@ -17,14 +17,14 @@ namespace TLIS_Service.IService
     public interface IUserService
     {
         bool GetSession(int UserId, string Ip);
-        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<string> Permissions, string domain);
+        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<string> Permissions, string domain,int UserId);
         Response<List<UserViewModel>> GetUsersByGroupName(string GroupName, string domain);
-        Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain);
+        Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain, int UserId);
         Response<bool> ValidateUserInAdAndDb(string UserName, string domain);
         Task<Response<List<UserViewModel>>> GetAllInternalUsers(string UserName, ParameterPagination parameter);
         Task<Response<List<UserViewModel>>> GetAllExternalUsers(string UserName, ParameterPagination parameter);
         Task<Response<UserViewModel>> GetUserById(int Id);
-        Task<Response<UserViewModel>> Updateuser(EditUserViewModel model);
+        Task<Response<UserViewModel>> Updateuser(EditUserViewModel model, int UserId);
         Task<Response<UserViewModel>> DeactivateUser(int UserId);
         Response<List<UserViewModel>> GetAll(List<FilterObjectList> filters, ParameterPagination parameter);
         Task<Response<ChangePasswordViewModel>> ChangePassword(ChangePasswordViewModel View);

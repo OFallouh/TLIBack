@@ -23,6 +23,7 @@ namespace TLIS_DAL.Models
         public bool? ValueBoolean { get; set; }
         //public string Value { get; set; }
         public bool IsResult { get; set; }
+        public string Result { get; set; }
         public List<TLIdependencyRow> DependencyRows { get; set; }
     }
 }

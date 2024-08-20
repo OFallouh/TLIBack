@@ -3143,7 +3143,7 @@ namespace TLIS_Service.Services
                         SideArm.sideArmInstallationPlaceId = SideArmViewModel.installationConfig.installationPlaceId;
                         SideArm.sideArmTypeId = SideArmViewModel.installationConfig.sideArmTypeId;
                         SideArm.sideArmLibraryId = SideArmViewModel.civilType.sideArmLibraryId;
-                        _unitOfWork.SideArmRepository.UpdateWithHistory(UserId, SideArmInst, SideArm);
+                        var HistoryId=_unitOfWork.SideArmRepository.UpdateWithHInstallation(UserId,null, SideArmInst, SideArm, CivilLoads.SiteCode);
                         _unitOfWork.SaveChanges();
 
                         if (SideArmViewModel.CivilLoads != null && (AllCivilInst != null || AllCivilInst != 0))
@@ -3185,7 +3185,8 @@ namespace TLIS_Service.Services
                                     item.Leg2Id = null;
 
                                 }
-                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldAllLoadOnSideArm, item);
+                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, OldAllLoadOnSideArm, item);
                                 return item;
                             }).ToList();
                             _unitOfWork.SaveChanges();
@@ -4058,7 +4059,7 @@ namespace TLIS_Service.Services
                                                 SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                                 SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                                 SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
-                                                _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
+                                               var HistoryId= _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId,null, SideArm,SiteCode);
                                                 _unitOfWork.SaveChanges();
 
                                                 if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
@@ -4076,13 +4077,13 @@ namespace TLIS_Service.Services
                                                         legId = addSideArms.installationConfig.legId[0]
                                                     };
                                                     civilLoad.allLoadInstId = null;
-
-                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, civilLoad,HistoryId);
                                                     _unitOfWork.SaveChangesAsync();
                                                 }
 
 
-                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString);
+                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString,HistoryId);
 
                                             }
                                             else
@@ -4167,7 +4168,7 @@ namespace TLIS_Service.Services
                                                 SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                                 SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                                 SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
-                                                _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
+                                                var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode);
                                                 _unitOfWork.SaveChanges();
 
                                                 if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
@@ -4188,11 +4189,13 @@ namespace TLIS_Service.Services
                                                     };
                                                     civilLoad.allLoadInstId = null;
 
-                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, civilLoad, HistoryId);
                                                     _unitOfWork.SaveChangesAsync();
                                                 }
 
-                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString);
+
+                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString, HistoryId);
 
                                             }
                                             else
@@ -4283,7 +4286,7 @@ namespace TLIS_Service.Services
                                             SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                             SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                             SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
-                                            _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
+                                            var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode);
                                             _unitOfWork.SaveChanges();
 
                                             if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
@@ -4322,12 +4325,13 @@ namespace TLIS_Service.Services
 
                                                 civilLoad.allLoadInstId = null;
 
-                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, civilLoad, HistoryId);
                                                 _unitOfWork.SaveChangesAsync();
                                             }
 
 
-                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString);
+                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString, HistoryId);
                                         }
                                         else
                                         {
@@ -4416,7 +4420,7 @@ namespace TLIS_Service.Services
                                             SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                             SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                             SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
-                                            _unitOfWork.SideArmRepository.AddWithHistory(UserId, SideArm);
+                                            var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode);
                                             _unitOfWork.SaveChanges();
 
                                             if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
@@ -4455,10 +4459,13 @@ namespace TLIS_Service.Services
 
                                                 civilLoad.allLoadInstId = null;
 
-                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, civilLoad);
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, civilLoad, HistoryId);
                                                 _unitOfWork.SaveChangesAsync();
                                             }
-                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString);
+
+
+                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString, HistoryId);
                                         }
                                         else
                                         {

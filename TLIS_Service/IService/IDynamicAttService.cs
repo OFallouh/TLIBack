@@ -18,6 +18,7 @@ namespace TLIS_Service.IService
     public interface IDynamicAttService
     {
         Response<DynamicAttributeValidations> GetDynamicAttributeValidation(int DynamicAttId);
+        Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int UserId, int? CategoryId);
         Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId);
         Response<IEnumerable<AttributeActivatedViewModel>> GetAttributes(string TableName);
         Response<AddDynamicLibAttValueViewModel> AddDynamicAttLibValue(AddDynamicLibAttValueViewModel addDynamicLibAttValueViewModel);

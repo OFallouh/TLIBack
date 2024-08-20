@@ -77,5 +77,9 @@ namespace TLIS_Repository.Base
         TEntity GetIncludeWhereFirst(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes);
         void RefreshView(string connectionString);
         void AddSiteWithHistory(int? UserId, TEntity entity);
+        int AddWithHInsatallation(int? UserId, int? SecRecordId, TEntity AddObject, string? SiteCode);
+        Task<int> AddAsyncWithHInstallation(int? UserId, int? SecRecordId, TEntity AddObject, string SiteCode);
+        void AddRangeWithHInstallation(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities, string SiteCode);
+        int UpdateWithHInstallation(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
     }
 }

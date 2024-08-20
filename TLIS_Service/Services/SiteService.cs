@@ -117,7 +117,7 @@ namespace TLIS_Service.Services
                             (int)Helpers.Constants.ApiReturnCode.fail);
 
                     TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
-                    _unitOfWork.SiteRepository.AddSiteWithHistory(UserId,NewSiteEntity);
+                    _unitOfWork.SiteRepository.AddWithHInsatallation(UserId,null,NewSiteEntity,null);
                     
                     if (TaskId != null)
                     {
@@ -179,7 +179,7 @@ namespace TLIS_Service.Services
                     var OldSiteInfo = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
                         (x=>x.SiteCode == EditSiteViewModel.SiteCode);
                     TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
-                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId,OldSiteInfo, Site);
+                    _unitOfWork.SiteRepository.UpdateWithHInstallation(UserId,null,OldSiteInfo, Site,null);
 
                     _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
                     _MySites.Add(Site);
@@ -1108,7 +1108,7 @@ namespace TLIS_Service.Services
                     TLIsite OldSiteData = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower());
                     _MySites.Remove(OldSiteData);
                     _MySites.Add(site);
-                    _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, Oldsite, site);
+                    _unitOfWork.SiteRepository.UpdateWithHInstallation(UserId,null, Oldsite, site, SiteCode);
                     _unitOfWork.SaveChanges();
                 }
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);

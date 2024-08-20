@@ -2744,7 +2744,7 @@ namespace TLIS_Service.Services
                             if (CheckSerialNumber != null)
                                 return new Response<AddGeneratorInstallationObject>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                             Generator.GeneratorLibraryId = addGeneratorInstallationObject.GeneratorType.GeneratorLibraryId;
-                            _unitOfWork.GeneratorRepository.AddWithHistory(UserId, Generator);
+                           var HistoryId= _unitOfWork.GeneratorRepository.AddWithHInsatallation(UserId,null, Generator,SiteCode);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
@@ -2761,7 +2761,8 @@ namespace TLIS_Service.Services
                                 otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
                                 otherInSite.InstallationDate = addGeneratorInstallationObject.OtherInSite.InstallationDate;
                                 otherInSite.ReservedSpace = addGeneratorInstallationObject.OtherInSite.ReservedSpace;
-                                _unitOfWork.OtherInSiteRepository.AddWithHistory(UserId, otherInSite);
+                                var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                                _unitOfWork.OtherInSiteRepository.AddWithHDynamic(UserId, TabelTLIotherInSite, otherInSite,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
                             var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
@@ -2782,10 +2783,11 @@ namespace TLIS_Service.Services
                                 otherInventoryDistance.SiteCode = SiteCode;
                                 otherInventoryDistance.ReferenceOtherInventoryId = addGeneratorInstallationObject.OtherInventoryDistance?.ReferenceOtherInventoryId;
                                 otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHistory(UserId, otherInventoryDistance);
+                                var TabelTLIotherInventoryDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInventoryDistance").Id;
+                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHDynamic(UserId, TabelTLIotherInventoryDistance, otherInventoryDistance, HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addGeneratorInstallationObject.dynamicAttribute, TableNameEntity.Id, Generator.Id, ConnectionString);
+                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addGeneratorInstallationObject.dynamicAttribute, TableNameEntity.Id, Generator.Id, ConnectionString, HistoryId);
 
                             if (TaskId != null)
                             {
@@ -2866,7 +2868,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddCabinetPowerInstallation>(true, null, null, $"This name {CabinetPower.Name} is already exists", (int)ApiReturnCode.fail);
 
                             CabinetPower.CabinetPowerLibraryId = addCabinetPowerInstallation.CabinetPowerType.CabinetPowerLibraryId;
-                            _unitOfWork.CabinetRepository.AddWithHistory(UserId, CabinetPower);
+                           var HistoryId= _unitOfWork.CabinetRepository.AddWithHInsatallation(UserId,null, CabinetPower,SiteCode);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
@@ -2883,7 +2885,8 @@ namespace TLIS_Service.Services
                                 otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
                                 otherInSite.InstallationDate = addCabinetPowerInstallation.OtherInSite.InstallationDate;
                                 otherInSite.ReservedSpace = addCabinetPowerInstallation.OtherInSite.ReservedSpace;
-                                _unitOfWork.OtherInSiteRepository.AddWithHistory(UserId, otherInSite);
+                                var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                                _unitOfWork.OtherInSiteRepository.AddWithHDynamic(UserId, TabelTLIotherInSite, otherInSite,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
                             var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
@@ -2904,10 +2907,11 @@ namespace TLIS_Service.Services
                                 otherInventoryDistance.SiteCode = SiteCode;
                                 otherInventoryDistance.ReferenceOtherInventoryId = addCabinetPowerInstallation.OtherInventoryDistance?.ReferenceOtherInventoryId;
                                 otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHistory(UserId, otherInventoryDistance);
+                                var TabelTLIotherInventoryDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInventoryDistance").Id;
+                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHDynamic(UserId, TabelTLIotherInventoryDistance, otherInventoryDistance,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addCabinetPowerInstallation.dynamicAttribute, TableNameEntity.Id, CabinetPower.Id, ConnectionString);
+                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addCabinetPowerInstallation.dynamicAttribute, TableNameEntity.Id, CabinetPower.Id, ConnectionString,HistoryId);
 
                             if (TaskId != null)
                             {
@@ -2988,7 +2992,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddCabinetTelecomInstallationObject>(true, null, null, $"This name {CabinetTelecom.Name} is already exists", (int)ApiReturnCode.fail);
 
                             CabinetTelecom.CabinetTelecomLibraryId = addCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
-                            _unitOfWork.CabinetRepository.AddWithHistory(UserId, CabinetTelecom);
+                            var HistoryId=_unitOfWork.CabinetRepository.AddWithHInsatallation(UserId,null, CabinetTelecom,SiteCode);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
@@ -3005,7 +3009,8 @@ namespace TLIS_Service.Services
                                 otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
                                 otherInSite.InstallationDate = addCabinetTelecomInstallationObject.OtherInSite.InstallationDate;
                                 otherInSite.ReservedSpace = addCabinetTelecomInstallationObject.OtherInSite.ReservedSpace;
-                                _unitOfWork.OtherInSiteRepository.AddWithHistory(UserId, otherInSite);
+                                var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                                _unitOfWork.OtherInSiteRepository.AddWithHDynamic(UserId, TabelTLIotherInSite, otherInSite,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
                             var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
@@ -3027,10 +3032,11 @@ namespace TLIS_Service.Services
                                 otherInventoryDistance.SiteCode = SiteCode;
                                 otherInventoryDistance.ReferenceOtherInventoryId = addCabinetTelecomInstallationObject.OtherInventoryDistance?.ReferenceOtherInventoryId;
                                 otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHistory(UserId, otherInventoryDistance);
+                                var TabelTLIotherInventoryDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInventoryDistance").Id;
+                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHDynamic(UserId, TabelTLIotherInventoryDistance, otherInventoryDistance,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addCabinetTelecomInstallationObject.dynamicAttribute, TableNameEntity.Id, CabinetTelecom.Id, ConnectionString);
+                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addCabinetTelecomInstallationObject.dynamicAttribute, TableNameEntity.Id, CabinetTelecom.Id, ConnectionString,HistoryId);
 
                             if (TaskId != null)
                             {
@@ -3111,7 +3117,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddSolarInstallationObject>(true, null, null, $"This name {Solar.Name} is already exists", (int)ApiReturnCode.fail);
 
                             Solar.SolarLibraryId = addSolarInstallationObject.SolarType.SolarLibraryId;
-                            _unitOfWork.SolarRepository.AddWithHistory(UserId, Solar);
+                            var HistoryId=_unitOfWork.SolarRepository.AddWithHInsatallation(UserId,null, Solar,SiteCode);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
@@ -3128,7 +3134,8 @@ namespace TLIS_Service.Services
                                 otherInSite.allOtherInventoryInstId = allOtherInventoryInst.Id;
                                 otherInSite.InstallationDate = addSolarInstallationObject.OtherInSite.InstallationDate;
                                 otherInSite.ReservedSpace = addSolarInstallationObject.OtherInSite.ReservedSpace;
-                                _unitOfWork.OtherInSiteRepository.AddWithHistory(UserId, otherInSite);
+                                var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                                _unitOfWork.OtherInSiteRepository.AddWithHDynamic(UserId, TabelTLIotherInSite, otherInSite,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
                             var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
@@ -3149,10 +3156,11 @@ namespace TLIS_Service.Services
                                 otherInventoryDistance.SiteCode = SiteCode;
                                 otherInventoryDistance.ReferenceOtherInventoryId = addSolarInstallationObject.OtherInventoryDistance?.ReferenceOtherInventoryId;
                                 otherInventoryDistance.allOtherInventoryInstId = allOtherInventoryInst.Id;
-                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHistory(UserId, otherInventoryDistance);
+                                var TabelTLIotherInventoryDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInventoryDistance").Id;
+                                _unitOfWork.OtherInventoryDistanceRepository.AddWithHDynamic(UserId, TabelTLIotherInventoryDistance, otherInventoryDistance,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, addSolarInstallationObject.dynamicAttribute, TableNameEntity.Id, Solar.Id, ConnectionString);
+                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSolarInstallationObject.dynamicAttribute, TableNameEntity.Id, Solar.Id, ConnectionString,HistoryId);
 
                             if (TaskId != null)
                             {
@@ -3895,7 +3903,7 @@ namespace TLIS_Service.Services
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
                             //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
                             Generator.GeneratorLibraryId = GeneratorModel.GeneratorType.GeneratorLibraryId;
-                            _unitOfWork.GeneratorRepository.UpdateWithHistory(UserId, GeneratorInst.allOtherInventoryInst.generator, Generator);
+                            var HistoryId=_unitOfWork.GeneratorRepository.UpdateWithHInstallation(UserId,null, GeneratorInst.allOtherInventoryInst.generator, Generator, GeneratorInst.SiteCode);
                             _unitOfWork.SaveChanges();
                             //----------------------------------------------------------------------------------//
                             //----------------------OtherOnSite-------------------------------------------------//
@@ -3908,7 +3916,8 @@ namespace TLIS_Service.Services
                             NewOtherinsite.ReservedSpace = GeneratorModel.OtherInSite.ReservedSpace;
                             NewOtherinsite.Dismantle = GeneratorModel.OtherInSite.Dismantle;
                             NewOtherinsite.OtherInventoryStatus = GeneratorModel.OtherInSite.OtherInventoryStatus;
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, GeneratorInst, NewOtherinsite);
+                            var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInSite, GeneratorInst, NewOtherinsite);
                             _unitOfWork.SaveChanges();
 
                             //----------------------------------------------------------------------------------//
@@ -3920,28 +3929,31 @@ namespace TLIS_Service.Services
                             var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
                               .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.generatorId
                               == Generator.Id);
-                            if (OldOtherinventorydistance.ReferenceOtherInventoryId != GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId)
+                            if (OldOtherinventorydistance != null)
                             {
-                                var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
-                                == GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == GeneratorModel.OtherInventoryDistance.Distance
-                                && x.Azimuth == GeneratorModel.OtherInventoryDistance.Azimuth).Select(x => x.ReferenceOtherInventoryId).ToList();
-                                var OtherInSite = _unitOfWork.OtherInSiteRepository.GetWhere(x => OtherInventoryDistance.Any(y => y
-                                == x.allOtherInventoryInstId) && !x.Dismantle && x.SiteCode.ToLower() == GeneratorInst.SiteCode.ToLower()).ToList();
-                                if (OtherInSite.Count > 0)
+                                if (OldOtherinventorydistance.ReferenceOtherInventoryId != GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId)
                                 {
-                                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "can not select the otherinventory reference on same distance and azimuth because found other otherinventory reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
+                                    == GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == GeneratorModel.OtherInventoryDistance.Distance
+                                    && x.Azimuth == GeneratorModel.OtherInventoryDistance.Azimuth).Select(x => x.ReferenceOtherInventoryId).ToList();
+                                    var OtherInSite = _unitOfWork.OtherInSiteRepository.GetWhere(x => OtherInventoryDistance.Any(y => y
+                                    == x.allOtherInventoryInstId) && !x.Dismantle && x.SiteCode.ToLower() == GeneratorInst.SiteCode.ToLower()).ToList();
+                                    if (OtherInSite.Count > 0)
+                                    {
+                                        return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "can not select the otherinventory reference on same distance and azimuth because found other otherinventory reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
                                 }
+                                Otherinventorydistance.Azimuth = GeneratorModel.OtherInventoryDistance.Azimuth;
+                                Otherinventorydistance.Distance = GeneratorModel.OtherInventoryDistance.Distance;
+                                Otherinventorydistance.ReferenceOtherInventoryId = GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId;
+                                var TabelTLIotherInventoryDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInventoryDistance").Id;
+                                _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInventoryDistance, OldOtherinventorydistance, Otherinventorydistance);
+                                _unitOfWork.SaveChanges();
+
                             }
-                            Otherinventorydistance.Azimuth = GeneratorModel.OtherInventoryDistance.Azimuth;
-                            Otherinventorydistance.Distance = GeneratorModel.OtherInventoryDistance.Distance;
-                            Otherinventorydistance.ReferenceOtherInventoryId = GeneratorModel.OtherInventoryDistance.ReferenceOtherInventoryId;
-
-                            _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
-                            _unitOfWork.SaveChanges();
-
                             if (GeneratorModel.dynamicAttribute.Count > 0)
                             {
-                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, GeneratorModel.dynamicAttribute, TableEntity.Id, Generator.Id, connectionString);
+                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, GeneratorModel.dynamicAttribute, TableEntity.Id, Generator.Id, connectionString,HistoryId);
                             }
                             await _unitOfWork.SaveChangesAsync();
 
@@ -4022,7 +4034,7 @@ namespace TLIS_Service.Services
                             //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
                       
                             Solar.SolarLibraryId = SolarModel.SolarType.SolarLibraryId;
-                            _unitOfWork.SolarRepository.UpdateWithHistory(UserId, SolarInst.allOtherInventoryInst.solar, Solar);
+                            var HistoryId=_unitOfWork.SolarRepository.UpdateWithHInstallation(UserId,null, SolarInst.allOtherInventoryInst.solar, Solar, SolarInst.SiteCode);
                             _unitOfWork.SaveChanges();
                             //----------------------------------------------------------------------------------//
                             //----------------------OtherOnSite-------------------------------------------------//
@@ -4038,7 +4050,8 @@ namespace TLIS_Service.Services
                             NewSolarInst.ReservedSpace = SolarModel.OtherInSite.ReservedSpace;
                             NewSolarInst.Dismantle = SolarModel.OtherInSite.Dismantle;
                             NewSolarInst.OtherInventoryStatus = SolarModel.OtherInSite.OtherInventoryStatus;
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, SolarInst, NewSolarInst);
+                            var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInSite, SolarInst, NewSolarInst);
                             _unitOfWork.SaveChanges();
 
                             //----------------------------------------------------------------------------------//
@@ -4050,28 +4063,30 @@ namespace TLIS_Service.Services
                             var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
                               .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.solarId
                               == Solar.Id);
-                            if (OldOtherinventorydistance.ReferenceOtherInventoryId != SolarModel.OtherInventoryDistance.ReferenceOtherInventoryId)
+                            if (OldOtherinventorydistance != null)
                             {
-                                var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
-                               == SolarModel.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == SolarModel.OtherInventoryDistance.Distance
-                               && x.Azimuth == SolarModel.OtherInventoryDistance.Azimuth).Select(x => x.ReferenceOtherInventoryId).ToList();
-                                var OtherInSite = _unitOfWork.OtherInSiteRepository.GetWhere(x => OtherInventoryDistance.Any(y => y
-                                == x.allOtherInventoryInstId) && !x.Dismantle && x.SiteCode.ToLower() == SolarInst.SiteCode.ToLower()).ToList();
-                                if (OtherInSite.Count > 0)
+                                if (OldOtherinventorydistance.ReferenceOtherInventoryId != SolarModel.OtherInventoryDistance.ReferenceOtherInventoryId)
                                 {
-                                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "can not select the otherinventory reference on same distance and azimuth because found other otherinventory reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
+                                   == SolarModel.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == SolarModel.OtherInventoryDistance.Distance
+                                   && x.Azimuth == SolarModel.OtherInventoryDistance.Azimuth).Select(x => x.ReferenceOtherInventoryId).ToList();
+                                    var OtherInSite = _unitOfWork.OtherInSiteRepository.GetWhere(x => OtherInventoryDistance.Any(y => y
+                                    == x.allOtherInventoryInstId) && !x.Dismantle && x.SiteCode.ToLower() == SolarInst.SiteCode.ToLower()).ToList();
+                                    if (OtherInSite.Count > 0)
+                                    {
+                                        return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "can not select the otherinventory reference on same distance and azimuth because found other otherinventory reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
                                 }
+                                Otherinventorydistance.Azimuth = SolarModel.OtherInventoryDistance.Azimuth;
+                                Otherinventorydistance.Distance = SolarModel.OtherInventoryDistance.Distance;
+                                Otherinventorydistance.ReferenceOtherInventoryId = SolarModel.OtherInventoryDistance.ReferenceOtherInventoryId;
+                                var TabelTLIotherInventoryDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInventoryDistance").Id;
+                                _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInventoryDistance, OldOtherinventorydistance, Otherinventorydistance);
+                                _unitOfWork.SaveChanges();
                             }
-                            Otherinventorydistance.Azimuth = SolarModel.OtherInventoryDistance.Azimuth;
-                            Otherinventorydistance.Distance = SolarModel.OtherInventoryDistance.Distance;
-                            Otherinventorydistance.ReferenceOtherInventoryId = SolarModel.OtherInventoryDistance.ReferenceOtherInventoryId;
-
-                            _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
-                            _unitOfWork.SaveChanges();
-
                             if (SolarModel.dynamicAttribute.Count > 0)
                             {
-                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, SolarModel.dynamicAttribute, TableEntity.Id, Solar.Id, connectionString);
+                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, SolarModel.dynamicAttribute, TableEntity.Id, Solar.Id, connectionString,HistoryId);
                             }
                             await _unitOfWork.SaveChangesAsync();
 
@@ -4187,7 +4202,7 @@ namespace TLIS_Service.Services
                         //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
                         CabinetPower.CabinetPowerLibraryId = editCabinetPowerInstallationObject.CabinetPowerType.CabinetPowerLibraryId;
-                        _unitOfWork.CabinetRepository.UpdateWithHistory(UserId, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetPower);
+                       var HistoryId= _unitOfWork.CabinetRepository.UpdateWithHInstallation(UserId,null, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetPower, CabinetPowerInst.SiteCode);
                         _unitOfWork.SaveChanges();
                         //----------------------------------------------------------------------------------//
                         //----------------------OtherOnSite-------------------------------------------------//
@@ -4203,7 +4218,8 @@ namespace TLIS_Service.Services
                         NewCabinetPowerInst.ReservedSpace = editCabinetPowerInstallationObject.OtherInSite.ReservedSpace;
                         NewCabinetPowerInst.Dismantle = editCabinetPowerInstallationObject.OtherInSite.Dismantle;
                         NewCabinetPowerInst.OtherInventoryStatus = editCabinetPowerInstallationObject.OtherInSite.OtherInventoryStatus;
-                        _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, CabinetPowerInst, NewCabinetPowerInst);
+                        var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                        _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInSite, CabinetPowerInst, NewCabinetPowerInst);
                         _unitOfWork.SaveChanges();
 
                         //----------------------------------------------------------------------------------//
@@ -4215,28 +4231,30 @@ namespace TLIS_Service.Services
                         var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
                           .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId
                           == CabinetPower.Id);
-                        if (OldOtherinventorydistance.ReferenceOtherInventoryId != editCabinetPowerInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId)
+                        if (OldOtherinventorydistance != null)
                         {
-                            var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
-                                == editCabinetPowerInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == editCabinetPowerInstallationObject.OtherInventoryDistance.Distance
-                                && x.Azimuth == editCabinetPowerInstallationObject.OtherInventoryDistance.Azimuth).Select(x=>x.ReferenceOtherInventoryId).ToList();
-                            var OtherInSite = _unitOfWork.OtherInSiteRepository.GetWhere(x => OtherInventoryDistance.Any(y => y
-                            == x.allOtherInventoryInstId) && !x.Dismantle && x.SiteCode.ToLower() == CabinetPowerInst.SiteCode.ToLower()).ToList();
-                            if (OtherInSite.Count > 0)
+                            if (OldOtherinventorydistance.ReferenceOtherInventoryId != editCabinetPowerInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId)
                             {
-                                return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "can not select the otherinventory reference on same distance and azimuth because found other otherinventory reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
+                                    == editCabinetPowerInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == editCabinetPowerInstallationObject.OtherInventoryDistance.Distance
+                                    && x.Azimuth == editCabinetPowerInstallationObject.OtherInventoryDistance.Azimuth).Select(x => x.ReferenceOtherInventoryId).ToList();
+                                var OtherInSite = _unitOfWork.OtherInSiteRepository.GetWhere(x => OtherInventoryDistance.Any(y => y
+                                == x.allOtherInventoryInstId) && !x.Dismantle && x.SiteCode.ToLower() == CabinetPowerInst.SiteCode.ToLower()).ToList();
+                                if (OtherInSite.Count > 0)
+                                {
+                                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "can not select the otherinventory reference on same distance and azimuth because found other otherinventory reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
                             }
+                            Otherinventorydistance.Azimuth = editCabinetPowerInstallationObject.OtherInventoryDistance.Azimuth;
+                            Otherinventorydistance.Distance = editCabinetPowerInstallationObject.OtherInventoryDistance.Distance;
+                            Otherinventorydistance.ReferenceOtherInventoryId = editCabinetPowerInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId;
+                            var TabelTLIotherInventoryDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInventoryDistance").Id;
+                            _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInventoryDistance, OldOtherinventorydistance, Otherinventorydistance);
+                            _unitOfWork.SaveChanges();
                         }
-                        Otherinventorydistance.Azimuth = editCabinetPowerInstallationObject.OtherInventoryDistance.Azimuth;
-                        Otherinventorydistance.Distance = editCabinetPowerInstallationObject.OtherInventoryDistance.Distance;
-                        Otherinventorydistance.ReferenceOtherInventoryId = editCabinetPowerInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId;
-
-                        _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
-                        _unitOfWork.SaveChanges();
-
                         if (editCabinetPowerInstallationObject.dynamicAttribute.Count > 0)
                         {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, editCabinetPowerInstallationObject.dynamicAttribute, TableEntity.Id, CabinetPower.Id, connectionString);
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, editCabinetPowerInstallationObject.dynamicAttribute, TableEntity.Id, CabinetPower.Id, connectionString,HistoryId);
                         }
                         await _unitOfWork.SaveChangesAsync();
 
@@ -4353,7 +4371,7 @@ namespace TLIS_Service.Services
                         //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
                         CabinetTelecom.CabinetTelecomLibraryId = editCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
-                        _unitOfWork.CabinetRepository.UpdateWithHistory(UserId, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetTelecom);
+                        var HistoryId=_unitOfWork.CabinetRepository.UpdateWithHInstallation(UserId,null, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetTelecom, CabinetPowerInst.SiteCode);
                         _unitOfWork.SaveChanges();
                         //----------------------------------------------------------------------------------//
                         //----------------------OtherOnSite-------------------------------------------------//
@@ -4369,7 +4387,8 @@ namespace TLIS_Service.Services
                         NewCabinetPowerInst.ReservedSpace = editCabinetTelecomInstallationObject.OtherInSite.ReservedSpace;
                         NewCabinetPowerInst.Dismantle = editCabinetTelecomInstallationObject.OtherInSite.Dismantle;
                         NewCabinetPowerInst.OtherInventoryStatus = editCabinetTelecomInstallationObject.OtherInSite.OtherInventoryStatus;
-                        _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, CabinetPowerInst, NewCabinetPowerInst);
+                        var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                        _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInSite, CabinetPowerInst, NewCabinetPowerInst);
                         _unitOfWork.SaveChanges();
 
                         //----------------------------------------------------------------------------------//
@@ -4381,28 +4400,30 @@ namespace TLIS_Service.Services
                         var OldOtherinventorydistance = _unitOfWork.OtherInventoryDistanceRepository.GetAllAsQueryable().AsNoTracking()
                           .Include(x => x.allOtherInventoryInst).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId
                           == CabinetTelecom.Id);
-                        if (OldOtherinventorydistance.ReferenceOtherInventoryId != editCabinetTelecomInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId)
+                        if (OldOtherinventorydistance != null)
                         {
-                            var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
-                               == editCabinetTelecomInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == editCabinetTelecomInstallationObject.OtherInventoryDistance.Distance
-                               && x.Azimuth == editCabinetTelecomInstallationObject.OtherInventoryDistance.Azimuth).Select(x => x.ReferenceOtherInventoryId).ToList();
-                            var OtherInSite = _unitOfWork.OtherInSiteRepository.GetWhere(x => OtherInventoryDistance.Any(y => y
-                            == x.allOtherInventoryInstId) && !x.Dismantle && x.SiteCode.ToLower() == CabinetPowerInst.SiteCode.ToLower()).ToList();
-                            if (OtherInSite.Count > 0)
+                            if (OldOtherinventorydistance.ReferenceOtherInventoryId != editCabinetTelecomInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId)
                             {
-                                return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "can not select the otherinventory reference on same distance and azimuth because found other otherinventory reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
+                                   == editCabinetTelecomInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == editCabinetTelecomInstallationObject.OtherInventoryDistance.Distance
+                                   && x.Azimuth == editCabinetTelecomInstallationObject.OtherInventoryDistance.Azimuth).Select(x => x.ReferenceOtherInventoryId).ToList();
+                                var OtherInSite = _unitOfWork.OtherInSiteRepository.GetWhere(x => OtherInventoryDistance.Any(y => y
+                                == x.allOtherInventoryInstId) && !x.Dismantle && x.SiteCode.ToLower() == CabinetPowerInst.SiteCode.ToLower()).ToList();
+                                if (OtherInSite.Count > 0)
+                                {
+                                    return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, "can not select the otherinventory reference on same distance and azimuth because found other otherinventory reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
                             }
+                            Otherinventorydistance.Azimuth = editCabinetTelecomInstallationObject.OtherInventoryDistance.Azimuth;
+                            Otherinventorydistance.Distance = editCabinetTelecomInstallationObject.OtherInventoryDistance.Distance;
+                            Otherinventorydistance.ReferenceOtherInventoryId = editCabinetTelecomInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId;
+                            var TabelTLIotherInventoryDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInventoryDistance").Id;
+                            _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInventoryDistance, OldOtherinventorydistance, Otherinventorydistance);
+                            _unitOfWork.SaveChanges();
                         }
-                        Otherinventorydistance.Azimuth = editCabinetTelecomInstallationObject.OtherInventoryDistance.Azimuth;
-                        Otherinventorydistance.Distance = editCabinetTelecomInstallationObject.OtherInventoryDistance.Distance;
-                        Otherinventorydistance.ReferenceOtherInventoryId = editCabinetTelecomInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId;
-
-                        _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHistory(UserId, OldOtherinventorydistance, Otherinventorydistance);
-                        _unitOfWork.SaveChanges();
-
                         if (editCabinetTelecomInstallationObject.dynamicAttribute.Count > 0)
                         {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, editCabinetTelecomInstallationObject.dynamicAttribute, TableEntity.Id, CabinetTelecom.Id, connectionString);
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, editCabinetTelecomInstallationObject.dynamicAttribute, TableEntity.Id, CabinetTelecom.Id, connectionString,HistoryId);
                         }
                         await _unitOfWork.SaveChangesAsync();
 
@@ -5654,7 +5675,22 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.solarId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Solar.Dismantle = true;
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldSolar, Solar);
+
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = OtherInventoryId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id,
+                                UserId = UserId,
+                                SiteCode = SiteCode
+                            };
+
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+
+                            var HistroryId = AddTablesHistory.Id;
+                            
+                            var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldSolar, Solar);
                             _unitOfWork.SaveChanges();
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Solar.SiteCode.ToLower());
                             Solar.Site.ReservedSpace = Solar.Site.ReservedSpace - Solar.allOtherInventoryInst.solar.SpaceInstallation;
@@ -5677,8 +5713,24 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.solarId == OtherInventoryId
                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Solar.Dismantle = true;
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldSolar, Solar);
+
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = OtherInventoryId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id,
+                                UserId = UserId,
+                                SiteCode = SiteCode
+                            };
+
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldSolar, Solar);
                             _unitOfWork.SaveChanges();
+                         
                             var ReferenceSolar = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
                           == Solar.allOtherInventoryInstId);
                             foreach (var item in ReferenceSolar)
@@ -5704,8 +5756,23 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Generator.Dismantle = true;
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldGenerator, Generator);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = OtherInventoryId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgenerator").Id,
+                                UserId = UserId,
+                                SiteCode = SiteCode
+                            };
+
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldGenerator, Generator);
                             _unitOfWork.SaveChanges();
+                         
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Generator.SiteCode.ToLower());
                             Generator.Site.ReservedSpace = Generator.Site.ReservedSpace - Generator.allOtherInventoryInst.generator.SpaceInstallation;
                             _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSite, Generator.Site);
@@ -5727,8 +5794,24 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Generator.Dismantle = true;
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldGenerator, Generator);
+
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = OtherInventoryId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgenerator").Id,
+                                UserId = UserId,
+                                SiteCode = SiteCode
+                            };
+
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldGenerator, Generator);
                             _unitOfWork.SaveChanges();
+                          
                             var ReferenceSolar = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
                         == Generator.allOtherInventoryInstId);
                             foreach (var item in ReferenceSolar)
@@ -5758,8 +5841,24 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Cabinet.Dismantle = true;
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldCabinet, Cabinet);
+
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = OtherInventoryId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcabinet").Id,
+                                UserId = UserId,
+                                SiteCode = SiteCode
+                            };
+
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldCabinet, Cabinet);
                             _unitOfWork.SaveChanges();
+                          
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Cabinet.SiteCode.ToLower());
                             Cabinet.Site.ReservedSpace = Cabinet.Site.ReservedSpace - Cabinet.allOtherInventoryInst.cabinet.SpaceInstallation;
                             _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSite, Cabinet.Site);
@@ -5781,6 +5880,22 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Cabinet.Dismantle = true;
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = OtherInventoryId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcabinet").Id,
+                                UserId = UserId,
+                                SiteCode = SiteCode
+                            };
+
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
+                            _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldCabinet, Cabinet);
+                            _unitOfWork.SaveChanges();
                             _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldCabinet, Cabinet);
                             _unitOfWork.SaveChanges();
                             var ReferenceSolar = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
@@ -6026,8 +6141,10 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
                                         {
-                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId
+                                            && x.Id != GeneratorId)?.Name;
                                         }
+
                                     }
 
                                     if (referencesValue != null && support.ReferenceOtherInventoryId != null && support.ReferenceOtherInventoryId.HasValue)
@@ -6057,7 +6174,7 @@ namespace TLIS_Service.Services
                                         {
                                             var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                            if (item.allOtherInventoryInst.generator != null && item.allOtherInventoryInst.generator.Id != GeneratorId)
+                                            if (item.allOtherInventoryInst.generator != null)
                                             {
                                                 SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6078,7 +6195,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.cabinet != null)
+                                            if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != GeneratorId)
                                             {
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6104,7 +6221,7 @@ namespace TLIS_Service.Services
                                     {
                                         var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                        if (item.allOtherInventoryInst.generator != null && item.allOtherInventoryInst.generator.Id != GeneratorId)
+                                        if (item.allOtherInventoryInst.generator != null)
                                         {
                                             SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6125,7 +6242,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithoutLegOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.cabinet != null)
+                                        if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != GeneratorId)
                                         {
                                             SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6243,7 +6360,7 @@ namespace TLIS_Service.Services
                          x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
                      )?.SiteCode;
                     objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
-                   if (siteCode != null)
+                    if (siteCode != null)
                     {
                         var listAttributes = objectInst.OtherInventoryDistance
                             .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
@@ -6271,7 +6388,7 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
                                         {
-                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId )?.Name;
+                                            referencesValue = _dbContext.MV_SOLAR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.solarId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetPowerLibraryId != null)
                                         {
@@ -6279,8 +6396,10 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
                                         {
-                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId
+                                            && x.Id != SolarId)?.Name;
                                         }
+
                                     }
 
                                     if (referencesValue != null && support.ReferenceOtherInventoryId != null && support.ReferenceOtherInventoryId.HasValue)
@@ -6321,7 +6440,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.solar != null && item.allOtherInventoryInst.solar.Id != SolarId)
+                                            if (item.allOtherInventoryInst.solar != null)
                                             {
                                                 SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6331,7 +6450,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.cabinet != null)
+                                            if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != SolarId)
                                             {
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6368,7 +6487,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithLegsOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.solar != null && item.allOtherInventoryInst.solar.Id != SolarId)
+                                        if (item.allOtherInventoryInst.solar != null)
                                         {
                                             SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6378,7 +6497,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithoutLegOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.cabinet != null)
+                                        if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != SolarId)
                                         {
                                             SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -15,6 +16,7 @@ using TLIS_DAL.ViewModels.RoleDTOs;
 using TLIS_DAL.ViewModels.RolePermissionDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
+using Microsoft.Extensions.Configuration;
 
 namespace TLIS_API.Controllers
 {
@@ -25,9 +27,11 @@ namespace TLIS_API.Controllers
     public class RoleController : ControllerBase
     {
         private IUnitOfWorkService _unitOfWorkService;
-        public RoleController(IUnitOfWorkService unitOfWorkService)
+        private readonly IConfiguration _configuration;
+        public RoleController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration)
         {
             _unitOfWorkService = unitOfWorkService;
+            _configuration = configuration;
         }
         //[Authorize]
         [HttpPost("getAll")]
@@ -66,7 +70,26 @@ namespace TLIS_API.Controllers
         {
             if (TryValidateModel(addRole, nameof(AddRoleViewModel)))
             {
-                var response = await _unitOfWorkService.RoleService.AddRole(addRole);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.RoleService.AddRole(addRole,userId);
                 return Ok(response);
             }
             else
@@ -84,7 +107,26 @@ namespace TLIS_API.Controllers
         {
             if (TryValidateModel(editRole, nameof(EditRoleViewModel)))
             {
-                var response = await _unitOfWorkService.RoleService.EditRole(editRole);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.RoleService.EditRole(editRole, userId);
                 return Ok(response);
             }
             else
@@ -101,7 +143,26 @@ namespace TLIS_API.Controllers
 
         public IActionResult DeleteRole(int RoleId)
         {
-            var response = _unitOfWorkService.RoleService.DeleteRole(RoleId);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.RoleService.DeleteRole(RoleId, userId);
             return Ok(response);
         }
 

@@ -23,6 +23,7 @@ namespace TLIS_DAL.Models
         public bool Required { get; set; }
         public bool disable { get; set; }
         public string ? DefaultValue { get; set; }
+        public int ? Type { get; set; }
         //public bool IsResult { get; set; }
         public IEnumerable<TLIdynamicListValues> dynamicListValues { get; set; }
         public IEnumerable<TLIdynamicAttInstValue> dynamicAttInstValues { get; set; }

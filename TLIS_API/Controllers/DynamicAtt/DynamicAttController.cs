@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -78,6 +79,43 @@ namespace TLIS_API.Controllers.DynamicAtt
             {
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var responceResult = _unitOfWorkService.DynamicAttService.AddDynamicAttInst(addDependencyInstViewModel, ConnectionString);
+                return Ok(responceResult);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<List<AddDynamicAttInstViewModel>>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("AddDynamic")]
+        [ProducesResponseType(200, Type = typeof(List<AddDynamicObject>))]
+        public IActionResult AddDynamic([FromBody] AddDynamicObject addDependencyInstViewModel,string TabelName,int? CategoryId)
+        {
+            if (ModelState.IsValid)
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDependencyInstViewModel, ConnectionString, TabelName, userId, CategoryId);
                 return Ok(responceResult);
             }
             else

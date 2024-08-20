@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -37,9 +38,27 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
         public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] List<string> Permissions)
         {
-            //var UserId = HttpContext.Session.GetString("UserId");
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
             var domain = _configuration["Domain"];
-            var response = await _unitOfWorkService.UserService.AddInternalUser(UserName, Permissions, domain);
+            var response = await _unitOfWorkService.UserService.AddInternalUser(UserName, Permissions, domain, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -49,8 +68,26 @@ namespace TLIS_API.Controllers
         {
             if (TryValidateModel(User, nameof(EditUserViewModel)))
             {
-                //var UserId = HttpContext.Session.GetString("UserId");
-                var response = await _unitOfWorkService.UserService.Updateuser(model);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = await _unitOfWorkService.UserService.Updateuser(model, userId);
                 return Ok(response);
             }
             else
@@ -130,9 +167,27 @@ namespace TLIS_API.Controllers
         {
             if(TryValidateModel(User, nameof(AddUserViewModel)))
             {
-                //var UserId = Guid.Parse(HttpContext.Session.GetString("UserId"));
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
                 var domain = _configuration["Domain"];
-                var response = await _unitOfWorkService.UserService.AddExternalUser(User, domain);
+                var response = await _unitOfWorkService.UserService.AddExternalUser(User, domain, userId);
                 return Ok(response);
             }
             else

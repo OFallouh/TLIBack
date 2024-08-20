@@ -20,5 +20,6 @@ namespace TLIS_DAL.Models
         public int? UserId { get; set; }
         public TLIexternalSys ExternalSys { get; set; }
         public int? ExternalSysId { get; set; }
+        public string? SiteCode { get; set; }
     }
 }

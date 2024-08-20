@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -42,7 +43,7 @@ namespace TLIS_Service.Services
         }
 
         //Check the name of actor if alredy exists if not then add actor else return message that the actor is already exists
-        public async Task<Response<ActorViewModel>> AddActor(AddActorViewModel Actor)
+        public async Task<Response<ActorViewModel>> AddActor(AddActorViewModel Actor,int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -52,7 +53,7 @@ namespace TLIS_Service.Services
                     {
                         TLIactor ActorEntity = _mapper.Map<TLIactor>(Actor);
                         //transaction.Complete();
-                        _unitOfWork.ActorRepository.Add(ActorEntity);
+                        _unitOfWork.ActorRepository.AddWithH(UserId,null,ActorEntity);
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Complete();
                         return new Response<ActorViewModel>();
@@ -73,7 +74,7 @@ namespace TLIS_Service.Services
         //there is groups take that actor then return groups 
         //else 
         //delete the actor
-        public async Task<Response<IEnumerable<GroupViewModel>>> DeleteActor(ActorViewModel actorViewModel)
+        public async Task<Response<IEnumerable<GroupViewModel>>> DeleteActor(ActorViewModel actorViewModel,int UserId)
         {
             try
             {
@@ -85,7 +86,7 @@ namespace TLIS_Service.Services
                 else
                 {
                     TLIactor ActorEntity = _mapper.Map<TLIactor>(actorViewModel);
-                    _unitOfWork.ActorRepository.RemoveItem(ActorEntity);
+                    _unitOfWork.ActorRepository.RemoveItemWithH(UserId, null, ActorEntity);
                     await _unitOfWork.SaveChangesAsync();
                     return new Response<IEnumerable<GroupViewModel>>();
                 }
@@ -186,12 +187,15 @@ namespace TLIS_Service.Services
         //else  
         //if name is already exists and Id not equal to record Id then return error message that the name is already exists
         //else update the actor
-        public async Task<Response<ActorViewModel>> UpdateActor(EditActorViewModel ActorModel)
+        public async Task<Response<ActorViewModel>> UpdateActor(EditActorViewModel ActorModel,int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
+                    var OldActor=_dbContext.TLIactor.AsNoTracking().FirstOrDefault(x=>x.Id== ActorModel.Id);
+                    if(OldActor == null)
+                        return new Response<ActorViewModel>(true, null, null, $"the Actor is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                     if (ActorModel.Id == 0)
                     {
                         return new Response<ActorViewModel>(true, null, null, $"the Actor Id Shouldn't be null", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -199,7 +203,7 @@ namespace TLIS_Service.Services
                     else if (await CheckNameForUpdate(ActorModel.Name, ActorModel.Id))
                     {
                         var Actor = _mapper.Map<TLIactor>(ActorModel);
-                        _unitOfWork.ActorRepository.Update(Actor);
+                        _unitOfWork.ActorRepository.UpdateWithH(UserId,null, OldActor, Actor);
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Complete();
                         return new Response<ActorViewModel>();

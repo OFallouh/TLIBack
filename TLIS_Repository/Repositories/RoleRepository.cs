@@ -67,7 +67,7 @@ namespace TLIS_Repository.Repositories
                     var Role = _context.TLIrole.FirstOrDefault(r => r.Id.Equals(RoleId));
                     Role.Deleted = true;
                     Role.Name = Role.Name + DateTime.Now.ToString();
-                    // _context.TLIrole.Remove(Role);
+                    //_context.TLIrole.Remove(Role);
                     _context.SaveChanges();
                     foreach (var userId in GroupsUsers)
                     {

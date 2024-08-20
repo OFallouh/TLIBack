@@ -1687,7 +1687,7 @@ namespace TLIS_Service.Services
 
                                                         RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
                                                         RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                        var HistoryId= _unitOfWork.RadioAntennaRepository.AddWithHInsatallation(UserId,null, RadioAntenna,SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
                                                         if (AddRadioAntenna.civilLoads != null && Id != 0)
@@ -1707,7 +1707,8 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads,HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
@@ -1715,7 +1716,7 @@ namespace TLIS_Service.Services
                                                         if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString,HistoryId);
 
                                                         }
                                                     }
@@ -1776,7 +1777,7 @@ namespace TLIS_Service.Services
 
                                                         RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
                                                         RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                        var HistoryId = _unitOfWork.RadioAntennaRepository.AddWithHInsatallation(UserId, null, RadioAntenna, SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
                                                         if (AddRadioAntenna.civilLoads != null && Id != 0)
@@ -1796,17 +1797,17 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
-
-                                                        if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
+                                                        if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                         {
-                                                          
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
-                                                            
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
+
                                                         }
 
                                                     }
@@ -1957,7 +1958,7 @@ namespace TLIS_Service.Services
 
                                                                     RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
                                                                     RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                                    _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                                    var HistoryId = _unitOfWork.RadioAntennaRepository.AddWithHInsatallation(UserId, null, RadioAntenna, SiteCode);
                                                                     _unitOfWork.SaveChanges();
                                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
                                                                     if (AddRadioAntenna.civilLoads != null && Id != 0)
@@ -1977,16 +1978,17 @@ namespace TLIS_Service.Services
 
 
                                                                         };
-                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                         _unitOfWork.SaveChanges();
 
                                                                     }
 
-                                                                    if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
+                                                                    if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                                     {
-                                                                       
-                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
-                                                                        
+
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
+
                                                                     }
                                                                 }
                                                                 else
@@ -2046,7 +2048,7 @@ namespace TLIS_Service.Services
 
                                                                     RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
                                                                     RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                                    _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                                    var HistoryId = _unitOfWork.RadioAntennaRepository.AddWithHInsatallation(UserId, null, RadioAntenna, SiteCode);
                                                                     _unitOfWork.SaveChanges();
                                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
                                                                     if (AddRadioAntenna.civilLoads != null && Id != 0)
@@ -2066,16 +2068,17 @@ namespace TLIS_Service.Services
 
 
                                                                         };
-                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                         _unitOfWork.SaveChanges();
 
                                                                     }
 
-                                                                    if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
+                                                                    if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                                     {
-                                                                        
-                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
-                                                                        
+
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
+
                                                                     }
 
                                                                 }
@@ -2223,7 +2226,7 @@ namespace TLIS_Service.Services
 
                                                             RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
                                                             RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                            _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                            var HistoryId = _unitOfWork.RadioAntennaRepository.AddWithHInsatallation(UserId, null, RadioAntenna, SiteCode);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
                                                             if (AddRadioAntenna.civilLoads != null && Id != 0)
@@ -2243,16 +2246,17 @@ namespace TLIS_Service.Services
 
 
                                                                 };
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
 
-                                                            if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
+                                                            if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                             {
-                                                              
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
-                                                                
+
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
+
                                                             }
                                                         }
                                                         else
@@ -2315,7 +2319,7 @@ namespace TLIS_Service.Services
 
                                                             RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
                                                             RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                            _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                            var HistoryId = _unitOfWork.RadioAntennaRepository.AddWithHInsatallation(UserId, null, RadioAntenna, SiteCode);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
                                                             if (AddRadioAntenna.civilLoads != null && Id != 0)
@@ -2335,16 +2339,17 @@ namespace TLIS_Service.Services
 
 
                                                                 };
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
 
-                                                            if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
+                                                            if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                             {
-                                                               
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
-                                                                
+
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
+
                                                             }
 
                                                         }
@@ -2462,7 +2467,7 @@ namespace TLIS_Service.Services
 
                                                         RadioAntenna.radioAntennaLibraryId = AddRadioAntenna.installationConfig.radioAntennaLibraryId;
                                                         RadioAntenna.installationPlaceId = AddRadioAntenna.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioAntennaRepository.AddWithHistory(UserId, RadioAntenna);
+                                                        var HistoryId = _unitOfWork.RadioAntennaRepository.AddWithHInsatallation(UserId, null, RadioAntenna, SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioAntenna.ToString(), RadioAntenna.Id);
                                                         if (AddRadioAntenna.civilLoads != null && Id != 0)
@@ -2471,7 +2476,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 InstallationDate = AddRadioAntenna.civilLoads.InstallationDate,
                                                                 allLoadInstId = Id,
-                                                                legId = null,
+                                                                legId = AddRadioAntenna.installationConfig?.legId,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddRadioAntenna.installationConfig?.sideArmId,
                                                                 ItemOnCivilStatus = AddRadioAntenna.civilLoads.ItemOnCivilStatus,
@@ -2482,16 +2487,17 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
-                                                        if (AddRadioAntenna.dynamicAttribute != null ? AddRadioAntenna.dynamicAttribute.Count > 0 : false)
+                                                        if (AddRadioAntenna.dynamicAttribute.Count > 0)
                                                         {
-                                                           
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString);
-                                                            
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
+
                                                         }
 
                                                     }
@@ -2654,7 +2660,7 @@ namespace TLIS_Service.Services
 
                                                         RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
                                                         RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
+                                                        var HistoryId=_unitOfWork.RadioRRURepository.AddWithHInsatallation(UserId,null, RadioRRU,SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
                                                         if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
@@ -2688,7 +2694,8 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads,HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
@@ -2696,7 +2703,7 @@ namespace TLIS_Service.Services
                                                         if (AddRadioRRU.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString,HistoryId);
 
                                                         }
                                                     }
@@ -2751,7 +2758,7 @@ namespace TLIS_Service.Services
 
                                                         RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
                                                         RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
+                                                        var HistoryId = _unitOfWork.RadioRRURepository.AddWithHInsatallation(UserId, null, RadioRRU, SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
                                                         if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
@@ -2785,17 +2792,17 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
-
-                                                        if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
+                                                        if (AddRadioRRU.dynamicAttribute.Count > 0)
                                                         {
-                                                          
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
-                                                            
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
+
                                                         }
 
                                                     }
@@ -2952,7 +2959,7 @@ namespace TLIS_Service.Services
 
                                                                     RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
                                                                     RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                                    _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
+                                                                    var HistoryId = _unitOfWork.RadioRRURepository.AddWithHInsatallation(UserId, null, RadioRRU, SiteCode);
                                                                     _unitOfWork.SaveChanges();
                                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
                                                                     if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
@@ -2986,16 +2993,17 @@ namespace TLIS_Service.Services
 
 
                                                                         };
-                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                         _unitOfWork.SaveChanges();
 
                                                                     }
 
-                                                                    if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
+                                                                    if (AddRadioRRU.dynamicAttribute.Count > 0)
                                                                     {
-                                                                        
-                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
-                                                                        
+
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
+
                                                                     }
                                                                 }
                                                                 else
@@ -3053,7 +3061,7 @@ namespace TLIS_Service.Services
 
                                                                     RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
                                                                     RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                                    _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
+                                                                    var HistoryId = _unitOfWork.RadioRRURepository.AddWithHInsatallation(UserId, null, RadioRRU, SiteCode);
                                                                     _unitOfWork.SaveChanges();
                                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
                                                                     if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
@@ -3087,16 +3095,17 @@ namespace TLIS_Service.Services
 
 
                                                                         };
-                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                         _unitOfWork.SaveChanges();
 
                                                                     }
 
-                                                                    if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
+                                                                    if (AddRadioRRU.dynamicAttribute.Count > 0)
                                                                     {
-                                                                        
-                                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
-                                                                        
+
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
+
                                                                     }
 
                                                                 }
@@ -3246,7 +3255,7 @@ namespace TLIS_Service.Services
 
                                                             RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
                                                             RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                            _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
+                                                            var HistoryId = _unitOfWork.RadioRRURepository.AddWithHInsatallation(UserId, null, RadioRRU, SiteCode);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
                                                             if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
@@ -3280,16 +3289,17 @@ namespace TLIS_Service.Services
 
 
                                                                 };
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
 
-                                                            if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
+                                                            if (AddRadioRRU.dynamicAttribute.Count > 0)
                                                             {
-                                                                
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
-                                                                
+
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
+
                                                             }
                                                         }
                                                         else
@@ -3345,7 +3355,7 @@ namespace TLIS_Service.Services
 
                                                             RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
                                                             RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                            _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
+                                                            var HistoryId = _unitOfWork.RadioRRURepository.AddWithHInsatallation(UserId, null, RadioRRU, SiteCode);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
                                                             if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
@@ -3379,16 +3389,17 @@ namespace TLIS_Service.Services
 
 
                                                                 };
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
 
-                                                            if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
+                                                            if (AddRadioRRU.dynamicAttribute.Count > 0)
                                                             {
-                                                               
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
-                                                                
+
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
+
                                                             }
 
                                                         }
@@ -3509,7 +3520,7 @@ namespace TLIS_Service.Services
 
                                                         RadioRRU.radioRRULibraryId = AddRadioRRU.installationConfig.radioRRULibraryId;
                                                         RadioRRU.installationPlaceId = AddRadioRRU.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioRRURepository.AddWithHistory(UserId, RadioRRU);
+                                                        var HistoryId = _unitOfWork.RadioRRURepository.AddWithHInsatallation(UserId, null, RadioRRU, SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioRRU.ToString(), RadioRRU.Id);
                                                         if (AddRadioRRU.installationConfig.radioAntennaId != null && AddRadioRRU.installationConfig.radioAntennaId?.Count > 0)
@@ -3532,7 +3543,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 InstallationDate = AddRadioRRU.civilLoads.InstallationDate,
                                                                 allLoadInstId = Id,
-                                                                legId = null,
+                                                                legId = AddRadioRRU.installationConfig?.legId,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddRadioRRU.installationConfig?.sideArmId,
                                                                 ItemOnCivilStatus = AddRadioRRU.civilLoads.ItemOnCivilStatus,
@@ -3543,16 +3554,17 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
-                                                        if (AddRadioRRU.dynamicAttribute != null ? AddRadioRRU.dynamicAttribute.Count > 0 : false)
+                                                        if (AddRadioRRU.dynamicAttribute.Count > 0)
                                                         {
-                                                            
-                                                               _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString);
-                                                            
+
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
+
                                                         }
 
                                                     }
@@ -3701,7 +3713,7 @@ namespace TLIS_Service.Services
 
                                                         RadioOther.radioOtherLibraryId = AddRadioOther.installationConfig.radioOtherLibraryId;
                                                         RadioOther.installationPlaceId = AddRadioOther.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioOtherRepository.AddWithHistory(UserId, RadioOther);
+                                                        var HistoryId=_unitOfWork.RadioOtherRepository.AddWithHInsatallation(UserId,null, RadioOther,SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioOther.ToString(), RadioOther.Id);
                                                         if (AddRadioOther.civilLoads != null && Id != 0)
@@ -3721,7 +3733,8 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
@@ -3729,7 +3742,7 @@ namespace TLIS_Service.Services
                                                         if (AddRadioOther.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString,HistoryId);
 
                                                         }
                                                     }
@@ -3784,7 +3797,7 @@ namespace TLIS_Service.Services
 
                                                         RadioOther.radioOtherLibraryId = AddRadioOther.installationConfig.radioOtherLibraryId;
                                                         RadioOther.installationPlaceId = AddRadioOther.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioOtherRepository.AddWithHistory(UserId, RadioOther);
+                                                        var HistoryId = _unitOfWork.RadioOtherRepository.AddWithHInsatallation(UserId, null, RadioOther, SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioOther.ToString(), RadioOther.Id);
                                                         if (AddRadioOther.civilLoads != null && Id != 0)
@@ -3804,16 +3817,16 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
-
-                                                        if (AddRadioOther.dynamicAttribute != null ? AddRadioOther.dynamicAttribute.Count > 0 : false)
+                                                        if (AddRadioOther.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
 
                                                         }
 
@@ -3960,7 +3973,7 @@ namespace TLIS_Service.Services
 
                                                                     RadioOther.radioOtherLibraryId = AddRadioOther.installationConfig.radioOtherLibraryId;
                                                                     RadioOther.installationPlaceId = AddRadioOther.installationConfig.InstallationPlaceId;
-                                                                    _unitOfWork.RadioOtherRepository.AddWithHistory(UserId, RadioOther);
+                                                                    var HistoryId = _unitOfWork.RadioOtherRepository.AddWithHInsatallation(UserId, null, RadioOther, SiteCode);
                                                                     _unitOfWork.SaveChanges();
                                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioOther.ToString(), RadioOther.Id);
                                                                     if (AddRadioOther.civilLoads != null && Id != 0)
@@ -3980,15 +3993,16 @@ namespace TLIS_Service.Services
 
 
                                                                         };
-                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                         _unitOfWork.SaveChanges();
 
                                                                     }
 
-                                                                    if (AddRadioOther.dynamicAttribute != null ? AddRadioOther.dynamicAttribute.Count > 0 : false)
+                                                                    if (AddRadioOther.dynamicAttribute.Count > 0)
                                                                     {
 
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString);
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
 
                                                                     }
                                                                 }
@@ -4042,7 +4056,7 @@ namespace TLIS_Service.Services
 
                                                                     RadioOther.radioOtherLibraryId = AddRadioOther.installationConfig.radioOtherLibraryId;
                                                                     RadioOther.installationPlaceId = AddRadioOther.installationConfig.InstallationPlaceId;
-                                                                    _unitOfWork.RadioOtherRepository.AddWithHistory(UserId, RadioOther);
+                                                                    var HistoryId = _unitOfWork.RadioOtherRepository.AddWithHInsatallation(UserId, null, RadioOther, SiteCode);
                                                                     _unitOfWork.SaveChanges();
                                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioOther.ToString(), RadioOther.Id);
                                                                     if (AddRadioOther.civilLoads != null && Id != 0)
@@ -4062,15 +4076,16 @@ namespace TLIS_Service.Services
 
 
                                                                         };
-                                                                        _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                        _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                         _unitOfWork.SaveChanges();
 
                                                                     }
 
-                                                                    if (AddRadioOther.dynamicAttribute != null ? AddRadioOther.dynamicAttribute.Count > 0 : false)
+                                                                    if (AddRadioOther.dynamicAttribute.Count > 0)
                                                                     {
 
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString);
+                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
 
                                                                     }
 
@@ -4212,7 +4227,7 @@ namespace TLIS_Service.Services
 
                                                             RadioOther.radioOtherLibraryId = AddRadioOther.installationConfig.radioOtherLibraryId;
                                                             RadioOther.installationPlaceId = AddRadioOther.installationConfig.InstallationPlaceId;
-                                                            _unitOfWork.RadioOtherRepository.AddWithHistory(UserId, RadioOther);
+                                                            var HistoryId = _unitOfWork.RadioOtherRepository.AddWithHInsatallation(UserId, null, RadioOther, SiteCode);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioOther.ToString(), RadioOther.Id);
                                                             if (AddRadioOther.civilLoads != null && Id != 0)
@@ -4232,15 +4247,16 @@ namespace TLIS_Service.Services
 
 
                                                                 };
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
 
-                                                            if (AddRadioOther.dynamicAttribute != null ? AddRadioOther.dynamicAttribute.Count > 0 : false)
+                                                            if (AddRadioOther.dynamicAttribute.Count > 0)
                                                             {
 
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString);
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
 
                                                             }
                                                         }
@@ -4297,7 +4313,7 @@ namespace TLIS_Service.Services
 
                                                             RadioOther.radioOtherLibraryId = AddRadioOther.installationConfig.radioOtherLibraryId;
                                                             RadioOther.installationPlaceId = AddRadioOther.installationConfig.InstallationPlaceId;
-                                                            _unitOfWork.RadioOtherRepository.AddWithHistory(UserId, RadioOther);
+                                                            var HistoryId = _unitOfWork.RadioOtherRepository.AddWithHInsatallation(UserId, null, RadioOther, SiteCode);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioOther.ToString(), RadioOther.Id);
                                                             if (AddRadioOther.civilLoads != null && Id != 0)
@@ -4317,15 +4333,16 @@ namespace TLIS_Service.Services
 
 
                                                                 };
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
 
-                                                            if (AddRadioOther.dynamicAttribute != null ? AddRadioOther.dynamicAttribute.Count > 0 : false)
+                                                            if (AddRadioOther.dynamicAttribute.Count > 0)
                                                             {
 
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString);
+                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
 
                                                             }
 
@@ -4437,7 +4454,7 @@ namespace TLIS_Service.Services
 
                                                         RadioOther.radioOtherLibraryId = AddRadioOther.installationConfig.radioOtherLibraryId;
                                                         RadioOther.installationPlaceId = AddRadioOther.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioOtherRepository.AddWithHistory(UserId, RadioOther);
+                                                        var HistoryId = _unitOfWork.RadioOtherRepository.AddWithHInsatallation(UserId, null, RadioOther, SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIradioOther.ToString(), RadioOther.Id);
                                                         if (AddRadioOther.civilLoads != null && Id != 0)
@@ -4446,7 +4463,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 InstallationDate = AddRadioOther.civilLoads.InstallationDate,
                                                                 allLoadInstId = Id,
-                                                                legId = null,
+                                                                legId = AddRadioOther.installationConfig?.legId,
                                                                 allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                                 sideArmId = AddRadioOther.installationConfig?.sideArmId,
                                                                 ItemOnCivilStatus = AddRadioOther.civilLoads.ItemOnCivilStatus,
@@ -4457,15 +4474,16 @@ namespace TLIS_Service.Services
 
 
                                                             };
-                                                            _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
-                                                        if (AddRadioOther.dynamicAttribute != null ? AddRadioOther.dynamicAttribute.Count > 0 : false)
+                                                        if (AddRadioOther.dynamicAttribute.Count > 0)
                                                         {
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallations(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
 
                                                         }
 
@@ -4681,7 +4699,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                 RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                var HistoryId= _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId,null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioAntenna.civilLoads != null)
                                                 {
@@ -4705,13 +4723,14 @@ namespace TLIS_Service.Services
                                                     NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                     NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                     NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString,HistoryId);
 
                                             }
                                             else if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
@@ -4797,7 +4816,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                 RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioAntenna.civilLoads != null)
                                                 {
@@ -4821,13 +4840,14 @@ namespace TLIS_Service.Services
                                                     NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                     NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                     NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                             }
                                             else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                             {
@@ -4927,7 +4947,7 @@ namespace TLIS_Service.Services
 
                                                 RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                 RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioAntenna.civilLoads != null)
                                                 {
@@ -4951,13 +4971,14 @@ namespace TLIS_Service.Services
                                                     NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                     NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                     NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                             }
                                             else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                             {
@@ -5035,7 +5056,7 @@ namespace TLIS_Service.Services
 
                                                 RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                 RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioAntenna.civilLoads != null)
                                                 {
@@ -5059,13 +5080,14 @@ namespace TLIS_Service.Services
                                                     NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                     NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                     NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                             }
                                         }
                                         else
@@ -5231,7 +5253,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                         RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                        var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditRadioAntenna.civilLoads != null)
                                                         {
@@ -5243,9 +5265,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewRadioAntennaInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
 
                                                             NewRadioAntennaInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewRadioAntennaInst.InstallationDate = EditRadioAntenna.civilLoads.InstallationDate;
@@ -5255,14 +5277,16 @@ namespace TLIS_Service.Services
                                                             NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                             NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                             NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
+
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                                     }
-                                                    if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
+                                                    else if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
@@ -5345,7 +5369,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                         RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                        var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditRadioAntenna.civilLoads != null)
                                                         {
@@ -5357,9 +5381,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewRadioAntennaInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
 
                                                             NewRadioAntennaInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewRadioAntennaInst.InstallationDate = EditRadioAntenna.civilLoads.InstallationDate;
@@ -5369,15 +5393,16 @@ namespace TLIS_Service.Services
                                                             NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                             NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                             NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                                     }
-                                                    if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
+                                                    else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                                     {
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
@@ -5476,7 +5501,7 @@ namespace TLIS_Service.Services
 
                                                         RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                         RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                        var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditRadioAntenna.civilLoads != null)
                                                         {
@@ -5488,9 +5513,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewRadioAntennaInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
 
                                                             NewRadioAntennaInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewRadioAntennaInst.InstallationDate = EditRadioAntenna.civilLoads.InstallationDate;
@@ -5500,15 +5525,16 @@ namespace TLIS_Service.Services
                                                             NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                             NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                             NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                                     }
-                                                    if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
+                                                    else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (RadioAntenna.CenterHigh <= 0)
                                                         {
@@ -5583,7 +5609,7 @@ namespace TLIS_Service.Services
 
                                                         RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                         RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                        var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditRadioAntenna.civilLoads != null)
                                                         {
@@ -5595,9 +5621,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewRadioAntennaInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
 
                                                             NewRadioAntennaInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewRadioAntennaInst.InstallationDate = EditRadioAntenna.civilLoads.InstallationDate;
@@ -5607,13 +5633,14 @@ namespace TLIS_Service.Services
                                                             NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                             NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                             NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                                     }
 
 
@@ -5774,7 +5801,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                     RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                    var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioAntenna.civilLoads != null)
                                                     {
@@ -5798,15 +5825,16 @@ namespace TLIS_Service.Services
                                                         NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                         NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                         NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                                 }
-                                                if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
+                                                else if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (RadioAntenna.CenterHigh <= 0)
                                                     {
@@ -5889,7 +5917,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                     RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                    var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioAntenna.civilLoads != null)
                                                     {
@@ -5913,14 +5941,16 @@ namespace TLIS_Service.Services
                                                         NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                         NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                         NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
+
                                                     if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                                 }
-                                                if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
+                                                else if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                                 {
                                                     if (RadioAntenna.CenterHigh <= 0)
                                                     {
@@ -6018,7 +6048,7 @@ namespace TLIS_Service.Services
 
                                                     RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                     RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                    var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioAntenna.civilLoads != null)
                                                     {
@@ -6042,15 +6072,16 @@ namespace TLIS_Service.Services
                                                         NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                         NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                         NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                                 }
-                                                if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
+                                                else if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (RadioAntenna.CenterHigh <= 0)
                                                     {
@@ -6125,7 +6156,7 @@ namespace TLIS_Service.Services
 
                                                     RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                     RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                    var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioAntenna.civilLoads != null)
                                                     {
@@ -6134,6 +6165,7 @@ namespace TLIS_Service.Services
                                                             .GetAllAsQueryable()
                                                             .AsNoTracking()
                                                             .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioAntennaId == RadioAntenna.Id && !x.Dismantle);
+
 
                                                         TLIcivilLoads NewRadioAntennaInst = _dbContext.TLIcivilLoads
                                                           .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna.radioAntennaLibrary).Include(x => x.allCivilInst)
@@ -6148,13 +6180,14 @@ namespace TLIS_Service.Services
                                                         NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                         NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                         NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                                 }
 
 
@@ -6286,7 +6319,7 @@ namespace TLIS_Service.Services
 
                                                 RadioAntenna.radioAntennaLibraryId = EditRadioAntenna.civilType.radioAntennaLibraryId;
                                                 RadioAntenna.installationPlaceId = EditRadioAntenna.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioAntennaRepository.UpdateWithHistory(UserId, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna);
+                                                var HistoryId = _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(UserId, null, RadioAntennaInst.allLoadInst.radioAntenna, RadioAntenna, RadioAntennaInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioAntenna.civilLoads != null)
                                                 {
@@ -6306,17 +6339,18 @@ namespace TLIS_Service.Services
                                                     NewRadioAntennaInst.InstallationDate = EditRadioAntenna.civilLoads.InstallationDate;
                                                     NewRadioAntennaInst.sideArmId = EditRadioAntenna.installationConfig?.sideArmId ?? null;
                                                     NewRadioAntennaInst.sideArm2Id = null;
-                                                    NewRadioAntennaInst.legId =null;
+                                                    NewRadioAntennaInst.legId = EditRadioAntenna.installationConfig?.legId ?? null;
                                                     NewRadioAntennaInst.ItemOnCivilStatus = EditRadioAntenna.civilLoads.ItemOnCivilStatus;
                                                     NewRadioAntennaInst.ItemStatus = EditRadioAntenna.civilLoads?.ItemStatus;
                                                     NewRadioAntennaInst.ReservedSpace = EditRadioAntenna.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioAntennaInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioAntennaInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
                                             }
                                             else
                                             {
@@ -6484,7 +6518,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                 RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                var HistoryId= _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId,null,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
@@ -6521,13 +6555,14 @@ namespace TLIS_Service.Services
                                                     NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                     NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                     NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString,HistoryId);
 
                                             }
                                             else if (RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
@@ -6591,12 +6626,12 @@ namespace TLIS_Service.Services
                                                 }
                                                 RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                 RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                    && x.radioAntennaId != null).ToList();
+                                                    RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                   && x.radioAntennaId != null).ToList();
                                                     foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
@@ -6628,13 +6663,14 @@ namespace TLIS_Service.Services
                                                     NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                     NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                     NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                             }
                                             else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                             {
@@ -6712,12 +6748,12 @@ namespace TLIS_Service.Services
 
                                                 RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                 RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                    && x.radioAntennaId != null).ToList();
+                                                    RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                   && x.radioAntennaId != null).ToList();
                                                     foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
@@ -6749,13 +6785,14 @@ namespace TLIS_Service.Services
                                                     NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                     NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                     NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                             }
                                             else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                             {
@@ -6811,7 +6848,7 @@ namespace TLIS_Service.Services
 
                                                 RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                 RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
@@ -6848,13 +6885,14 @@ namespace TLIS_Service.Services
                                                     NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                     NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                     NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                             }
                                         }
                                         else
@@ -7006,39 +7044,21 @@ namespace TLIS_Service.Services
                                                         }
                                                         RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                         RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId, RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                        var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
-                                                        if (EditRadioRRU.installationConfig.radioAntennaId != null && EditRadioRRU.installationConfig.radioAntennaId.Any())
+                                                        if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                         {
-                                                            var radioAntennas = _dbContext.TLIallLoadInst
-                                                                                .Where(x => x.radioRRUId == RadioRRU.Id && x.radioAntennaId != null)
-                                                                                .ToList();
-
-
-                                                            var newRadioAntennaId = EditRadioRRU.installationConfig.radioAntennaId[0];
-
-
-                                                            var updatedItems = radioAntennas
-                                                            .Where(item => item != null)
-                                                            .Select(item =>
+                                                            RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                           && x.radioAntennaId != null).ToList();
+                                                            foreach (var item in RadioAntennas)
                                                             {
-                                                                var oldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
-                                                                item.radioAntennaId = newRadioAntennaId;
-                                                                return new { OldValue = oldValue, UpdatedItem = item };
-                                                            })
-                                                            .ToList();
-
-
-                                                            updatedItems.ForEach(update =>
-                                                            {
-                                                                _unitOfWork.AllLoadInstRepository.UpdateWithHistory(UserId, update.OldValue, update.UpdatedItem);
-                                                            });
-
-
-                                                            _unitOfWork.SaveChanges();
+                                                                var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
+                                                                == item.Id);
+                                                                item.radioAntennaId = EditRadioRRU.installationConfig.radioAntennaId[0];
+                                                                _unitOfWork.AllLoadInstRepository.UpdateWithHistory(UserId, OldValue, item);
+                                                                _unitOfWork.SaveChanges();
+                                                            }
                                                         }
-
-
                                                         if (EditRadioRRU.civilLoads != null)
                                                         {
 
@@ -7049,9 +7069,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewRadioRRUInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
 
                                                             NewRadioRRUInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewRadioRRUInst.InstallationDate = EditRadioRRU.civilLoads.InstallationDate;
@@ -7061,12 +7081,14 @@ namespace TLIS_Service.Services
                                                             NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                             NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                             NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
+
                                                         if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                                     }
                                                     else if(RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                     {
@@ -7130,7 +7152,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                         RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId, RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                        var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                         {
@@ -7155,9 +7177,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewRadioRRUInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
 
                                                             NewRadioRRUInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewRadioRRUInst.InstallationDate = EditRadioRRU.civilLoads.InstallationDate;
@@ -7167,13 +7189,14 @@ namespace TLIS_Service.Services
                                                             NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                             NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                             NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                                     }
                                                     else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                                     {
@@ -7246,37 +7269,21 @@ namespace TLIS_Service.Services
 
                                                         RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                         RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId, RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                        var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                         {
-
-                                                            var radioAntennas = _unitOfWork.AllLoadInstRepository
-                                                                                .GetWhere(x => x.radioRRUId == RadioRRU.Id && x.radioAntennaId != null)
-                                                                                .ToList();
-
-                                                            var updatedItems = radioAntennas.Select((item, index) =>
+                                                            RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                           && x.radioAntennaId != null).ToList();
+                                                            foreach (var item in RadioAntennas)
                                                             {
-                                                                var oldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id == item.Id);
-                                                                if (index < EditRadioRRU.installationConfig.radioAntennaId.Count)
-                                                                {
-                                                                    var newItem = new { OldValue = oldValue, NewValue = item };
-                                                                    newItem.NewValue.radioAntennaId = EditRadioRRU.installationConfig.radioAntennaId[index];
-                                                                    return newItem;
-                                                                }
-                                                                return null;
-                                                            })
-                                                            .Where(x => x != null)
-                                                            .ToList();
-
-                                                            updatedItems.ForEach(update =>
-                                                            {
-                                                                _unitOfWork.AllLoadInstRepository.UpdateWithHistory(UserId, update.OldValue, update.NewValue);
-                                                            });
-
-                                                            _unitOfWork.SaveChanges();
+                                                                var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
+                                                                == item.Id);
+                                                                item.radioAntennaId = EditRadioRRU.installationConfig.radioAntennaId[0];
+                                                                _unitOfWork.AllLoadInstRepository.UpdateWithHistory(UserId, OldValue, item);
+                                                                _unitOfWork.SaveChanges();
+                                                            }
                                                         }
-
                                                         if (EditRadioRRU.civilLoads != null)
                                                         {
 
@@ -7287,9 +7294,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewRadioRRUInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
 
                                                             NewRadioRRUInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewRadioRRUInst.InstallationDate = EditRadioRRU.civilLoads.InstallationDate;
@@ -7299,13 +7306,14 @@ namespace TLIS_Service.Services
                                                             NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                             NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                             NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                                     }
                                                     else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                     {
@@ -7360,7 +7368,7 @@ namespace TLIS_Service.Services
 
                                                         RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                         RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId, RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                        var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                         {
@@ -7385,9 +7393,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewRadioRRUInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
 
                                                             NewRadioRRUInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewRadioRRUInst.InstallationDate = EditRadioRRU.civilLoads.InstallationDate;
@@ -7397,13 +7405,14 @@ namespace TLIS_Service.Services
                                                             NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                             NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                             NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                                     }
 
                                                 }
@@ -7552,12 +7561,12 @@ namespace TLIS_Service.Services
                                                     }
                                                     RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                     RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                    var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                        && x.radioAntennaId != null).ToList();
+                                                        RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                       && x.radioAntennaId != null).ToList();
                                                         foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
@@ -7589,13 +7598,14 @@ namespace TLIS_Service.Services
                                                         NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                         NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                         NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                                 }
                                                 else if(RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                 {
@@ -7659,12 +7669,12 @@ namespace TLIS_Service.Services
                                                     }
                                                     RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                     RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                    var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                        && x.radioAntennaId != null).ToList();
+                                                        RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                       && x.radioAntennaId != null).ToList();
                                                         foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
@@ -7696,12 +7706,14 @@ namespace TLIS_Service.Services
                                                         NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                         NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                         NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
+
                                                     if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                                 }
                                                 else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                                 {
@@ -7780,12 +7792,12 @@ namespace TLIS_Service.Services
 
                                                     RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                     RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                    var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                        && x.radioAntennaId != null).ToList();
+                                                        RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                       && x.radioAntennaId != null).ToList();
                                                         foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
@@ -7817,13 +7829,14 @@ namespace TLIS_Service.Services
                                                         NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                         NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                         NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                                 }
                                                 else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                 {
@@ -7878,12 +7891,12 @@ namespace TLIS_Service.Services
 
                                                     RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                     RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                    var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                     {
-                                                         RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                        && x.radioAntennaId != null).ToList();
+                                                        RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                       && x.radioAntennaId != null).ToList();
                                                         foreach (var item in RadioAntennas)
                                                         {
                                                             var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
@@ -7901,6 +7914,7 @@ namespace TLIS_Service.Services
                                                             .AsNoTracking()
                                                             .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && !x.Dismantle);
 
+
                                                         TLIcivilLoads NewRadioRRUInst = _dbContext.TLIcivilLoads
                                                           .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
                                                           .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
@@ -7914,13 +7928,14 @@ namespace TLIS_Service.Services
                                                         NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                         NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                         NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                                 }
 
 
@@ -8042,12 +8057,12 @@ namespace TLIS_Service.Services
 
                                                 RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                 RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioRRURepository.UpdateWithHistory(UserId,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU);
+                                                var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
-                                                     RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
-                                                    && x.radioAntennaId != null).ToList();
+                                                    RadioAntennas = _unitOfWork.AllLoadInstRepository.GetWhere(x => x.radioRRUId == RadioRRU.Id
+                                                   && x.radioAntennaId != null).ToList();
                                                     foreach (var item in RadioAntennas)
                                                     {
                                                         var OldValue = _dbContext.TLIallLoadInst.AsNoTracking().FirstOrDefault(x => x.Id
@@ -8075,17 +8090,18 @@ namespace TLIS_Service.Services
                                                     NewRadioRRUInst.InstallationDate = EditRadioRRU.civilLoads.InstallationDate;
                                                     NewRadioRRUInst.sideArmId = EditRadioRRU.installationConfig?.sideArmId ?? null;
                                                     NewRadioRRUInst.sideArm2Id = null;
-                                                    NewRadioRRUInst.legId = null;
+                                                    NewRadioRRUInst.legId = EditRadioRRU.installationConfig?.legId ?? null;
                                                     NewRadioRRUInst.ItemOnCivilStatus = EditRadioRRU.civilLoads.ItemOnCivilStatus;
                                                     NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                     NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewRadioRRUInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
                                             }
                                             else
                                             {
@@ -8256,7 +8272,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                 radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                var HistoryId=_unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId,null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditradioOther.civilLoads != null)
                                                 {
@@ -8280,13 +8296,14 @@ namespace TLIS_Service.Services
                                                     NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                     NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                     NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString,HistoryId);
 
                                             }
                                             else if (radioOtherInst.ReservedSpace == true && EditradioOther.civilLoads.ReservedSpace == false)
@@ -8368,7 +8385,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                 radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditradioOther.civilLoads != null)
                                                 {
@@ -8392,13 +8409,14 @@ namespace TLIS_Service.Services
                                                     NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                     NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                     NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                             }
                                             else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == true)
                                             {
@@ -8494,7 +8512,7 @@ namespace TLIS_Service.Services
 
                                                 radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                 radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditradioOther.civilLoads != null)
                                                 {
@@ -8518,13 +8536,14 @@ namespace TLIS_Service.Services
                                                     NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                     NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                     NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                             }
                                             else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == false)
                                             {
@@ -8597,7 +8616,7 @@ namespace TLIS_Service.Services
 
                                                 radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                 radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditradioOther.civilLoads != null)
                                                 {
@@ -8621,13 +8640,14 @@ namespace TLIS_Service.Services
                                                     NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                     NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                     NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                             }
                                         }
                                         else
@@ -8789,7 +8809,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                         radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                        var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditradioOther.civilLoads != null)
                                                         {
@@ -8801,9 +8821,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewradioOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
 
                                                             NewradioOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewradioOtherInst.InstallationDate = EditradioOther.civilLoads.InstallationDate;
@@ -8813,14 +8833,16 @@ namespace TLIS_Service.Services
                                                             NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                             NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                             NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
+
                                                         if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                                     }
-                                                    if (radioOtherInst.ReservedSpace == true && EditradioOther.civilLoads.ReservedSpace == false)
+                                                    else if (radioOtherInst.ReservedSpace == true && EditradioOther.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (radioOther.CenterHigh <= 0)
                                                         {
@@ -8897,7 +8919,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                         radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                        var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditradioOther.civilLoads != null)
                                                         {
@@ -8909,9 +8931,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewradioOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
 
                                                             NewradioOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewradioOtherInst.InstallationDate = EditradioOther.civilLoads.InstallationDate;
@@ -8921,15 +8943,16 @@ namespace TLIS_Service.Services
                                                             NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                             NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                             NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                                     }
-                                                    if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == true)
+                                                    else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == true)
                                                     {
                                                         if (radioOther.CenterHigh <= 0)
                                                         {
@@ -9022,7 +9045,7 @@ namespace TLIS_Service.Services
 
                                                         radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                         radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                        var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditradioOther.civilLoads != null)
                                                         {
@@ -9034,9 +9057,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewradioOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
 
                                                             NewradioOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewradioOtherInst.InstallationDate = EditradioOther.civilLoads.InstallationDate;
@@ -9046,15 +9069,16 @@ namespace TLIS_Service.Services
                                                             NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                             NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                             NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                                     }
-                                                    if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == false)
+                                                    else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (radioOther.CenterHigh <= 0)
                                                         {
@@ -9123,7 +9147,7 @@ namespace TLIS_Service.Services
 
                                                         radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                         radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                        _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                        var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                         _unitOfWork.SaveChanges();
                                                         if (EditradioOther.civilLoads != null)
                                                         {
@@ -9135,9 +9159,9 @@ namespace TLIS_Service.Services
 
 
                                                             TLIcivilLoads NewradioOtherInst = _dbContext.TLIcivilLoads
-                                                                .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
-                                                                .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                                                                .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
+                                                              .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
+                                                              .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
+                                                              .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
 
                                                             NewradioOtherInst.allCivilInstId = AllcivilinstId.allCivilInst.Id;
                                                             NewradioOtherInst.InstallationDate = EditradioOther.civilLoads.InstallationDate;
@@ -9147,13 +9171,14 @@ namespace TLIS_Service.Services
                                                             NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                             NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                             NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                             _unitOfWork.SaveChanges();
 
                                                         }
 
                                                         if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                                     }
 
 
@@ -9309,7 +9334,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                     radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                    var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditradioOther.civilLoads != null)
                                                     {
@@ -9333,15 +9358,17 @@ namespace TLIS_Service.Services
                                                         NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                         NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                         NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
                                                 }
-                                                if (radioOtherInst.ReservedSpace == true && EditradioOther.civilLoads.ReservedSpace == false)
+                                                else if (radioOtherInst.ReservedSpace == true && EditradioOther.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (radioOther.CenterHigh <= 0)
                                                     {
@@ -9419,7 +9446,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                     radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                    var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditradioOther.civilLoads != null)
                                                     {
@@ -9443,14 +9470,16 @@ namespace TLIS_Service.Services
                                                         NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                         NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                         NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
+
                                                     if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                                 }
-                                                if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == true)
+                                                else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == true)
                                                 {
                                                     if (radioOther.CenterHigh <= 0)
                                                     {
@@ -9543,7 +9572,7 @@ namespace TLIS_Service.Services
 
                                                     radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                     radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                    var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditradioOther.civilLoads != null)
                                                     {
@@ -9567,15 +9596,16 @@ namespace TLIS_Service.Services
                                                         NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                         NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                         NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                                 }
-                                                if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == false)
+                                                else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (radioOther.CenterHigh <= 0)
                                                     {
@@ -9645,7 +9675,7 @@ namespace TLIS_Service.Services
 
                                                     radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                     radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                    _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                    var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                     _unitOfWork.SaveChanges();
                                                     if (EditradioOther.civilLoads != null)
                                                     {
@@ -9654,6 +9684,7 @@ namespace TLIS_Service.Services
                                                             .GetAllAsQueryable()
                                                             .AsNoTracking()
                                                             .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioOtherId == radioOther.Id && !x.Dismantle);
+
 
                                                         TLIcivilLoads NewradioOtherInst = _dbContext.TLIcivilLoads
                                                           .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.radioOther.radioOtherLibrary).Include(x => x.allCivilInst)
@@ -9668,13 +9699,14 @@ namespace TLIS_Service.Services
                                                         NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                         NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                         NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                         _unitOfWork.SaveChanges();
 
                                                     }
 
                                                     if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                                 }
 
 
@@ -9801,7 +9833,7 @@ namespace TLIS_Service.Services
 
                                                 radioOther.radioOtherLibraryId = EditradioOther.civilType.radioOtherLibraryId;
                                                 radioOther.installationPlaceId = EditradioOther.installationConfig.InstallationPlaceId;
-                                                _unitOfWork.RadioOtherRepository.UpdateWithHistory(UserId, radioOtherInst.allLoadInst.radioOther, radioOther);
+                                                var HistoryId = _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(UserId, null, radioOtherInst.allLoadInst.radioOther, radioOther, radioOtherInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditradioOther.civilLoads != null)
                                                 {
@@ -9821,17 +9853,18 @@ namespace TLIS_Service.Services
                                                     NewradioOtherInst.InstallationDate = EditradioOther.civilLoads.InstallationDate;
                                                     NewradioOtherInst.sideArmId = EditradioOther.installationConfig?.sideArmId ?? null;
                                                     NewradioOtherInst.sideArm2Id = null;
-                                                    NewradioOtherInst.legId = null;
+                                                    NewradioOtherInst.legId = EditradioOther.installationConfig?.legId ?? null;
                                                     NewradioOtherInst.ItemOnCivilStatus = EditradioOther.civilLoads.ItemOnCivilStatus;
                                                     NewradioOtherInst.ItemStatus = EditradioOther.civilLoads?.ItemStatus;
                                                     NewradioOtherInst.ReservedSpace = EditradioOther.civilLoads.ReservedSpace;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, existingEntity, NewradioOtherInst);
+                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewradioOtherInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
                                                 if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
                                             }
                                             else
                                             {
