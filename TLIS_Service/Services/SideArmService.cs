@@ -313,8 +313,23 @@ namespace TLIS_Service.Services
 
                     if (SideArm != null)
                     {
+                           
                         SideArm.Dismantle = true;
-                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldSideArm, SideArm);
+                        TLIhistory AddTablesHistory = new TLIhistory
+                        {
+                            HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                            RecordId = sideArmId.ToString(),
+                            TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsideArm").Id,
+                            UserId = UserId,
+                            SiteCode = SiteCode
+                        };
+
+                        _dbContext.TLIhistory.Add(AddTablesHistory);
+                        _dbContext.SaveChanges();
+                        var HistroryId = AddTablesHistory.Id;
+                        
+                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldSideArm, SideArm);
                         _unitOfWork.SaveChanges();
                     }
                     else
@@ -3230,13 +3245,14 @@ namespace TLIS_Service.Services
                             }
                             CivilLoads.allCivilInstId = AllCivilInst;
                             CivilLoads.Dismantle = false;
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldSideArmInCivilLoad, CivilLoads);
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, OldSideArmInCivilLoad, CivilLoads);
                             _unitOfWork.SaveChanges();
                             
                         }
                         int TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TablesNames.TLIsideArm.ToString()).Id;
                         if (SideArmViewModel.dynamicAttribute != null ? SideArmViewModel.dynamicAttribute.Count() > 0 : false)
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, SideArmViewModel.dynamicAttribute, TableNameId, SideArm.Id, ConnectionString);
+                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, SideArmViewModel.dynamicAttribute, TableNameId, SideArm.Id, ConnectionString,HistoryId);
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);

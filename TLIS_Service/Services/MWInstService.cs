@@ -362,8 +362,41 @@ namespace TLIS_Service.Services
                 if (mwRFULibrary != null)
                 {
                     List<BaseInstAttViews> LibraryAttributes = _unitOfWork.AttributeActivatedRepository
-                        .GetAttributeActivatedGetForAdd(TablesNames.TLImwRFULibrary.ToString(), mwRFULibrary, null).ToList();
+                    .GetAttributeActivatedGetForAdd(TablesNames.TLImwRFULibrary.ToString(), mwRFULibrary, null).ToList();
 
+                    var diversitytype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "diversitytype_name");
+                    if (diversitytype_name != null)
+                    {
+                        diversitytype_name.Options = _mapper.Map<List<DiversityTypeViewModel>>(_unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                        diversitytype_name.Value = _unitOfWork.DiversityTypeRepository != null && mwRFULibrary.diversityTypeId != null ?
+                            _mapper.Map<DiversityTypeViewModel>(_unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == mwRFULibrary.diversityTypeId)) :
+                            null;
+                    }
+                    var boardtype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "boardtype_name");
+                    if (boardtype_name != null)
+                    {
+                        boardtype_name.Options = _mapper.Map<List<BoardTypeViewModel>>(_unitOfWork.PolarityTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                        boardtype_name.Value = _unitOfWork.BoardTypeRepository != null && mwRFULibrary.boardTypeId != null ?
+                            _mapper.Map<BoardTypeViewModel>(_unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == mwRFULibrary.boardTypeId)) :
+                            null;
+                    }
+
+                    var rfutype = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "rfutype");
+                    if (rfutype != null)
+                    {
+                        List<EnumOutPut> RFUTypes = new List<EnumOutPut>
+                                    {
+                                    new EnumOutPut { Id = (int)RFUType.Compact, Name = RFUType.Compact.ToString() },
+                                    new EnumOutPut { Id = (int)RFUType.Traditional, Name = RFUType.Traditional.ToString() },
+
+                                    };
+
+                        rfutype.Options = RFUTypes;
+                        rfutype.Value = RFUTypes.FirstOrDefault(x => x.Id == (int)mwRFULibrary?.RFUType);
+
+
+                      
+                    }
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
                         .GetLogisticals(TablePartName.MW.ToString(), Helpers.Constants.TablesNames.TLImwRFULibrary.ToString(), mwRFULibrary.Id).ToList());
@@ -6535,7 +6568,7 @@ namespace TLIS_Service.Services
                                                                 _unitOfWork.MW_PortRepository.Add( tLImwPort);
                                                                 _unitOfWork.SaveChanges();
 
-
+                                                                mwBU.PortCascadeId = tLImwPort.Id;
                                                             }
                                                         }
                                                         if (!string.IsNullOrEmpty(mwBU.Serial_Number))
@@ -6958,9 +6991,9 @@ namespace TLIS_Service.Services
                                                             var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                 x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                                && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                                &&((x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
                                                                 == AddMW_BU.installationConfig.sideArmId[1] )||(x.sideArmId== AddMW_BU.installationConfig.sideArmId[1]
-                                                                && x.sideArm2Id== AddMW_BU.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                                && x.sideArm2Id== AddMW_BU.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                , x => x.allLoadInst.mwBU.MwBULibrary);
                                                             if (CascededBu == null)
                                                             {
@@ -7429,9 +7462,9 @@ namespace TLIS_Service.Services
                                                         var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                     x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                     && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
-                                                                    && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                                    &&((x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
                                                                 == AddMW_BU.installationConfig.sideArmId[1]) || (x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                                && x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                                && x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                    , x => x.allLoadInst.mwBU.MwBULibrary);
                                                         if (CascededBu == null)
                                                         {
@@ -7878,9 +7911,9 @@ namespace TLIS_Service.Services
                                                         var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                  x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                  && x.allCivilInst.civilNonSteelId == AddMW_BU.installationConfig.civilNonSteelId
-                                                                  && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                                  && ((x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
                                                                 == AddMW_BU.installationConfig.sideArmId[1]) || (x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
-                                                                && x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[0]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                                && x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                 , x => x.allLoadInst.mwBU.MwBULibrary);
                                                         if (CascededBu == null)
                                                         {
@@ -8024,7 +8057,6 @@ namespace TLIS_Service.Services
                                                         SiteCode = SiteCode,
                                                     };
 
-                                                    _unitOfWork.CivilLoadsRepository.AddWithHistory(UserId, tLIcivilLoads);
                                                     var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                                                     _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -13777,13 +13809,16 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                 {
                                                     var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
                                                     mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                    portCascuded.MwBUId =Convert.ToInt32 (CascededBu.allLoadInst.mwBU.Id);
-                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
-                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
-                                                    _unitOfWork.SaveChanges();
-                                                    mwBU.PortCascadeId = portCascuded.Id;
+                                                    if (portCascuded != null)
+                                                    {
+                                                        var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                        mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                        portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                        portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                        _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                        _unitOfWork.SaveChanges();
+                                                        mwBU.PortCascadeId = portCascuded.Id;
+                                                    }
 
                                                 }
 
@@ -14410,13 +14445,16 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                 {
                                                     var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
                                                     mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                    portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
-                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
-                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
-                                                    _unitOfWork.SaveChanges();
-                                                    mwBU.PortCascadeId = portCascuded.Id;
+                                                    if (portCascuded != null)
+                                                    {
+                                                        var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                        mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                        portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                        portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                        _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                        _unitOfWork.SaveChanges();
+                                                        mwBU.PortCascadeId = portCascuded.Id;
+                                                    }
 
                                                 }
 
@@ -14465,8 +14503,9 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                 var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                     x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                                                    && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                    == MWInstallationViewModel.installationConfig.sideArmId[1]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                    && ((x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                    == MWInstallationViewModel.installationConfig.sideArmId[1])|| (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1] && x.sideArm2Id
+                                                    == MWInstallationViewModel.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                , x => x.allLoadInst.mwBU.MwBULibrary);
                                                 if (CascededBu == null)
                                                 {
@@ -14476,13 +14515,16 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                 {
                                                     var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
                                                     mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                    portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
-                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
-                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
-                                                    _unitOfWork.SaveChanges();
-                                                    mwBU.PortCascadeId = portCascuded.Id;
+                                                    if (portCascuded != null)
+                                                    {
+                                                        var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                        mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                        portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                        portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                        _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                        _unitOfWork.SaveChanges();
+                                                        mwBU.PortCascadeId = portCascuded.Id;
+                                                    }
 
                                                 }
                                             }
@@ -15172,13 +15214,16 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                             {
                                                 var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
                                                 mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
-                                                portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
-                                                _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
-                                                _unitOfWork.SaveChanges();
-                                                mwBU.PortCascadeId = portCascuded.Id;
+                                                if (portCascuded != null)
+                                                {
+                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                     mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                    _unitOfWork.SaveChanges();
+                                                    mwBU.PortCascadeId = portCascuded.Id;
+                                                }
 
                                             }
 
@@ -15227,8 +15272,9 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                             var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                       x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
                                                       && x.allCivilInst.civilWithoutLegId == MWInstallationViewModel.installationConfig.civilWithoutLegId
-                                                      && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                      == MWInstallationViewModel.installationConfig.sideArmId[1]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                       && ((x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                    == MWInstallationViewModel.installationConfig.sideArmId[1]) || (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1] && x.sideArm2Id
+                                                    == MWInstallationViewModel.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                  , x => x.allLoadInst.mwBU.MwBULibrary);
                                             if (CascededBu == null)
                                             {
@@ -15238,13 +15284,16 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                             {
                                                 var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
                                                 mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
-                                                portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
-                                                _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
-                                                _unitOfWork.SaveChanges();
-                                                mwBU.PortCascadeId = portCascuded.Id;
+                                                if (portCascuded != null)
+                                                {
+                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                   mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                    _unitOfWork.SaveChanges();
+                                                    mwBU.PortCascadeId = portCascuded.Id;
+                                                }
 
                                             }
                                         }
@@ -15938,13 +15987,16 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                             {
                                                 var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
                                                 mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
-                                                portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
-                                                _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
-                                                _unitOfWork.SaveChanges();
-                                                mwBU.PortCascadeId = portCascuded.Id;
+                                                if (portCascuded != null)
+                                                {
+                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                    _unitOfWork.SaveChanges();
+                                                    mwBU.PortCascadeId = portCascuded.Id;
+                                                }
 
                                             }
 
@@ -15994,8 +16046,9 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                             var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                     x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
                                                     && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
-                                                    && (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                    == MWInstallationViewModel.installationConfig.sideArmId[1]), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                    && ((x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                    == MWInstallationViewModel.installationConfig.sideArmId[1]) || (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1] && x.sideArm2Id
+                                                    == MWInstallationViewModel.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                , x => x.allLoadInst.mwBU.MwBULibrary);
                                             if (CascededBu == null)
                                             {
@@ -16005,13 +16058,16 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                             {
                                                 var portCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
                                                 mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
-                                                mwBUInst.allLoadInst.mwBU.PortCascadeId);
-                                                portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
-                                                portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
-                                                _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
-                                                _unitOfWork.SaveChanges();
-                                                mwBU.PortCascadeId = portCascuded.Id;
+                                                if (portCascuded != null)
+                                                {
+                                                    var oldportCascuded = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                    mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                                                    portCascuded.MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBU.Id);
+                                                    portCascuded.MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId;
+                                                    _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
+                                                    _unitOfWork.SaveChanges();
+                                                    mwBU.PortCascadeId = portCascuded.Id;
+                                                }
 
                                             }
                                         }
@@ -25072,7 +25128,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
                             
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25127,7 +25183,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25193,7 +25249,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25249,7 +25305,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25304,7 +25360,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25389,7 +25445,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25464,7 +25520,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25520,7 +25576,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25576,7 +25632,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25631,7 +25687,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;

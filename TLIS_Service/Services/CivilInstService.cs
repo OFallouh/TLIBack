@@ -2949,64 +2949,64 @@ namespace TLIS_Service.Services
                         {
                             civilwithoutlegs.NumberOfCivilParts = 2;
                         }
-                        if (civilwithoutlegs.BottomPartDiameterm != 51 && civilwithoutlegs.BottomPartDiameterm != 76 && civilwithoutlegs.BottomPartDiameterm != 88
-                          && civilwithoutlegs.BottomPartDiameterm != 101 && civilwithoutlegs.BottomPartDiameterm != 114 && civilwithoutlegs.BottomPartDiameterm != 127)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartDiameterm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.NumberOfCivilParts == 2 && civilwithoutlegs.UpperPartDiameterm == 0)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The UpperPartDiameterm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.NumberOfCivilParts == 1 && civilwithoutlegs.BottomPartLengthm != civilwithoutlegs.HeightImplemented)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartLengthm must be equal to value HeightImplemented", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.NumberOfCivilParts == 2)
-                        {
-                            civilwithoutlegs.UpperPartLengthm = civilwithoutlegs.HeightImplemented - civilwithoutlegs.BottomPartLengthm;
-                        }
-                        if (civilwithoutlegs.LongitudinalSpinDiameterrmm != 51 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 76 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 88
-                         && civilwithoutlegs.LongitudinalSpinDiameterrmm != 101)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.ConcreteBaseLengthm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseLengthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.ConcreteBaseWidthm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseWidthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //if (civilwithoutlegs.BottomPartDiameterm != 51 && civilwithoutlegs.BottomPartDiameterm != 76 && civilwithoutlegs.BottomPartDiameterm != 88
+                        //  && civilwithoutlegs.BottomPartDiameterm != 101 && civilwithoutlegs.BottomPartDiameterm != 114 && civilwithoutlegs.BottomPartDiameterm != 127)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartDiameterm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.NumberOfCivilParts == 2 && civilwithoutlegs.UpperPartDiameterm == 0)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The UpperPartDiameterm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.NumberOfCivilParts == 1 && civilwithoutlegs.BottomPartLengthm != civilwithoutlegs.HeightImplemented)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartLengthm must be equal to value HeightImplemented", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.NumberOfCivilParts == 2)
+                        //{
+                        //    civilwithoutlegs.UpperPartLengthm = civilwithoutlegs.HeightImplemented - civilwithoutlegs.BottomPartLengthm;
+                        //}
+                        //if (civilwithoutlegs.LongitudinalSpinDiameterrmm != 51 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 76 && civilwithoutlegs.LongitudinalSpinDiameterrmm != 88
+                        // && civilwithoutlegs.LongitudinalSpinDiameterrmm != 101)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.ConcreteBaseLengthm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseLengthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.ConcreteBaseWidthm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseWidthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        }
-                        if (civilwithoutlegs.ConcreteBaseThicknessm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseThicknessm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.BaseBeamSectionmm != 100 && civilwithoutlegs.BaseBeamSectionmm != 120 && civilwithoutlegs.BaseBeamSectionmm != 140
-                          && civilwithoutlegs.BaseBeamSectionmm != 160 && civilwithoutlegs.BaseBeamSectionmm != 180 && civilwithoutlegs.BaseBeamSectionmm != 200)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The BaseBeamSectionmm value must be in this list (100,120,140,160,180,200)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.BPlateBoltsAnchorDiametermm != 12 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 14 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 16
-                         && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 18 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 20)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.SpindlesBasePlateLengthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateLengthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.SpindlesBasePlateWidthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilwithoutlegs.SpinBasePlateAnchorDiametercm != 12 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 14 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 16
-                         && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 18 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 20)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        //}
+                        //if (civilwithoutlegs.ConcreteBaseThicknessm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("located"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseThicknessm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.BaseBeamSectionmm != 100 && civilwithoutlegs.BaseBeamSectionmm != 120 && civilwithoutlegs.BaseBeamSectionmm != 140
+                        //  && civilwithoutlegs.BaseBeamSectionmm != 160 && civilwithoutlegs.BaseBeamSectionmm != 180 && civilwithoutlegs.BaseBeamSectionmm != 200)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The BaseBeamSectionmm value must be in this list (100,120,140,160,180,200)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.BPlateBoltsAnchorDiametermm != 12 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 14 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 16
+                        // && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 18 && civilwithoutlegs.BPlateBoltsAnchorDiametermm != 20)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.SpindlesBasePlateLengthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateLengthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.SpindlesBasePlateWidthcm == 0 && CvilWithoutlegsLibrary.Model.ToLower().Contains("anchored"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilwithoutlegs.SpinBasePlateAnchorDiametercm != 12 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 14 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 16
+                        // && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 18 && civilwithoutlegs.SpinBasePlateAnchorDiametercm != 20)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
                         string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilWithoutLegViewModel.dynamicAttribute, TableName);
 
                         if (!string.IsNullOrEmpty(CheckGeneralValidation))
@@ -3535,7 +3535,7 @@ namespace TLIS_Service.Services
                                         .AsNoTracking()
                                         .FirstOrDefault(x => x.Id == oldLeg.Id);
 
-                                    oldLeg.CiviLegName = $"{civilWithLegsEntity.Name} {newLegInfo.LegLetter}";
+                                    oldLeg.CiviLegName = $"{civilWithLegsEntity.Name} Leg {newLegInfo.LegLetter}";
                                     oldLeg.LegAzimuth = newLegInfoFirst.LegAzimuth + azimuthOffsets[i];
                                     oldLeg.LegLetter = newLegInfo.LegLetter;
                                     oldLeg.Notes = newLegInfo.Notes;
@@ -3572,7 +3572,7 @@ namespace TLIS_Service.Services
                                         .AsNoTracking()
                                         .FirstOrDefault(x => x.Id == oldLeg.Id);
 
-                                    oldLeg.CiviLegName = $"{civilWithLegsEntity.Name} {newLegInfo.LegLetter}";
+                                    oldLeg.CiviLegName = $"{civilWithLegsEntity.Name} Leg {newLegInfo.LegLetter}";
                                     oldLeg.LegAzimuth = newLegInfoFirst.LegAzimuth + azimuthOffsets[i];
                                     oldLeg.LegLetter = newLegInfo.LegLetter;
                                     oldLeg.Notes = newLegInfo.Notes;
@@ -3692,64 +3692,64 @@ namespace TLIS_Service.Services
                         {
                             civilWithoutLegsEntity.NumberOfCivilParts = 2;
                         }
-                        if (civilWithoutLegsEntity.BottomPartDiameterm != 51 && civilWithoutLegsEntity.BottomPartDiameterm != 76 && civilWithoutLegsEntity.BottomPartDiameterm != 88
-                          && civilWithoutLegsEntity.BottomPartDiameterm != 101 && civilWithoutLegsEntity.BottomPartDiameterm != 114 && civilWithoutLegsEntity.BottomPartDiameterm != 127)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartDiameterm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.NumberOfCivilParts == 2 && civilWithoutLegsEntity.UpperPartDiameterm == 0)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The UpperPartDiameterm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.NumberOfCivilParts == 1 && civilWithoutLegsEntity.BottomPartLengthm != civilWithoutLegsEntity.HeightImplemented)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartLengthm must be equal to value HeightImplemented", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.NumberOfCivilParts == 2)
-                        {
-                            civilWithoutLegsEntity.UpperPartLengthm = civilWithoutLegsEntity.HeightImplemented - civilWithoutLegsEntity.BottomPartLengthm;
-                        }
-                        if (civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 51 && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 76 && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 88
-                         && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 101)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.ConcreteBaseLengthm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseLengthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.ConcreteBaseWidthm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseWidthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //if (civilWithoutLegsEntity.BottomPartDiameterm != 51 && civilWithoutLegsEntity.BottomPartDiameterm != 76 && civilWithoutLegsEntity.BottomPartDiameterm != 88
+                        //  && civilWithoutLegsEntity.BottomPartDiameterm != 101 && civilWithoutLegsEntity.BottomPartDiameterm != 114 && civilWithoutLegsEntity.BottomPartDiameterm != 127)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartDiameterm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.NumberOfCivilParts == 2 && civilWithoutLegsEntity.UpperPartDiameterm == 0)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The UpperPartDiameterm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.NumberOfCivilParts == 1 && civilWithoutLegsEntity.BottomPartLengthm != civilWithoutLegsEntity.HeightImplemented)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The BottomPartLengthm must be equal to value HeightImplemented", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.NumberOfCivilParts == 2)
+                        //{
+                        //    civilWithoutLegsEntity.UpperPartLengthm = civilWithoutLegsEntity.HeightImplemented - civilWithoutLegsEntity.BottomPartLengthm;
+                        //}
+                        //if (civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 51 && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 76 && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 88
+                        // && civilWithoutLegsEntity.LongitudinalSpinDiameterrmm != 101)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The LongitudinalSpinDiameterrmm value must be in this list (51,76,88,101)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.ConcreteBaseLengthm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseLengthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.ConcreteBaseWidthm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseWidthm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        }
-                        if (civilWithoutLegsEntity.ConcreteBaseThicknessm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseThicknessm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.BaseBeamSectionmm != 100 && civilWithoutLegsEntity.BaseBeamSectionmm != 120 && civilWithoutLegsEntity.BaseBeamSectionmm != 140
-                          && civilWithoutLegsEntity.BaseBeamSectionmm != 160 && civilWithoutLegsEntity.BaseBeamSectionmm != 180 && civilWithoutLegsEntity.BaseBeamSectionmm != 200)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The BaseBeamSectionmm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 12 && civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 14 && civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 16
-                         && civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 18 && civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 20)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.SpindlesBasePlateLengthcm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("anchored"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateLengthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.SpindlesBasePlateWidthcm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("anchored"))
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
-                        if (civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 12 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 14 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 16
-                         && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 18 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 20)
-                        {
-                            return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
-                        }
+                        //}
+                        //if (civilWithoutLegsEntity.ConcreteBaseThicknessm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("located"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The ConcreteBaseThicknessm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.BaseBeamSectionmm != 100 && civilWithoutLegsEntity.BaseBeamSectionmm != 120 && civilWithoutLegsEntity.BaseBeamSectionmm != 140
+                        //  && civilWithoutLegsEntity.BaseBeamSectionmm != 160 && civilWithoutLegsEntity.BaseBeamSectionmm != 180 && civilWithoutLegsEntity.BaseBeamSectionmm != 200)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The BaseBeamSectionmm value must be in this list (51,76,88,101,114,127)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 12 && civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 14 && civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 16
+                        // && civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 18 && civilWithoutLegsEntity.BPlateBoltsAnchorDiametermm != 20)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The BPlateBoltsAnchorDiametermm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.SpindlesBasePlateLengthcm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("anchored"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateLengthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.SpindlesBasePlateWidthcm == 0 && CivilWithoutLegInst.CivilWithoutlegsLib.Model.ToLower().Contains("anchored"))
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The SpindlesBasePlateWidthcm value must bigger of zero ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
+                        //if (civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 12 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 14 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 16
+                        // && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 18 && civilWithoutLegsEntity.SpinBasePlateAnchorDiametercm != 20)
+                        //{
+                        //    return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
+                        //}
                         if (civilWithoutLegsEntity.HeightBase != CivilWithoutLegInst.HeightBase)
                         {
                             var allcivilinst = _dbContext.TLIallCivilInst.Where(x => x.civilWithLegsId == civilWithoutLegsEntity.Id).Select(x => x.Id).FirstOrDefault();
@@ -11784,7 +11784,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-                    
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -11830,7 +11830,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-          
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -11927,7 +11927,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-                     
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -11973,7 +11973,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-                   
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -12070,7 +12070,7 @@ namespace TLIS_Service.Services
                             };
                          
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-                       
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
                        
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -12114,7 +12114,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-                
+                            _dbContext.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
                             _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(UserId,HistroryId, TabelTLIcivilSiteDate, OldValueSiteNotReservedSpace, civilSiteDate1);

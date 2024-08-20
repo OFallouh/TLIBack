@@ -28,10 +28,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public string AdGUID { get; set; }
         [Required]
         public int UserType { get; set; }
-        [Required]
-        public bool Active { get; set; }
-        [Required]
-        public bool Deleted { get; set; }
+
         public List<string> permissions { get; set; }
 
         //public DateTime ChangedPasswordDate { get; set; }

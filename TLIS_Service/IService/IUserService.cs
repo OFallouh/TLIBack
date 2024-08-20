@@ -25,7 +25,7 @@ namespace TLIS_Service.IService
         Task<Response<List<UserViewModel>>> GetAllExternalUsers(string UserName, ParameterPagination parameter);
         Task<Response<UserViewModel>> GetUserById(int Id);
         Task<Response<UserViewModel>> Updateuser(EditUserViewModel model, int UserId);
-        Task<Response<UserViewModel>> DeactivateUser(int UserId);
+        Task<Response<UserViewModel>> DeactivateUser(int UserId,int userid);
         Response<List<UserViewModel>> GetAll(List<FilterObjectList> filters, ParameterPagination parameter);
         Task<Response<ChangePasswordViewModel>> ChangePassword(ChangePasswordViewModel View);
         Task<Response<ForgetPassword>> ForgetPassword(ForgetPassword password);

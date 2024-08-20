@@ -368,13 +368,18 @@ namespace TLIS_Service.Services
         }
 
         //Function enable or disable user depened on user status
-        public async Task<Response<UserViewModel>> DeactivateUser(int UserId)
+        public async Task<Response<UserViewModel>> DeactivateUser(int UserId,int userid)
         {
             try
             {
+                TLIuser OldUser = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
+                    (x => x.Id == UserId && !x.Deleted);
+                if(OldUser==null)
+                    return new Response<UserViewModel>(true, null, null,"This user is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
                 TLIuser User = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && !x.Deleted);
                 User.Active = !(User.Active);
-                _unitOfWork.UserRepository.Update(User);
+                _unitOfWork.UserRepository.UpdateWithH(userid,null, OldUser, User);
                 await _unitOfWork.SaveChangesAsync();
                 return new Response<UserViewModel>();
             }

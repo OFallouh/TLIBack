@@ -1049,9 +1049,23 @@ namespace TLIS_Service.Services
                             DishLoad.Dismantle = true;
                             var OldDishLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                   .AsNoTracking().FirstOrDefault(x => x.Id == DishLoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwDish").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldDishLoad, DishLoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldDishLoad, DishLoad);
                             _unitOfWork.SaveChanges();
+
                             if (DishLoad.ReservedSpace == true)
                             {
                                 if (DishLoad.allCivilInst.civilWithLegsId != null)
@@ -1090,9 +1104,23 @@ namespace TLIS_Service.Services
 
                             var OldODULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == ODULoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwODU").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldODULoad, ODULoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldODULoad, ODULoad);
                             _unitOfWork.SaveChanges();
+
                             if (ODULoad.ReservedSpace == true)
                             {
                                 if (ODULoad.allCivilInst.civilWithLegsId != null)
@@ -1142,9 +1170,23 @@ namespace TLIS_Service.Services
                             RadioRRULoad.Dismantle = true;
                             var OldORadioRRULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RadioRRULoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioRRU").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldORadioRRULoad, RadioRRULoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldORadioRRULoad, RadioRRULoad);
                             _unitOfWork.SaveChanges();
+
                             if (RadioRRULoad.ReservedSpace == true)
                             {
                                 if (RadioRRULoad.allCivilInst.civilWithLegsId != null)
@@ -1184,9 +1226,23 @@ namespace TLIS_Service.Services
 
                             var OldOPowerLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == PowerLoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIpower").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldOPowerLoad, PowerLoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldOPowerLoad, PowerLoad);
                             _unitOfWork.SaveChanges();
+
                             if (PowerLoad.ReservedSpace == true)
                             {
                                 if (PowerLoad.allCivilInst.civilWithLegsId != null)
@@ -1225,9 +1281,23 @@ namespace TLIS_Service.Services
 
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == OtherLoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIloadOther").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldOtherLoad, OtherLoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldOtherLoad, OtherLoad);
                             _unitOfWork.SaveChanges();
+
                             if (OtherLoad.ReservedSpace == true)
                             {
                                 if (OtherLoad.allCivilInst.civilWithLegsId != null)
@@ -1296,9 +1366,23 @@ namespace TLIS_Service.Services
 
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RadioAntennaLoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioAntenna").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldOtherLoad, RadioAntennaLoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldOtherLoad, RadioAntennaLoad);
                             _unitOfWork.SaveChanges();
+
                             if (RadioAntennaLoad.ReservedSpace == true)
                             {
                                 if (RadioAntennaLoad.allCivilInst.civilWithLegsId != null)
@@ -1357,8 +1441,23 @@ namespace TLIS_Service.Services
                             MWBULoad.Dismantle = true;
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWBULoad.Id);
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldOtherLoad, MWBULoad);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwBU").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
+
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldOtherLoad, MWBULoad);
                             _unitOfWork.SaveChanges();
+
 
                             if (MWBULoad.ReservedSpace == true)
                             {
@@ -1398,9 +1497,24 @@ namespace TLIS_Service.Services
 
                             var OldMWRFULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWRFULoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwRFU").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWRFULoad, MWRFULoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldMWRFULoad, MWRFULoad);
                             _unitOfWork.SaveChanges();
+
+
                             if (MWRFULoad.ReservedSpace == true)
                             {
                                 if (MWRFULoad.allCivilInst.civilWithLegsId != null)
@@ -1439,9 +1553,23 @@ namespace TLIS_Service.Services
 
                             var OldMWOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWOtherLoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwOther").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWOtherLoad, MWOtherLoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldMWOtherLoad, MWOtherLoad);
                             _unitOfWork.SaveChanges();
+
                             if (MWOtherLoad.ReservedSpace == true)
                             {
                                 if (MWOtherLoad.allCivilInst.civilWithLegsId != null)
@@ -1480,9 +1608,23 @@ namespace TLIS_Service.Services
 
                             var OldRdioOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RdioOtherLoad.Id);
+                            TLIhistory AddTablesHistory = new TLIhistory
+                            {
+                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
+                                RecordId = LoadId.ToString(),
+                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioOther").Id,
+                                UserId = UserId,
+                                SiteCode = sitecode
+                            };
 
-                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldRdioOtherLoad, RdioOtherLoad);
+                            _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                            var HistroryId = AddTablesHistory.Id;
+
+                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldRdioOtherLoad, RdioOtherLoad);
                             _unitOfWork.SaveChanges();
+
                             if (RdioOtherLoad.ReservedSpace == true)
                             {
                                 if (RdioOtherLoad.allCivilInst.civilWithLegsId != null)
@@ -3430,9 +3572,6 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Power on same azimuth and height because found other Power in same angle", (int)ApiReturnCode.fail);
                                                                 }
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Power on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
-
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                                 if (SideArmName1 != null && Power.Azimuth > 0 && Power.Height > 0)
                                                                 {
@@ -3548,8 +3687,7 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Power on same azimuth and height because found other Power in same angle", (int)ApiReturnCode.fail);
                                                                 }
-                                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the Power on same azimuth and height because found other dish in same angle", (int)ApiReturnCode.fail);
-
+                                                                
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddPower.installationConfig.sideArmId);
                                                                 if (SideArmName1 != null && Power.Azimuth > 0 && Power.Height > 0)
                                                                 {
