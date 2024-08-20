@@ -11986,6 +11986,7 @@ namespace TLIS_Service.Services
                         {
                             Result.Add(new ConfigurationListViewModel(Description.ToString(), false));
                         }
+                        
                     }
                 }
 
@@ -13459,7 +13460,10 @@ namespace TLIS_Service.Services
                               .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
                             return new Response < ConfigurationAttsViewModel > (false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-
+                        var OwnerName = _unitOfWork.OwnerRepository
+                               .GetWhere(x => x.OwnerName.ToLower() == NewName.ToLower());
+                        if(OwnerName != null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this ownername is found ", (int)Helpers.Constants.ApiReturnCode.fail);
                         var CheckOwnerInCivil = _unitOfWork.CivilSiteDateRepository
                             .GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegs.OwnerId == RecordId ||
                             x.allCivilInst.civilWithoutLeg.OwnerId == RecordId || x.allCivilInst.civilNonSteel.ownerId
@@ -13482,7 +13486,7 @@ namespace TLIS_Service.Services
 
                             NewEntity.OwnerName = NewName;
 
-                            _unitOfWork.OwnerRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            _unitOfWork.OwnerRepository.UpdateWithH(UserId,null, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else
@@ -13503,7 +13507,10 @@ namespace TLIS_Service.Services
                               .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
                             return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-
+                        var renewablecabinettypename = _unitOfWork.RenewableCabinetTypeRepository
+                             .GetWhere(x => x.Name.ToLower() == NewName.ToLower());
+                        if (renewablecabinettypename != null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewablecabinettypename is found ", (int)Helpers.Constants.ApiReturnCode.fail);
                         var CheckrenewableCabinetTypeInCabinet = _unitOfWork.OtherInSiteRepository
                             .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinet.RenewableCabinetNumberOfBatteries == RecordId
                             && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
@@ -13538,7 +13545,11 @@ namespace TLIS_Service.Services
                               .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
                         if (OldEntity == null)
                             return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
-
+                        var Parityname = _unitOfWork.ParityRepository
+                         .GetWhere(x => x.Name.ToLower() == NewName.ToLower());
+                        if (Parityname != null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this Parityname is found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                      
                         var CheckparityInODU = _unitOfWork.CivilLoadsRepository
                             .GetIncludeWhereFirst(x => x.allLoadInst.mwODU.MwODULibrary.parityId == RecordId
                             && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU, x => x.allLoadInst.mwODU.MwODULibrary);
@@ -13622,9 +13633,9 @@ namespace TLIS_Service.Services
                             TLIowner NewEntity = _unitOfWork.OwnerRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.Disable = true;
+                             NewEntity.Disable = !( OldEntity.Disable);
 
-                            _unitOfWork.OwnerRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            _unitOfWork.OwnerRepository.UpdateWithH(UserId,null, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else
@@ -13657,9 +13668,9 @@ namespace TLIS_Service.Services
                             TLIrenewableCabinetType NewEntity = _unitOfWork.RenewableCabinetTypeRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.Disable = true;
+                            NewEntity.Disable = !(OldEntity.Disable);
 
-                            _unitOfWork.RenewableCabinetTypeRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            _unitOfWork.RenewableCabinetTypeRepository.UpdateWithH(UserId,null, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else
@@ -13692,9 +13703,9 @@ namespace TLIS_Service.Services
                             TLIparity NewEntity = _unitOfWork.ParityRepository
                                 .GetWhereFirst(x => x.Id == RecordId);
 
-                            NewEntity.Disable = true;
+                            NewEntity.Disable = !(OldEntity.Disable);
 
-                            _unitOfWork.ParityRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            _unitOfWork.ParityRepository.UpdateWithH(UserId,null, OldEntity, NewEntity);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else

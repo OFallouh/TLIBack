@@ -2462,10 +2462,10 @@ namespace TLIS_Service.Helpers
             [Description("TLIparity")]
             TLImwODULibrary,
 
-            [Description("TLIdiversityType TLIboardType")]
+            [Description("TLIdiversityType TLIboardType RFUType")]
             TLImwRFULibrary,
 
-            [Description("TLIcabinetPowerType")]
+            [Description("TLIcabinetPowerType IntegratedWith")]
             TLIcabinetPowerLibrary,
 
             [Description("TLItelecomType")]
@@ -2504,13 +2504,13 @@ namespace TLIS_Service.Helpers
             /// </summary>
 
             [Description("TLIlocationType TLIbaseType TLIowner " +
-                "TLIguyLineType TLIsupportTypeImplemented TLIenforcmentCategory")]
+                "TLIguyLineType TLIsupportTypeImplemented TLIenforcmentCategory BasePlateShape")]
             TLIcivilWithLegs,
 
             [Description("TLIowner TLIsupportTypeImplemented TLIlocationType")]
             TLIcivilNonSteel,
 
-            [Description("TLIowner")]
+            [Description("TLIowner ladderSteps equipmentsLocation TLIsubType")]
             TLIcivilWithoutLeg,
 
             [Description("TLIowner")]
