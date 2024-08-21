@@ -5686,7 +5686,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _unitOfWork.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
                             
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5724,7 +5724,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _unitOfWork.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5766,7 +5766,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _unitOfWork.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5805,7 +5805,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _unitOfWork.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5852,7 +5852,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _unitOfWork.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5890,7 +5890,7 @@ namespace TLIS_Service.Services
                             };
 
                             _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                            _unitOfWork.SaveChanges();
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;

@@ -11842,7 +11842,7 @@ namespace TLIS_Service.Services
 
                                                 if (!result)
                                                 {
-                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", Int32.Parse(Constants.ApiReturnCode.fail.ToString()));
+                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
                                                 }
                                                 else
                                                 {
@@ -11900,7 +11900,7 @@ namespace TLIS_Service.Services
 
                                                 if (!result)
                                                 {
-                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", Int32.Parse(Constants.ApiReturnCode.fail.ToString()));
+                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
                                                 }
                                                 else
                                                 {
@@ -11956,7 +11956,7 @@ namespace TLIS_Service.Services
 
                                                 if (!result)
                                                 {
-                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", Int32.Parse(Constants.ApiReturnCode.fail.ToString()));
+                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
                                                 }
                                                 else
                                                 {
@@ -11998,7 +11998,7 @@ namespace TLIS_Service.Services
 
                                                 if (!result)
                                                 {
-                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", Int32.Parse(Constants.ApiReturnCode.fail.ToString()));
+                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
                                                 }
                                                 else
                                                 {
@@ -12027,7 +12027,7 @@ namespace TLIS_Service.Services
                                     }
                                     else
                                     {
-                                        return new Response<AddDynamicObject>(true, null, null, "validation can not be null ", Int32.Parse(Constants.ApiReturnCode.fail.ToString()));
+                                        return new Response<AddDynamicObject>(true, null, null, "validation can not be null ", (int)Constants.ApiReturnCode.fail);
                                     }
 
 
@@ -12744,7 +12744,7 @@ namespace TLIS_Service.Services
                             }
                             else
                             {
-                                return new Response<AddDynamicObject>(true, null, null, "the tabelname is not found ", Int32.Parse(Constants.ApiReturnCode.fail.ToString()));
+                                return new Response<AddDynamicObject>(true, null, null, "the tabelname is not found ", (int)Constants.ApiReturnCode.success);
                             }
                             transaction.Complete();
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
