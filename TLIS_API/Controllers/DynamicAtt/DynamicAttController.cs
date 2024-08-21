@@ -90,7 +90,7 @@ namespace TLIS_API.Controllers.DynamicAtt
             }
         }
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddDynamic")]
+        [HttpPost("AddDynamicLibrary")]
         [ProducesResponseType(200, Type = typeof(List<AddDynamicObject>))]
         public IActionResult AddDynamic([FromBody] AddDynamicObject addDependencyInstViewModel,string TabelName,int? CategoryId)
         {

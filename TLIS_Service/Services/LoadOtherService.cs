@@ -799,8 +799,9 @@ namespace TLIS_Service.Services
 
 
                     List<BaseInstAttViews> LogisticalAttributes = _mapper.Map<List<BaseInstAttViews>>(_unitOfWork.LogistcalRepository
-                        .GetLogisticals(TablePartName.LoadOther.ToString(), TablesNames.TLIloadOther.ToString(), LoadOther.allLoadInst.loadOther.loadOtherLibrary.Id).ToList());
+                        .GetLogisticals(TablePartName.LoadOther.ToString(), TablesNames.TLIloadOtherLibrary.ToString(), LoadOther.allLoadInst.loadOther.loadOtherLibrary.Id).ToList());
 
+                   
                     LibraryAttributes.AddRange(LogisticalAttributes);
 
                     objectInst.LibraryAttribute = LibraryAttributes;
