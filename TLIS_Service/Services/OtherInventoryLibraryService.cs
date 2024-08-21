@@ -3047,6 +3047,8 @@ namespace TLIS_Service.Services
                         return new Response<EditSolarLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                     SolarLegLib.SpaceLibrary = SolarLegLib.Length * SolarLegLib.Width;
+
+
                     var CheckModel = db.MV_SOLAR_LIBRARY_VIEW
                              .FirstOrDefault(x => x.Model != null &&
                                          x.Model.ToLower() == SolarLibraryEntites.Model.ToLower() &&

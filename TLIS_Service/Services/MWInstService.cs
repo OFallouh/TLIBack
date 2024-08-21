@@ -375,7 +375,7 @@ namespace TLIS_Service.Services
                     var boardtype_name = LibraryAttributes.FirstOrDefault(item => item.Label.ToLower() == "boardtype_name");
                     if (boardtype_name != null)
                     {
-                        boardtype_name.Options = _mapper.Map<List<BoardTypeViewModel>>(_unitOfWork.PolarityTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+                        boardtype_name.Options = _mapper.Map<List<BoardTypeViewModel>>(_unitOfWork.BoardTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
                         boardtype_name.Value = _unitOfWork.BoardTypeRepository != null && mwRFULibrary.boardTypeId != null ?
                             _mapper.Map<BoardTypeViewModel>(_unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == mwRFULibrary.boardTypeId)) :
                             null;

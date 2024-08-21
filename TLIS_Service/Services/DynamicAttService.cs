@@ -78,6 +78,7 @@ using Microsoft.Extensions.DependencyModel;
 using LinqToExcel;
 using AutoMapper.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TLIS_Service.Services
 {
@@ -11794,6 +11795,7 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
+                                            LibraryAtt=true,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type=1
 
@@ -12043,6 +12045,7 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
+                                            LibraryAtt = true,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type = 2
 
@@ -12059,24 +12062,42 @@ namespace TLIS_Service.Services
                                         
                                         bool overallResult = false; 
                                         var RecordsIds = GetLibraryRecordsIds(TabelName);
-                                       
 
+                                        foreach (var group in addDynamicObject.dependency.groups)
+                                        {
+                                            foreach (var rule in group)
+                                            {
+                                                if (TabelName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
+                                                {
+                                                    var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                        .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                    TLIrule tLIrule = new TLIrule()
+                                                    {
+                                                        attributeActivatedId = AttributeActivated.Id,
+                                                        dynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = rule.Operation,
+                                                        OperationValueString = rule.Value.ToString(),
+                                                        tablesNamesId = TabelNameId,
+                                                    };
+
+                                                    _unitOfWork.RuleRepository.Add(tLIrule);
+                                                    _unitOfWork.SaveChanges();
+                                                   
+                                                }
+                                            }
+                                        }
                                         foreach (int RecordId in RecordsIds)
                                         {
                                           
                                             foreach (var group in addDynamicObject.dependency.groups)
                                             {
-                                                TLIrow tLIrow = new TLIrow();
-                                                _unitOfWork.RowRepository.AddWithH(UserId, null, tLIrow);
-                                                _unitOfWork.SaveChanges();
-
-                                                
+                                              
                                                 bool groupResult = true;
 
                                                 foreach (var rule in group)
                                                 {
                                                     
-
                                                     if (TabelName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower() )
                                                     {
                                                         var ColumName = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
@@ -12100,26 +12121,7 @@ namespace TLIS_Service.Services
                                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                         var value = rule.Value?.ToString().Trim();
 
-                                                        TLIrule tLIrule = new TLIrule()
-                                                        {
-                                                            attributeActivatedId = AttributeActivated.Id,
-                                                            dynamicAttId = tLIdynamicAtt.Id,
-                                                            OperationId = rule.Operation,
-                                                            OperationValueString = rule.Value.ToString(),
-                                                            tablesNamesId = TabelNameId,
-                                                        };
-
-                                                        _unitOfWork.RuleRepository.Add(tLIrule);
-                                                        _unitOfWork.SaveChanges();
-
-                                                        TLIrowRule tLIrowRule = new TLIrowRule()
-                                                        {
-                                                            RowId = tLIrow.Id,
-                                                            RuleId = tLIrule.Id,
-                                                    
-                                                        };
-                                                        _unitOfWork.RowRuleRepository.AddWithH(UserId, null, tLIrowRule);
-                                                        _unitOfWork.SaveChanges();
+                                                      
 
                                                         bool result = false;
 
@@ -12251,25 +12253,7 @@ namespace TLIS_Service.Services
                                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                         var value = rule.Value?.ToString().Trim();
 
-                                                        TLIrule tLIrule = new TLIrule()
-                                                        {
-                                                            attributeActivatedId = AttributeActivated.Id,
-                                                            dynamicAttId = tLIdynamicAtt.Id,
-                                                            OperationId = rule.Operation,
-                                                            OperationValueString = rule.Value.ToString(),
-                                                            tablesNamesId = TabelNameId,
-                                                        };
-
-                                                        _unitOfWork.RuleRepository.Add(tLIrule);
-                                                        _unitOfWork.SaveChanges();
-
-                                                        TLIrowRule tLIrowRule = new TLIrowRule()
-                                                        {
-                                                            RowId = tLIrow.Id,
-                                                            RuleId = tLIrule.Id,
-                                                        };
-                                                        _unitOfWork.RowRuleRepository.AddWithH(UserId, null, tLIrowRule);
-                                                        _unitOfWork.SaveChanges();
+                                                        
 
                                                         bool result = false;
 
@@ -12510,7 +12494,7 @@ namespace TLIS_Service.Services
                                        
                                     }
                                 }
-                                if (addDynamicObject.type == 3)
+                                else if (addDynamicObject.type == 3)
                                 {
                                     if (addDynamicObject.validation != null && addDynamicObject.dependency != null)
                                     {
@@ -12523,6 +12507,7 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
+                                            LibraryAtt = true,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type = 3
 
@@ -12768,11 +12753,106 @@ namespace TLIS_Service.Services
                         catch (Exception err)
                         {
                             tran.Rollback();
-                            return new Response<AddDynamicObject>(true, null, null, err.Message, Int32.Parse(Constants.ApiReturnCode.fail.ToString()));
+                            return new Response<AddDynamicObject>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
                         }
                     }
                 }
             }
         }
+        public Response<AddDynamicObject> GetDynamicLibraryById(int id)
+        {
+            try
+            {
+                // البحث عن العنصر باستخدام المعرف (ID)
+                var dynamicAtt = _unitOfWork.DynamicAttRepository.GetByID(id);
+
+                if (dynamicAtt == null)
+                {
+                    return new Response<AddDynamicObject>(true, null, null, "Dynamic attribute not found", (int)Constants.ApiReturnCode.fail);
+                }
+
+                // إنشاء كائن AddDynamicObject لاسترجاع البيانات
+                var addDynamicObject = new AddDynamicObject()
+                {
+                    general = new GeneralObject()
+                    {
+                        name = dynamicAtt.Key,
+                        description = dynamicAtt.Description,
+                        isRequired = dynamicAtt.Required,
+                        defualtValue = dynamicAtt.DefaultValue,
+                        dataType = dynamicAtt.DataTypeId
+                    },
+                    type = dynamicAtt.Type,
+                    validation = GetValidation(dynamicAtt.Id, dynamicAtt.DataTypeId),
+                    dependency = GetDependency(dynamicAtt.Id)
+                };
+
+                return new Response<AddDynamicObject>(false, addDynamicObject, null, "Success", (int)Constants.ApiReturnCode.success);
+            }
+            catch (Exception ex)
+            {
+                return new Response<AddDynamicObject>(true, null, null, ex.Message, (int)Constants.ApiReturnCode.fail);
+            }
+        }
+
+        // دالة لاسترجاع معلومات التحقق (Validation) بناءً على المعرف (ID) ونوع البيانات (DataTypeId)
+        private ValidationObject GetValidation(int dynamicAttId, int? dataTypeId)
+        {
+            var validation = _unitOfWork.ValidationRepository.GetWhereFirst(v => v.DynamicAttId == dynamicAttId);
+
+            if (validation != null)
+            {
+                return new ValidationObject()
+                {
+                    operation = validation.OperationId,
+                    value = dataTypeId switch
+                    {
+                        1 => validation.ValueString,
+                        21 or 22 => validation.ValueDouble.ToString(),
+                        24 => validation.ValueBoolean.ToString(),
+                        25 => validation.ValueDateTime.ToString(),
+                        _ => null
+                    }
+                };
+            }
+
+            return null;
+        }
+        private DependencyObject GetDependency(int dynamicAttId)
+        {
+            var dependency = _unitOfWork.DependencieRepository.GetWhereFirst(d => d.DynamicAttId == dynamicAttId);
+
+            if (dependency != null)
+            {
+                // الحصول على جميع القواعد المرتبطة بالـ dynamicAttId
+                var rules = _unitOfWork.RuleRepository.GetWhere(r => r.dynamicAttId == dynamicAttId).ToList();
+
+                // تنظيم القواعد في مجموعات
+                var groups = new List<List<GroupObject>>();
+
+                // افتراضات: قد تكون القواعد منظمة بناءً على بعض الخصائص مثل ColumnName أو خصائص أخرى
+                var groupedRules = rules
+                    .GroupBy(rule => rule.OperationId)  // قم بتعديل طريقة التجميع حسب الحاجة
+                    .Select(group => group.Select(rule => new GroupObject
+                    {
+                        ColumnName = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(a => a.Id == rule.attributeActivatedId).Key,
+                        Operation = rule.OperationId,
+                        Value = rule.OperationValueString
+                    }).ToList())
+                    .ToList();
+
+                return new DependencyObject()
+                {
+                    result = dependency.Result,
+                    groups = groupedRules
+                };
+            }
+
+            return null;
+        }
+
+
+
+
     }
 }

@@ -11,7 +11,7 @@ namespace TLIS_DAL.ViewModels.DynamicAttDTOs
         public GeneralObject general { get; set; }
         public ValidationObject validation { get; set; }
         public DependencyObject dependency { get; set; }
-        public int type { get; set; }
+        public int? type { get; set; }
     }
 
     public class GeneralObject
@@ -20,7 +20,7 @@ namespace TLIS_DAL.ViewModels.DynamicAttDTOs
         public string? description { get; set; }
         public bool isRequired { get; set; }
         public object defualtValue { get; set; }
-        public int dataType { get; set; }
+        public int? dataType { get; set; }
     }
     public class ValidationObject
     {

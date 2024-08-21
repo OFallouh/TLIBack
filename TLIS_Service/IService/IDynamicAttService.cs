@@ -38,5 +38,6 @@ namespace TLIS_Service.IService
         Response<List<OutPutString>> GetLayers(string TableName);
         Response<FirstStepAddDependencyViewModel> GetForAddingDynamicAttribute(string TableName);
         Response<DynamicAttViewModel> CheckEditingDynamicAttDataType(int DynamicAttributeId, int NewDataTypeId);
+        Response<AddDynamicObject> GetDynamicLibraryById(int id);
     }
 }

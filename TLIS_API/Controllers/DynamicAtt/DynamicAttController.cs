@@ -246,6 +246,14 @@ namespace TLIS_API.Controllers.DynamicAtt
         {
             var response = _unitOfWorkService.DynamicAttService.CheckEditingDynamicAttDataType(DynamicAttributeId, NewDataTypeId);
             return Ok(response);
+
+        }
+        [HttpPost("GetDynamicLibraryById")]
+        [ProducesResponseType(200, Type = typeof(FirstStepAddDependencyViewModel))]
+        public IActionResult GetDynamicLibraryById(int DynamicAttributeId)
+        {
+            var response = _unitOfWorkService.DynamicAttService.GetDynamicLibraryById(DynamicAttributeId);
+            return Ok(response);
         }
     }
 }
