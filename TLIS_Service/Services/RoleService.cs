@@ -180,7 +180,6 @@ namespace TLIS_Service.Services
                                 UserId = UserId
                             };
 
-
                             _dbContext.TLIhistory.Add(AddTablesHistory);
                             _dbContext.SaveChanges();
                         }

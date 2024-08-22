@@ -90,7 +90,7 @@ namespace TLIS_API.Controllers.DynamicAtt
             }
         }
         //[ServiceFilter(typeof(WorkFlowMiddleware))]
-        [HttpPost("AddDynamicLibrary")]
+        [HttpPost("AddDynamic")]
         [ProducesResponseType(200, Type = typeof(List<AddDynamicObject>))]
         public IActionResult AddDynamic([FromBody] AddDynamicObject addDependencyInstViewModel,string TabelName,int? CategoryId)
         {
@@ -116,6 +116,42 @@ namespace TLIS_API.Controllers.DynamicAtt
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDependencyInstViewModel, ConnectionString, TabelName, userId, CategoryId);
+                return Ok(responceResult);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<List<AddDynamicAttInstViewModel>>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
+        [HttpPost("EditDynamicAttribute")]
+        [ProducesResponseType(200, Type = typeof(List<AddDynamicObject>))]
+        public IActionResult EditDynamicAttribute(int DynamicAttributeId,[FromBody] AddDynamicObject addDynamicObject)
+        {
+            if (ModelState.IsValid)
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var responceResult = _unitOfWorkService.DynamicAttService.EditDynamicAttribute(DynamicAttributeId, addDynamicObject, userId, ConnectionString);
                 return Ok(responceResult);
             }
             else

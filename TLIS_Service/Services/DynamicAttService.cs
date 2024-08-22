@@ -8880,6 +8880,36 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public async Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId,AddDynamicObject DynamicAttViewModel,int UserId, string connectionString)
+        {
+            using (TransactionScope transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    TLIdynamicAtt OldDynamicAttData = _dbContext.TLIdynamicAtt.Include(x => x.DataType).Include(x=>x.tablesNames).AsQueryable().AsNoTracking()
+                        .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttributeId);
+                    if (OldDynamicAttData != null)
+                        return new Response<AddDynamicObject>(true, null, null, $"This DynamicAttribute is not found", (int)Constants.ApiReturnCode.fail);
+                    var DynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == DynamicAttViewModel.general.name.ToLower());
+                    if(DynamicAttribute !=null)
+                        return new Response<AddDynamicObject>(true, null, null, $"This Key {DynamicAttViewModel.general.name} is Already Exist in Table {DynamicAttribute.tablesNames.TableName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
+                    var NewDynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == DynamicAttributeId);
+                    NewDynamicAttribute.Key = DynamicAttViewModel.general.name;
+                    NewDynamicAttribute.Description = DynamicAttViewModel.general.description;
+                    _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAttData, NewDynamicAttribute);
+                    await _unitOfWork.SaveChangesAsync();
+                    transaction.Complete();
+                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
+                    return new Response<AddDynamicObject>(true, null, null, null, (int)Constants.ApiReturnCode.success);
+                }
+                catch (Exception err)
+                {
+
+                    return new Response<AddDynamicObject>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+
 
 
         //Get dependency Installation attributes depened on layer name and table name 
@@ -11778,12 +11808,12 @@ namespace TLIS_Service.Services
                         {
                             List<TLIdynamicAttLibValue> ListToAdd = new List<TLIdynamicAttLibValue>();
                             var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TabelName.ToLower()).Id;
-                            var EditabelViewManagment = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x => x.TLItablesNames1Id== TabelNameId).Id;
+                            var EditabelViewManagment = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x => x.TLItablesNames1Id== TabelNameId && x.CivilWithoutLegCategoryId== CategoryId).Id;
                             if (TabelNameId != null)
                             {
                                 var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower());
                                 if(DynamicKey !=null)
-                                    return new Response<AddDynamicObject>(true, null, null, $"This Key {addDynamicObject.general.name} is already found", (int)Constants.ApiReturnCode.fail);
+                                    return new Response<AddDynamicObject>(true, null, null, $"This Key {addDynamicObject.general.name} is Already Exist in Table {TabelName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
 
                                 if (addDynamicObject.type == 1)
                                 {
@@ -12143,116 +12173,49 @@ namespace TLIS_Service.Services
 
                                                         var propertyInfo = ColumName.GetType().GetProperty(attributeName);
                                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-
-                                                      
-
+                                                        var value = rule.Value?.ToString().Trim();                                                  
                                                         bool result = false;
-
-                                                        if (addDynamicObject.general.dataType == 1)
+                                                       
+                                                        switch (rule.Operation)
                                                         {
-                                                            switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue.ToLower() == value.ToLower();
-                                                                    break;
+                                                            case 1:
+                                                                result = propertyValue == value;
+                                                                break;
 
-                                                                case 2:
-                                                                    result = propertyValue.ToLower() != value.ToLower();
-                                                                    break;
+                                                            case 2:
+                                                                result = propertyValue != value;
+                                                                break;
 
-                                                                case 7:
-                                                                    result = propertyValue.ToLower().Contains(rule.Value.ToString().ToLower());
-                                                                    break;
+                                                            case 3:
+                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                break;
 
-                                                                case 8:
-                                                                    result = propertyValue.ToLower().StartsWith(rule.Value.ToString().ToLower());
-                                                                    break;
+                                                            case 4:
+                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                break;
 
-                                                                case 9:
-                                                                    result = propertyValue.ToLower().EndsWith(rule.Value.ToString().ToLower());
-                                                                    break;
-                                                            }
+                                                            case 5:
+                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                break;
+
+                                                            case 6:
+                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                break;
+                                                            case 7:
+                                                                result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                break;
+
+                                                            case 8:
+                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                break;
+
+                                                            case 9:
+                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                break;
+                                                        }
 
                                                             groupResult = groupResult && result;
-                                                        }
-                                                        if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
-                                                        {
-                                                            switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
-
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
-
-                                                                case 3:
-                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 4:
-                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 5:
-                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 6:
-                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                    break;
-                                                            }
-
-                                                            groupResult = groupResult && result;
-                                                        }
-                                                        if (addDynamicObject.general.dataType == 25)
-                                                        {
-                                                            switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
-
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
-
-                                                                case 3:
-                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 4:
-                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 5:
-                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 6:
-                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                    break;
-                                                            }
-
-                                                            groupResult = groupResult && result;
-                                                        }
-                                                        if (addDynamicObject.general.dataType == 24)
-                                                        {
-                                                            switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
-
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
-                                                            }
-
-                                                            groupResult = groupResult && result;
-                                                        }
+                                                       
                                                     }
                                                     if (TabelName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
                                                     {
@@ -12276,115 +12239,48 @@ namespace TLIS_Service.Services
                                                         var propertyInfo = ColumName.GetType().GetProperty(attributeName);
                                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                         var value = rule.Value?.ToString().Trim();
-
-                                                        
-
                                                         bool result = false;
-
-                                                        if (addDynamicObject.general.dataType == 1)
+                                                        switch (rule.Operation)
                                                         {
-                                                            switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
+                                                            case 1:
+                                                                result = propertyValue == value;
+                                                                break;
 
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
+                                                            case 2:
+                                                                result = propertyValue != value;
+                                                                break;
 
-                                                                case 7:
-                                                                    result = propertyValue.Contains(rule.Value.ToString());
-                                                                    break;
+                                                            case 3:
+                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                break;
 
-                                                                case 8:
-                                                                    result = propertyValue.StartsWith(rule.Value.ToString());
-                                                                    break;
+                                                            case 4:
+                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                break;
 
-                                                                case 9:
-                                                                    result = propertyValue.EndsWith(rule.Value.ToString());
-                                                                    break;
-                                                            }
+                                                            case 5:
+                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                break;
 
-                                                            groupResult = groupResult && result;
+                                                            case 6:
+                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                break;
+                                                            case 7:
+                                                                result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                break;
+
+                                                            case 8:
+                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                break;
+
+                                                            case 9:
+                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                break;
                                                         }
-                                                        if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType ==22)
-                                                        {
-                                                            switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
 
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
+                                                        groupResult = groupResult && result;
 
-                                                                case 3:
-                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                    break;
 
-                                                                case 4:
-                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 5:
-                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 6:
-                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                    break;
-                                                            }
-
-                                                            groupResult = groupResult && result;
-                                                        }
-                                                        if (addDynamicObject.general.dataType == 25)
-                                                        {
-                                                            switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
-
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
-
-                                                                case 3:
-                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 4:
-                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 5:
-                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                    break;
-
-                                                                case 6:
-                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                    break;
-                                                            }
-
-                                                            groupResult = groupResult && result;
-                                                        }
-                                                        if (addDynamicObject.general.dataType ==24 )
-                                                        {
-                                                            switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
-
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
-                                                            }
-
-                                                            groupResult = groupResult && result;
-                                                        }
                                                     }
 
                                                     // If any rule fails, move to the next rule in the group
@@ -12405,6 +12301,7 @@ namespace TLIS_Service.Services
                                             // If the overallResult is true, exit the RecordsIds loop
                                             if (overallResult)
                                             {
+                                                var resultvalue = addDynamicObject.dependency.result?.ToString().Trim();
                                                 if (addDynamicObject.general.dataType == 1)
                                                 {
                                                     TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
@@ -12412,7 +12309,7 @@ namespace TLIS_Service.Services
                                                         disable = false,
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         InventoryId = RecordId,
-                                                        ValueString = addDynamicObject.dependency.result.ToString(),
+                                                        ValueString = resultvalue,
                                                         tablesNamesId = TabelNameId,
                                                     };
                                                     _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
@@ -12425,7 +12322,7 @@ namespace TLIS_Service.Services
                                                         disable = false,
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         InventoryId = RecordId,
-                                                        ValueDouble = Convert.ToDouble(addDynamicObject.dependency.result),
+                                                        ValueDouble = Convert.ToDouble(resultvalue),
                                                         tablesNamesId = TabelNameId,
                                                     };
                                                     _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
@@ -12438,7 +12335,7 @@ namespace TLIS_Service.Services
                                                         disable = false,
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         InventoryId = RecordId,
-                                                        ValueDateTime = Convert.ToDateTime(addDynamicObject.dependency.result),
+                                                        ValueDateTime = Convert.ToDateTime(resultvalue),
                                                         tablesNamesId = TabelNameId,
                                                     };
                                                     _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
@@ -12451,7 +12348,7 @@ namespace TLIS_Service.Services
                                                         disable = false,
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         InventoryId = RecordId,
-                                                        ValueBoolean = Convert.ToBoolean(addDynamicObject.dependency.result),
+                                                        ValueBoolean = Convert.ToBoolean(resultvalue),
                                                         tablesNamesId = TabelNameId,
                                                     };
                                                     _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
@@ -12460,6 +12357,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
+                                                var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
                                                 if (addDynamicObject.general.dataType == 1)
                                                 {
                                                     TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
@@ -12467,7 +12365,7 @@ namespace TLIS_Service.Services
                                                         disable = false,
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         InventoryId = RecordId,
-                                                        ValueString = addDynamicObject.general.defualtValue.ToString(),
+                                                        ValueString = defultvalue,
                                                         tablesNamesId = TabelNameId,
                                                     };
                                                     _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
@@ -12480,7 +12378,7 @@ namespace TLIS_Service.Services
                                                         disable = false,
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         InventoryId = RecordId,
-                                                        ValueDouble = Convert.ToDouble(addDynamicObject.general.defualtValue),
+                                                        ValueDouble = Convert.ToDouble(defultvalue),
                                                         tablesNamesId = TabelNameId,
                                                     };
                                                     _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
@@ -12493,7 +12391,7 @@ namespace TLIS_Service.Services
                                                         disable = false,
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         InventoryId = RecordId,
-                                                        ValueDateTime = Convert.ToDateTime(addDynamicObject.general.defualtValue),
+                                                        ValueDateTime = Convert.ToDateTime(defultvalue),
                                                         tablesNamesId = TabelNameId,
                                                     };
                                                     _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
@@ -12506,7 +12404,7 @@ namespace TLIS_Service.Services
                                                         disable = false,
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         InventoryId = RecordId,
-                                                        ValueBoolean = Convert.ToBoolean(addDynamicObject.general.defualtValue),
+                                                        ValueBoolean = Convert.ToBoolean(defultvalue),
                                                         tablesNamesId = TabelNameId,
                                                     };
                                                     _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
@@ -12594,13 +12492,14 @@ namespace TLIS_Service.Services
                                             else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                             {
                                                 bool result = false;
+                                                var TabelNameTLIvalidation = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIvalidation").Id;
                                                 TLIvalidation tLIvalidation = new TLIvalidation()
                                                 {
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
                                                     ValueDouble = Convert.ToDouble(addDynamicObject.validation.value),
                                                 };
-                                                _unitOfWork.ValidationRepository.AddWithH(UserId, null, tLIvalidation);
+                                                _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation,HistoryId);
                                                 _unitOfWork.SaveChanges();
                                                 switch (addDynamicObject.validation.operation)
                                                 {
@@ -12638,13 +12537,14 @@ namespace TLIS_Service.Services
                                             else if (addDynamicObject.general.dataType == 25)
                                             {
                                                 bool result = false;
+                                                var TabelNameTLIvalidation = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIvalidation").Id;
                                                 TLIvalidation tLIvalidation = new TLIvalidation()
                                                 {
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
                                                     ValueDateTime = Convert.ToDateTime(addDynamicObject.validation.value),
                                                 };
-                                                _unitOfWork.ValidationRepository.AddWithH(UserId, null, tLIvalidation);
+                                                _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation,HistoryId);
                                                 _unitOfWork.SaveChanges();
                                                 switch (addDynamicObject.validation.operation)
                                                 {
@@ -12682,13 +12582,14 @@ namespace TLIS_Service.Services
                                             else if (addDynamicObject.general.dataType == 24)
                                             {
                                                 bool result = false;
+                                                var TabelNameTLIvalidation = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIvalidation").Id;
                                                 TLIvalidation tLIvalidation = new TLIvalidation()
                                                 {
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
                                                     ValueBoolean = Convert.ToBoolean(addDynamicObject.validation.value),
                                                 };
-                                                _unitOfWork.ValidationRepository.AddWithH(UserId, null, tLIvalidation);
+                                                _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation,HistoryId);
                                                 _unitOfWork.SaveChanges();
                                                 switch (addDynamicObject.validation.operation)
                                                 {
@@ -12722,16 +12623,33 @@ namespace TLIS_Service.Services
                                             _unitOfWork.DependencieRepository.AddWithHDynamic(UserId, TabelNameTLIdependency, tLIdependency,HistoryId);
                                             _unitOfWork.SaveChanges();
 
-
                                             foreach (var group in addDynamicObject.dependency.groups)
                                             {
-                                                TLIrow tLIrow = new TLIrow();
-                                                _unitOfWork.RowRepository.AddWithH(UserId, null, tLIrow);
-                                                _unitOfWork.SaveChanges();
+                                                foreach (var rule in group)
+                                                {
+                                                    if (TabelName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
+                                                    {
+                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                        var TabelNameTLIrule = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIrule").Id;
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueString = rule.Value.ToString(),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
 
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
 
-                                                bool groupResult = true;
-
+                                                    }
+                                                }
+                                            }
+                                            foreach (var group in addDynamicObject.dependency.groups)
+                                            {
+                                              
                                                 foreach (var rule in group)
                                                 {
 
@@ -12739,7 +12657,7 @@ namespace TLIS_Service.Services
                                                     var AttributeActivated = _unitOfWork.AttributeActivatedRepository
                                                         .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-
+                                                    var TabelNameTLIrule = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIrule").Id;
                                                     TLIrule tLIrule = new TLIrule()
                                                     {
                                                         attributeActivatedId = AttributeActivated.Id,
@@ -12749,20 +12667,10 @@ namespace TLIS_Service.Services
                                                         tablesNamesId = TabelNameId,
                                                     };
 
-                                                    _unitOfWork.RuleRepository.Add(tLIrule);
+                                                    _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule,HistoryId);
                                                     _unitOfWork.SaveChanges();
 
-                                                    TLIrowRule tLIrowRule = new TLIrowRule()
-                                                    {
-                                                        RowId = tLIrow.Id,
-                                                        RuleId = tLIrule.Id,
-                                                    };
-                                                    _unitOfWork.RowRuleRepository.AddWithH(UserId, null, tLIrowRule);
-                                                    _unitOfWork.SaveChanges();
-
-
-
-
+                                             
                                                 }
                                             }
                                         }
