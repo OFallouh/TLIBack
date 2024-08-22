@@ -11778,9 +11778,12 @@ namespace TLIS_Service.Services
                         {
                             List<TLIdynamicAttLibValue> ListToAdd = new List<TLIdynamicAttLibValue>();
                             var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TabelName.ToLower()).Id;
+                            var EditabelViewManagment = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x => x.TLItablesNames1Id== TabelNameId).Id;
                             if (TabelNameId != null)
                             {
-                                
+                                var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower());
+                                if(DynamicKey !=null)
+                                    return new Response<AddDynamicObject>(true, null, null, $"This Key {addDynamicObject.general.name} is already found", (int)Constants.ApiReturnCode.fail);
 
                                 if (addDynamicObject.type == 1)
                                 {
@@ -11800,18 +11803,28 @@ namespace TLIS_Service.Services
                                             Type=1
 
                                         };
-                                        _unitOfWork.DynamicAttRepository.Add(tLIdynamicAtt);
+                                       var HistoryId= _unitOfWork.DynamicAttRepository.AddWithH(UserId,null,tLIdynamicAtt);
                                         _unitOfWork.SaveChanges();
-
+                                        var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName== "TLIattributeViewManagment").Id;
+                                        TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
+                                        {
+                                            DynamicAttId = tLIdynamicAtt.Id,
+                                            EditableManagmentViewId = EditabelViewManagment,
+                                            AttributeActivatedId=null,
+                                            Enable = true
+                                        };
+                                        _unitOfWork.AttributeViewManagmentRepository.AddWithHDynamic(UserId, TabelNameTLIattributeViewManagment, tLIattributeViewManagment,HistoryId);
+                                        _unitOfWork.SaveChanges();
                                         if (addDynamicObject.type == 1 && addDynamicObject.validation != null)
                                         {
+                                            var TabelNameTLIvalidation = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIvalidation").Id;
                                             TLIvalidation tLIvalidation = new TLIvalidation()
                                             {
                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                 OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
                                                 ValueString = addDynamicObject.validation.value.ToString(),
                                             };
-                                            _unitOfWork.ValidationRepository.AddWithH(UserId, null, tLIvalidation);
+                                            _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation,HistoryId);
                                             _unitOfWork.SaveChanges();
                                             if (addDynamicObject.general.dataType == 1)
                                             {
@@ -11820,23 +11833,23 @@ namespace TLIS_Service.Services
                                                 switch (addDynamicObject.validation.operation)
                                                 {
                                                     case 1:
-                                                        result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower() == addDynamicObject.validation.value.ToString().ToLower();
                                                         break;
 
                                                     case 2:
-                                                        result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower() != addDynamicObject.validation.value.ToString().ToLower();
                                                         break;
 
                                                     case 7:
-                                                        result = addDynamicObject.general.defualtValue.ToString().Contains(addDynamicObject.validation.value.ToString());
+                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().Contains(addDynamicObject.validation.value.ToString().ToLower());
                                                         break;
 
                                                     case 8:
-                                                        result = addDynamicObject.general.defualtValue.ToString().StartsWith(addDynamicObject.validation.value.ToString());
+                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().StartsWith(addDynamicObject.validation.value.ToString().ToLower());
                                                         break;
 
                                                     case 9:
-                                                        result = addDynamicObject.general.defualtValue.ToString().EndsWith(addDynamicObject.validation.value.ToString());
+                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().EndsWith(addDynamicObject.validation.value.ToString().ToLower());
                                                         break;
                                                 }
 
@@ -12050,14 +12063,25 @@ namespace TLIS_Service.Services
                                             Type = 2
 
                                         };
-                                        _unitOfWork.DynamicAttRepository.Add(tLIdynamicAtt);
+                                       var HistoryId= _unitOfWork.DynamicAttRepository.AddWithH(UserId,null,tLIdynamicAtt);
                                         _unitOfWork.SaveChanges();
+                                        var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
+                                        TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
+                                        {
+                                            DynamicAttId = tLIdynamicAtt.Id,
+                                            EditableManagmentViewId = EditabelViewManagment,
+                                            AttributeActivatedId = null,
+                                            Enable = true
+                                        };
+                                        _unitOfWork.AttributeViewManagmentRepository.AddWithHDynamic(UserId, TabelNameTLIattributeViewManagment, tLIattributeViewManagment, HistoryId);
+                                        _unitOfWork.SaveChanges();
+                                        var TabelNameTLIdependency = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIdependency").Id;
                                         TLIdependency tLIdependency = new TLIdependency()
                                         {
                                             DynamicAttId = tLIdynamicAtt.Id,
                                             Result = addDynamicObject.dependency.result.ToString(),
                                         };
-                                        _unitOfWork.DependencieRepository.AddWithH(UserId,null, tLIdependency);
+                                        _unitOfWork.DependencieRepository.AddWithHDynamic(UserId, TabelNameTLIdependency, tLIdependency,HistoryId);
                                         _unitOfWork.SaveChanges();
                                         
                                         bool overallResult = false; 
@@ -12071,7 +12095,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     var AttributeActivated = _unitOfWork.AttributeActivatedRepository
                                                         .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
+                                                    var TabelNameTLIrule = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIrule").Id;
                                                     TLIrule tLIrule = new TLIrule()
                                                     {
                                                         attributeActivatedId = AttributeActivated.Id,
@@ -12081,7 +12105,7 @@ namespace TLIS_Service.Services
                                                         tablesNamesId = TabelNameId,
                                                     };
 
-                                                    _unitOfWork.RuleRepository.Add(tLIrule);
+                                                    _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule,HistoryId);
                                                     _unitOfWork.SaveChanges();
                                                    
                                                 }
@@ -12130,23 +12154,23 @@ namespace TLIS_Service.Services
                                                             switch (rule.Operation)
                                                             {
                                                                 case 1:
-                                                                    result = propertyValue == value;
+                                                                    result = propertyValue.ToLower() == value.ToLower();
                                                                     break;
 
                                                                 case 2:
-                                                                    result = propertyValue != value;
+                                                                    result = propertyValue.ToLower() != value.ToLower();
                                                                     break;
 
                                                                 case 7:
-                                                                    result = propertyValue.Contains(rule.Value.ToString());
+                                                                    result = propertyValue.ToLower().Contains(rule.Value.ToString().ToLower());
                                                                     break;
 
                                                                 case 8:
-                                                                    result = propertyValue.StartsWith(rule.Value.ToString());
+                                                                    result = propertyValue.ToLower().StartsWith(rule.Value.ToString().ToLower());
                                                                     break;
 
                                                                 case 9:
-                                                                    result = propertyValue.EndsWith(rule.Value.ToString());
+                                                                    result = propertyValue.ToLower().EndsWith(rule.Value.ToString().ToLower());
                                                                     break;
                                                             }
 
@@ -12512,22 +12536,31 @@ namespace TLIS_Service.Services
                                             Type = 3
 
                                         };
-                                        _unitOfWork.DynamicAttRepository.Add(tLIdynamicAtt);
+                                        var HistoryId =_unitOfWork.DynamicAttRepository.AddWithH(UserId,null,tLIdynamicAtt);
                                         _unitOfWork.SaveChanges();
-
+                                        var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
+                                        TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
+                                        {
+                                            DynamicAttId = tLIdynamicAtt.Id,
+                                            EditableManagmentViewId = EditabelViewManagment,
+                                            AttributeActivatedId = null,
+                                            Enable = true
+                                        };
+                                        _unitOfWork.AttributeViewManagmentRepository.AddWithHDynamic(UserId, TabelNameTLIattributeViewManagment, tLIattributeViewManagment, HistoryId);
+                                        _unitOfWork.SaveChanges();
                                         if (addDynamicObject.validation != null)
                                         {
                                             if (addDynamicObject.general.dataType == 1)
                                             {
                                                 bool result = false;
-
+                                                var TabelNameTLIvalidation = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIvalidation").Id;
                                                 TLIvalidation tLIvalidation = new TLIvalidation()
                                                 {
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
                                                     ValueString = addDynamicObject.validation.value.ToString(),
                                                 };
-                                                _unitOfWork.ValidationRepository.AddWithH(UserId, null, tLIvalidation);
+                                                _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation,HistoryId);
                                                 _unitOfWork.SaveChanges();
                                                 switch (addDynamicObject.validation.operation)
                                                 {
@@ -12680,13 +12713,13 @@ namespace TLIS_Service.Services
                                         }
                                         if (addDynamicObject.dependency != null)
                                         {
-
+                                            var TabelNameTLIdependency = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIdependency").Id;
                                             TLIdependency tLIdependency = new TLIdependency()
                                             {
                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                 Result = addDynamicObject.dependency.result.ToString(),
                                             };
-                                            _unitOfWork.DependencieRepository.AddWithH(UserId, null, tLIdependency);
+                                            _unitOfWork.DependencieRepository.AddWithHDynamic(UserId, TabelNameTLIdependency, tLIdependency,HistoryId);
                                             _unitOfWork.SaveChanges();
 
 

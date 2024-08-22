@@ -6856,13 +6856,21 @@ namespace TLIS_Service.Services
                     if (siteCode != null)
                     {
                         var listAttributes = objectInst.CivilSupportDistance
-                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid" && civilSupportDistance != null)
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid")
                             .Select(attr =>
                             {
+                                TLIcivilSupportDistance support = new TLIcivilSupportDistance();
                                 var options = new List<SupportTypeImplementedViewModel>();
                                 var Value = new SupportTypeImplementedViewModel();
-                                var support = _unitOfWork.CivilSupportDistanceRepository
-                                    .GetWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
+                                if (civilSupportDistance != null)
+                                {
+                                    support = _unitOfWork.CivilSupportDistanceRepository
+                                        .GetWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
+                                }
+                                else
+                                {
+                                    support = null;
+                                }
 
                                 if (support != null && support.ReferenceCivilId != null)
                                 {
@@ -7171,13 +7179,21 @@ namespace TLIS_Service.Services
                     if (siteCode != null)
                     {
                         var listAttributes = objectInst.CivilSupportDistance
-                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid" && civilSupportDistance != null)
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid")
                             .Select(attr =>
                             {
+                                TLIcivilSupportDistance support = new TLIcivilSupportDistance();
                                 var options = new List<SupportTypeImplementedViewModel>();
                                 var Value = new SupportTypeImplementedViewModel();
-                                var support = _unitOfWork.CivilSupportDistanceRepository
-                                    .GetWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
+                                if (civilSupportDistance != null)
+                                {
+                                    support = _unitOfWork.CivilSupportDistanceRepository
+                                        .GetWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
+                                }
+                                else
+                                {
+                                    support = null;
+                                }
 
                                 if (support != null && support.ReferenceCivilId != null)
                                 {
@@ -7459,13 +7475,21 @@ namespace TLIS_Service.Services
                     if (siteCode != null)
                     {
                         var listAttributes = objectInst.CivilSupportDistance
-                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid" && civilSupportDistance != null)
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referencecivilid" )
                             .Select(attr =>
                             {
+                                TLIcivilSupportDistance support = new TLIcivilSupportDistance();
                                 var options = new List<SupportTypeImplementedViewModel>();
                                 var Value = new SupportTypeImplementedViewModel();
-                                var support = _unitOfWork.CivilSupportDistanceRepository
-                                    .GetWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
+                                if (civilSupportDistance != null)
+                                {
+                                    support = _unitOfWork.CivilSupportDistanceRepository
+                                        .GetWhereFirst(x => x.CivilInstId == civilSupportDistance.CivilInstId);
+                                }
+                                else
+                                {
+                                    support = null;
+                                }
 
                                 if (support != null && support.ReferenceCivilId != null)
                                 {

@@ -355,12 +355,12 @@ namespace TLIS_Service.Services
                 string newPermissionsViewModel = null;
                 if (RoleName == null)
                 {
-                    Response = _mapper.Map<List<RoleViewModel>>(_unitOfWork.RoleRepository.GetAllAsQueryable().ToList());
+                    Response = _mapper.Map<List<RoleViewModel>>(_unitOfWork.RoleRepository.GetWhere(x=>!x.Deleted && x.Active).ToList());
                     return new Response<List<RoleViewModel>>(true, Response, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
                 {
-                    var Roles = _unitOfWork.RoleRepository.GetWhere(x => x.Name.ToLower().Contains(RoleName.ToLower()));
+                    var Roles = _unitOfWork.RoleRepository.GetWhere(x => x.Name.ToLower().Contains(RoleName.ToLower()) && !x.Deleted && x.Active);
                     if (Roles.Count() > 0)
                     {
                         foreach (var item in Roles)

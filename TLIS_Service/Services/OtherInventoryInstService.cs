@@ -6108,14 +6108,21 @@ namespace TLIS_Service.Services
                     if (siteCode != null)
                     {
                         var listAttributes = objectInst.OtherInventoryDistance
-                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" )
                             .Select(attr =>
                             {
+                                TLIotherInventoryDistance support = new TLIotherInventoryDistance();
                                 var options = new List<SupportTypeImplementedViewModel>();
                                 var Value = new SupportTypeImplementedViewModel();
-                                var support = _unitOfWork.OtherInventoryDistanceRepository
-                                    .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
-
+                                if (otherInventoryDistance != null)
+                                {
+                                    support = _unitOfWork.OtherInventoryDistanceRepository
+                                       .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
+                                }
+                                else
+                                {
+                                    support = null;
+                                }
                                 if (support != null && support.ReferenceOtherInventoryId != null)
                                 {
                                     var supportReferenceAllCivilInst = _unitOfWork.AllOtherInventoryInstRepository
@@ -6128,7 +6135,6 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.generatorId != null)
                                         {
-
                                             referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
@@ -6141,8 +6147,7 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
                                         {
-                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId
-                                            && x.Id != GeneratorId)?.Name;
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
                                         }
 
                                     }
@@ -6158,7 +6163,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (referencesValue == null)
                                     {
-                                        attr.Value = new object[0];
+                                        attr.Value = null;
                                     }
                                     var AllOther = _unitOfWork.OtherInSiteRepository
                                             .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
@@ -6211,6 +6216,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
+
                                     var allOther = _unitOfWork.OtherInSiteRepository
                                         .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
                                             x => x.allOtherInventoryInst,
@@ -6363,14 +6369,21 @@ namespace TLIS_Service.Services
                     if (siteCode != null)
                     {
                         var listAttributes = objectInst.OtherInventoryDistance
-                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" )
                             .Select(attr =>
                             {
+                                TLIotherInventoryDistance support = new TLIotherInventoryDistance();
                                 var options = new List<SupportTypeImplementedViewModel>();
                                 var Value = new SupportTypeImplementedViewModel();
-                                var support = _unitOfWork.OtherInventoryDistanceRepository
-                                    .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
-
+                                if (otherInventoryDistance != null)
+                                {
+                                    support = _unitOfWork.OtherInventoryDistanceRepository
+                                       .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
+                                }
+                                else
+                                {
+                                    support = null;
+                                }
                                 if (support != null && support.ReferenceOtherInventoryId != null)
                                 {
                                     var supportReferenceAllCivilInst = _unitOfWork.AllOtherInventoryInstRepository
@@ -6383,7 +6396,6 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.generatorId != null)
                                         {
-
                                             referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
@@ -6396,8 +6408,7 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
                                         {
-                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId
-                                            && x.Id != SolarId)?.Name;
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
                                         }
 
                                     }
@@ -6413,7 +6424,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (referencesValue == null)
                                     {
-                                        attr.Value = new object[0];
+                                        attr.Value = null;
                                     }
                                     var AllOther = _unitOfWork.OtherInSiteRepository
                                             .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
@@ -6466,6 +6477,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
+
                                     var allOther = _unitOfWork.OtherInSiteRepository
                                         .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
                                             x => x.allOtherInventoryInst,
@@ -6620,14 +6632,21 @@ namespace TLIS_Service.Services
                     if (siteCode != null)
                     {
                         var listAttributes = objectInst.OtherInventoryDistance
-                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid")
                             .Select(attr =>
                             {
+                                TLIotherInventoryDistance support = new TLIotherInventoryDistance();
                                 var options = new List<SupportTypeImplementedViewModel>();
                                 var Value = new SupportTypeImplementedViewModel();
-                                var support = _unitOfWork.OtherInventoryDistanceRepository
-                                    .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
-
+                                if (otherInventoryDistance != null)
+                                {
+                                    support = _unitOfWork.OtherInventoryDistanceRepository
+                                       .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
+                                }
+                                else
+                                {
+                                    support = null;
+                                }
                                 if (support != null && support.ReferenceOtherInventoryId != null)
                                 {
                                     var supportReferenceAllCivilInst = _unitOfWork.AllOtherInventoryInstRepository
@@ -6640,7 +6659,6 @@ namespace TLIS_Service.Services
                                     {
                                         if (supportReferenceAllCivilInst.generatorId != null)
                                         {
-
                                             referencesValue = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.generatorId)?.Name;
                                         }
                                         else if (supportReferenceAllCivilInst.solarId != null)
@@ -6653,8 +6671,7 @@ namespace TLIS_Service.Services
                                         }
                                         else if (supportReferenceAllCivilInst.cabinet.CabinetTelecomLibraryId != null)
                                         {
-                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId
-                                            && x.Id != CabinetTelecomId)?.Name;
+                                            referencesValue = _dbContext.MV_CABINET_TELECOM_VIEW.FirstOrDefault(x => x.Id == supportReferenceAllCivilInst.cabinetId)?.Name;
                                         }
 
                                     }
@@ -6670,7 +6687,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (referencesValue == null)
                                     {
-                                        attr.Value = new object[0];
+                                        attr.Value = null;
                                     }
                                     var AllOther = _unitOfWork.OtherInSiteRepository
                                             .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
@@ -6723,6 +6740,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
+
                                     var allOther = _unitOfWork.OtherInSiteRepository
                                         .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
                                             x => x.allOtherInventoryInst,
@@ -6773,7 +6791,6 @@ namespace TLIS_Service.Services
                             })
                             .ToList();
                     }
-
                     return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
@@ -6914,18 +6931,26 @@ namespace TLIS_Service.Services
                          x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator, x => x.allOtherInventoryInst.solar, x => x.allOtherInventoryInst.cabinet
                      )?.SiteCode;
                     objectInst.OtherInventoryDistance = otherInventorytDistanceAttributes;
+
                     if (siteCode != null)
                     {
                         var listAttributes = objectInst.OtherInventoryDistance
-                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid" && otherInventoryDistance != null)
+                            .Where(attr => attr.DataType.ToLower() == "list" && attr.Key.ToLower() == "referenceotherinventoryid")
                             .Select(attr =>
                             {
+                                TLIotherInventoryDistance support = new TLIotherInventoryDistance();
                                 var options = new List<SupportTypeImplementedViewModel>();
                                 var Value = new SupportTypeImplementedViewModel();
-                                var support = _unitOfWork.OtherInventoryDistanceRepository
-                                    .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
-
-                                if (support != null && support.ReferenceOtherInventoryId != null)
+                                if (otherInventoryDistance != null)
+                                {
+                                     support = _unitOfWork.OtherInventoryDistanceRepository
+                                        .GetWhereFirst(x => x.allOtherInventoryInstId == otherInventoryDistance.allOtherInventoryInstId);
+                                }
+                                else
+                                {
+                                     support = null;
+                                }
+                                if (support != null )
                                 {
                                     var supportReferenceAllCivilInst = _unitOfWork.AllOtherInventoryInstRepository
                                         .GetIncludeWhereFirst(x => x.Id == support.ReferenceOtherInventoryId,
@@ -6965,7 +6990,7 @@ namespace TLIS_Service.Services
                                     }
                                     if (referencesValue == null)
                                     {
-                                        attr.Value = new object[0];
+                                        attr.Value = null;
                                     }
                                     var AllOther = _unitOfWork.OtherInSiteRepository
                                             .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
@@ -7018,6 +7043,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
+                                  
                                     var allOther = _unitOfWork.OtherInSiteRepository
                                         .GetIncludeWhere(x => !x.Dismantle && x.SiteCode == siteCode,
                                             x => x.allOtherInventoryInst,

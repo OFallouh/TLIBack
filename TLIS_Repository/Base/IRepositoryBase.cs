@@ -23,6 +23,7 @@ namespace TLIS_Repository.Base
         void AddRangeWithH(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities);
         int UpdateWithH(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject);
         IEnumerable<TEntity> GetAllWithoutCount();
+        int UpdateWithHInstallationSite(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
         void AddRangeWithHDynamic(int? UserId, int HistoryId, int TabelNameId, IEnumerable<TEntity> Entities);
         void RemoveItemWithHistory(int? UserId, TEntity Entity);
         void RemoveItemWithH(int? UserId, int? SecRecordId, TEntity OldObject);
