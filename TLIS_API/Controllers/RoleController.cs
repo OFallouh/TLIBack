@@ -176,9 +176,17 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetRoleByRoleName")]
         [ProducesResponseType(200, Type = typeof(List<RoleViewModel>))]
-        public IActionResult GetRoleByRoleName(string ToleName)
+        public IActionResult GetRoleByRoleName(string RoleName)
         {
-            var response = _unitOfWorkService.RoleService.GetRoleByRoleName(ToleName);
+            var response = _unitOfWorkService.RoleService.GetRoleByRoleName(RoleName);
+            return Ok(response);
+
+        }
+        [HttpGet("GetRoleByRoleId")]
+        [ProducesResponseType(200, Type = typeof(List<RoleViewModel>))]
+        public IActionResult GetRoleByRoleId(int RoleId)
+        {
+            var response = _unitOfWorkService.RoleService.GetRoleByRoleId(RoleId);
             return Ok(response);
         }
     }

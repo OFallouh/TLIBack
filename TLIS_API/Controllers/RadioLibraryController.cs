@@ -200,13 +200,13 @@ namespace TLIS_API.Controllers
         //    var response = await _unitOfWorkService.RadioLibraryService.DisableRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), Id);
         //    return Ok(response);
         //}
-        [HttpGet("GetForAdd/{RadioType}")]
-        [ProducesResponseType(200, Type = typeof(List<AllItemAttributes>))]
-        public IActionResult GetForAdd(string RadioType)
-        {
-            var response = _unitOfWorkService.RadioLibraryService.GetForAdd(RadioType);
-            return Ok(response);
-        }
+        //[HttpGet("GetForAdd/{RadioType}")]
+        //[ProducesResponseType(200, Type = typeof(List<AllItemAttributes>))]
+        //public IActionResult GetForAdd(string RadioType)
+        //{
+        //    var response = _unitOfWorkService.RadioLibraryService.GetForAdd(RadioType);
+        //    return Ok(response);
+        //}
         //[HttpPost("DeleteRadioOtherLibrary")]
         //[ProducesResponseType(200, Type = typeof(Nullable))]
         //public async Task<IActionResult> DeleteRadioOtherLibrary(int Id)

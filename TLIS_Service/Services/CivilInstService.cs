@@ -7883,6 +7883,26 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public Response<AllCivilInstallationViewModel> GetCivilsBySiteCode(string siteCode, string ConnectionString)
+        {
+            try
+            {
+                AllCivilInstallationViewModel MainOutPut = new AllCivilInstallationViewModel();
+                int count = 0;
+
+                //MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(siteCode, ConnectionString).Data;
+                //MainOutPut.CivilWithoutLegMast = GetCivilWithoutLegMastWithEnableAtt(siteCode, ConnectionString).Data;
+                //MainOutPut.CivilWithoutLegCapsule = GetCivilWithoutLegCapsuleWithEnableAtt(siteCode, ConnectionString).Data;
+                //MainOutPut.CivilWithoutLegMonopole = GetCivilWithoutLegMonopoleWithEnableAtt(siteCode, ConnectionString).Data;
+                //MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(siteCode, ConnectionString).Data;
+
+                return new Response<AllCivilInstallationViewModel>(true, MainOutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
+            }
+            catch (Exception err)
+            {
+                return new Response<AllCivilInstallationViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
         public Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))

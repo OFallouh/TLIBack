@@ -40,6 +40,8 @@ namespace TLIS_Repository.IRepository
         Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType);
         Response<float> CheckAvailableSpaceOnCivils(TLIallCivilInst AllCivilInst);
         Response<float> Checkspaceload(int allcivilinstId, string TableName, float SpaceInstallation, float CenterHigh, int libraryId, float HBA);
-     
+        Response<AddDynamicObject> CheckDynamicValidationAndDependence(int DynamicAttributeId, object value, int RecordId, int HistoryId);
+
+
     }
 }

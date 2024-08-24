@@ -82,5 +82,8 @@ namespace TLIS_Repository.Base
         Task<int> AddAsyncWithHInstallation(int? UserId, int? SecRecordId, TEntity AddObject, string SiteCode);
         void AddRangeWithHInstallation(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities, string SiteCode);
         int UpdateWithHInstallation(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
+        int AddWithHInternal(int? UserId, int? SecRecordId, TEntity AddObject);
+        int AddWithHInsatallationInternal(int? UserId, int? SecRecordId, TEntity AddObject, string? SiteCode);
+        int UpdateWithHInstallationInternal(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
     }
 }

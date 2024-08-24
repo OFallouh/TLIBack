@@ -30,7 +30,7 @@ namespace TLIS_Service.IService
         // Task<Response<AllItemAttributes>> EditRadioLibrary(string TableName, object RadioLibraryViewModel);
         Task<Response<AllItemAttributes>> DisableRadioLibrary(string TableName, int Id, int UserId, string connectionString);
         Task<Response<AllItemAttributes>> DeletedRadioLibrary(string TableName, int Id, int UserId, string connectionString);
-        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
+        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName, int? UserId, string UserName);
         Task<Response<EditRadioRRULibraryObject>> EditRadioRRULibrary(string TableName, EditRadioRRULibraryObject RadioLibraryViewModel, int UserId, string connectionString);
         Response<AddRadioRRULibraryObject> AddRadioRRULibrary(string TableName, AddRadioRRULibraryObject RadioLibraryViewModel, string connectionString, int UserId);
         Response<GetEnableAttribute> GetRadioAntennaLibrariesEnabledAtt(string ConnectionString);

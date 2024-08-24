@@ -5,8 +5,10 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using TLIS_API.Middleware.ActionFilters;
@@ -15,15 +17,19 @@ using TLIS_DAL.Helper;
 using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
 using TLIS_DAL.ViewModels.CabinetDTOs;
 using TLIS_DAL.ViewModels.CabinetPowerLibraryDTOs;
 using TLIS_DAL.ViewModels.CabinetTelecomLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
+using TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
+using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DependencyDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.GeneratorDTOs;
@@ -34,6 +40,7 @@ using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using TLIS_DAL.ViewModels.MW_DishDTOs;
 using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
 using TLIS_DAL.ViewModels.MW_ODUDTOs;
+using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
 using TLIS_DAL.ViewModels.Mw_OtherDTOs;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
@@ -70,9 +77,10 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetCivilsInstalledonSite")]
         [ProducesResponseType(200, Type = typeof(AllCivilInstallationViewModel))]
-        public IActionResult GetCivilsBySiteCode(string SiteCode, CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetCivilsBySiteCode(string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(SiteCode, CombineFilters, WithFilterData, parameterPagination);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilsBySiteCode(SiteCode, ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetSideArmsInstalledonCivil")]
@@ -91,9 +99,10 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetAllSitesDetails")]
         [ProducesResponseType(200, Type = typeof(List<SiteViewModel>))]
-        public IActionResult GetAllSitesDetails([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters)
+        public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters, bool? isRefresh, bool? GetItemsCountOnEachSite)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAllSitesDetails(parameterPagination, filters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SiteService.GetSites(parameterPagination, isRefresh, GetItemsCountOnEachSite, filters);
             return Ok(response);
         }
         [HttpGet("GetAllLoadonSitebyPartandType")]
@@ -179,96 +188,405 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [HttpPost("AddRadioRRULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddRadioRRULibraryViewModel))]
-        public IActionResult AddRadioRRULibrary(AddRadioRRULibraryViewModel addRadioRRU)
+        [ProducesResponseType(200, Type = typeof(AddRadioRRULibraryObject))]
+        public IActionResult AddRadioRRULibrary(AddRadioRRULibraryObject addRadioRRU)
         {
-            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRULibraryViewModel)))
+            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRULibraryObject)))
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddRadioLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, ConnectionString);
-                return Ok(response);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, connectionString, userId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, connectionString, null, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
             else
             {
-                var ErrorMessages = from state in ModelState.Values
+                var errorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddRadioRRULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddRadioRRULibraryObject>(true, null, errorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [HttpPost("AddRadioOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddRadioOtherLibraryViewModel))]
-        public IActionResult AddRadioOtherLibrary(AddRadioOtherLibraryViewModel addRadioOther)
+        [ProducesResponseType(200, Type = typeof(AddRadioOtherLibraryObject))]
+        public IActionResult AddRadioOtherLibrary(AddRadioOtherLibraryObject addRadioOther)
         {
-            if (TryValidateModel(addRadioOther, nameof(AddRadioOtherLibraryViewModel)))
+            if (TryValidateModel(addRadioOther, nameof(AddRadioOtherLibraryObject)))
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddRadioLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), addRadioOther, ConnectionString);
-                return Ok(response);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddRadioOtherLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioOther, connectionString, userId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddRadioOtherLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioOther, connectionString, null, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
             else
             {
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddRadioOtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddRadioOtherLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [HttpPost("AddRadioAntennaLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddRadioAntennaLibraryViewModel))]
-        public IActionResult AddRadioAntennaLibrary(AddRadioAntennaLibraryViewModel addRadioAntenna)
+        [ProducesResponseType(200, Type = typeof(AddRadioAntennaLibraryObject))]
+        public IActionResult AddRadioAntennaLibrary(AddRadioAntennaLibraryObject addRadioAntenna)
         {
-            if (TryValidateModel(addRadioAntenna, nameof(AddRadioAntennaLibraryViewModel)))
+            if (TryValidateModel(addRadioAntenna, nameof(AddRadioAntennaLibraryObject)))
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddRadioLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), addRadioAntenna, ConnectionString);
-                return Ok(response);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioAntenna, connectionString, userId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioAntenna, connectionString, null, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
             else
             {
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<AddRadioAntennaLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddRadioAntennaLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [HttpGet("GetForAddRadioLibrary")]
         [ProducesResponseType(200, Type = typeof(List<AllAtributes>))]
         public IActionResult GetForAddLibrary(string TableName)
         {
-            var response = _unitOfWorkService.InternalApiService.GetForAddRadioLibrary(TableName);
-            return Ok(response);
-        }
-        [HttpGet("GetAttForAddRadioInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectAttributeInst))]
-        public IActionResult GetAttForAdd(string RadioInstType, int LibId, string SiteCode)
-        {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddRadioInstallation(RadioInstType, LibId, SiteCode);
-            return Ok(response);
-        }
-        [HttpPost("AddRadioAntennaInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioAntennaIntegration))]
-        public IActionResult AddRadioAntennaInstallation([FromBody] AddRadioAntennaIntegration addRadioAntenna, string SiteCode, int TaskId)
-        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            try
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+            if (authHeader.ToLower().StartsWith("bearer "))
             {
 
-                if (addRadioAntenna.TLIcivilLoads.sideArmId == 0)
-                    addRadioAntenna.TLIcivilLoads.sideArmId = null;
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                if (TryValidateModel(addRadioAntenna, nameof(AddRadioAntennaIntegration)))
-                {
-                    var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, ConnectionString, TaskId);
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
-                    return Ok(response);
-                }
-                else
+                if (jsonToken == null)
                 {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(TableName, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(TableName, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+        [HttpGet("GetAttForAddRadioAntennaInstallation")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAddRadioAntennaInstallation(int LibId, string SiteCode)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+
+        [HttpGet("GetAttForAddRadioRRUInstallation")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAddRadioRRUInstallation(int LibId, string SiteCode)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioRRUInstallation(LibId, SiteCode, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioRRUInstallation(LibId, SiteCode, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+
+        [HttpGet("GetAttForAddRadioOtherInstallation")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetAttForAddRadioOtherInstallation(int LibId, string SiteCode)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioOtherInstallation(LibId, SiteCode, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioOtherInstallation(LibId, SiteCode, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+        [HttpPost("AddRadioAntennaInstallation")]
+        [ProducesResponseType(200, Type = typeof(AddRadioAntennaInstallationObject))]
+        public IActionResult AddRadioAntennaInstallation([FromBody] AddRadioAntennaInstallationObject addRadioAntenna, string SiteCode, int? TaskId)
+        {
+            try
+            {
+                if (TryValidateModel(addRadioAntenna, nameof(AddRadioAntennaInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioAntenna,Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(),SiteCode, connectionString, TaskId, userId,null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioAntenna,Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(),SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                        {
                     var ErrorMessages = from state in ModelState.Values
                                         from error in state.Errors
                                         select error.ErrorMessage;
-                    return Ok(new Response<AddRadioAntennaIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                    return Ok(new Response<AddRadioAntennaInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
                 }
             }
             catch (Exception ex)
@@ -277,987 +595,3726 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddRadioRRUInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioRRUIntegration))]
-        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUIntegration addRadioRRU, string SiteCode,int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddRadioRRUInstallationObject))]
+        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUInstallationObject addRadioRRU, string SiteCode,int TaskId)
         {
-            if (addRadioRRU.TLIcivilLoads.sideArmId == 0)
-                addRadioRRU.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUIntegration)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(addRadioRRU, nameof(AddRadioRRUInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddRadioRRUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddRadioRRUIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
+
         [HttpPost("AddRadioOtherInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioOtherIntegration))]
-        public IActionResult AddRadioOtherInstallation([FromBody] AddRadioOtherIntegration addRadioOther, string SiteCode, int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddRadioOtherInstallationObject))]
+        public IActionResult AddRadioOtherInstallation([FromBody] AddRadioOtherInstallationObject addRadioOther, string SiteCode, int TaskId)
         {
-            if (addRadioOther.TLIcivilLoads.sideArmId == 0)
-                addRadioOther.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(addRadioOther, nameof(AddRadioOtherIntegration)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddRadioInstallation(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(addRadioOther, nameof(AddRadioOtherInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddRadioOtherInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddRadioOtherIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpGet("GetAttForAddMW_BU")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddMW_BU(int LibId, string SiteCode)
+        public IActionResult GetAttForAddMWBUInstallation(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddMwInst(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, null, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
         [HttpGet("GetAttForAddMW_ODU")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddMW_ODU(int LibId, string SiteCode, int AllCivilInstId)
+        public IActionResult GetAttForAddMW_ODU(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddMwInst(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, null, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMW_Dish")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddMW_Dish(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddMwInst(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, null, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMW_RFU")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddMW_RFU(int LibId, string SiteCode)
+        public IActionResult GetAttForAddMWRFUInstallation(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddMwInst(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode);
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+
+
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMW_Other")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddMW_Other(int LibId, string SiteCode)
+        public IActionResult GetAttForAddMWOtherInstallation(int LibId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddMwInst(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode);
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+
         }
 
 
         [HttpPost("AddMW_BU")]
-        [ProducesResponseType(200, Type = typeof(AddMW_BUViewModel))]
-        public IActionResult AddMW_BU([FromBody] AddMW_BUViewModel AddMW_BUViewModel, string SiteCode, int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddMWBUInstallationObject))]
+        public IActionResult AddMW_BU([FromBody] AddMWBUInstallationObject AddMW_BUViewModel, string SiteCode, int TaskId)
         {
-            if (AddMW_BUViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMW_BUViewModel.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMW_BUViewModel, nameof(AddMW_BUViewModel)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(AddMW_BUViewModel, nameof(AddMWBUInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMWBUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("AddMW_ODU")]
-        [ProducesResponseType(200, Type = typeof(AddMW_ODUViewModel))]
-        public IActionResult AddMW_ODU([FromBody] AddMW_ODUViewModel AddMW_ODUViewModel, string SiteCode, int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddMwODUinstallationObject))]
+        public IActionResult AddMW_ODU([FromBody] AddMwODUinstallationObject AddMW_ODUViewModel, string SiteCode, int TaskId)
         {
-            if (AddMW_ODUViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMW_ODUViewModel.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMW_ODUViewModel, nameof(AddMW_ODUViewModel)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(AddMW_ODUViewModel, nameof(AddMwODUinstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMwODUinstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("AddMW_Dish")]
-        [ProducesResponseType(200, Type = typeof(AddMW_DishViewModel))]
-        public IActionResult AddMW_Dish([FromBody] AddMW_DishViewModel AddMW_DishViewModel, string SiteCode, int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddMWDishInstallationObject))]
+        public IActionResult AddMW_Dish([FromBody] AddMWDishInstallationObject AddMW_DishViewModel, string SiteCode, int TaskId)
         {
-            if (AddMW_DishViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMW_DishViewModel.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMW_DishViewModel, nameof(AddMW_DishViewModel)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(AddMW_DishViewModel, nameof(AddMWDishInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMwODUinstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_DishViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("AddMW_RFU")]
-        [ProducesResponseType(200, Type = typeof(AddMW_RFUViewModel))]
-        public IActionResult AddMW_RFU([FromBody] AddMW_RFUViewModel AddMW_RFUViewModel, string SiteCode, int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddMWRFUInstallation))]
+        public IActionResult AddMW_RFU([FromBody] AddMWRFUInstallation AddMW_RFUViewModel, string SiteCode, int TaskId)
         {
-            if (AddMW_RFUViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMW_RFUViewModel.TLIcivilLoads.sideArmId = null;
-            if (AddMW_RFUViewModel.MwPortId == 0)
-                AddMW_RFUViewModel.MwPortId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMW_RFUViewModel, nameof(AddMW_RFUViewModel)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(AddMW_RFUViewModel, nameof(AddMWRFUInstallation)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMWRFUInstallation>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost("AddMW_Other")]
-        [ProducesResponseType(200, Type = typeof(AddMw_OtherViewModel))]
-        public IActionResult AddMW_Other([FromBody] AddMw_OtherViewModel AddMw_OtherViewModel, string SiteCode, int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddMWOtherInstallationObject))]
+        public IActionResult AddMW_Other([FromBody] AddMWOtherInstallationObject AddMw_OtherViewModel, string SiteCode, int TaskId)
         {
-            if (AddMw_OtherViewModel.TLIcivilLoads.sideArmId == 0)
-                AddMw_OtherViewModel.TLIcivilLoads.sideArmId = null;
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(AddMw_OtherViewModel, nameof(AddMw_OtherViewModel)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddMWInstallation(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(AddMw_OtherViewModel, nameof(AddMWOtherInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMWOtherInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("EditMW_BU")]
-        [ProducesResponseType(200, Type = typeof(EditMW_BUViewModel))]
-        public async Task<IActionResult> EditMW_BU([FromBody] EditMW_BUViewModel MW_BU,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditMWBUInstallationObject))]
+        public async Task<IActionResult> EditMW_BU([FromBody] EditMWBUInstallationObject MW_BU,int TaskId)
         {
-            if (TryValidateModel(MW_BU, nameof(EditMW_BUViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(MW_BU, nameof(EditMWBUInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWBUInstallation(userId, MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWBUInstallation(null, MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditMWBUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_BUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("EditMW_Dish")]
-        [ProducesResponseType(200, Type = typeof(EditMW_DishViewModel))]
-        public async Task<IActionResult> EditMW_Dish([FromBody] EditMW_DishViewModel MW_Dish, int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditMWDishInstallationObject))]
+        public async Task<IActionResult> EditMW_Dish([FromBody] EditMWDishInstallationObject MW_Dish, int TaskId)
         {
-            if (TryValidateModel(MW_Dish, nameof(EditMW_DishViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(MW_Dish, nameof(EditMWDishInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWDishInstallation(userId, MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWDishInstallation(null, MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditMWDishInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_DishViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("EditMW_ODU")]
-        [ProducesResponseType(200, Type = typeof(EditMW_ODUViewModel))]
-        public async Task<IActionResult> EditMW_ODU([FromBody] EditMW_ODUViewModel MW_ODU,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditMWODUInstallationObject))]
+        public async Task<IActionResult> EditMW_ODU([FromBody] EditMWODUInstallationObject MW_ODU,int TaskId)
         {
-            if (TryValidateModel(MW_ODU, nameof(EditMW_ODUViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(MW_ODU, nameof(EditMWODUInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWODUInstallation(userId, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWODUInstallation(null, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditMWODUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_ODUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("EditMW_RFU")]
-        [ProducesResponseType(200, Type = typeof(EditMW_RFUViewModel))]
-        public async Task<IActionResult> EditMW_RFU([FromBody] EditMW_RFUViewModel MW_RFU,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditMWRFUInstallationObject))]
+        public async Task<IActionResult> EditMW_RFU([FromBody] EditMWRFUInstallationObject MW_RFU,int TaskId)
         {
-            if (TryValidateModel(MW_RFU, nameof(EditMW_RFUViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(MW_RFU, nameof(EditMWRFUInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), connectionString, TaskId,null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditMWRFUInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMW_RFUViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("EditMw_Other")]
-        [ProducesResponseType(200, Type = typeof(EditMw_OtherViewModel))]
-        public async Task<IActionResult> EditMw_Other([FromBody] EditMw_OtherViewModel Mw_Other,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditMWOtherInstallationObject))]
+        public async Task<IActionResult> EditMw_Other([FromBody] EditMWOtherInstallationObject Mw_Other,int TaskId)
         {
-            if (TryValidateModel(Mw_Other, nameof(EditMw_OtherViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditMWInstallation(Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(Mw_Other, nameof(EditMWOtherInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWOtherInstallation(userId, Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditMWOtherInstallation(null, Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditMWOtherInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditMw_OtherViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("DismantleMW_BU")]
 
         public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
-            return Ok(response);
+            try
+            {
+                
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId,userId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, null, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("DismantleMW_ODU")]
 
         public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, userId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, null, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-        [HttpPost("DismantleMW_RFU")]
+
+       [ HttpPost("DismantleMW_RFU")]
 
         public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, userId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, null, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("DismantleMW_Dish")]
 
         public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, userId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, null, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("DismantleMW_Other")]
 
         public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleLoads(sitecode, LoadId, LoadName, TaskId);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, null, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("DismantlesideArm")]
         public IActionResult DismantlesideArm(string SiteCode, int sideArmId,int  TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleSideArm(SiteCode, sideArmId, TaskId);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleSideArmInternal(SiteCode, sideArmId, TaskId, connectionString, userId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleSideArmInternal(SiteCode, sideArmId, TaskId, connectionString,null, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("GetMW_BUById")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
-        public IActionResult GetMW_BUById(int MW_BU)
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
+        public IActionResult GetMWBUInstallationById(int MW_BU)
         {
-            var response = _unitOfWorkService.InternalApiService.GetByIdMWInstallation(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString());
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+
         }
+
         [HttpGet("GetMW_ODUById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMW_ODUById(int MW_ODU)
         {
-            var response = _unitOfWorkService.InternalApiService.GetByIdMWInstallation(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString());
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
         }
         [HttpGet("GetMW_DishById")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMW_DishById(int MW_Dish)
         {
-            var response = _unitOfWorkService.InternalApiService.GetByIdMWInstallation(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString());
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
         }
         [HttpGet("GetMW_RFUById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
-        public IActionResult GetMW_RFUById(int MW_RFU)
+        public IActionResult GetMWRFUInstallationById(int MW_RFU)
         {
-            var response = _unitOfWorkService.InternalApiService.GetByIdMWInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString());
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
         }
         [HttpGet("GetMW_OtherById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
-        public IActionResult GetMWOtherId(int mwOther)
+        public IActionResult GetMWOtherInstallationById(int mwOther)
         {
-            var response = _unitOfWorkService.InternalApiService.GetByIdMWInstallation(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString());
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
         }
+
         [HttpGet("GetAttForAddSolar")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddSolar(string CabinetLibraryType, int OtherInventoryId, string SiteCode)
+        public IActionResult GetAttForAddSolarInstallation(int SolarLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddOtherInventoryInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), CabinetLibraryType, OtherInventoryId, SiteCode);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddSolarInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SolarLibraryId, SiteCode);
             return Ok(response);
         }
         [HttpGet("GetAttForAddGenerator")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddGenerator(string CabinetLibraryType, int OtherInventoryId, string SiteCode)
+        public IActionResult GetAttForAddGeneratorInstallation(int GeneratorIdLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddOtherInventoryInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), CabinetLibraryType, OtherInventoryId, SiteCode);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode);
             return Ok(response);
         }
+       
         [HttpPost("AddSolar")]
-        [ProducesResponseType(200, Type = typeof(AddSolarViewModel))]
-        public IActionResult AddSolar([FromBody] AddSolarViewModel addSolarViewModel, string SiteCode,int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddSolarInstallationObject))]
+        public IActionResult AddSolar([FromBody] AddSolarInstallationObject addSolarViewModel, string SiteCode,int TaskId)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-  
-            if (TryValidateModel(addSolarViewModel, nameof(AddSolarViewModel)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(addSolarViewModel, nameof(AddSolarInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddSolarInstallation(addSolarViewModel, SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddSolarInstallation(addSolarViewModel, SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddSolarInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
-           
+
         }
         [HttpPost("AddGenerator")]
-        [ProducesResponseType(200, Type = typeof(AddGeneratorViewModel))]
-        public IActionResult AddGenerator([FromBody] AddGeneratorViewModel addGeneratorViewModel, string SiteCode,int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddGeneratorInstallationObject))]
+        public IActionResult AddGenerator([FromBody] AddGeneratorInstallationObject addGeneratorViewModel, string SiteCode,int TaskId)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-    
-            if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorViewModel)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddOtherInventoryInstallation(addGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(addGeneratorViewModel, nameof(AddGeneratorInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddGeneratorInstallation(addGeneratorViewModel,SiteCode,connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddGeneratorInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
-                
-         }
+
+        }
         [HttpGet("GetSolarById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetSolarById(int OtherInventoryInstId)
+        public IActionResult GetSolarInstallationById(int SolarId)
         {
-            var response = _unitOfWorkService.InternalApiService.GetByIdOtherInventoryInstallation(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
+            var response = _unitOfWorkService.OtherInventoryInstService.GetSolarInstallationById(SolarId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
             return Ok(response);
         }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetGeneratorById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetGeneratorById(int OtherInventoryInstId)
+        public IActionResult GetGenertorInstallationById(int GeneratorId)
         {
-            var response = _unitOfWorkService.InternalApiService.GetByIdOtherInventoryInstallation(OtherInventoryInstId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
+            var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
             return Ok(response);
         }
+        
         [HttpPost("EditSolar")]
-        [ProducesResponseType(200, Type = typeof(EditSolarViewModel))]
-        public async Task<IActionResult> EditSolar([FromBody] EditSolarViewModel editSolarViewModel,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditSolarInstallationObject))]
+        public async Task<IActionResult> EditSolar([FromBody] EditSolarInstallationObject editSolarViewModel,int TaskId)
         {
-            if (TryValidateModel(editSolarViewModel, nameof(EditSolarViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(editSolarViewModel, nameof(EditMWOtherInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId,userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditMWOtherInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditSolarViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost("EditGenerator")]
-        [ProducesResponseType(200, Type = typeof(EditGeneratorViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorViewModel editGeneratorViewModel,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditGeneratorInstallationObject))]
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorInstallationObject editGeneratorViewModel,int TaskId)
         {
-            if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(editGeneratorViewModel, nameof(EditGeneratorInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditGeneratorInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<EditGeneratorViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
+        //---------------------------------------------------------------------------------
         [HttpGet("DismantleOtherInventory")]
         public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleOtherInventory(SiteCode, OtherInventoryId, OtherInventoryName, TaskId);
-            return Ok(response);
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleOtherInventoryInternal(userId, SiteCode, OtherInventoryId, OtherInventoryName, TaskId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleOtherInventoryInternal(null, SiteCode, OtherInventoryId, OtherInventoryName, TaskId, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         } 
         [HttpPost("GetSolarBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetSolarBySiteWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetSolarBySiteWithEnabledAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetSolarBySiteWithEnabledAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination);
+
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryInstService.GetGeneratorWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetGeneratorBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetGeneratorBySiteWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] SiteBaseFilter BaseFilter, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetGeneratorBySiteWithEnabledAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetGeneratorBySiteWithEnabledAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination);
+
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryInstService.GetSolarWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetMW_DishOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetMW_DishOnSiteWithEnableAtt([FromQuery] LoadsOnSiteFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, int? CivilId, string CivilType, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetMW_DishOnSiteWithEnableAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_DishOnSiteWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, CivilId, CivilType);
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
         }
         [HttpPost("GetMW_BUOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetMW_BUOnSiteWithEnableAtt([FromQuery] LoadsOnSiteFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, int? CivilId, string CivilType, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetMWBUInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_BUOnSiteWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, CivilId, CivilType);
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
         }
         [HttpPost("GetMW_ODUOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetMW_ODUOnSiteWithEnableAtt([FromQuery] LoadsOnSiteFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, int? CivilId, string CivilType, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetMWODUInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_ODUOnSiteWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, CivilId, CivilType);
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+
         }
         [HttpPost("GetMW_RFUOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetMW_RFUOnSiteWithEnableAtt([FromQuery] LoadsOnSiteFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, int? CivilId, string CivilType, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetMWRFUInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_RFUOnSiteWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, CivilId, CivilType);
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
         }
         [HttpPost("GetMW_OtherOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
-        public IActionResult GetMW_OtherOnSiteWithEnableAtt([FromQuery] LoadsOnSiteFilter BaseFilter, bool WithFilterData, [FromBody] CombineFilters CombineFilters, int? CivilId, string CivilType, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetMWOtherInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_OtherOnSiteWithEnableAtt(BaseFilter, WithFilterData, CombineFilters, parameterPagination, CivilId, CivilType);
-            return Ok(response);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+
+
         }
         [HttpGet("GetSideArmById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetSideArmById(int SideId)
         {
-            var response = _unitOfWorkService.InternalApiService.GetSideArmById(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString());
+            var response = _unitOfWorkService.SideArmService.GetSideArmById(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString());
             return Ok(response);
         }
         [HttpPost("AddSideArm")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult AddSideArm([FromBody] AddSideArmViewModel SideArmViewModel, string SiteCode,int TaskId)
+        public async Task<IActionResult> AddSideArm([FromBody] SideArmViewDto sideArmViewDto,string SiteCode, int TaskId)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var Response = _unitOfWorkService.InternalApiService.AddSideArm(SideArmViewModel, SiteCode, ConnectionString, TaskId);
-            return Ok(Response);
+            try
+            {
+                if (TryValidateModel(sideArmViewDto, nameof(SideArmViewDto)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddSideArmInternal(sideArmViewDto, SiteCode, TaskId, userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddSideArmInternal(sideArmViewDto, SiteCode, TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<SideArmViewDto>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("UpdateSideArm")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public async Task<IActionResult> UpdateSideArm([FromBody] EditSideArmViewModel SideArmViewModel,int TaskId)
+        public async Task<IActionResult> UpdateSideArm([FromBody] EditSidearmInstallationObject SideArmViewModel,int TaskId)
         {
-            var response = await _unitOfWorkService.InternalApiService.UpdateSideArm(SideArmViewModel, TaskId);
-            return Ok(response);
+            try
+            {
+                if (TryValidateModel(SideArmViewModel, nameof(EditSidearmInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.UpdateSideArmInternal(SideArmViewModel, TaskId, userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.UpdateSideArmInternal(SideArmViewModel, TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditSidearmInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("GetAttForAddSideArm")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(int LibId)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddSideArm(LibId);
+            var response = _unitOfWorkService.SideArmService.GetAttForAdd(LibId);
             return Ok(response);
         }
         [HttpPost("getSideArmsWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<object>))]
-        public IActionResult getSideArmsWithEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] CivilLoadsFilter BaseFilter, [FromQuery] bool WithFilterData, [FromQuery] int? CivilRecordId, string CivilType, [FromQuery] ParameterPagination parameters)
+        public IActionResult getSideArmsWithEnabledAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetSideArmsWithEnabledAtt(BaseFilter, WithFilterData, parameters, CombineFilters, CivilRecordId, CivilType);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SideArmService.GetSideArmInstallationWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetCivilNonSteelLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilNonSteelLibrariesEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetCivilNonSteelWithEnableAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelLibrariesEnabledAtt(CombineFilters, WithFilterData, parameterPagination);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilNonSteelLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpPost("AddCivilNonSteelLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryViewModel))]
-        public IActionResult AddCivilNonSteelLibrary([FromBody] AddCivilNonSteelLibraryViewModel addCivilNonSteelLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryObject))]
+        public IActionResult AddCivilNonSteelLibrary([FromBody] AddCivilNonSteelLibraryObject addCivilNonSteelLibraryViewModel)
         {
-            if (TryValidateModel(addCivilNonSteelLibraryViewModel, nameof(AddCivilNonSteelLibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, ConnectionString);
-                return Ok(response);
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, connectionString, userId,null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, connectionString, null, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddCivilNonSteelLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
-        [HttpPost("GetCivilWithoutLegLibrariesEnabledAtt")]
+        [HttpPost("GetCivilWithoutLegMastLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilWithoutLegLibrariesEnabledAtt([FromBody] CombineFilters ComineOutPut, bool WithFilterData, int CategoryId, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetCivilWithoutLegMastLibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegLibrariesEnabledAtt(ComineOutPut, WithFilterData, CategoryId, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegMastLibrariesEnabledAtt(ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("GetCivilWithoutLegMonopoleLibrariesEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        public IActionResult GetCivilWithoutLegMonopoleLibrariesEnabledAtt()
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegMonopoleLibrariesEnabledAtt(ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("GetCivilWithoutLegCapsuleLibrariesEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        public IActionResult GetCivilWithoutLegCapsuleLibrariesEnabledAtt()
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithoutLegCapsuleLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetMW_ODULibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_ODULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetMW_ODULibraries()
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_ODULibraries(CombineFilters, WithFilterData, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWODULibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetMW_BULibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_BULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetMWBULibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_BULibraries(CombineFilters, WithFilterData, parameters);
-           
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWBULibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetMW_OtherLibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_OtherLibraries([FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetMWOtherLibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_OtherLibraries(CombineFilters, parameters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWOtherLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpPost("AddSolarLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult AddSolarLibrary([FromBody] AddSolarLibraryViewModel addSolarLibrary)
+        public IActionResult AddSolarLibrary([FromBody] AddSolarLibraryObject addSolarLibrary)
         {
-            if (TryValidateModel(addSolarLibrary, nameof(AddSolarLibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addSolarLibrary, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(addSolarLibrary, nameof(AddSolarLibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddSolarLibrary(userId, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addSolarLibrary, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddSolarLibrary(null, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addSolarLibrary, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddSolarLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddSolarLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("GetGeneratorLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetGeneratorLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] bool WithFilterData, [FromQuery] ParameterPagination parameters)
         {
-            var response = _unitOfWorkService.InternalApiService.GetGeneratorLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetGeneratorLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpPost("AddGeneratorLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult AddGeneratorLibrary([FromBody] AddGeneratorLibraryViewModel addGeneratorLibrary)
+        public IActionResult AddGeneratorLibrary([FromBody] AddGeneratorLibraryObject addGeneratorLibrary)
         {
-            if (TryValidateModel(addGeneratorLibrary, nameof(AddGeneratorLibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), addGeneratorLibrary, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(addGeneratorLibrary, nameof(AddGeneratorLibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddGenertatoLibrary(userId, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addGeneratorLibrary, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddGenertatoLibrary(null, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addGeneratorLibrary, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddSolarLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddGeneratorLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
       
         [HttpPost("AddMW_RFULibrary")]
         [ProducesResponseType(200, Type = typeof(AddMW_RFULibraryViewModel))]
-        public IActionResult AddMW_RFULibrary([FromBody] AddMW_RFULibraryViewModel addMW_RFULibraryViewModel)
+        public IActionResult AddMW_RFULibrary([FromBody] AddMWRFULibraryObject addMW_RFULibraryViewModel)
         {
-            if (TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMW_RFULibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(addMW_RFULibraryViewModel, nameof(AddMWRFULibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWRFULibrary(userId, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWRFULibrary(null, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMWRFULibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_RFULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost("GetMW_RFULibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_RFULibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetMW_RFULibraries()
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_RFULibraries(CombineFilters, WithFilterData, parameters);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWRFULibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpPost("AddMW_OtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_OtherLibraryViewModel))]
-        public IActionResult AddMW_OtherLibrary([FromBody] AddMW_OtherLibraryViewModel addMW_OtherLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
+        public IActionResult AddMW_OtherLibrary([FromBody] AddMWOtherLibraryObject addMW_OtherLibraryViewModel)
         {
-            if (TryValidateModel(addMW_OtherLibraryViewModel, nameof(AddMW_OtherLibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(addMW_OtherLibraryViewModel, nameof(AddMWOtherLibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWOtherLibrary(userId, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWOtherLibrary(null, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMWOtherLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_OtherLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("AddMW_BULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_BULibraryViewModel))]
-        public IActionResult AddMW_BULibrary([FromBody] AddMW_BULibraryViewModel addMW_BULibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddMWBULibraryObject))]
+        public IActionResult AddMW_BULibrary([FromBody] AddMWBULibraryObject addMW_BULibraryViewModel)
         {
-            if (TryValidateModel(addMW_BULibraryViewModel, nameof(AddMW_BULibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(addMW_BULibraryViewModel, nameof(AddMWBULibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWBULibrary(userId, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWBULibrary(null, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMWBULibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_BULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("AddMW_DishLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_DishLibraryViewModel))]
-        public IActionResult AddMW_DishLibrary([FromBody] AddMW_DishLibraryViewModel addMW_BULibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddMWDishLibraryObject))]
+        public IActionResult AddMW_DishLibrary([FromBody] AddMWDishLibraryObject addMW_BULibraryViewModel)
         {
-            if (TryValidateModel(addMW_BULibraryViewModel, nameof(AddMW_DishLibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(addMW_BULibraryViewModel, nameof(AddMWDishLibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWDishLibrary(userId, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWDishLibrary(null, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddMWDishLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_DishLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("GetMW_DishLibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetMW_DishLibraries([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetMW_DishLibraries()
         {
-            var response = _unitOfWorkService.InternalApiService.GetMW_DishLibraries(CombineFilters, WithFilterData, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetMWDishLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
-        [HttpGet("GetForAddLibrary")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public IActionResult GetForAddLibrary(string TableName, int? CategoryId = null)
+
+        [HttpGet("GetForAddMWDishLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddMWDishLibrary()
         {
-            var response = _unitOfWorkService.InternalApiService.GetForAddAllLibrary( TableName, CategoryId);
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddMWBUibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddMWBUibrary()
+        {
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddMWODULibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddMWODULibrary()
+        {
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddMWOtherLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddMWOtherLibrary()
+        {
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddMWRFULibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddMWRFULibrary()
+        {
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilNonSteelLibrary")]
+        public IActionResult GetForAddCivilNonSteelLibrary()
+        {
+            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithLegsLibrary")]
+        public IActionResult GetForAddCivilWithLegsLibrary()
+        {
+            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithoutLegsMastLibrary")]
+        public IActionResult GetForAddCivilWithoutLegsMastLibrary()
+        {
+            var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutMastLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithoutLegsCapsuleLibrary")]
+        public IActionResult GetForAddCivilWithoutLegsCapsuleLibrary()
+        {
+            var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutCapsuleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString());
+            return Ok(response);
+        }
+        [HttpGet("GetForAddCivilWithoutLegsMonopleLibrary")]
+        public IActionResult GetForAddCivilWithoutLegsMonopleLibrary()
+        {
+            var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutMonopleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString());
             return Ok(response);
         }
         [HttpPost("AddMW_ODULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_ODULibraryViewModel))]
-        public IActionResult AddMW_ODULibrary([FromBody] AddMW_ODULibraryViewModel addMW_ODULibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(ADDMWODULibraryObject))]
+        public IActionResult AddMW_ODULibrary([FromBody] ADDMWODULibraryObject addMW_ODULibraryViewModel)
         {
-            if (TryValidateModel(addMW_ODULibraryViewModel, nameof(AddMW_ODULibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddMWLibrary(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(addMW_ODULibraryViewModel, nameof(ADDMWODULibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWODULibrary(userId, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddMWODULibrary(null, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<ADDMWODULibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddMW_ODULibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("AddCivilWithoutLegLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegLibraryViewModel))]
-        public IActionResult AddCivilWithoutLegLibrary([FromBody] AddCivilWithoutLegLibraryViewModel addCivilWithoutLegLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
+        public IActionResult AddCivilWithoutLegLibrary([FromBody] AddCivilWithoutLegsLibraryObject addCivilWithoutLegLibraryViewModel)
         {
-            if (TryValidateModel(addCivilWithoutLegLibraryViewModel, nameof(AddCivilWithoutLegLibraryViewModel)))
+            try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(addCivilWithoutLegLibraryViewModel, nameof(AddCivilWithoutLegsLibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary( Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString,userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString,null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithoutLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddCivilWithoutLegLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("AddCivilWithLegLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithLegLibraryViewModel))]
-        public IActionResult AddCivilWithLegLibrary([FromBody] AddCivilWithLegLibraryViewModel CivilWithLegLibraryViewModel)
+        [ProducesResponseType(200, Type = typeof(AddCivilWithLegsLibraryObject))]
+        public IActionResult AddCivilWithLegLibrary([FromBody] AddCivilWithLegsLibraryObject CivilWithLegLibraryViewModel)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            if (TryValidateModel(CivilWithLegLibraryViewModel, nameof(AddCivilWithLegLibraryViewModel)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, ConnectionString);
-                return Ok(response);
+                if (TryValidateModel(CivilWithLegLibraryViewModel, nameof(AddCivilWithLegsLibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, connectionString, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, connectionString, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddCivilWithLegLibraryViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("GetCivilWithLegLibrariesEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilWithLegLibrariesEnabledAtt([FromBody] CombineFilters CombineOutPut, bool WithFilterData, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetCivilWithLegLibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilWithLegLibrariesEnabledAtt(CombineOutPut, WithFilterData, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithLegLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetSolarLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetSolarLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetSolarLibrariesEnabledAtt()
         {
-            var response = _unitOfWorkService.InternalApiService.GetSolarLibraryEnabledAtt(CombineFilters, WithFilterData, parameters);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.OtherInventoryLibraryService.GetSolarLibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetAttForAddCivilWithLegs")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId, string SiteCode, int? CategoryId)
+        public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, CategoryId, SiteCode);
+            var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
 
         [HttpPost("GetCivilWithLegsWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilWithLegsWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetCivilWithLegsWithEnableAtt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilWithLegsWithEnableAtt(siteCode, WithFilterData, CombineFilters, parameterPagination);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
-        [HttpPost("GetCivilWithoutLegWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilWithoutLegWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, int CategoryId)
+        [HttpPost("GetCivilWithoutLegMastWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCivilWithoutLegMastWithEnableAttt([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegWithEnableAtt(siteCode,WithFilterData, CombineFilters, parameterPagination, CategoryId);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+        }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetCivilWithoutLegMonopoleWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCivilWithoutLegMonopoleWithEnableAtt([FromQuery] string? SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, ConnectionString);
+            return Ok(response);
+        }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("GetCivilWithoutLegCapsuleWithEnableAtt")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult GetCivilWithoutLegCapsuleWithEnableAtt([FromQuery] string? SiteCode)
+        {
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
         [HttpPost("GetCivilNonSteelWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetCivilNonSteelWithEnableAtt([FromQuery] string siteCode, [FromQuery] bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetCivilNonSteel([FromQuery] string? SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelWithEnableAtt(siteCode,WithFilterData, CombineFilters, parameterPagination);
+            string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(SiteCode, ConnectionString);
             return Ok(response);
         }
         [HttpGet("GetAttForAddCivilWithoutLegs")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCivilWithoutLegs(int CivilLibraryId, string SiteCode, int? CategoryId)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, CategoryId, SiteCode);
+            var response = _unitOfWorkService.CivilInstService.GetAttForAdd(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, CategoryId, SiteCode);
             return Ok(response);
         }
         [HttpGet("GetAttForAddCivilNonSteel")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetAttForAddCivilNonSteel(int CivilLibraryId, string SiteCode, int? CategoryId)
+        public IActionResult GetForAddCiviNonSteelInstallation(int CivilLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.InternalApiService.GetAttForAddCivilInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, CategoryId, SiteCode);
+            var response = _unitOfWorkService.CivilInstService.GetForAddCiviNonSteelInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, SiteCode);
             return Ok(response);
         }
         [HttpPost("AddCivilWithLegs/{SiteCode}")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModelInternal))]
-        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModelInternal addCivilWithLeg, string SiteCode,int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
+        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode,int TaskId)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            
-            if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModelInternal)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(addCivilWithLeg, nameof(AddCivilWithLegsViewModel)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsInstallation(addCivilWithLeg,Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(),SiteCode, connectionString,TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsInstallation(addCivilWithLeg,Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddCivilWithLegsViewModelInternal>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
-           
+
         }
 
         [HttpPost("AddCivilWithoutLegs/{SiteCode}")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModelIntegration))]
-        public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModelIntegration addCivilWithoutLeg, string SiteCode,int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
+        public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode,int TaskId)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-           
-            if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModelIntegration)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddCivilWithoutLegViewModelIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
-            
+
         }
 
         [HttpPost("AddCivilNonSteel/{SiteCode}")]
-        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelViewModelIntegration))]
-        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelViewModelIntegration addCivilNonSteel, string SiteCode,int TaskId)
+        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelObject))]
+        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelObject addCivilNonSteel, string SiteCode,int TaskId)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-
-            if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelViewModelIntegration)))
+            try
             {
-                var response = _unitOfWorkService.InternalApiService.AddCivilInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, ConnectionString, TaskId);
-                return Ok(response);
+                if (TryValidateModel(addCivilNonSteel, nameof(AddCivilNonSteelObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilNonSteelObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<AddCivilNonSteelViewModelIntegration>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
-
+                return BadRequest(ex.Message);
             }
         }
         [HttpGet("GetCivilWithLegsById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCivilWithLegsById(int CivilId)
+        public IActionResult GetCivilWithLegsInstallationById(int CivilId)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString());
             return Ok(response);
         }
         [HttpGet("GetCivilWithoutLegsById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCivilWithoutLegsById(int CivilId)
+        public IActionResult GetCivilWithoutLegsInstallationById(int CivilId, int CategoryId)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString());
+            var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CategoryId);
             return Ok(response);
         }
         [HttpGet("GetCivilNonSteelById")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilNonSteelById(int CivilId)
         {
-            var response = _unitOfWorkService.InternalApiService.GetCivilInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
+            var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString());
             return Ok(response);
         }
 
         [HttpPost("EditCivilWithLegs")]
-        [ProducesResponseType(200, Type = typeof(EditCivilWithLegsViewModelIntegration))]
-        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsViewModelIntegration CivilWithLeg,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditCivilWithLegsInstallationObject))]
+        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg,int TaskId)
         {
-            if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(CivilWithLeg, nameof(EditCivilWithLegsInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilWithLegsInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId, userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilWithLegsInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditCivilWithLegsInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<CivilWithLegsViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost("EditCivilWithoutLegs")]
-        [ProducesResponseType(200, Type = typeof(CivilWithoutLegViewModel))]
-        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegViewModel CivilWithoutLeg,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
+        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg,int TaskId)
         {
-            if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId);
-                return Ok(response);
+                if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegsInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditCivilWithoutLegsInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<CivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost("EditCivilNonSteel")]
-        [ProducesResponseType(200, Type = typeof(CivilNonSteelViewModel))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelViewModel CivilNonSteel,int TaskId)
+        [ProducesResponseType(200, Type = typeof(EditCivilNonSteelInstallationObject))]
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelInstallationObject CivilNonSteel,int TaskId)
         {
-            if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelViewModel)))
+            try
             {
-                var response = await _unitOfWorkService.InternalApiService.EditCivilInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId);
+                if (TryValidateModel(CivilNonSteel, nameof(EditCivilNonSteelInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditCivilNonSteelInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("DismantleCivilWithLegsInstallation")]
+        public IActionResult DismantleCivilWithLegsInstallation(string SiteCode, int CivilId, int? TaskId)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.DismantleCivilWithLegsInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
                 return Ok(response);
             }
             else
             {
-                var ErrorMessages = from state in ModelState.Values
-                                    from error in state.Errors
-                                    select error.ErrorMessage;
-                return Ok(new Response<CivilNonSteelViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Unauthorized();
             }
-        }
-        [HttpPost("DismantleCivil")]
 
-        public IActionResult DismantleCivil(string SiteCode, int CivilId, string CivilName,int TaskId)
+        }
+        [HttpPost("DismantleCivilWithoutLegsInstallation")]
+        public IActionResult DismantleCivilWithoutLegsInstallation(string SiteCode, int CivilId, int? TaskId)
         {
-            var response = _unitOfWorkService.InternalApiService.DismantleCivil(SiteCode, CivilId, CivilName, TaskId);
-            return Ok(response);
+            try
+            {
+              
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString,null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+               
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        [HttpPost("DismantleCivilNonSteelInstallation")]
+        public IActionResult DismantleCivilNonSteelInstallation(string SiteCode, int CivilId, int? TaskId)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.DismantleCivilNonSteelInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
 
         }
     }

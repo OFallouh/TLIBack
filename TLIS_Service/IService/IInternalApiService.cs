@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,23 +9,45 @@ using TLIS_DAL.Helper.Filters;
 using TLIS_DAL.Helpers;
 using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
+using TLIS_DAL.ViewModels;
 using TLIS_DAL.ViewModels.AllCivilInstDTOs;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
+using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
+using TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.CivilWithoutLegDTOs;
+using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 using TLIS_DAL.ViewModels.DependencyDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
+using TLIS_DAL.ViewModels.GeneratorDTOs;
+using TLIS_DAL.ViewModels.GeneratorLibraryDTOs;
 using TLIS_DAL.ViewModels.LoadPartDTOs;
+using TLIS_DAL.ViewModels.MW_BUDTOs;
+using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
+using TLIS_DAL.ViewModels.MW_DishDTOs;
+using TLIS_DAL.ViewModels.MW_DishLbraryDTOs;
+using TLIS_DAL.ViewModels.MW_ODUDTOs;
+using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
+using TLIS_DAL.ViewModels.Mw_OtherDTOs;
+using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
+using TLIS_DAL.ViewModels.MW_RFUDTOs;
+using TLIS_DAL.ViewModels.OtherInSiteDTOs;
+using TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs;
+using TLIS_DAL.ViewModels.RadioOtherLibraryDTOs;
+using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_DAL.ViewModels.SideArmLibraryDTOs;
 using TLIS_DAL.ViewModels.SiteDTOs;
+using TLIS_DAL.ViewModels.SolarDTOs;
+using TLIS_DAL.ViewModels.SolarLibraryDTOs;
 using TLIS_DAL.ViewModels.TablesNamesDTOs;
 
 namespace TLIS_Service.IService
 {
     public interface IInternalApiService
     {
-        Response<AllCivilInstallationViewModel> GetCivilsBySiteCode(string siteCode, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         public Response<List<ObjectInstAttForSideArm>> GetSideArmsBySiteCode(string SiteCode, string CivilType, string CivilName, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase);
         Response<ReturnWithFilters<object>> GetLibraryforSpecificType(string TableNameLibrary, int CategoryId, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
         Response<IEnumerable<SiteViewModel>> GetAllSitesDetails(ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
@@ -39,7 +62,7 @@ namespace TLIS_Service.IService
         Response<AllItemAttributes> AddRadioLibrary(string TableName, object RadioLibraryViewModel, string connectionString);
         Response<AllAtributes> GetForAddRadioLibrary(string TableName);
         Response<ObjectAttributeInst> GetAttForAddRadioInstallation(string TableName, int LibId, string SiteCode);
-        Response<ObjectInstAtts> AddRadioInstallation(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int TaskId);
+        //Response<ObjectInstAtts> AddRadioInstallation(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int TaskId);
         Response<string> AttachFile(IFormFile file, int documenttypeId, string Model, string Name, string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset);
         Response<ObjectInstAtts> AddMWInstallation(object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int TaskId);
         string CheckGeneralValidationFunctions(List<AddDynamicAttInstValueViewModel> TLIdynamicAttInstValue, string TableName);
@@ -111,7 +134,46 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<object>> GetCivilNonSteelWithEnableAtt(string siteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(string siteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId);
         Response<ReturnWithFilters<object>> GetCivilWithLegsWithEnableAtt(string siteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
+        //----------------------------------------------------------------------------------------------------------------------------------
+        Response<AddRadioRRULibraryObject> AddRadioRRULibrary(string TableName, AddRadioRRULibraryObject RadioLibraryViewModel, string connectionString, int? UserId, string? UserName);
+        Response<AddRadioOtherLibraryObject> AddRadioOtherLibrary(string TableName, AddRadioOtherLibraryObject addRadioOtherLibraryObject, string connectionString, int? UserId, string? UserName);
+        Response<AddRadioAntennaLibraryObject> AddRadioAntennaLibrary(string TableName, AddRadioAntennaLibraryObject RadioLibraryViewModel, string connectionString, int? UserId, string? UserName);
+        Response<GetForAddMWDishInstallationObject> AddRadioInstallationInternal(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId, int? UserId, string UserName);
 
+        Response<GetForAddMWDishInstallationObject> AddMWInstallationInternal (int UserId, object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId, string UserName);
+        Task<Response<GetForAddMWDishInstallationObject>> EditMWBUInstallation(int? UserId, EditMWBUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString, string UserName);
+        Task<Response<GetForAddMWDishInstallationObject>> EditMWOtherInstallation(int? UserId, EditMWOtherInstallationObject editmwOtherInstallationObject, string TableName, int? TaskId, string ConnectionStringstring,string UserName);
+        Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int? UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString, string UserName);
+        Task<Response<GetForAddMWDishInstallationObject>> EditMWDishInstallation(int? UserId, EditMWDishInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionStringstring,string UserName);
+        Task<Response<GetForAddMWDishInstallationObject>> EditMWRFUInstallation(EditMWRFUInstallationObject editMWRFUInstallationObject, string TableName, string ConnectionString, int? TaskId, int? UserId, string UserName);
+        Response<bool> DismantleLoadsInternal(string sitecode, int LoadId, string LoadName, int? TaskId, int? UserId, string connectionString, string UserName);
+        Response<bool> DismantleSideArmInternal(string SiteCode, int sideArmId, int? TaskId, string ConnectionString, int? UserId, string? UserName);
+        Response<AddGeneratorInstallationObject> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int? UserId, string UserName);
+        Response<AddSolarInstallationObject> AddSolarInstallation(AddSolarInstallationObject addSolarInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int? UserId, string UserName);
+        Task<Response<GetForAddOtherInventoryInstallationObject>> EditOtherInventoryInstallationInternal(object model, string TableName, int? TaskId, int? UserId, string connectionString, string UserName);
+        Response<bool> DismantleOtherInventoryInternal(int? UserId, string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId, string ConnectionString, string UserName);
+        Task<Response<EditSidearmInstallationObject>> UpdateSideArmInternal(EditSidearmInstallationObject SideArmViewModel, int? TaskId, int? UserId, string ConnectionString, string UserName);
+        Response<SideArmViewDto> AddSideArmInternal(SideArmViewDto addSideArms, string SiteCode, int? TaskId, int? UserId, string ConnectionString, string UserName);
+        Response<ObjectInstAtts> AddCivilNonSteelInstallation(AddCivilNonSteelObject addCivilNonSteelObject, string TableName, string SiteCode, string connectionString, int? TaskId, int? UserId, string UserName);
+        Response<AddCivilNonSteelLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int? UserId, string UserName);
+        Response<AddSolarLibraryObject> AddSolarLibrary(int? UserId, string TableName, AddSolarLibraryObject addSolarLibraryObject, string connectionString, string UserName);
+        Response<AddGeneratorLibraryObject> AddGenertatoLibrary(int? UserId, string TableName, AddGeneratorLibraryObject addGeneratorLibraryObject, string connectionString, string UserName);
+
+        Response<AddMWDishLibraryObject> AddMWDishLibrary(int? UserId, string TableName, AddMWDishLibraryObject addMWDishLibraryObject, string connectionString, string UserName);
+        Response<ADDMWODULibraryObject> AddMWODULibrary(int? UserId, string TableName, ADDMWODULibraryObject aDDMWODULibraryObject, string connectionString, string UserName);
+        Response<AddMWBULibraryObject> AddMWBULibrary(int? UserId, string TableName, AddMWBULibraryObject addMWBULibraryObject, string connectionString, string UserName);
+        Response<AddMWOtherLibraryObject> AddMWOtherLibrary(int? UserId, string TableName, AddMWOtherLibraryObject addMWOtherLibraryObject, string connectionString, string UserName);
+        Response<AddMWRFULibraryObject> AddMWRFULibrary(int? UserId, string TableName, AddMWRFULibraryObject addMWRFULibraryObject, string connectionString, string UserName);
+        Response<AddCivilWithoutLegsLibraryObject> AddCivilWithoutLegsLibrary(string TableName, AddCivilWithoutLegsLibraryObject AddCivilWithoutLegsLibraryObject, string connectionString, int? UserId, string UserName);
+        Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString, int? UserId, string UserName);
+        Response<ObjectInstAtts> AddCivilWithLegsInstallation(AddCivilWithLegsViewModel AddCivilWithLegsViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int? UserId, string UserName);
+        Response<ObjectInstAtts> AddCivilWithoutLegsInstallation(AddCivilWithoutLegViewModel addCivilWithoutLegViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int? UserId, string UserName);
+        Task<Response<ObjectInstAtts>> EditCivilNonSteelInstallation(EditCivilNonSteelInstallationObject editCivilNonSteelInstallationObject, string CivilType, int? TaskId, int? userId, string connectionString, string UserName);
+        Task<Response<ObjectInstAtts>> EditCivilWithoutLegsInstallation(EditCivilWithoutLegsInstallationObject editCivilWithoutLegsInstallationObject, string CivilType, int? TaskId, int? userId, string connectionString, string UserName);
+        Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId, int? userId, string connectionString, string UserName);
+        Response<bool> DismantleCivilWithLegsInstallation(int? UserId, string SiteCode, int CivilId, int? TaskId, string connectionString, string UserName);
+        Response<bool> DismantleCivilWithoutLegsInstallation(int? UserId, string SiteCode, int CivilId, int? TaskId, string connectionString, string UserName);
+        Response<bool> DismantleCivilNonSteelInstallation(int? UserId, string SiteCode, int CivilId, int? TaskId, string connectionString, string UserName);
     }
 
 }

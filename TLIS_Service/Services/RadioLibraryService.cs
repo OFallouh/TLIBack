@@ -6147,10 +6147,14 @@ namespace TLIS_Service.Services
         //specify the table i deal with
         //get activated attributes
         //get dynamic attributes
-        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName,int? UserId,string UserName)
         {
             try
             {
+                if (UserId == null)
+                {
+                    UserId = db.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                }
                 GetForAddCivilLibrarybject attributes = new GetForAddCivilLibrarybject();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                 if (Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString() == TableName)
@@ -6193,7 +6197,14 @@ namespace TLIS_Service.Services
                    });
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId=UserId,
+                        HistoryTypeId=4,
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                 {
@@ -6235,7 +6246,14 @@ namespace TLIS_Service.Services
                    });
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                 {
@@ -6277,7 +6295,14 @@ namespace TLIS_Service.Services
                    });
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
                 }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }

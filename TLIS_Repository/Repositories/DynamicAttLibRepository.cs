@@ -393,6 +393,7 @@ namespace TLIS_Repository.Repositories
             Task.Run(() => RefreshView(connectionString));
             
         }
+       
         public void AddRangeWithHistory(int? UserId, IEnumerable<TLIdynamicAttLibValue> Entities)
         {
             foreach (TLIdynamicAttLibValue Entity in Entities)

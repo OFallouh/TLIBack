@@ -22,12 +22,12 @@ namespace TLIS_Service.IService
     {
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibId, string SiteCode);
         Response<GetForAddLoadObject> GetRadioOtherInstallationById(int RadioId, string TableName);
-        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioOtherInstallation(int LibraryID, string SiteCode);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioOtherInstallation(int LibraryID, string SiteCode, int? UserId, string UserName);
         Response<GetEnableAttribute> GetRadioOtherInstallationWithEnableAtt(string SiteCode, string ConnectionString);
-        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioRRUInstallation(int LibraryID, string SiteCode);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioRRUInstallation(int LibraryID, string SiteCode, int? UserId, string UserName);
         Task<Response<GetForAddMWDishInstallationObject>> EditRadioInstallation(object RadioInstallationViewModel, string TableName, int? TaskId, int UserId, string ConnectionString);
         Response<GetEnableAttribute> GetRadioAntennaInstallationWithEnableAtt(string SiteCode, string ConnectionString);
-        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioAntennaInstallation( int LibraryID, string SiteCode);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioAntennaInstallation(int LibraryID, string SiteCode, int? UserId, string UserName);
         Response<GetForAddMWDishInstallationObject> AddRadioInstallation(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId);      
         Response<ObjectInstAttsForSideArm> GetById(int RadioInsId, string TableName);
         Response<GetForAddLoadObject> GetRadioAntennaInstallationById(int RadioId, string TableName);

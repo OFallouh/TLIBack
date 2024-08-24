@@ -13284,10 +13284,14 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<RadioAntennaViewModel>>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddRadioAntennaInstallation(int LibraryID, string SiteCode)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddRadioAntennaInstallation(int LibraryID, string SiteCode,int? UserId,string UserName)
         {
             try
             {
+                if (UserId == null)
+                {
+                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                }
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
                     x.TableName == "TLIradioAntenna");
 
@@ -13349,6 +13353,15 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode=SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -13362,7 +13375,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddRadioOtherInstallation(int LibraryID, string SiteCode)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddRadioOtherInstallation(int LibraryID, string SiteCode, int? UserId, string UserName)
         {
             try
             {
@@ -13427,6 +13440,15 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -13440,7 +13462,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddRadioRRUInstallation(int LibraryID, string SiteCode)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddRadioRRUInstallation(int LibraryID, string SiteCode, int? UserId, string UserName)
         {
             try
             {
@@ -13505,6 +13527,15 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else

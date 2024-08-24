@@ -397,5 +397,51 @@ namespace TLIS_Service.Services
             }
 
         }
+        public Response<List<RoleViewModel>> GetRoleByRoleId(int RoleId)
+        {
+            try
+            {
+                List<RoleViewModel> Response = new List<RoleViewModel>();
+                RoleViewModel roleViewModel = new RoleViewModel();
+                List<string> newPermissionsViewModels = new List<string>();
+                string newPermissionsViewModel = null;
+             
+                var Roles = _unitOfWork.RoleRepository.GetWhere(x => x.Id==RoleId && !x.Deleted && x.Active);
+                if (Roles.Count() > 0)
+                {
+                    foreach (var item in Roles)
+                    {
+                        List<TLIrole_Permissions> Permissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == item.Id).ToList();
+                        foreach (var itemPermissions in Permissions)
+                        {
+                            newPermissionsViewModel = itemPermissions.PageUrl;
+                            newPermissionsViewModels.Add(newPermissionsViewModel);
+
+                        }
+                        roleViewModel.Id = item.Id;
+                        roleViewModel.Name = item.Name;
+                        roleViewModel.Active = item.Active;
+                        roleViewModel.Deleted = item.Deleted;
+                        roleViewModel.Permissions = newPermissionsViewModels;
+                        Response.Add(roleViewModel);
+                    }
+
+
+                    return new Response<List<RoleViewModel>>(true, Response, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                else
+                {
+                    return new Response<List<RoleViewModel>>(true, null, null, "The Name Is Not Exist", (int)Helpers.Constants.ApiReturnCode.fail); ;
+                }
+                
+
+            }
+
+            catch (Exception err)
+            {
+                return new Response<List<RoleViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+
+        }
     }
 }

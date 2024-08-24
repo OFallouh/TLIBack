@@ -51,6 +51,7 @@ namespace TLIS_Service.IService
         List<LoadOnCivil> GetLoadWithoutSideArm(int civilid);
         Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId, string connectionString);
         string GetKeyName(TLIallLoadInst m);
+        Response<AllCivilInstallationViewModel> GetCivilsBySiteCode(string siteCode, string ConnectionString);
         Response<GetForAddCivilWithOutLegInstallationcs> GetCivilNonSteelInstallationById(int CivilInsId, string TableName);
         //Response<bool> CivilDismantle(DismantleBinding dis);
         bool ReCalcualateSiteFreeSpace(int civilid, string sitecode, int loadid);

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,6 +19,7 @@ using TLIS_DAL.ViewModels.BaseCivilWithLegsTypeDTOs;
 using TLIS_DAL.ViewModels.BaseTypeDTOs;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
+using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
 using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
 using TLIS_DAL.ViewModels.LocationTypeDTOs;
@@ -25,11 +27,12 @@ using TLIS_DAL.ViewModels.OwnerDTOs;
 using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 using static TLIS_Repository.Helpers.Constants;
 
 namespace TLIS_Repository.Repositories
 {
-    public class CivilWithLegsRepository : RepositoryBase<TLIcivilWithLegs,CivilWithLegsViewModel,int> , ICivilWithLegsRepository
+    public class CivilWithLegsRepository : RepositoryBase<TLIcivilWithLegs, CivilWithLegsViewModel, int>, ICivilWithLegsRepository
     {
         private readonly ApplicationDbContext _context;
         IMapper _mapper;
@@ -38,7 +41,7 @@ namespace TLIS_Repository.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public Response<float> Checkspaceload(int allcivilinstId, string TableName,float SpaceInstallation, float CenterHigh, int libraryId,float HBA)
+        public Response<float> Checkspaceload(int allcivilinstId, string TableName, float SpaceInstallation, float CenterHigh, int libraryId, float HBA)
         {
             try
             {
@@ -128,7 +131,7 @@ namespace TLIS_Repository.Repositories
                         if (LoadSubType.TLImwBU.ToString() == TableName)
                         {
                             var mwBULibrary = _context.TLImwBULibrary.Where(x => x.Id == libraryId).FirstOrDefault();
-                            EquivalentSpace = SpaceInstallation * (CenterHigh /(float)  TLIcivilWithoutLeg.HeightImplemented);
+                            EquivalentSpace = SpaceInstallation * (CenterHigh / (float)TLIcivilWithoutLeg.HeightImplemented);
                             TLIcivilWithoutLeg.CurrentLoads = TLIcivilWithoutLeg.CurrentLoads + EquivalentSpace;
                             _context.TLIcivilWithoutLeg.Update(TLIcivilWithoutLeg);
                         }
@@ -191,14 +194,14 @@ namespace TLIS_Repository.Repositories
                         else if (LoadSubType.TLIloadOther.ToString() == TableName)
                         {
                             var loadOtherLibrary = _context.TLIloadOtherLibrary.Where(x => x.Id == libraryId).FirstOrDefault();
-                            EquivalentSpace = SpaceInstallation * (CenterHigh /(float) TLIcivilWithoutLeg.HeightImplemented);
+                            EquivalentSpace = SpaceInstallation * (CenterHigh / (float)TLIcivilWithoutLeg.HeightImplemented);
                             TLIcivilWithoutLeg.CurrentLoads = TLIcivilWithoutLeg.CurrentLoads + EquivalentSpace;
                             _context.TLIcivilWithoutLeg.Update(TLIcivilWithoutLeg);
                         }
                         _context.SaveChanges();
                     }
                 }
-                    return new Response<float>(true, EquivalentSpace, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<float>(true, EquivalentSpace, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
@@ -220,7 +223,7 @@ namespace TLIS_Repository.Repositories
                     if (AllCivilInst != null)
                     {
                         List<TLIcivilLoads> AllLoadOnCivil = _context.TLIcivilLoads.Where(x => x.allCivilInstId == AllCivilInst.Id && x.ReservedSpace == true &&
-                        x.Dismantle == false && x.allLoadInstId != null).Include( x => x.allLoadInst).Include(x => x.allLoadInst.mwBU)
+                        x.Dismantle == false && x.allLoadInstId != null).Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwBU)
                         .Include(x => x.allLoadInst.mwRFU).Include(x => x.allLoadInst.mwODU).Include(x => x.allLoadInst.mwOther)
                         .Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna).Include(x => x.allLoadInst.radioRRU)
                         .Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.power).Include(x => x.allLoadInst.loadOther).ToList();
@@ -1980,7 +1983,7 @@ namespace TLIS_Repository.Repositories
         }
 
         public Response<bool> EditFilterAzimuthAndHeight(int? MWDishID, int? MWODUID, int? MWRFUID, int? MWBUID, int? MWOTHERID, int? RadioAntennaID
-            , int? RadioRRUID, int? RadioOtherID, int? LOADOTHERID, int? PowerID,int?SideArmId,string LoadName,
+            , int? RadioRRUID, int? RadioOtherID, int? LOADOTHERID, int? PowerID, int? SideArmId, string LoadName,
             string? SiteCode, int? FirstLegId, int? SecondLegId, int? CivilwithLegId, int? CivilWithoutLegId, int? CivilNonSteelId, int? FirstSideArmId, int? SecondSideArmId,
         float Azimuth, float Height, int switchValue)
         {
@@ -1988,103 +1991,103 @@ namespace TLIS_Repository.Repositories
             IQueryable<INSTALLATION_PLACE> Check = null;
             if (LoadName == "TLImwBU")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.MWBU_ID != MWBUID
-                    
-                );
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.MWBU_ID != MWBUID
+
+               );
             }
             if (LoadName == "TLImwODU")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.MWODU_ID != MWODUID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.MWODU_ID != MWODUID
 
-                );
+               );
             }
             if (LoadName == "TLImwRFU")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.MWRFU_ID != MWRFUID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.MWRFU_ID != MWRFUID
 
-                );
+               );
             }
             if (LoadName == "TLImwDish")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.MWDISH_ID != MWDishID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.MWDISH_ID != MWDishID
 
-                );
+               );
             }
             if (LoadName == "TLImwOther")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.MWOTHER_ID != MWOTHERID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.MWOTHER_ID != MWOTHERID
 
-                );
+               );
             }
             if (LoadName == "TLIradioOther")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.RADIO_OTHER_ID != RadioOtherID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.RADIO_OTHER_ID != RadioOtherID
 
-                );
+               );
             }
             if (LoadName == "TLIRadioRRU")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.RADIO_RRU_ID != RadioRRUID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.RADIO_RRU_ID != RadioRRUID
 
-                );
+               );
             }
             if (LoadName == "TLIradioAntenna")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.RADIO_ANTENNA_ID != RadioAntennaID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.RADIO_ANTENNA_ID != RadioAntennaID
 
-                );
+               );
             }
             if (LoadName == "TLIpower")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.POWER_ID != PowerID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.POWER_ID != PowerID
 
-                );
+               );
             }
             if (LoadName == "TLIloadOther")
             {
-                 Check = _context.INSTALLATION_PLACE.Where(x =>
-                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
-                    x.WITHLEG_ID == CivilwithLegId &&
-                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                    x.NONSTEEL_ID == CivilNonSteelId && x.LOAD_OTHER_ID != LOADOTHERID
+                Check = _context.INSTALLATION_PLACE.Where(x =>
+                   x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                   x.WITHLEG_ID == CivilwithLegId &&
+                   x.WITHOUTLEG_ID == CivilWithoutLegId &&
+                   x.NONSTEEL_ID == CivilNonSteelId && x.LOAD_OTHER_ID != LOADOTHERID
 
-                );
+               );
             }
             if (LoadName == "TLIsideArm")
             {
@@ -2092,7 +2095,7 @@ namespace TLIS_Repository.Repositories
                    x.SITECODE.ToLower() == SiteCode.ToLower() &&
                    x.WITHLEG_ID == CivilwithLegId &&
                    x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                   x.NONSTEEL_ID == CivilNonSteelId && x.FIRST_SIDEARM_ID != SideArmId &&( x.STATUS_NUMBER==4 || x.STATUS_NUMBER == 5)
+                   x.NONSTEEL_ID == CivilNonSteelId && x.FIRST_SIDEARM_ID != SideArmId && (x.STATUS_NUMBER == 4 || x.STATUS_NUMBER == 5)
 
                );
             }
@@ -2240,7 +2243,7 @@ namespace TLIS_Repository.Repositories
                             values = "Rectangular";
                             item.Add(name, values);
                         }
-                        else if(values.ToString() == "2")
+                        else if (values.ToString() == "2")
                         {
                             values = "Square";
                             item.Add(name, values);
@@ -2267,7 +2270,7 @@ namespace TLIS_Repository.Repositories
                                 values = "Steps";
                                 item.Add(name, values);
                             }
-                            
+
                         }
                         else
                         {
@@ -2316,7 +2319,7 @@ namespace TLIS_Repository.Repositories
                                 values = "Wind";
                                 item.Add(name, values);
                             }
-                           
+
 
                         }
                         else
@@ -2330,7 +2333,7 @@ namespace TLIS_Repository.Repositories
 
                         item.Add(name, propertyInfo.GetValue(obj));
                     }
-                    
+
                 }
             }
             foreach (var propertyName in propertyNamesDynamic.Keys)
@@ -2365,7 +2368,7 @@ namespace TLIS_Repository.Repositories
                     {
                         item.Add(propertyName, value);
                     }
-                    
+
                 }
                 else if (datatype.ToLower() == "double")
                 {
@@ -2390,7 +2393,7 @@ namespace TLIS_Repository.Repositories
             }
             return item;
         }
-        public Response<float> CheckloadsOnCivil(int allcivilinstId,int ? loadid ,float Azimuth, float CenterHigh)
+        public Response<float> CheckloadsOnCivil(int allcivilinstId, int? loadid, float Azimuth, float CenterHigh)
         {
             try
             {
@@ -2400,8 +2403,8 @@ namespace TLIS_Repository.Repositories
                 {
                     if (item.mwBUId != null)
                     {
-                        var mwBU = _context.TLImwBU.Where(x => x.Azimuth == Azimuth && x.CenterHigh == CenterHigh && x.Id!=loadid)
-                            .Select(x => new {x.Azimuth, x.CenterHigh }).ToList();
+                        var mwBU = _context.TLImwBU.Where(x => x.Azimuth == Azimuth && x.CenterHigh == CenterHigh && x.Id != loadid)
+                            .Select(x => new { x.Azimuth, x.CenterHigh }).ToList();
 
                         if (mwBU.Count() > 0)
                         {
@@ -2410,7 +2413,7 @@ namespace TLIS_Repository.Repositories
                     }
                     else if (item.mwDishId != null)
                     {
-                        var h = _context.TLImwDish.Where(x => x.Azimuth == Azimuth && x.CenterHigh == CenterHigh && x.Id!=loadid)
+                        var h = _context.TLImwDish.Where(x => x.Azimuth == Azimuth && x.CenterHigh == CenterHigh && x.Id != loadid)
                             .Select(x => new { x.Azimuth, x.CenterHigh }).ToList();
 
                         if (h.Count() > 0)
@@ -2453,66 +2456,66 @@ namespace TLIS_Repository.Repositories
             try
             {
                 double Availablespace = 0;
-                
-                
-                    //if (AllCivilInst.civilWithLegsId != null)
-                    //{
-                    //   if (AllCivilInst.civilWithLegs.CurrentLoads == null)
-                    //    {
-                    //    AllCivilInst.civilWithLegs.CurrentLoads = 0;
-                    //    }
-                    //    if (AllCivilInst.civilWithLegs.IsEnforeced == true)
-                    //    {
-                    //        Availablespace = AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement - AllCivilInst.civilWithLegs.CurrentLoads;
-                    //        if (Availablespace == 0 || Availablespace < 0)
-                    //        {
-                    //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //        }
-                    //    }
-
-                    //    else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
-                    //    {
-                    //        Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
-                    //        if (Availablespace == 0 || Availablespace < 0)
-                    //        {
-                    //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        Availablespace = AllCivilInst.civilWithLegs.CivilWithLegsLib.Manufactured_Max_Load - AllCivilInst.civilWithLegs.CurrentLoads;
-                    //        if (Availablespace == 0 || Availablespace < 0)
-                    //        {
-                    //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //        }
-                    //    }
-                    //}
-                    //else if (AllCivilInst.civilWithoutLegId != null)
-                    //{
-                    //    if (AllCivilInst.civilWithoutLeg.CurrentLoads == null)
-                    //    {
-                    //    AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
-                    //    }
-                    //    if (AllCivilInst.civilWithoutLeg.Support_Limited_Load != 0)
-                    //    {
-                    //        Availablespace = AllCivilInst.civilWithoutLeg.Support_Limited_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
-                    //        if (Availablespace == 0 || Availablespace < 0)
-                    //        {
-                    //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        Availablespace = AllCivilInst.civilWithoutLeg.CivilWithoutlegsLib.Manufactured_Max_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
-                    //        if (Availablespace == 0 || Availablespace < 0)
-                    //        {
-                    //            return new Response<float>(true, 0, null, $"No available space on the civill ", (int)Helpers.Constants.ApiReturnCode.fail);
-                    //        }
-                    //    }
 
 
-                    //}
-                
+                //if (AllCivilInst.civilWithLegsId != null)
+                //{
+                //   if (AllCivilInst.civilWithLegs.CurrentLoads == null)
+                //    {
+                //    AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                //    }
+                //    if (AllCivilInst.civilWithLegs.IsEnforeced == true)
+                //    {
+                //        Availablespace = AllCivilInst.civilWithLegs.SupportMaxLoadAfterInforcement - AllCivilInst.civilWithLegs.CurrentLoads;
+                //        if (Availablespace == 0 || Availablespace < 0)
+                //        {
+                //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                //        }
+                //    }
+
+                //    else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
+                //    {
+                //        Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
+                //        if (Availablespace == 0 || Availablespace < 0)
+                //        {
+                //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        Availablespace = AllCivilInst.civilWithLegs.CivilWithLegsLib.Manufactured_Max_Load - AllCivilInst.civilWithLegs.CurrentLoads;
+                //        if (Availablespace == 0 || Availablespace < 0)
+                //        {
+                //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                //        }
+                //    }
+                //}
+                //else if (AllCivilInst.civilWithoutLegId != null)
+                //{
+                //    if (AllCivilInst.civilWithoutLeg.CurrentLoads == null)
+                //    {
+                //    AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                //    }
+                //    if (AllCivilInst.civilWithoutLeg.Support_Limited_Load != 0)
+                //    {
+                //        Availablespace = AllCivilInst.civilWithoutLeg.Support_Limited_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
+                //        if (Availablespace == 0 || Availablespace < 0)
+                //        {
+                //            return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        Availablespace = AllCivilInst.civilWithoutLeg.CivilWithoutlegsLib.Manufactured_Max_Load - AllCivilInst.civilWithoutLeg.CurrentLoads;
+                //        if (Availablespace == 0 || Availablespace < 0)
+                //        {
+                //            return new Response<float>(true, 0, null, $"No available space on the civill ", (int)Helpers.Constants.ApiReturnCode.fail);
+                //        }
+                //    }
+
+
+                //}
+
                 return new Response<float>(true, 0, null, "Success", (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -2548,7 +2551,7 @@ namespace TLIS_Repository.Repositories
                     else if (AllCivilInst.civilWithLegs.Support_Limited_Load != 0)
                     {
                         Availablespace = AllCivilInst.civilWithLegs.Support_Limited_Load - AllCivilInst.civilWithLegs.CurrentLoads;
-                        if ( Availablespace <= 0)
+                        if (Availablespace <= 0)
                         {
                             return new Response<float>(true, 0, null, $"No available space on the civil ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
@@ -2599,7 +2602,7 @@ namespace TLIS_Repository.Repositories
 
         }
         public List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables()
-           
+
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
 
@@ -2610,19 +2613,19 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("OwnerId", OwnerLists));
 
             //  List<TLIguyLineType> GuyLineTypes = _context.TLIguyLineType.Where(x => !x.Deleted && !x.Disable).ToList();
-              List<TLIguyLineType> GuyLineTypes = _context.TLIguyLineType.ToList();
+            List<TLIguyLineType> GuyLineTypes = _context.TLIguyLineType.ToList();
 
             List<DropDownListFilters> GuyLineTypeLists = _mapper.Map<List<DropDownListFilters>>(GuyLineTypes);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("GuylineTypeId", GuyLineTypeLists));
 
             //  List<TLIsupportTypeImplemented> SupportTypesImplemented = _context.TLIsupportTypeImplemented.Where(x => !x.Deleted && !x.Disable).ToList();
-             List<TLIsupportTypeImplemented> SupportTypesImplemented = _context.TLIsupportTypeImplemented.ToList();
+            List<TLIsupportTypeImplemented> SupportTypesImplemented = _context.TLIsupportTypeImplemented.ToList();
 
             List<DropDownListFilters> SupportTypesImplementedLists = _mapper.Map<List<DropDownListFilters>>(SupportTypesImplemented);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("SupportTypeImplementedId", SupportTypesImplementedLists));
 
             // List<TLIbaseCivilWithLegsType> BaseCivilWithLegsTypes = _context.TLIbaseCivilWithLegsType.Where(x => !x.Deleted && !x.Disable).ToList();
-             List<TLIbaseCivilWithLegsType> BaseCivilWithLegsTypes = _context.TLIbaseCivilWithLegsType.ToList();
+            List<TLIbaseCivilWithLegsType> BaseCivilWithLegsTypes = _context.TLIbaseCivilWithLegsType.ToList();
 
             List<DropDownListFilters> BaseCivilWithLegsTypeLists = _mapper.Map<List<DropDownListFilters>>(BaseCivilWithLegsTypes);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("BaseCivilWithLegTypeId", BaseCivilWithLegsTypeLists));
@@ -2634,20 +2637,20 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("CivilWithLegsLibId", CivilWithLegsLibraryLists));
 
             // List<TLIenforcmentCategory> enforcmentCategory = _context.TLIenforcmentCategory.Where(x => !x.Deleted && !x.Disable).ToList();
-             List<TLIenforcmentCategory> enforcmentCategory = _context.TLIenforcmentCategory.ToList();
+            List<TLIenforcmentCategory> enforcmentCategory = _context.TLIenforcmentCategory.ToList();
 
             List<DropDownListFilters> enforcmentCategoryLists = _mapper.Map<List<DropDownListFilters>>(enforcmentCategory);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("enforcmentCategoryId", enforcmentCategoryLists));
 
             // Ahmad's Add
             // List<TLIlocationType> locationType = _context.TLIlocationType.Where(x => !x.Deleted && !x.Disable).ToList();
-             List<TLIlocationType> locationType = _context.TLIlocationType.ToList();
+            List<TLIlocationType> locationType = _context.TLIlocationType.ToList();
 
             List<DropDownListFilters> locationTypeLists = _mapper.Map<List<DropDownListFilters>>(locationType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("locationTypeId", locationTypeLists));
 
             // List<TLIbaseType> baseType = _context.TLIbaseType.Where(x => !x.Deleted && !x.Disable).ToList();
-             List<TLIbaseType> baseType = _context.TLIbaseType.ToList();
+            List<TLIbaseType> baseType = _context.TLIbaseType.ToList();
 
             List<DropDownListFilters> baseTypeLists = _mapper.Map<List<DropDownListFilters>>(baseType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("baseTypeId", baseTypeLists));
@@ -2659,9 +2662,9 @@ namespace TLIS_Repository.Repositories
                 {0,StructureTypeCompatibleWithDesign.Yes.ToString() },
                 {1,StructureTypeCompatibleWithDesign.No.ToString() }
 
-            } ;
+            };
 
-            foreach(var x in StructurTypeDic)
+            foreach (var x in StructurTypeDic)
             {
                 DicMod dicMod = new DicMod();
                 dicMod.Id = x.Key;
@@ -2696,5 +2699,1804 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("SectionsLegType", SectionTypeLists));
             return RelatedTables;
         }
+        public Response<AddDynamicObject> CheckDynamicValidationAndDependence(int DynamicAttributeId, object value, int RecordId, int HistoryId)
+        {
+            try
+            {
+                DependencyObject dependencyObject = new DependencyObject();
+                var DynamicAttribute = _context.TLIdynamicAtt.Include(x => x.DataType).Include(x => x.tablesNames).FirstOrDefault(x => x.Id == DynamicAttributeId);
+                var TabelName = _context.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIdynamicAttLibValue").Id;
+                if (DynamicAttribute != null)
+                {
+                    if (DynamicAttribute.Type == 1)
+                    {
+                        var Validation = _context.TLIvalidation.FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+                    
+                        if (DynamicAttribute.DataTypeId == 1)
+                        {
+                            bool result = false;
+                            var Comporsevalue = value.ToString().Trim();
+                            switch (Validation.OperationId)
+                            {
+                                case 1:
+                                    result = Comporsevalue.ToLower() == Validation.ValueString.ToString().ToLower();
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueString = Comporsevalue,
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueString
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 2:
+                                    result = Comporsevalue.ToLower() != Validation.ValueString.ToString().ToLower();
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueString.ToString()} must not equle {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueString = Comporsevalue,
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueString
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 7:
+                                    result = Comporsevalue.ToLower().Contains(Validation.ValueString.ToString().ToLower());
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not Contains {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueString = Comporsevalue,
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueString
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 8:
+                                    result = Comporsevalue.ToLower().StartsWith(Validation.ValueString.ToString().ToLower());
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not StartsWith {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueString = Comporsevalue,
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueString
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 9:
+                                    result = Comporsevalue.ToLower().EndsWith(Validation.ValueString.ToString().ToLower());
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not EndsWith {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueString = Comporsevalue,
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueString
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+
+                            }
+
+
+                        }
+                        if (DynamicAttribute.DataTypeId == 21 || DynamicAttribute.DataTypeId == 22)
+                        {
+                            bool result = false;
+                            var Comporsevalue = value.ToString().Trim();
+                            switch (Validation.OperationId)
+                            {
+                                case 1:
+                                    result = Convert.ToDouble(Comporsevalue) == Validation.ValueDouble;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDouble = Convert.ToDouble(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 2:
+                                    result = Convert.ToDouble(Comporsevalue) != Validation.ValueDouble;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDouble = Convert.ToDouble(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 3:
+                                    result = Convert.ToDouble(Comporsevalue) < Validation.ValueDouble;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDouble = Convert.ToDouble(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 4:
+                                    result = Convert.ToDouble(Comporsevalue) > Validation.ValueDouble;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDouble = Convert.ToDouble(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 5:
+                                    result = Convert.ToDouble(Comporsevalue) <= Validation.ValueDouble;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDouble = Convert.ToDouble(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 6:
+                                    result = Convert.ToDouble(Comporsevalue) >= Validation.ValueDouble;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDouble = Convert.ToDouble(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+
+                            }
+
+
+                        }
+                        if (DynamicAttribute.DataTypeId == 25)
+                        {
+                            bool result = false;
+                            var Comporsevalue = value.ToString().Trim();
+                            switch (Validation.OperationId)
+                            {
+                                case 1:
+                                    result = Convert.ToDateTime(Comporsevalue) == Validation.ValueDateTime;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 2:
+                                    result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 3:
+                                    result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 4:
+                                    result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 5:
+                                    result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+                                case 6:
+                                    result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+
+                            }
+
+
+                        }
+                        if (DynamicAttribute.DataTypeId == 24)
+                        {
+                            bool result = false;
+                            var Comporsevalue = value.ToString().Trim();
+                            switch (Validation.OperationId)
+                            {
+                                case 1:
+                                    result = Convert.ToBoolean(Comporsevalue) == Validation.ValueBoolean;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueBoolean = Convert.ToBoolean(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueBoolean.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+                                    }
+                                    break;
+                                case 2:
+                                    result = Convert.ToBoolean(Comporsevalue) != Validation.ValueBoolean;
+                                    if (!result)
+                                    {
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                    else
+                                    {
+                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        {
+                                            ValueBoolean = Convert.ToBoolean(Comporsevalue),
+                                            DynamicAttId = DynamicAttributeId,
+                                            disable = false,
+                                            InventoryId = RecordId,
+                                            tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                        };
+                                        _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                        _context.SaveChanges();
+                                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                        {
+                                            HistoryId = HistoryId,
+                                            RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                            TablesNameId = TabelName,
+                                            AttributeName = DynamicAttribute.Key,
+                                            NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                        };
+                                        _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                        _context.SaveChanges();
+
+                                    }
+                                    break;
+
+
+                            }
+
+
+                        }
+                    }
+                    else if (DynamicAttribute.Type == 2)
+                    {
+                        var dependency = _context.TLIdependency.FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+
+                        if (dependency != null)
+                        {
+
+                            var rules = _context.TLIrule.Where(r => r.dynamicAttId == DynamicAttributeId).ToList();
+
+
+                            var groups = new List<List<GroupObject>>();
+
+
+                            var groupedRules = rules
+                                .GroupBy(rule => rule.OperationId)
+                                .Select(group => group.Select(rule => new GroupObject
+                                {
+                                    ColumnName = _context.TLIattributeActivated.FirstOrDefault(a => a.Id == rule.attributeActivatedId).Key,
+                                    Operation = rule.OperationId,
+                                    Value = rule.OperationValueString
+                                }).ToList())
+                                .ToList();
+
+
+                            dependencyObject.result = dependency.Result;
+                            dependencyObject.groups = groupedRules;
+                            bool overallResult = false;
+                            foreach (var group in dependencyObject.groups)
+                            {
+
+                                bool groupResult = true;
+
+                                foreach (var rule in group)
+                                {
+
+                                    if (DynamicAttribute.tablesNames.TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
+                                    {
+                                        var ColumName = _context.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == RecordId);
+                                        var AttributeActivated = _context.TLIattributeActivated
+                                            .FirstOrDefault(x => x.Tabel == DynamicAttribute.tablesNames.TableName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                        var attributeNames = ColumName.GetType().GetProperties()
+                                            .Where(x =>
+                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                .Contains(x.PropertyType)
+                                            )
+                                            .Select(x => x.Name)
+                                            .ToList();
+
+                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                        var valuerule = rule.Value?.ToString().Trim();
+                                        bool result = false;
+
+                                        switch (rule.Operation)
+                                        {
+                                            case 1:
+                                                result = propertyValue == valuerule;
+                                                break;
+
+                                            case 2:
+                                                result = propertyValue != valuerule;
+                                                break;
+
+                                            case 3:
+                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                break;
+
+                                            case 4:
+                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                break;
+
+                                            case 5:
+                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                break;
+
+                                            case 6:
+                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                break;
+                                            case 7:
+                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                break;
+
+                                            case 8:
+                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                break;
+
+                                            case 9:
+                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                break;
+                                        }
+
+                                        groupResult = groupResult && result;
+
+                                    }
+
+                                    // If any rule fails, move to the next rule in the group
+                                    if (!groupResult)
+                                    {
+                                        break; // Exit the rules loop and move to the next group
+                                    }
+                                }
+
+                                // If the entire groupResult is true, set overallResult to true and break the RecordsIds loop
+                                if (groupResult)
+                                {
+                                    overallResult = true;
+                                    break; // Exit the groups loop and continue with the next RecordId
+                                }
+                            }
+
+                            // If the overallResult is true, exit the RecordsIds loop
+                            if (overallResult)
+                            {
+                                var resultvalue = dependency.Result?.ToString().Trim();
+                                if (DynamicAttribute.DataTypeId == 1)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueString = resultvalue,
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 21 || DynamicAttribute.DataTypeId == 22)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueDouble = Convert.ToDouble(resultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 25)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueDateTime = Convert.ToDateTime(resultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 24)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueBoolean = Convert.ToBoolean(resultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                            }
+                            else
+                            {
+                                var defultvalue = value?.ToString().Trim();
+                                if (DynamicAttribute.DataTypeId == 1)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueString = defultvalue,
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 21 || DynamicAttribute.DataTypeId == 22)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueDouble = Convert.ToDouble(defultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 25)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueDateTime = Convert.ToDateTime(defultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 24)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueBoolean = Convert.ToBoolean(defultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                    else if (DynamicAttribute.Type == 3)
+                    {
+                        var dependency = _context.TLIdependency.FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+
+                        if (dependency != null)
+                        {
+
+                            var rules = _context.TLIrule.Where(r => r.dynamicAttId == DynamicAttributeId).ToList();
+
+
+                            var groups = new List<List<GroupObject>>();
+
+
+                            var groupedRules = rules
+                                .GroupBy(rule => rule.OperationId)
+                                .Select(group => group.Select(rule => new GroupObject
+                                {
+                                    ColumnName = _context.TLIattributeActivated.FirstOrDefault(a => a.Id == rule.attributeActivatedId).Key,
+                                    Operation = rule.OperationId,
+                                    Value = rule.OperationValueString
+                                }).ToList())
+                                .ToList();
+
+
+                            dependencyObject.result = dependency.Result;
+                            dependencyObject.groups = groupedRules;
+                            bool overallResult = false;
+                            foreach (var group in dependencyObject.groups)
+                            {
+
+                                bool groupResult = true;
+
+                                foreach (var rule in group)
+                                {
+
+                                    if (DynamicAttribute.tablesNames.TableName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
+                                    {
+                                        var ColumName = _context.TLIcivilWithLegLibrary.FirstOrDefault(x => x.Id == RecordId);
+                                        var AttributeActivated = _context.TLIattributeActivated
+                                            .FirstOrDefault(x => x.Tabel == DynamicAttribute.tablesNames.TableName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                        var attributeNames = ColumName.GetType().GetProperties()
+                                            .Where(x =>
+                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                .Contains(x.PropertyType)
+                                            )
+                                            .Select(x => x.Name)
+                                            .ToList();
+
+                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                        var valuerule = rule.Value?.ToString().Trim();
+                                        bool result = false;
+
+                                        switch (rule.Operation)
+                                        {
+                                            case 1:
+                                                result = propertyValue == valuerule;
+                                                break;
+
+                                            case 2:
+                                                result = propertyValue != valuerule;
+                                                break;
+
+                                            case 3:
+                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                break;
+
+                                            case 4:
+                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                break;
+
+                                            case 5:
+                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                break;
+
+                                            case 6:
+                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                break;
+                                            case 7:
+                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                break;
+
+                                            case 8:
+                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                break;
+
+                                            case 9:
+                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                break;
+                                        }
+
+                                        groupResult = groupResult && result;
+
+                                    }
+
+                                    // If any rule fails, move to the next rule in the group
+                                    if (!groupResult)
+                                    {
+                                        break; // Exit the rules loop and move to the next group
+                                    }
+                                }
+
+                                // If the entire groupResult is true, set overallResult to true and break the RecordsIds loop
+                                if (groupResult)
+                                {
+                                    overallResult = true;
+                                    break; // Exit the groups loop and continue with the next RecordId
+                                }
+                            }
+
+                            // If the overallResult is true, exit the RecordsIds loop
+                            if (overallResult)
+                            {
+                                var Validation = _context.TLIvalidation.FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
+                                if (DynamicAttribute.DataTypeId == 1)
+                                {
+                                    bool result = false;
+                                    var Comporsevalue = value.ToString().Trim();
+                                    switch (Validation.OperationId)
+                                    {
+                                        case 1:
+                                            result = Comporsevalue.ToLower() == Validation.ValueString.ToString().ToLower();
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueString = Comporsevalue,
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueString
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 2:
+                                            result = Comporsevalue.ToLower() != Validation.ValueString.ToString().ToLower();
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueString.ToString()} must not equle {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueString = Comporsevalue,
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueString
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 7:
+                                            result = Comporsevalue.ToLower().Contains(Validation.ValueString.ToString().ToLower());
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not Contains {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueString = Comporsevalue,
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueString
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 8:
+                                            result = Comporsevalue.ToLower().StartsWith(Validation.ValueString.ToString().ToLower());
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not StartsWith {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueString = Comporsevalue,
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueString
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 9:
+                                            result = Comporsevalue.ToLower().EndsWith(Validation.ValueString.ToString().ToLower());
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not EndsWith {Validation.ValueString.ToString()}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueString = Comporsevalue,
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueString
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                }
+                                if (DynamicAttribute.DataTypeId == 21 || DynamicAttribute.DataTypeId == 22)
+                                {
+                                    bool result = false;
+                                    var Comporsevalue = value.ToString().Trim();
+                                    switch (Validation.OperationId)
+                                    {
+                                        case 1:
+                                            result = Convert.ToDouble(Comporsevalue) == Validation.ValueDouble;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDouble = Convert.ToDouble(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 2:
+                                            result = Convert.ToDouble(Comporsevalue) != Validation.ValueDouble;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDouble = Convert.ToDouble(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 3:
+                                            result = Convert.ToDouble(Comporsevalue) < Validation.ValueDouble;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDouble = Convert.ToDouble(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 4:
+                                            result = Convert.ToDouble(Comporsevalue) > Validation.ValueDouble;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDouble = Convert.ToDouble(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 5:
+                                            result = Convert.ToDouble(Comporsevalue) <= Validation.ValueDouble;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDouble = Convert.ToDouble(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 6:
+                                            result = Convert.ToDouble(Comporsevalue) >= Validation.ValueDouble;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDouble = Convert.ToDouble(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDouble.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                }
+                                if (DynamicAttribute.DataTypeId == 25)
+                                {
+                                    bool result = false;
+                                    var Comporsevalue = value.ToString().Trim();
+                                    switch (Validation.OperationId)
+                                    {
+                                        case 1:
+                                            result = Convert.ToDateTime(Comporsevalue) == Validation.ValueDateTime;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 2:
+                                            result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 3:
+                                            result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 4:
+                                            result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 5:
+                                            result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+                                        case 6:
+                                            result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+
+                                    }
+
+
+                                }
+                                if (DynamicAttribute.DataTypeId == 24)
+                                {
+                                    bool result = false;
+                                    var Comporsevalue = value.ToString().Trim();
+                                    switch (Validation.OperationId)
+                                    {
+                                        case 1:
+                                            result = Convert.ToBoolean(Comporsevalue) == Validation.ValueBoolean;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueBoolean = Convert.ToBoolean(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueBoolean.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+                                            }
+                                            break;
+                                        case 2:
+                                            result = Convert.ToBoolean(Comporsevalue) != Validation.ValueBoolean;
+                                            if (!result)
+                                            {
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            }
+                                            else
+                                            {
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueBoolean = Convert.ToBoolean(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                _context.SaveChanges();
+                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                {
+                                                    HistoryId = HistoryId,
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                    TablesNameId = TabelName,
+                                                    AttributeName = DynamicAttribute.Key,
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+
+                                                };
+                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                _context.SaveChanges();
+
+                                            }
+                                            break;
+
+
+                                    }
+
+
+                                }
+                                var resultvalue = dependency.Result?.ToString().Trim();
+                                if (DynamicAttribute.DataTypeId == 1)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueString = resultvalue,
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 21 || DynamicAttribute.DataTypeId == 22)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueDouble = Convert.ToDouble(resultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 25)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueDateTime = Convert.ToDateTime(resultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 24)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueBoolean = Convert.ToBoolean(resultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                            }
+                            else
+                            {
+                                var defultvalue = value?.ToString().Trim();
+                                if (DynamicAttribute.DataTypeId == 1)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueString = defultvalue,
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 21 || DynamicAttribute.DataTypeId == 22)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueDouble = Convert.ToDouble(defultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 25)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueDateTime = Convert.ToDateTime(defultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                                else if (DynamicAttribute.DataTypeId == 24)
+                                {
+                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                    {
+                                        disable = false,
+                                        DynamicAttId = DynamicAttribute.Id,
+                                        InventoryId = RecordId,
+                                        ValueBoolean = Convert.ToBoolean(defultvalue),
+                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                    };
+                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                    _context.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                return new Response<AddDynamicObject>(true, null, null, "Success", (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+
+                return new Response<AddDynamicObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
     }
 }
+
+
+        
+    
+
