@@ -36,4 +36,24 @@ namespace TLIS_DAL.ViewModels.LoadPartDTOs
         //SideArm
         public List<SideArmLoadDto>SideArms { get; set; }
     }
+    public class LoadsDtoInternal
+    {
+        // Microwave...
+        public List<GetForAddMWDishInstallationObject> MWDish { get; set; }
+        public List<GetForAddMWDishInstallationObject> MWBU { get; set; }
+        public List<GetForAddMWDishInstallationObject> MWODU { get; set; }
+        public List<GetForAddMWDishInstallationObject> MWRFU { get; set; }
+        public List<GetForAddMWDishInstallationObject> MWOther { get; set; }
+
+        // Radio...
+        public List<GetForAddMWDishInstallationObject> RadioAntenna { get; set; }
+        public List<GetForAddMWDishInstallationObject> RadioRRU { get; set; }
+        public List<GetForAddMWDishInstallationObject> RadioOther { get; set; }
+        // Power...
+        public List<GetForAddMWDishInstallationObject> Power { get; set; }
+        //LoadOther
+        public List<GetForAddMWDishInstallationObject> LoadOther { get; set; }
+        //SideArm
+        public List<GetForAddMWDishInstallationObject> SideArm { get; set; }
+    }
 }

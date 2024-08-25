@@ -185,16 +185,19 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
+                            transaction.Complete();
                             return new Response<RoleViewModel>(true, null, null, "This Role Is Not Found", (int)Constants.ApiReturnCode.fail);
                         }
+                        transaction.Complete();
                         return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                     }
                     else
                     {
                         DeleteRoleGroups(RoleId);
+                        transaction.Complete();
                         return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                     }
-                    transaction.Complete();
+                    
                 }
             }
             catch (Exception err)

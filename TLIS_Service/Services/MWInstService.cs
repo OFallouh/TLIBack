@@ -4812,18 +4812,19 @@ namespace TLIS_Service.Services
                         int count = query.Count();
                         
                         getEnableAttribute.Model = query;
-                        var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwDish").Id;
-                        TLIhistory tLIhistory = new TLIhistory()
-                        {
-                            TablesNameId = TabelNameId,
-                            ExternalSysId = UserId,
-                            HistoryTypeId = 4,
-                            SiteCode = SiteCode,
-                        };
-                        _dbContext.TLIhistory.Add(tLIhistory);
-                        _dbContext.SaveChanges();
+                       
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwDish").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {
@@ -4992,18 +4993,19 @@ namespace TLIS_Service.Services
                         int count = query.Count();
                         
                         getEnableAttribute.Model = query;
-                        var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwOther").Id;
-                        TLIhistory tLIhistory = new TLIhistory()
-                        {
-                            TablesNameId = TabelNameId,
-                            ExternalSysId = UserId,
-                            HistoryTypeId = 4,
-                            SiteCode = SiteCode,
-                        };
-                        _dbContext.TLIhistory.Add(tLIhistory);
-                        _dbContext.SaveChanges();
+                        
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwOther").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {
@@ -5170,18 +5172,19 @@ namespace TLIS_Service.Services
                         int count = query.Count();
                         
                         getEnableAttribute.Model = query;
-                        var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwRFU").Id;
-                        TLIhistory tLIhistory = new TLIhistory()
-                        {
-                            TablesNameId = TabelNameId,
-                            ExternalSysId = UserId,
-                            HistoryTypeId = 4,
-                            SiteCode = SiteCode,
-                        };
-                        _dbContext.TLIhistory.Add(tLIhistory);
-                        _dbContext.SaveChanges();
+                        
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwRFU").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {
@@ -5348,18 +5351,19 @@ namespace TLIS_Service.Services
 
                         getEnableAttribute.Model = query;
                         
-                        var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwODU").Id;
-                        TLIhistory tLIhistory = new TLIhistory()
-                        {
-                            TablesNameId = TabelNameId,
-                            ExternalSysId = UserId,
-                            HistoryTypeId = 4,
-                            SiteCode = SiteCode,
-                        };
-                        _dbContext.TLIhistory.Add(tLIhistory);
-                        _dbContext.SaveChanges();
+                        
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwODU").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {
@@ -5542,18 +5546,19 @@ namespace TLIS_Service.Services
 
                         getEnableAttribute.Model = query;
                         
-                        var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwBU").Id;
-                        TLIhistory tLIhistory = new TLIhistory()
-                        {
-                            TablesNameId = TabelNameId,
-                            ExternalSysId = UserId,
-                            HistoryTypeId = 4,
-                            SiteCode = SiteCode,
-                        };
-                        _dbContext.TLIhistory.Add(tLIhistory);
-                        _dbContext.SaveChanges();
+                       
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwBU").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {

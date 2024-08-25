@@ -2211,6 +2211,8 @@ namespace TLIS_Service.Helpers
             TLIcabinetPowerLibrary,
             TLIcabinetTelecomLibrary,
             TLIcabinet,
+            TLIcabinetPower,
+            TLIcabinetTelecom,
             TLIsolar,
             TLIgenerator
         }
@@ -2656,7 +2658,15 @@ namespace TLIS_Service.Helpers
             TLIitemStatus,
 
             [Description("")]
-            TLIinstallationPlace
+            TLIinstallationPlace,
+
+            [Description("TLIcivilWithLegs")]
+            BasePlateShape,
+            [Description("TLIcivilWithoutLeg")]
+            EquipmentsLocation,
+            [Description("TLIcivilWithoutLeg")]
+            LadderSteps,
+
         }
 
         public static string GetEnumDescription(Enum value)

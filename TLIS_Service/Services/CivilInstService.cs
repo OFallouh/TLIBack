@@ -7675,12 +7675,16 @@ namespace TLIS_Service.Services
             });
         }
         #region Get Enabled Attributes Only With Dynamic Objects...
-        public Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode,string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode,string ConnectionString, int? UserId, string UserName)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
+                    if (UserId == null)
+                    {
+                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                    }
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "create_dynamic_pivot_withleg ";
@@ -7875,7 +7879,16 @@ namespace TLIS_Service.Services
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-                    
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithLegs").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {
@@ -7883,32 +7896,36 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AllCivilInstallationViewModel> GetCivilsBySiteCode(string siteCode, string ConnectionString)
+        public Response<AllCivilInstallation> GetCivilsBySiteCode(string siteCode, string ConnectionString,int? UserId,string UserName)
         {
             try
             {
-                AllCivilInstallationViewModel MainOutPut = new AllCivilInstallationViewModel();
+                AllCivilInstallation MainOutPut = new AllCivilInstallation();
                 int count = 0;
 
-                //MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(siteCode, ConnectionString).Data;
-                //MainOutPut.CivilWithoutLegMast = GetCivilWithoutLegMastWithEnableAtt(siteCode, ConnectionString).Data;
-                //MainOutPut.CivilWithoutLegCapsule = GetCivilWithoutLegCapsuleWithEnableAtt(siteCode, ConnectionString).Data;
-                //MainOutPut.CivilWithoutLegMonopole = GetCivilWithoutLegMonopoleWithEnableAtt(siteCode, ConnectionString).Data;
-                //MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(siteCode, ConnectionString).Data;
+                MainOutPut.CivilWithLegs = GetCivilWithLegsWithEnableAtt(siteCode, ConnectionString,  UserId,  UserName).Data;
+                MainOutPut.CivilWithoutLegMast = GetCivilWithoutLegMastWithEnableAtt(siteCode, ConnectionString,  UserId,  UserName).Data;
+                MainOutPut.CivilWithoutLegCapsule = GetCivilWithoutLegCapsuleWithEnableAtt(siteCode, ConnectionString,  UserId,  UserName).Data;
+                MainOutPut.CivilWithoutLegMonopole = GetCivilWithoutLegMonopoleWithEnableAtt(siteCode, ConnectionString,  UserId,  UserName).Data;
+                MainOutPut.CivilNonSteel = GetCivilNonSteelWithEnableAtt(siteCode, ConnectionString,UserId,UserName).Data;
 
-                return new Response<AllCivilInstallationViewModel>(true, MainOutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
+                return new Response<AllCivilInstallation>(true, MainOutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
             }
             catch (Exception err)
             {
-                return new Response<AllCivilInstallationViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<AllCivilInstallation>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
+                    if (UserId == null)
+                    {
+                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                    }
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
@@ -8389,7 +8406,16 @@ namespace TLIS_Service.Services
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithoutLeg").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {
@@ -8397,12 +8423,16 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode,string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode,string ConnectionString, int? UserId, string UserName)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
+                    if (UserId == null)
+                    {
+                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                    }
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
@@ -8884,7 +8914,16 @@ namespace TLIS_Service.Services
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithoutLeg").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {
@@ -8892,12 +8931,16 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
+                    if (UserId == null)
+                    {
+                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                    }
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
@@ -9378,7 +9421,17 @@ namespace TLIS_Service.Services
                         getEnableAttribute.Model = query;
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-
+                    
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilWithoutLeg").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {
@@ -9655,12 +9708,16 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<object>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString)
+        public Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
+                    if (UserId == null)
+                    {
+                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                    }
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_NONSTEEL ";
@@ -9791,8 +9848,20 @@ namespace TLIS_Service.Services
                         int count = query.Count();
                      
                         getEnableAttribute.Model = query;
+                     
+                       
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilNonSteel").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                 }
                 catch (Exception err)
                 {

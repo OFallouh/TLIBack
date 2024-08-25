@@ -48,14 +48,15 @@ namespace TLIS_Service.IService
 {
     public interface IInternalApiService
     {
-        public Response<List<ObjectInstAttForSideArm>> GetSideArmsBySiteCode(string SiteCode, string CivilType, string CivilName, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase);
-        Response<ReturnWithFilters<object>> GetLibraryforSpecificType(string TableNameLibrary, int CategoryId, CombineFilters CombineFilters, bool WithFilterData, ParameterPagination parameterPagination);
+        Response<GetEnableAttribute> GetAlOtherInventoryonSitebyType(string OtherInventoryTypeName, string SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetConfigurationTables(string siteCode, string TableNameInstallation, int CategoryId, string ConnectionString, int? UserId, string UserName);
+        Response<LoadsDtoInternal> GetAllLoadonSitebyPartandType(String SiteCode, string PartName, string TypeName, int? UserId, string UserName);
+        Response<List<ListOfCivilLoads>> GetAllItemsonSite(string SiteCode, int? UserId, string UserName);
+        Response<List<BassAttViewModel>> GetConfigurationAttributes(string TableName, bool IsDynamic, int CategoryId, int? UserId, string UserName);
+        Response<List<GetForAddCivilLoadObject>> GetSideArmsBySiteCode(string SiteCode, string CivilType, string CivilName, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetLibraryforSpecificType(string ConnectionString, string TableNameLibrary, int CategoryId, int? UserId, string UserName);
         Response<IEnumerable<SiteViewModel>> GetAllSitesDetails(ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
-        Response<LoadsDto> GetAllLoadonSitebyPartandType(String SiteCode, string PartName, string TypeName);
-        Response<ReturnWithFilters<object>> GetAlOtherInventoryonSitebyType(string OtherInventoryTypeName, string SiteCode, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPaginationstring, string LibraryType);
-        Response<List<ListOfCivilLoads>> GetAllItemsonSite(string SiteCode);
-        Response<ReturnWithFilters<object>> GetConfigurationTables(string siteCode, string TableNameInstallation, int CategoryId, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string LibraryType);
-        Response<List<BassAttViewModel>> GetConfigurationAttributes(string TableName, bool IsDynamic, int CategoryId);
+              
         Response<AddDependencyInstViewModel> AddDynamicAttInst(AddDependencyInstViewModel addDependencyInstViewModel, string ConnectionString);
         Response<AddDependencyViewModel> AddDynamicAtts(AddDependencyViewModel addDependencyViewModel, string ConnectionString);
         Task<Response<DynamicAttViewModel>> Edit(EditDynamicAttViewModel dynamicAttViewModel);

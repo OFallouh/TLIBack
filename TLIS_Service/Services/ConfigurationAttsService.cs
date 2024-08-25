@@ -12008,7 +12008,59 @@ namespace TLIS_Service.Services
             {
                 int Count = 0;
                 List<ConfigurationAttsViewModel> ConfigurationAtts = new List<ConfigurationAttsViewModel>();
+                if (ConfigrationTables.BasePlateShape.ToString() == TableName)
+                {
+                    var enumNames = Enum.GetNames(typeof(BasePlateShape)).ToList();
 
+              
+                    ConfigurationAtts = enumNames.Select((name, index) => new ConfigurationAttsViewModel
+                    {
+                        Id = index, 
+                        Name = name,
+                        TableName = TableName,
+                        Disable = false, 
+                        Manage = false
+                    }).ToList();
+                }
+                else if (ConfigrationTables.LadderSteps.ToString() == TableName)
+                {
+                    var enumNames = Enum.GetNames(typeof(LadderSteps)).ToList();
+
+
+                    ConfigurationAtts = enumNames.Select((name, index) => new ConfigurationAttsViewModel
+                    {
+                        Id = index,
+                        Name = name,
+                        TableName = TableName,
+                        Disable = false,
+                        Manage = false
+                    }).ToList();
+                }
+                else if (ConfigrationTables.EquipmentsLocation.ToString() == TableName)
+                {
+                    var enumNames = Enum.GetNames(typeof(EquipmentsLocation)).ToList();
+
+
+                    ConfigurationAtts = enumNames.Select((name, index) => new ConfigurationAttsViewModel
+                    {
+                        Id = index,
+                        Name = name,
+                        TableName = TableName,
+                        Disable = false,
+                        Manage = false
+                    }).ToList();
+                }
+                else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
+                {
+                    ConfigurationAtts = _unitOfWork.TelecomTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        TableName = TableName,
+                        Disable = x.Disable,
+                        Manage = false
+                    }).ToList();
+                }
                 if (ConfigrationTables.TLIdiversityType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel

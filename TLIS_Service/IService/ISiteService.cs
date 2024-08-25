@@ -27,7 +27,8 @@ using TLIS_DAL.ViewModels.SiteStatusDTOs;
 namespace TLIS_Service.IService
 {
     public interface ISiteService
-    {        
+    {
+        Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null);
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
         Response<List<RecalculatSpaceOnSite>> RecalculateSite();
@@ -38,7 +39,6 @@ namespace TLIS_Service.IService
         Response<List<SiteStatusViewModel>> GetAllSiteStatusForSiteOperation();
         Response<List<RegionViewModel>> GetAllRegionsForSiteOperation();
         Response<List<LocationTypeViewModel>> GetAllLocationTypesForSiteOperation();
-        Response<IEnumerable<SiteViewModelForGetAll>> GetSites(ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null);
         Task<Response<SiteViewModel>> UpdateRentedSpace(string SiteCode, float RentedSpaceValue, int installationSpace);
          Response<List<KeyValuePair<string, float>>> GetSpaceDetails(string SiteCode);
         Response<SiteViewModel> GetSiteMainSpaces(string SiteCode);

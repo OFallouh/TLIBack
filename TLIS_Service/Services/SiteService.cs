@@ -490,13 +490,17 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName,ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
         {
             string[] ErrorMessagesWhenReturning = null;
 
-        StartAgainWithRefresh:
+           StartAgainWithRefresh:
             try
             {
+                if (UserId == null)
+                {
+                    UserId = _context.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                }
                 List<TLIlocationType> Locations = _context.TLIlocationType.AsNoTracking().ToList();
 
                 List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
@@ -717,6 +721,15 @@ namespace TLIS_Service.Services
 
                     return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
                 }
+                var TabelNameId = _context.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsite").Id;
+                TLIhistory tLIhistory = new TLIhistory()
+                {
+                    TablesNameId = TabelNameId,
+                    ExternalSysId = UserId,
+                    HistoryTypeId = 4,
+                };
+                _context.TLIhistory.Add(tLIhistory);
+                _context.SaveChanges();
             }
             catch (Exception)
             {

@@ -23,7 +23,7 @@ namespace TLIS_Service.IService
 {
     public interface ICivilInstService
     {
-       
+        Response<AllCivilInstallation> GetCivilsBySiteCode(string siteCode, string ConnectionString, int? UserId, string UserName);
         Response<GetForAddCivilWithLegObject> GetForAddCivilWithLegInstallation(string TableName, int CivilLibraryId, string SiteCode);
         Response<GetForAddCivilWithOutLegInstallationcs> GetCivilWithoutLegsInstallationById(int CivilInsId, string TableName, int CategoryId);
         Task<Response<ObjectInstAtts>> EditCivilNonSteelInstallation(EditCivilNonSteelInstallationObject editCivilNonSteelInstallationObject, string CivilType, int? TaskId, int userId,string connectionString);
@@ -42,16 +42,15 @@ namespace TLIS_Service.IService
         Response<ObjectInstAtts> AddCivilWithLegsInstallation(AddCivilWithLegsViewModel AddCivilWithLegsViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId);
         Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId, int userId, string connectionString);
         Response<GetForAddCivilWithLegObject> GetCivilWithLegsInstallationById(int CivilInsId, string TableName);
-        Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
         Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId);
-        Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
         //Response<AllCivilsViewModel> GetAllCivils(SiteBaseFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination, string SiteCode);
         Response<List<ListOfCivilLoadDto>> GetAllCivilLoad(string SearchName, ParameterPagination parameters);
         Response<LoadOnSideArm> GetLoadForSideArm(int sidearmid, int civilid);
         List<LoadOnCivil> GetLoadWithoutSideArm(int civilid);
         Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId, string connectionString);
         string GetKeyName(TLIallLoadInst m);
-        Response<AllCivilInstallationViewModel> GetCivilsBySiteCode(string siteCode, string ConnectionString);
         Response<GetForAddCivilWithOutLegInstallationcs> GetCivilNonSteelInstallationById(int CivilInsId, string TableName);
         //Response<bool> CivilDismantle(DismantleBinding dis);
         bool ReCalcualateSiteFreeSpace(int civilid, string sitecode, int loadid);
@@ -68,8 +67,8 @@ namespace TLIS_Service.IService
         Response<SideArmAndLoadsOnCivil> CheckFilterSideArm_LoadsOnCivils(int CivilId, string CivilType);
         Response<LoadsCountOnSideArm> CheckLoadsOnSideArm(int SideArmId);
         Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType);
-        Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString);
-        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode , string ConnectionString);
-        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode , string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
     }
 }

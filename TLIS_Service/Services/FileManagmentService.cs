@@ -11756,12 +11756,6 @@ namespace TLIS_Service.Services
                 if (TableName.ToLower() == "TLIcabinetPower".ToLower() || TableName.ToLower() == "TLIcabinetTelecom".ToLower())
                     TableName = "TLIcabinet";
 
-                if (RecordId == "undefined")
-                    RecordId = "0";
-
-                if (SiteCode == "undefined")
-                    SiteCode = "NA";
-
                 // Set list of image types to check later if attach file is image or not
                 List<string> ImgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
 
