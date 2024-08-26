@@ -13454,6 +13454,10 @@ namespace TLIS_Service.Services
                 {
                     if (ConfigrationTables.TLIowner.ToString() == ListName)
                     {
+                        var OwnerName = _unitOfWork.OwnerRepository
+                           .GetWhere(x => x.OwnerName.ToLower() == NewName.ToLower());
+                        if (OwnerName != null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this ownername is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
                         TLIowner tLIowner = new TLIowner()
                         {
                             OwnerName = NewName,
@@ -13472,6 +13476,10 @@ namespace TLIS_Service.Services
                 {
                     if (ConfigrationTables.TLIrenewableCabinetType.ToString() == ListName)
                     {
+                        var RenewableCabinetTypeName = _unitOfWork.RenewableCabinetTypeRepository
+                           .GetWhere(x => x.Name.ToLower() == NewName.ToLower());
+                        if (RenewableCabinetTypeName != null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this RenewableCabinetTypeName is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
                         TLIrenewableCabinetType tLIrenewableCabinetType = new TLIrenewableCabinetType()
                         {
                             Name = NewName,
@@ -13488,6 +13496,10 @@ namespace TLIS_Service.Services
                 }
                 else if (TabelName == "TLImwODULibrary")
                 {
+                    var ParityName = _unitOfWork.ParityRepository
+                           .GetWhere(x => x.Name.ToLower() == NewName.ToLower());
+                    if (ParityName != null)
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, $"this ParityName is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
                     if (ConfigrationTables.TLIparity.ToString() == ListName)
                     {
                         TLIparity tLIparity = new TLIparity()
@@ -13541,9 +13553,9 @@ namespace TLIS_Service.Services
                         if (OldEntity == null)
                             return new Response < ConfigurationAttsViewModel > (false, null, null, $"this owner is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
                         var OwnerName = _unitOfWork.OwnerRepository
-                               .GetWhere(x => x.OwnerName.ToLower() == NewName.ToLower());
+                               .GetWhere(x => x.OwnerName.ToLower() == NewName.ToLower() && x.Id != RecordId);
                         if(OwnerName != null)
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this ownername is found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this ownername is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
                         var CheckOwnerInCivil = _unitOfWork.CivilSiteDateRepository
                             .GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegs.OwnerId == RecordId ||
                             x.allCivilInst.civilWithoutLeg.OwnerId == RecordId || x.allCivilInst.civilNonSteel.ownerId
@@ -13588,9 +13600,9 @@ namespace TLIS_Service.Services
                         if (OldEntity == null)
                             return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
                         var renewablecabinettypename = _unitOfWork.RenewableCabinetTypeRepository
-                             .GetWhere(x => x.Name.ToLower() == NewName.ToLower());
+                             .GetWhere(x => x.Name.ToLower() == NewName.ToLower() && x.Id != RecordId);
                         if (renewablecabinettypename != null)
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewablecabinettypename is found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewablecabinettypename is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
                         var CheckrenewableCabinetTypeInCabinet = _unitOfWork.OtherInSiteRepository
                             .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinet.RenewableCabinetNumberOfBatteries == RecordId
                             && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
@@ -13626,9 +13638,9 @@ namespace TLIS_Service.Services
                         if (OldEntity == null)
                             return new Response<ConfigurationAttsViewModel>(false, null, null, $"this renewableCabinetType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
                         var Parityname = _unitOfWork.ParityRepository
-                         .GetWhere(x => x.Name.ToLower() == NewName.ToLower());
+                         .GetWhere(x => x.Name.ToLower() == NewName.ToLower() && x.Id != RecordId);
                         if (Parityname != null)
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this Parityname is found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this Parityname is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
                       
                         var CheckparityInODU = _unitOfWork.CivilLoadsRepository
                             .GetIncludeWhereFirst(x => x.allLoadInst.mwODU.MwODULibrary.parityId == RecordId

@@ -105,17 +105,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcivilWithLegLibrary> CivilWithLegLibraries = _unitOfWork.CivilWithLegLibraryRepository
                                     .GetWhere(x => CivilWithLegLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CivilWithLegLibraries.Count > 0)
                                 {
-                                    TableName = "Civil Steel Support With Legs Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Civil Steel Support With Legs Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // CivilWithoutLeg..
@@ -126,17 +128,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository
                                     .GetWhere(x => CivilWithoutLegLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CivilWithoutLegLibraries.Count > 0)
                                 {
-                                    TableName = "Civil Steel Support Without Legs Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Civil Steel Support Without Legs Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // CivilNonSteel..
@@ -147,17 +151,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcivilNonSteelLibrary> CivilNonSteelLibraries = _unitOfWork.CivilNonSteelLibraryRepository
                                     .GetWhere(x => CivilNonSteelLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CivilNonSteelLibraries.Count > 0)
                                 {
-                                    TableName = "Civil Non Steel Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CivilNonSteelLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Civil Non Steel Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CivilNonSteelLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.SideArm.ToString().ToLower())
@@ -169,17 +175,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIsideArmLibrary> SideArmLibraries = _unitOfWork.SideArmLibraryRepository
                                     .GetWhere(x => SideArmLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (SideArmLibraries.Count > 0)
                                 {
-                                    TableName = "Side Arm Library",
-                                    isLibrary = true,
-                                    RecordsAffected = SideArmLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Side Arm Library",
+                                        isLibrary = true,
+                                        RecordsAffected = SideArmLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.MW.ToString().ToLower())
@@ -192,17 +200,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwRFULibrary> MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
                                     .GetWhere(x => MW_RFULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_RFULibraries.Count > 0)
                                 {
-                                    TableName = "MW_RFU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_RFU Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // MW_Dish..
@@ -213,17 +223,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwDishLibrary> MW_DishLibraries = _unitOfWork.MW_DishLibraryRepository
                                     .GetWhere(x => MW_DishLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_DishLibraries.Count > 0)
                                 {
-                                    TableName = "MW_Dish Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_DishLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_Dish Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_DishLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // MW_BU..
@@ -234,17 +246,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwBULibrary> MW_BULibraries = _unitOfWork.MW_BULibraryRepository
                                     .GetWhere(x => MW_BULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_BULibraries.Count > 0)
                                 {
-                                    TableName = "MW_BU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_BU Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // MW_ODU..
@@ -255,17 +269,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwODULibrary> MW_ODULibraries = _unitOfWork.MW_ODULibraryRepository
                                     .GetWhere(x => MW_ODULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_ODULibraries.Count > 0)
                                 {
-                                    TableName = "MW_ODU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_ODULibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_ODU Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_ODULibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // MW_Other..
@@ -276,17 +292,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwOtherLibrary> MW_OtherLibraries = _unitOfWork.MW_OtherLibraryRepository
                                     .GetWhere(x => MW_OtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_OtherLibraries.Count > 0)
                                 {
-                                    TableName = "MW_Other Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_OtherLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_Other Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_OtherLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.Radio.ToString().ToLower())
@@ -299,17 +317,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIradioAntennaLibrary> RadioAntennaLibraries = _unitOfWork.RadioAntennaLibraryRepository
                                     .GetWhere(x => RadioAntennaLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (RadioAntennaLibraries.Count > 0)
                                 {
-                                    TableName = "Radio Antenna Library",
-                                    isLibrary = true,
-                                    RecordsAffected = RadioAntennaLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Radio Antenna Library",
+                                        isLibrary = true,
+                                        RecordsAffected = RadioAntennaLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // RadioRRU..
@@ -320,17 +340,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIradioRRULibrary> RadioRRULibraries = _unitOfWork.RadioRRULibraryRepository
                                     .GetWhere(x => RadioRRULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (RadioRRULibraries.Count > 0)
                                 {
-                                    TableName = "Radio RRU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = RadioRRULibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Radio RRU Library",
+                                        isLibrary = true,
+                                        RecordsAffected = RadioRRULibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // RadioOther..
@@ -341,17 +363,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIradioOtherLibrary> RadioOtherLibraries = _unitOfWork.RadioOtherLibraryRepository
                                     .GetWhere(x => RadioOtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (RadioOtherLibraries.Count > 0)
                                 {
-                                    TableName = "Radio Other Library",
-                                    isLibrary = true,
-                                    RecordsAffected = RadioOtherLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Radio Other Library",
+                                        isLibrary = true,
+                                        RecordsAffected = RadioOtherLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.Power.ToString().ToLower())
@@ -364,17 +388,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIpowerLibrary> PowerLibraries = _unitOfWork.PowerLibraryRepository
                                     .GetWhere(x => PowerLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (PowerLibraries.Count > 0)
                                 {
-                                    TableName = "Power Load Library",
-                                    isLibrary = true,
-                                    RecordsAffected = PowerLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Power Load Library",
+                                        isLibrary = true,
+                                        RecordsAffected = PowerLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                         }
@@ -388,17 +414,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIloadOtherLibrary> LoadOtherLibraries = _unitOfWork.LoadOtherLibraryRepository
                                     .GetWhere(x => LoadOtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (LoadOtherLibraries.Count > 0)
                                 {
-                                    TableName = "Load Other Library",
-                                    isLibrary = true,
-                                    RecordsAffected = LoadOtherLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Load Other Library",
+                                        isLibrary = true,
+                                        RecordsAffected = LoadOtherLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.OtherInventory.ToString().ToLower())
@@ -411,17 +439,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcabinetPowerLibrary> CabinetPowerLibraries = _unitOfWork.CabinetPowerLibraryRepository
                                     .GetWhere(x => CabinetPowerLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CabinetPowerLibraries.Count > 0)
                                 {
-                                    TableName = "Cabinet Power Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Cabinet Power Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // CabinetTelecom..
@@ -432,17 +462,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcabinetTelecomLibrary> CabinetTelecomLibraries = _unitOfWork.CabinetTelecomLibraryRepository
                                     .GetWhere(x => CabinetTelecomLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CabinetTelecomLibraries.Count > 0)
                                 {
-                                    TableName = "Cabinet Telecom Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CabinetTelecomLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Cabinet Telecom Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CabinetTelecomLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // Solar..
@@ -453,17 +485,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIsolarLibrary> SolarLibraries = _unitOfWork.SolarLibraryRepository
                                     .GetWhere(x => SolarLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (SolarLibraries.Count > 0)
                                 {
-                                    TableName = "Solar Library",
-                                    isLibrary = true,
-                                    RecordsAffected = SolarLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Solar Library",
+                                        isLibrary = true,
+                                        RecordsAffected = SolarLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // Generator..
@@ -474,17 +508,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIgeneratorLibrary> GeneratorLibraries = _unitOfWork.GeneratorLibraryRepository
                                     .GetWhere(x => GeneratorLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (GeneratorLibraries.Count > 0)
                                 {
-                                    TableName = "Generator Library",
-                                    isLibrary = true,
-                                    RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Generator Library",
+                                        isLibrary = true,
+                                        RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
 
@@ -539,17 +575,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcivilWithLegLibrary> CivilWithLegLibraries = _unitOfWork.CivilWithLegLibraryRepository
                                     .GetWhere(x => CivilWithLegLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CivilWithLegLibraries.Count > 0)
                                 {
-                                    TableName = "Civil Steel Support With Legs Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Civil Steel Support With Legs Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CivilWithLegLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // CivilWithoutLeg..
@@ -560,17 +598,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcivilWithoutLegLibrary> CivilWithoutLegLibraries = _unitOfWork.CivilWithoutLegLibraryRepository
                                     .GetWhere(x => CivilWithoutLegLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CivilWithoutLegLibraries.Count > 0)
                                 {
-                                    TableName = "Civil Steel Support Without Legs Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Civil Steel Support Without Legs Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CivilWithoutLegLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // CivilNonSteel..
@@ -581,17 +621,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcivilNonSteelLibrary> CivilNonSteelLibraries = _unitOfWork.CivilNonSteelLibraryRepository
                                     .GetWhere(x => CivilNonSteelLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CivilNonSteelLibraries.Count > 0)
                                 {
-                                    TableName = "Civil Non Steel Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CivilNonSteelLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Civil Non Steel Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CivilNonSteelLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.SideArm.ToString().ToLower())
@@ -603,17 +645,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIsideArmLibrary> SideArmLibraries = _unitOfWork.SideArmLibraryRepository
                                     .GetWhere(x => SideArmLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (SideArmLibraries.Count > 0)
                                 {
-                                    TableName = "Side Arm Library",
-                                    isLibrary = true,
-                                    RecordsAffected = SideArmLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Side Arm Library",
+                                        isLibrary = true,
+                                        RecordsAffected = SideArmLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.MW.ToString().ToLower())
@@ -626,17 +670,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwRFULibrary> MW_RFULibraries = _unitOfWork.MW_RFULibraryRepository
                                     .GetWhere(x => MW_RFULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_RFULibraries.Count > 0)
                                 {
-                                    TableName = "MW_RFU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_RFU Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_RFULibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // MW_Dish..
@@ -647,17 +693,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwDishLibrary> MW_DishLibraries = _unitOfWork.MW_DishLibraryRepository
                                     .GetWhere(x => MW_DishLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_DishLibraries.Count > 0)
                                 {
-                                    TableName = "MW_Dish Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_DishLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_Dish Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_DishLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // MW_BU..
@@ -668,17 +716,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwBULibrary> MW_BULibraries = _unitOfWork.MW_BULibraryRepository
                                     .GetWhere(x => MW_BULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_BULibraries.Count > 0)
                                 {
-                                    TableName = "MW_BU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_BU Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_BULibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // MW_ODU..
@@ -689,17 +739,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwODULibrary> MW_ODULibraries = _unitOfWork.MW_ODULibraryRepository
                                     .GetWhere(x => MW_ODULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_ODULibraries.Count > 0)
                                 {
-                                    TableName = "MW_ODU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_ODULibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_ODU Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_ODULibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // MW_Other..
@@ -710,17 +762,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLImwOtherLibrary> MW_OtherLibraries = _unitOfWork.MW_OtherLibraryRepository
                                     .GetWhere(x => MW_OtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (MW_OtherLibraries.Count > 0)
                                 {
-                                    TableName = "MW_Other Library",
-                                    isLibrary = true,
-                                    RecordsAffected = MW_OtherLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "MW_Other Library",
+                                        isLibrary = true,
+                                        RecordsAffected = MW_OtherLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.Radio.ToString().ToLower())
@@ -733,17 +787,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIradioAntennaLibrary> RadioAntennaLibraries = _unitOfWork.RadioAntennaLibraryRepository
                                     .GetWhere(x => RadioAntennaLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (RadioAntennaLibraries.Count > 0)
                                 {
-                                    TableName = "Radio Antenna Library",
-                                    isLibrary = true,
-                                    RecordsAffected = RadioAntennaLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Radio Antenna Library",
+                                        isLibrary = true,
+                                        RecordsAffected = RadioAntennaLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // RadioRRU..
@@ -754,17 +810,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIradioRRULibrary> RadioRRULibraries = _unitOfWork.RadioRRULibraryRepository
                                     .GetWhere(x => RadioRRULibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (RadioRRULibraries.Count > 0)
                                 {
-                                    TableName = "Radio RRU Library",
-                                    isLibrary = true,
-                                    RecordsAffected = RadioRRULibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Radio RRU Library",
+                                        isLibrary = true,
+                                        RecordsAffected = RadioRRULibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // RadioOther..
@@ -775,17 +833,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIradioOtherLibrary> RadioOtherLibraries = _unitOfWork.RadioOtherLibraryRepository
                                     .GetWhere(x => RadioOtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (RadioOtherLibraries.Count > 0)
                                 {
-                                    TableName = "Radio Other Library",
-                                    isLibrary = true,
-                                    RecordsAffected = RadioOtherLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Radio Other Library",
+                                        isLibrary = true,
+                                        RecordsAffected = RadioOtherLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.Power.ToString().ToLower())
@@ -798,17 +858,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIpowerLibrary> PowerLibraries = _unitOfWork.PowerLibraryRepository
                                     .GetWhere(x => PowerLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (PowerLibraries.Count > 0)
                                 {
-                                    TableName = "Power Load Library",
-                                    isLibrary = true,
-                                    RecordsAffected = PowerLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Power Load Library",
+                                        isLibrary = true,
+                                        RecordsAffected = PowerLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                         }
@@ -822,17 +884,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIloadOtherLibrary> LoadOtherLibraries = _unitOfWork.LoadOtherLibraryRepository
                                     .GetWhere(x => LoadOtherLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (LoadOtherLibraries.Count > 0)
                                 {
-                                    TableName = "Load Other Library",
-                                    isLibrary = true,
-                                    RecordsAffected = LoadOtherLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Load Other Library",
+                                        isLibrary = true,
+                                        RecordsAffected = LoadOtherLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
                         else if (Logistical.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.OtherInventory.ToString().ToLower())
@@ -845,17 +909,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcabinetPowerLibrary> CabinetPowerLibraries = _unitOfWork.CabinetPowerLibraryRepository
                                     .GetWhere(x => CabinetPowerLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CabinetPowerLibraries.Count > 0)
                                 {
-                                    TableName = "Cabinet Power Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Cabinet Power Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CabinetPowerLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // CabinetTelecom..
@@ -866,17 +932,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIcabinetTelecomLibrary> CabinetTelecomLibraries = _unitOfWork.CabinetTelecomLibraryRepository
                                     .GetWhere(x => CabinetTelecomLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (CabinetTelecomLibraries.Count > 0)
                                 {
-                                    TableName = "Cabinet Telecom Library",
-                                    isLibrary = true,
-                                    RecordsAffected = CabinetTelecomLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Cabinet Telecom Library",
+                                        isLibrary = true,
+                                        RecordsAffected = CabinetTelecomLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // Solar..
@@ -887,17 +955,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIsolarLibrary> SolarLibraries = _unitOfWork.SolarLibraryRepository
                                     .GetWhere(x => SolarLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (SolarLibraries.Count > 0)
                                 {
-                                    TableName = "Solar Library",
-                                    isLibrary = true,
-                                    RecordsAffected = SolarLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Solar Library",
+                                        isLibrary = true,
+                                        RecordsAffected = SolarLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
 
                             // Generator..
@@ -908,17 +978,19 @@ namespace TLIS_Service.Services
                             {
                                 List<TLIgeneratorLibrary> GeneratorLibraries = _unitOfWork.GeneratorLibraryRepository
                                     .GetWhere(x => GeneratorLibraryLogisticalItems.Select(x => x.RecordId).Contains(x.Id) && !x.Deleted).ToList();
-
-                                ListOfResponse.Add(new TableAffected()
+                                if (GeneratorLibraries.Count > 0)
                                 {
-                                    TableName = "Generator Library",
-                                    isLibrary = true,
-                                    RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
+                                    ListOfResponse.Add(new TableAffected()
                                     {
-                                        RecordName = x.Model,
-                                        SiteCode = null
-                                    }).ToList()
-                                });
+                                        TableName = "Generator Library",
+                                        isLibrary = true,
+                                        RecordsAffected = GeneratorLibraries.Select(x => new RecordAffected
+                                        {
+                                            RecordName = x.Model,
+                                            SiteCode = null
+                                        }).ToList()
+                                    });
+                                }
                             }
                         }
 

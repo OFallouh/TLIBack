@@ -28444,6 +28444,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                         ExternalSysId = UserId,
                         HistoryTypeId = 4,
                         SiteCode = MWDish.SiteCode,
+                        RecordId = MWInsId.ToString()
                     };
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();
@@ -28913,6 +28914,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                         ExternalSysId = UserId,
                         HistoryTypeId = 4,
                         SiteCode = MWBU.SiteCode,
+                        RecordId = MWInsId.ToString()
                     };
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();
@@ -29165,6 +29167,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                         ExternalSysId = UserId,
                         HistoryTypeId = 4,
                         SiteCode = MWRFU.SiteCode,
+                        RecordId = MWInsId.ToString()
                     };
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();
@@ -29504,6 +29507,8 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                         ExternalSysId = UserId,
                         HistoryTypeId = 4,
                         SiteCode = MWODU.SiteCode,
+                        RecordId = MWInsId.ToString()
+
                     };
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();
@@ -29815,6 +29820,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                         ExternalSysId = UserId,
                         HistoryTypeId = 4,
                         SiteCode = MWOther.SiteCode,
+                        RecordId = MWOtherId.ToString()
                     };
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();

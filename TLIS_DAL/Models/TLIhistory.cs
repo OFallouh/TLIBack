@@ -9,7 +9,7 @@ namespace TLIS_DAL.Models
     public class TLIhistory
     {
         public int Id { get; set; }
-        public string RecordId { get; set; }
+        public string? RecordId { get; set; }
         public int TablesNameId { get; set; }
         public TLItablesNames TablesName { get; set; }
         public int HistoryTypeId { get; set; }
