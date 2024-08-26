@@ -709,7 +709,7 @@ namespace TLIS_Service.Services
                             {
                                 UserEntity.Password = OldPassword;
                             }
-                      
+                            UserEntity.Active = OldUserInfo.Active;
                             _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity);
                             await _unitOfWork.SaveChangesAsync();
 

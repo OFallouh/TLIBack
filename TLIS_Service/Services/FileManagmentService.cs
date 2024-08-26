@@ -11764,7 +11764,8 @@ namespace TLIS_Service.Services
                 var FileName = file.FileName;
 
                 // Check if the file is already exist
-                var FileExists = _unitOfWork.AttachedFilesRepository.GetWhereFirst(x => x.Name == FileName && x.RecordId == Convert.ToInt32(RecordId) && x.SiteCode == SiteCode);
+                var Record = Convert.ToInt32(RecordId);
+                var FileExists = _unitOfWork.AttachedFilesRepository.GetWhereFirst(x => x.Name == FileName && x.RecordId == Record && x.SiteCode == SiteCode);
 
                 // If file exist then return error message 
                 if (FileExists != null)
@@ -11841,7 +11842,8 @@ namespace TLIS_Service.Services
                 if (TableName.Contains("Library"))
                 {
                     cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                    " VALUES ('" + FullFileName + "','" + FilePath + "'," + Convert.ToInt32(RecordId) + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'NA','NA','NA',0)";
+                 " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
                 }
                 else if (TableName.Contains("TLIsite"))
                 {
@@ -11849,13 +11851,13 @@ namespace TLIS_Service.Services
                     {
                         FilePath = Path.Combine($"{asset}\\galleria", $"{FileName}.{FileType}");
                         cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                   " VALUES ('" + FullFileName + "','" + FilePath + "','0'," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+                   " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
 
                     }
                     else
                     {
                         cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                        " VALUES ('" + FullFileName + "','" + FilePath + "','0'," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+                        " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
                     }
                 }
 
@@ -11863,7 +11865,7 @@ namespace TLIS_Service.Services
                 else
                 {
                     cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                    " VALUES ('" + FullFileName + "','" + FilePath + "'," + Convert.ToInt32(RecordId) + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+                    " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
                 }
 
                 connectionString.Open();
