@@ -11925,7 +11925,7 @@ namespace TLIS_Service.Services
             }
         }
         //Get files specific record related to specific table
-        public Response<IEnumerable<AttachedFilesViewModel>> GetFilesByRecordIdAndTableName(int RecordId, string TableName, ParameterPagination parameterPagination,string SiteCode)
+        public Response<IEnumerable<AttachedFilesViewModel>> GetFilesByRecordIdAndTableName(int RecordId, string TableName ,string SiteCode)
         {
             try
             {
@@ -11935,16 +11935,14 @@ namespace TLIS_Service.Services
                 {
 
                     var AttachFiles = _unitOfWork.AttachedFilesRepository.GetWhere(x => x.SiteCode.ToLower() == SiteCode.ToLower() && x.tablesNamesId == TableNameEntity.Id).ToList();
-                    var AttachFileViewModels = _mapper.Map<List<AttachedFilesViewModel>>(AttachFiles.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                   .Take(parameterPagination.PageSize).ToList().ToList());
+                    var AttachFileViewModels = _mapper.Map<List<AttachedFilesViewModel>>(AttachFiles).ToList();
                     int Count = AttachFiles.Count();
                     return new Response<IEnumerable<AttachedFilesViewModel>>(true, AttachFileViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
                 }
                 else
                 {
                    var  AttachFiles = _unitOfWork.AttachedFilesRepository.GetWhere(x => x.RecordId == RecordId && x.tablesNamesId == TableNameEntity.Id).ToList();
-                    var AttachFileViewModels = _mapper.Map<List<AttachedFilesViewModel>>(AttachFiles.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                        .Take(parameterPagination.PageSize).ToList().ToList());
+                    var AttachFileViewModels = _mapper.Map<List<AttachedFilesViewModel>>(AttachFiles).ToList();
                     int Count = AttachFiles.Count();
                     return new Response<IEnumerable<AttachedFilesViewModel>>(true, AttachFileViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
                 }
@@ -11990,7 +11988,7 @@ namespace TLIS_Service.Services
                 return new Response<List<AttachedFilesViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<List<AttachedFilesViewModel>> GetAttachecdFilesBySite(string SiteCode, ParameterPagination parameterPagination)
+        public Response<List<AttachedFilesViewModel>> GetAttachecdFilesBySite(string SiteCode)
         {
             try
             {
@@ -11998,8 +11996,7 @@ namespace TLIS_Service.Services
 
                 int Count = AttachedFiles.Count();
 
-                AttachedFiles = AttachedFiles.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                    .Take(parameterPagination.PageSize).ToList().ToList();
+             
 
                 return new Response<List<AttachedFilesViewModel>>(true, _mapper.Map<List<AttachedFilesViewModel>>(AttachedFiles), null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
             }

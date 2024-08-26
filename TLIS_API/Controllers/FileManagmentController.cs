@@ -169,17 +169,17 @@ namespace TLIS_API.Controllers
        // [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("GetFilesByRecordIdAndTableNameInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult GetFilesByRecordIdAndTableName(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination, string SiteCode)
+        public IActionResult GetFilesByRecordIdAndTableName(int RecordId, string TableName, string SiteCode)
         {
-            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, parameterPagination, SiteCode);
+            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, SiteCode);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetFilesByRecordIdAndTableNameLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult GetFilesByRecordIdAndTableNameLibrary(int RecordId, string TableName, [FromQuery] ParameterPagination parameterPagination,string SiteCode)
+        public IActionResult GetFilesByRecordIdAndTableNameLibrary(int RecordId, string TableName,string SiteCode)
         {
-            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, parameterPagination, SiteCode);
+            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, SiteCode);
             return Ok(response);
         }
         [HttpPost("GetAttachecdFiles")]
@@ -192,9 +192,9 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("GetAttachecdFilesBySite")]
         [ProducesResponseType(200, Type = typeof(Response<List<AttachedFilesViewModel>>))]
-        public IActionResult GetAttachecdFilesBySite(string SiteCode, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetAttachecdFilesBySite(string SiteCode )
         {
-            var response = _unitOfWorkService.FileManagmentService.GetAttachecdFilesBySite(SiteCode, parameterPagination);
+            var response = _unitOfWorkService.FileManagmentService.GetAttachecdFilesBySite(SiteCode);
             return Ok(response);
         }
         [HttpPost("AttachedUnAttached")]
