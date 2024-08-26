@@ -12008,7 +12008,7 @@ namespace TLIS_Service.Services
             {
                 int Count = 0;
                 List<ConfigurationAttsViewModel> ConfigurationAtts = new List<ConfigurationAttsViewModel>();
-                if (ConfigrationTables.BasePlateShape.ToString() == TableName)
+                if (ConfigrationTables.BasePlateShape.ToString().ToLower() == TableName.ToLower())
                 {
                     var enumNames = Enum.GetNames(typeof(BasePlateShape)).ToList();
 
@@ -12022,7 +12022,7 @@ namespace TLIS_Service.Services
                         Manage = false
                     }).ToList();
                 }
-                else if (ConfigrationTables.LadderSteps.ToString() == TableName)
+                else if (ConfigrationTables.LadderSteps.ToString().ToLower() == TableName.ToLower())
                 {
                     var enumNames = Enum.GetNames(typeof(LadderSteps)).ToList();
 
@@ -12036,7 +12036,7 @@ namespace TLIS_Service.Services
                         Manage = false
                     }).ToList();
                 }
-                else if (ConfigrationTables.EquipmentsLocation.ToString() == TableName)
+                else if (ConfigrationTables.EquipmentsLocation.ToString().ToLower() == TableName.ToLower())
                 {
                     var enumNames = Enum.GetNames(typeof(EquipmentsLocation)).ToList();
 
