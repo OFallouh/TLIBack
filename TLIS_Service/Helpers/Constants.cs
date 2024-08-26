@@ -2666,6 +2666,10 @@ namespace TLIS_Service.Helpers
             EquipmentsLocation,
             [Description("TLIcivilWithoutLeg")]
             LadderSteps,
+            [Description("TLImwRFULibrary")]
+            RFUType,
+            [Description("TLIcabinetPowerLibrary")]
+            IntegratedWith,
 
         }
 

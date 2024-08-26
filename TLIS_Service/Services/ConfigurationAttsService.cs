@@ -12050,6 +12050,34 @@ namespace TLIS_Service.Services
                         Manage = false
                     }).ToList();
                 }
+                else if (ConfigrationTables.RFUType.ToString().ToLower() == TableName.ToLower())
+                {
+                    var enumNames = Enum.GetNames(typeof(RFUType)).ToList();
+
+
+                    ConfigurationAtts = enumNames.Select((name, index) => new ConfigurationAttsViewModel
+                    {
+                        Id = index,
+                        Name = name,
+                        TableName = TableName,
+                        Disable = false,
+                        Manage = false
+                    }).ToList();
+                }
+                else if (ConfigrationTables.IntegratedWith.ToString().ToLower() == TableName.ToLower())
+                {
+                    var enumNames = Enum.GetNames(typeof(IntegratedWith)).ToList();
+
+
+                    ConfigurationAtts = enumNames.Select((name, index) => new ConfigurationAttsViewModel
+                    {
+                        Id = index,
+                        Name = name,
+                        TableName = TableName,
+                        Disable = false,
+                        Manage = false
+                    }).ToList();
+                }
                 else if (ConfigrationTables.TLItelecomType.ToString() == TableName)
                 {
                     ConfigurationAtts = _unitOfWork.TelecomTypeRepository.GetWhere(x => !x.Deleted && x.Id > 0).Select(x => new ConfigurationAttsViewModel
