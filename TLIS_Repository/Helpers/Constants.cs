@@ -103,6 +103,7 @@ namespace TLIS_Repository.Helpers
             TLIbaseCivilWithLegsType,
             TLIbaseGeneratorType,
             TLIboardType,
+            TLIloadOtherLibrary,
             TLIcabinet,
             TLIcabinetPowerLibrary,
             TLIcabinetPowerType,
@@ -115,6 +116,7 @@ namespace TLIS_Repository.Helpers
             TLIcivilSteelSupportCategory,
             TLIcivilType,
             TLIcivilWithLegLibrary,
+            TLImwOtherLibrary,
             TLIcivilWithLegs,
             TLIcivilWithoutLeg,
             TLIcivilWithoutLegCategory,
@@ -192,7 +194,15 @@ namespace TLIS_Repository.Helpers
             TLIsideArm,
             TLIpower,
             TLIcivilSupportDistance,
-            TLIcivilLoads
+            TLIcivilLoads,
+            TLImwBU,
+            TLImwOther,
+            TLIloadOther,
+            TLImwODU,
+            TLImwDish,
+            TLImwRFU,
+            TLIcabinetTelecom,
+            TLIcabinetPower,
         }
     }
 }

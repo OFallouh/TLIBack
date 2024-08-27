@@ -67,6 +67,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics.Contracts;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
+using System.Runtime.CompilerServices;
 
 namespace TLIS_Service.Services
 {
@@ -148,31 +149,26 @@ namespace TLIS_Service.Services
                                     CivilWithLegEntites.NumberOfLegs = 4;
 
                                 CivilWithLegEntites.Model = model;
-                                
-                                string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilWithLegsLibraryObject, TableName);
+                                var HistoryId = _unitOfWork.CivilWithLegLibraryRepository.AddWithH(UserId, null, CivilWithLegEntites);
 
-                                if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                                    return new Response<AddCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                string CheckGeneralValidation = CheckGeneralValidationFunctionLib(AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.TableName);
-
-                                if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-
-                               var HistoryId= _unitOfWork.CivilWithLegLibraryRepository.AddWithH(UserId,null, CivilWithLegEntites);
-                                    
                                 _unitOfWork.SaveChanges();
+
+                                if (AddCivilWithLegsLibraryObject.dynamicAttributes != null ? AddCivilWithLegsLibraryObject.dynamicAttributes.Count > 0 : false)
+                                {
+                                    foreach (var item in AddCivilWithLegsLibraryObject.dynamicAttributes)
+                                    {
+                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CivilWithLegEntites.Id, HistoryId).Message;
+                                        if(Message != "Success")
+                                          return new Response<AddCivilWithLegsLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.success);
+                                        
+                                    }
+
+                                    
+                                }
 
                                 dynamic LogisticalItemIds = new ExpandoObject();
                                 LogisticalItemIds = AddCivilWithLegsLibraryObject.logisticalItems;
                                 AddLogisticalItemWithCivilH(UserId,LogisticalItemIds, CivilWithLegEntites, TableNameEntity.Id, HistoryId);
-
-                                if (AddCivilWithLegsLibraryObject.dynamicAttributes != null ? AddCivilWithLegsLibraryObject.dynamicAttributes.Count > 0 : false)
-                                {
-                                    _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, AddCivilWithLegsLibraryObject.dynamicAttributes, TableNameEntity.Id, CivilWithLegEntites.Id, connectionString, HistoryId);
-                                }
-                                
                                 
                             }
                             
@@ -1766,17 +1762,17 @@ namespace TLIS_Service.Services
                     
                    var HistoryId=_unitOfWork.CivilWithLegLibraryRepository.UpdateWithH(userId,null, CivilWithLegLib, CivilWithLegLibraryEntites);
 
-
-                    string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
-                    if (!string.IsNullOrEmpty(CheckDependencyValidation))
+                    if (editCivilWithLegsLibrary.dynamicAttributes != null ? editCivilWithLegsLibrary.dynamicAttributes.Count > 0 : false)
                     {
-                        return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    }
+                        foreach (var item in editCivilWithLegsLibrary.dynamicAttributes)
+                        {
+                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CivilWithLegLibraryEntites.Id, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<EditCivilWithLegsLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.success);
 
-                    string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
-                    if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    {
-                        return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+
+
                     }
 
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
