@@ -553,7 +553,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_FileManagmentService == null)
-                    _FileManagmentService = new FileManagmentService(_unitOfWork, _services, _config,_mapper);
+                    _FileManagmentService = new FileManagmentService(_unitOfWork, _services,db, _config,_mapper);
                 return _FileManagmentService;
             }
         }

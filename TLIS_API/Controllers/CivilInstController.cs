@@ -105,20 +105,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, connectionString, userId,null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, connectionString, null,username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -167,20 +157,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+            
             else
             {
                 return Unauthorized();
@@ -213,20 +193,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -259,20 +229,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+            
             else
             {
                 return Unauthorized();
@@ -305,20 +265,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+        
             else
             {
                 return Unauthorized();

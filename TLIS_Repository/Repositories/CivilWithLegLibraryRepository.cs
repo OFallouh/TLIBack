@@ -45,9 +45,9 @@ namespace TLIS_Repository.Repositories
             List<DropDownListFilters> structureTypeFilters = _mapper.Map<List<DropDownListFilters>>(structureType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("structureTypeId", structureTypeFilters));
 
-            var civilSteelSupportCategory = _context.TLIcivilSteelSupportCategory.AsNoTracking().ToList();
-            List<DropDownListFilters> civilSteelSupportCategoryFilters = _mapper.Map<List<DropDownListFilters>>(civilSteelSupportCategory);
-            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("civilSteelSupportCategoryId", civilSteelSupportCategoryFilters));
+            //var civilSteelSupportCategory = _context.TLIcivilSteelSupportCategory.AsNoTracking().ToList();
+            //List<DropDownListFilters> civilSteelSupportCategoryFilters = _mapper.Map<List<DropDownListFilters>>(civilSteelSupportCategory);
+            //RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("civilSteelSupportCategoryId", civilSteelSupportCategoryFilters));
 
             var Suppliers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                 .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Supplier.ToString().ToLower() && !x.logisticalType.Disable &&
@@ -69,6 +69,15 @@ namespace TLIS_Repository.Repositories
 
             var Vendors = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Vendor.ToString().ToLower() && !x.logisticalType.Disable &&
+                   !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.CivilSupport.ToString().ToLower()).ToList();
+
+
+            var Contractor = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
+               .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Contractor.ToString().ToLower() && !x.logisticalType.Disable &&
+                   !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.CivilSupport.ToString().ToLower()).ToList();
+
+            var Conultant = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
+               .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Conultant.ToString().ToLower() && !x.logisticalType.Disable &&
                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.CivilSupport.ToString().ToLower()).ToList();
             List<DropDownListFilters> VendorsFilters = _mapper.Map<List<DropDownListFilters>>(Vendors);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Vendors", VendorsFilters));

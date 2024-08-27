@@ -104,14 +104,11 @@ namespace TLIS_Service.Services
         //Get activated attributes for installation table
         //Get dynamic attributes for table name
         //Get related tables
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode, int? UserId)
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
+                
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
                     x.TableName == TableName);
 
@@ -195,15 +192,8 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+
+                   
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -217,14 +207,11 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode,int? UserId,string UserName)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode,int? UserId)
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
+               
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
                     x.TableName == TableName);
 
@@ -295,15 +282,7 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                   
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -317,14 +296,11 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWOtherInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWOtherInstallation(string TableName, int LibraryID, string SiteCode, int? UserId )
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
+               
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
                     x.TableName == TableName);
 
@@ -364,15 +340,7 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                    
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -386,14 +354,11 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWRFUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWRFUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId)
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
+               
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
                     x.TableName == TableName);
 
@@ -486,15 +451,7 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                 
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -508,14 +465,10 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWODUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWODUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId )
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x =>
                     x.TableName == TableName);
 
@@ -577,15 +530,7 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                    .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                  
 
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
@@ -4628,16 +4573,13 @@ namespace TLIS_Service.Services
             return string.Empty;
         }
         #endregion    
-        public Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName)
+        public Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
-                    if (UserId == null)
-                    {
-                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                    }
+                   
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
@@ -4815,16 +4757,7 @@ namespace TLIS_Service.Services
                        
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwDish").Id;
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TabelNameId,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                   
                 }
                 catch (Exception err)
                 {
@@ -4833,16 +4766,13 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetEnableAttribute> GetMWOtherInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName)
+        public Response<GetEnableAttribute> GetMWOtherInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
-                    if (UserId == null)
-                    {
-                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                    }
+                  
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
@@ -4996,16 +4926,7 @@ namespace TLIS_Service.Services
                         
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwOther").Id;
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TabelNameId,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                    
                 }
                 catch (Exception err)
                 {
@@ -5014,16 +4935,13 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetEnableAttribute> GetMWRFUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName)
+        public Response<GetEnableAttribute> GetMWRFUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
-                    if (UserId == null)
-                    {
-                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                    }
+                   
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
@@ -5175,16 +5093,7 @@ namespace TLIS_Service.Services
                         
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwRFU").Id;
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TabelNameId,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                    
                 }
                 catch (Exception err)
                 {
@@ -5193,16 +5102,13 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName)
+        public Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
-                    if (UserId == null)
-                    {
-                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                    }
+                    
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWODU";
@@ -5354,16 +5260,7 @@ namespace TLIS_Service.Services
                         
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwODU").Id;
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TabelNameId,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                    
                 }
                 catch (Exception err)
                 {
@@ -5372,16 +5269,13 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName)
+        public Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
-                    if (UserId == null)
-                    {
-                        UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                    }
+                   
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
                     //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWODU";
@@ -5549,16 +5443,7 @@ namespace TLIS_Service.Services
                        
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
-                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLImwBU").Id;
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TabelNameId,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                   
                 }
                 catch (Exception err)
                 {
@@ -28060,14 +27945,11 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWDishInstallationById(int MWInsId, string TableName, int? UserId, string UserName)
+        public Response<GetForAddLoadObject> GetMWDishInstallationById(int MWInsId, string TableName, int? UserId )
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
+               
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
                 GetForAddLoadObject objectInst = new GetForAddLoadObject();
                 List<BaseInstAttViews> Civilload = new List<BaseInstAttViews>();
@@ -28438,16 +28320,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWDish.SiteCode,
-                        RecordId = MWInsId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                   
 
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
@@ -28463,14 +28336,11 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWBUInstallationById(int MWInsId, string TableName, int? UserId, string UserName)
+        public Response<GetForAddLoadObject> GetMWBUInstallationById(int MWInsId, string TableName, int? UserId )
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
+               
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
                 GetForAddLoadObject objectInst = new GetForAddLoadObject();
                 List<BaseInstAttViews> Civilload = new List<BaseInstAttViews>();
@@ -28908,16 +28778,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWBU.SiteCode,
-                        RecordId = MWInsId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                  
 
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
@@ -28933,14 +28794,11 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWRFUInstallationById(int MWInsId, string TableName, int? UserId, string UserName)
+        public Response<GetForAddLoadObject> GetMWRFUInstallationById(int MWInsId, string TableName, int? UserId )
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
+               
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
                 GetForAddLoadObject objectInst = new GetForAddLoadObject();
                 List<BaseInstAttViews> Civilload = new List<BaseInstAttViews>();
@@ -29161,16 +29019,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWRFU.SiteCode,
-                        RecordId = MWInsId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                    
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else
@@ -29185,7 +29034,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName, int? UserId, string UserName)
+        public Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName, int? UserId)
         {
             try
             {
@@ -29501,17 +29350,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWODU.SiteCode,
-                        RecordId = MWInsId.ToString()
-
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                  
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else
@@ -29526,38 +29365,11 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        #region AddHistory
-        //public void AddHistory(TicketAttributes ticketAtt, int allLoadInstId, string historyType)
-        //{
-        //    if (ticketAtt != null)
-        //    {
-
-        //        AddWorkflowHistoryViewModel workflowhistory = _mapper.Map<AddWorkflowHistoryViewModel>(ticketAtt);
-        //        workflowhistory.RecordId = allLoadInstId;
-        //        workflowhistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIallLoadInst").Id;
-        //        workflowhistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereSelectFirst(x => x.Name == historyType, x => new { x.Id }).Id;
-        //        workflowhistory.UserId = 83;
-        //        _unitOfWork.WorkflowHistoryRepository.AddWorkflowHistory(workflowhistory);
-        //    }
-        //    else
-        //    {
-        //        AddTablesHistoryViewModel history = new AddTablesHistoryViewModel();
-        //        history.RecordId = allLoadInstId;
-        //        history.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIallLoadInst").Id;
-        //        history.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereSelectFirst(x => x.Name == historyType, x => new { x.Id }).Id;
-        //        history.UserId = 83;
-        //        _unitOfWork.TablesHistoryRepository.AddTableHistory(history);
-        //    }
-        //}
-        #endregion
-        public Response<GetForAddLoadObject> GetMWOtherInstallationById(int MWOtherId, string TableName, int? UserId, string UserName)
+        public Response<GetForAddLoadObject> GetMWOtherInstallationById(int MWOtherId, string TableName, int? UserId)
         {
             try
             {
-                if (UserId == null)
-                {
-                    UserId = _dbContext.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
-                }
+               
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
                 GetForAddLoadObject objectInst = new GetForAddLoadObject();
                 List<BaseInstAttViews> Civilload = new List<BaseInstAttViews>();
@@ -29814,16 +29626,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWOtherId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWOther.SiteCode,
-                        RecordId = MWOtherId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                    
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else

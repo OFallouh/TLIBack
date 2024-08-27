@@ -24,23 +24,23 @@ namespace TLIS_Service.IService
     public interface IMWInstService
     {
         Response<GetForAddMWDishInstallationObject> AddMWRFUInstallation(object AddMWRFUInstallation, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId);
-        Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
-        Response<GetForAddMWDishInstallationObject> GetAttForAddMWRFUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
-        Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode, int? UserId);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWRFUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId);
+        Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWOtherInstallation(int UserId, EditMWOtherInstallationObject editmwOtherInstallationObject, string TableName, int? TaskId, string ConnectionString);
-        Response<GetForAddLoadObject> GetMWOtherInstallationById(int MWOtherId, string TableName, int? UserId, string UserName);
-        Response<GetEnableAttribute> GetMWRFUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
-        Response<GetEnableAttribute> GetMWOtherInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
-        Response<GetForAddMWDishInstallationObject> GetAttForAddMWOtherInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
-        Response<GetForAddLoadObject> GetMWBUInstallationById(int MWInsId, string TableName, int? UserId, string UserName);
-        Response<GetForAddLoadObject> GetMWRFUInstallationById(int MWInsId, string TableName, int? UserId, string UserName);
+        Response<GetForAddLoadObject> GetMWOtherInstallationById(int MWOtherId, string TableName, int? UserId);
+        Response<GetEnableAttribute> GetMWRFUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
+        Response<GetEnableAttribute> GetMWOtherInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWOtherInstallation(string TableName, int LibraryID, string SiteCode, int? UserId);
+        Response<GetForAddLoadObject> GetMWBUInstallationById(int MWInsId, string TableName, int? UserId);
+        Response<GetForAddLoadObject> GetMWRFUInstallationById(int MWInsId, string TableName, int? UserId);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWRFUInstallation(EditMWRFUInstallationObject editMWRFUInstallationObject, string TableName, string ConnectionString, int? TaskId, int UserId);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWBUInstallation(int UserId, EditMWBUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString);
-        Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString);
-        Response<GetForAddMWDishInstallationObject> GetAttForAddMWODUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWODUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWInstallation(int UserId, object MWInstallationViewModel, string TableName, int? TaskId);
-        Response<GetForAddLoadObject> GetMWDishInstallationById(int MWInsId, string TableName, int? UserId, string UserName);
+        Response<GetForAddLoadObject> GetMWDishInstallationById(int MWInsId, string TableName, int? UserId );
         Task<Response<GetForAddMWDishInstallationObject>> EditMWDishInstallation(int UserId, EditMWDishInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString);
         Response<ObjectInstAtts> GetAttForAdd(string TableName, int LibraryID, string SiteCode);
         Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId, string connectionString);
@@ -54,10 +54,10 @@ namespace TLIS_Service.IService
         Response<List<InstallationPlaceViewModel>> GetInstallationPlaces(string TableName, string LoadType);
         Response<List<MW_PortViewModel>> GetMW_PortsForMW_RFUInstallation(int AllCivilInstId);
         Response<List<MW_BULibraryViewModel>> GetMW_BULibrariesForMW_BUInstallation();
-        Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId );
 
         Response<List<MW_Free_BUInstDto>> GetMw_Free_BuInst(int AllCivilInstId);
-        Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName, int? UserId, string UserName);
+        Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName, int? UserId);
         Response<List<MW_Free_BUInstDto>> GetMw_Free_Cascade_BuInst(int AllCivilInstId);
 
         Response<List<MW_PortViewModel>> GetFreePortOnBU(int BUid);
@@ -65,6 +65,6 @@ namespace TLIS_Service.IService
 
         Response<ObjectInstAtts> GetAttForAddForMW_ODUOnly(string TableName, int LibraryID, string SiteCode, int AllCivilInstId);
         Response<List<MW_PortViewModel>> GetPortCascadedByBUId(int BUId, int? MainBUId);
-        Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
     }
 }

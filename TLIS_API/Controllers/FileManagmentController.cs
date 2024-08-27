@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using TLIS_DAL.Helper;
 using TLIS_API.Middleware.WorkFlow;
+using System.IdentityModel.Tokens.Jwt;
+using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 
 namespace TLIS_API.Controllers
 {
@@ -93,10 +95,31 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult ImportFile(string TableName = null, int? CategoryId = null)
         {
-            var file = Request.Form.Files[0];
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.FileManagmentService.ImportFile(file, TableName,CategoryId, ConnectionString);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+            var file = Request.Form.Files[0];
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+
+           
+            var response = _unitOfWorkService.FileManagmentService.ImportFile(file, TableName, CategoryId, ConnectionString, userId);
             return Ok(response);
+          
+           
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AttachFileInstallation")]

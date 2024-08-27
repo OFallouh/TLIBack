@@ -6197,14 +6197,7 @@ namespace TLIS_Service.Services
                    });
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId=UserId,
-                        HistoryTypeId=4,
-                    };
-                    db.TLIhistory.Add(tLIhistory);
-                    db.SaveChanges();
+                   
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
                 {
@@ -6246,14 +6239,7 @@ namespace TLIS_Service.Services
                    });
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                    };
-                    db.TLIhistory.Add(tLIhistory);
-                    db.SaveChanges();
+                   
                 }
                 else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
                 {
@@ -6295,14 +6281,7 @@ namespace TLIS_Service.Services
                    });
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-                    TLIhistory tLIhistory = new TLIhistory()
-                    {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                    };
-                    db.TLIhistory.Add(tLIhistory);
-                    db.SaveChanges();
+                   
                 }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }

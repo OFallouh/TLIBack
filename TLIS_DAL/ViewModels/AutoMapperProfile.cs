@@ -287,6 +287,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<EditInstallationLoadOtherAttributeObject, TLIloadOther>().ReverseMap();
             CreateMap<InstallationMWRFUConfigObject, TLImwRFU>().ReverseMap();
             CreateMap<installationAttributesMWDRFUObject, TLImwRFU>().ReverseMap();
+            CreateMap<AddAsTypeViewModel, TLIoduInstallationType>().ReverseMap();
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

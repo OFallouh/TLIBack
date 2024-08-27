@@ -31,6 +31,9 @@ using System.Xml.Linq;
 using Org.BouncyCastle.Utilities.Zlib;
 using Microsoft.Extensions.Primitives;
 using TLIS_DAL.ViewModels.LogisticalitemDTOs;
+using Org.BouncyCastle.Bcpg;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 
 
 namespace TLIS_Service.Services
@@ -40,17 +43,18 @@ namespace TLIS_Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
-
+        private readonly ApplicationDbContext _dbContext;
         IServiceCollection _services;
         ServiceProvider _serviceProvider;
         private IMapper _mapper;
-        public FileManagmentService(IUnitOfWork unitOfWork, IServiceCollection services, IConfiguration configuration, IMapper mapper)
+        public FileManagmentService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IConfiguration configuration, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _services = services;
             _serviceProvider = _services.BuildServiceProvider();
             _configuration = configuration;
             _mapper = mapper;
+            _dbContext = context;
         }
         //Function take 3 parameters 
         //First TableName to specify the table i deal with
@@ -301,7 +305,7 @@ namespace TLIS_Service.Services
         //Function take 2 parameters 
         //First FilePath refer to document i deal with
         //Second TableName refer to table i deal with
-        public Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, int? CategoryId, string ConnectionString)
+        public Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, int? CategoryId, string ConnectionString,int UserId)
         {
 
             using (var connection = new OracleConnection(ConnectionString))
@@ -448,7 +452,7 @@ namespace TLIS_Service.Services
                                 }
                                 List<int> RecordId = new List<int>();
                                 var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableNameEntity.TableName).Id;
-                                SaveCivilWithLegLibraryUsingOracleBulkCopy(out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
+                                SaveCivilWithLegLibraryUsingOracleBulkCopy(UserId,out RecordId, dt, ref UnsavedRows, ActColumns, Columns, sheet, RelatedTables, TableNameEntity, connection);
                                 if (UnsavedRows != null && UnsavedRows.Count != 0)
                                 {
                                     return new Response<List<KeyValuePair<int, string>>>(false, UnsavedRows, null, UnsavedRows[0].Value, (int)Helpers.Constants.ApiReturnCode.fail);
@@ -1216,7 +1220,7 @@ namespace TLIS_Service.Services
         //}
 
         /* Done*/
-        private void SaveCivilWithLegLibraryUsingOracleBulkCopy(out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SaveCivilWithLegLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
 
             try
@@ -1244,7 +1248,7 @@ namespace TLIS_Service.Services
                 List<int> sectionsLegTypeIds = new List<int>();
                 List<int?> structureTypeIds = new List<int?>();
                 List<int?> NumberOfLegss = new List<int?>();
-                List<int> civilSteelSupportCategoryIds = new List<int>();
+               
 
                 //Create list of key and value
                 //key refer to dynamic attribute id
@@ -1306,7 +1310,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        float? heightdesigned_test = null;
+                        float heightdesigned_test = 0;
                         if (dt.Columns.Contains("Height_Designed"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["Height_Designed"].ToString()))
@@ -1325,7 +1329,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        float? Manufactured_Max_Load_test = null;
+                        float Manufactured_Max_Load_test = 0;
                         if (dt.Columns.Contains("Manufactured_Max_Load"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["Manufactured_Max_Load"].ToString()))
@@ -1344,7 +1348,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        float? maxloadm2_test = null;
+                        float maxloadm2_test = 0;
                         if (dt.Columns.Contains("Max_load_M2"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["Max_load_M2"].ToString()))
@@ -1363,7 +1367,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        int? NumberOfLegs_test = null;
+                        int NumberOfLegs_test = 0;
                         if (dt.Columns.Contains("NumberOfLegs"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["NumberOfLegs"].ToString()))
@@ -1426,7 +1430,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        int? structuretypeId_test = null;
+                        int structuretypeId_test = 0;
                         if (dt.Columns.Contains("structureTypeId"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["structureTypeId"].ToString()))
@@ -1445,24 +1449,7 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        int civilSteelsupportcategoryId_test = 0;
-
-                        if (dt.Columns.Contains("civilSteelSupportCategoryId"))
-                        {
-                            DropDownListFilters civilSteelSupportCategory = RelatedTables.FirstOrDefault(x =>
-                           x.Key == "civilSteelSupportCategoryId").Value.FirstOrDefault(x =>
-                               x.Value == dt.Rows[j]["civilSteelSupportCategoryId"].ToString());
-
-                            if (civilSteelSupportCategory != null)
-                            {
-                                civilSteelsupportcategoryId_test = Convert.ToInt32(civilSteelSupportCategory.Id);
-                            }
-                            else
-                            {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"CivilSteelSupportCategoryId Wrong Input Value in the row {j + 2}"));
-                                goto ERROR;
-                            }
-                        }
+                      
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         //check if there are dynamic attributes
@@ -1538,6 +1525,7 @@ namespace TLIS_Service.Services
                                             if (DA.DataType.Name.ToLower() == "string")
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
+                                                
                                             }
                                             else if (DA.DataType.Name.ToLower() == "double")
                                             {
@@ -1594,18 +1582,17 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        models.Add(model_test != null ? model_test : "NA");
-                        notes.Add(note_test != null ? note_test : "NA");
-                        prefixes.Add(prefix_test != null ? prefix_test : "NA");
-                        HeightsDesigned.Add(heightdesigned_test != null ? heightdesigned_test.Value : (float?)0);
-                        maxloadsm2.Add(maxloadm2_test != null ? maxloadm2_test.Value : (float?)0);
-                        ManufacturedMaxLoad.Add(Manufactured_Max_Load_test != null ? Manufactured_Max_Load_test.Value : (float?)0);
+                        models.Add(model_test != null ? model_test : " ");
+                        notes.Add(note_test != null ? note_test : " ");
+                        prefixes.Add(prefix_test != null ? prefix_test : " ");
+                        HeightsDesigned.Add(heightdesigned_test != null ? heightdesigned_test : (float?)0);
+                        maxloadsm2.Add(maxloadm2_test != null ? maxloadm2_test : (float?)0);
+                        ManufacturedMaxLoad.Add(Manufactured_Max_Load_test != null ? Manufactured_Max_Load_test : (float?)0);
                         SpaceLibraries.Add(spacelibrary_test != null ? spacelibrary_test : 0);
                         supportTypeDesignedIds.Add(supporttypedesignedId_test != null ? supporttypedesignedId_test : 0);
                         NumberOfLegss.Add(NumberOfLegs_test != null ? NumberOfLegs_test : 0);
                         sectionsLegTypeIds.Add(sectionslegtypeId_test != null ? sectionslegtypeId_test : 0);
                         structureTypeIds.Add(structuretypeId_test != null ? structuretypeId_test : 0);
-                        civilSteelSupportCategoryIds.Add(civilSteelsupportcategoryId_test != null ? civilSteelsupportcategoryId_test : 0);
 
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
@@ -1666,9 +1653,6 @@ namespace TLIS_Service.Services
                     structureTypeId.OracleDbType = OracleDbType.Int32;
                     structureTypeId.Value = structureTypeIds.ToArray();
 
-                    OracleParameter civilSteelSupportCategoryId = new OracleParameter();
-                    civilSteelSupportCategoryId.OracleDbType = OracleDbType.Int32;
-                    civilSteelSupportCategoryId.Value = civilSteelSupportCategoryIds.ToArray();
 
                     OracleParameter NumberOfLegSS = new OracleParameter();
                     NumberOfLegSS.OracleDbType = OracleDbType.Int32;
@@ -1678,19 +1662,20 @@ namespace TLIS_Service.Services
                     OracleCommand cmd = connection.CreateCommand();
                     cmd.CommandText = "INSERT INTO \"TLIcivilWithLegLibrary\" (\"Model\", \"Note\", \"Prefix\", \"Height_Designed\", \"Max_load_M2\", \"SpaceLibrary\", \"supportTypeDesignedId\", \"sectionsLegTypeId\", \"structureTypeId\", \"civilSteelSupportCategoryId\",\"Manufactured_Max_Load\",\"NumberOfLegs\") VALUES ( :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11 , :12)";
                     cmd.ArrayBindCount = models.Count;
-                    cmd.Parameters.Add(model != null ? model : "NA");
-                    cmd.Parameters.Add(note != null ? note : "NA");
-                    cmd.Parameters.Add(prefixe != null ? prefixe : "NA");
+                    cmd.Parameters.Add(model != null ? model : " ");
+                    cmd.Parameters.Add(note != null ? note : " ");
+                    cmd.Parameters.Add(prefixe != null ? prefixe : " ");
                     cmd.Parameters.Add(HeightDesigned != null ? HeightDesigned : (float?)0);
                     cmd.Parameters.Add(maxloadm2 != null ? maxloadm2 : 0);
                     cmd.Parameters.Add(SpaceLibrary != null ? SpaceLibrary : 0);
-                    cmd.Parameters.Add(supportTypeDesignedId != null ? supportTypeDesignedId : 0);
-                    cmd.Parameters.Add(sectionsLegTypeId != null ? sectionsLegTypeId : 0);
-                    cmd.Parameters.Add(structureTypeId != null ? structureTypeId : 0);
-                    cmd.Parameters.Add(civilSteelSupportCategoryId != null ? civilSteelSupportCategoryId : 0);
+                    cmd.Parameters.Add(supportTypeDesignedId != null ? supportTypeDesignedId : null);
+                    cmd.Parameters.Add(sectionsLegTypeId != null ? sectionsLegTypeId : null);
+                    cmd.Parameters.Add(structureTypeId != null ? structureTypeId : null);
+                    cmd.Parameters.Add(new OracleParameter(":10", OracleDbType.Int32) { Value = DBNull.Value });
                     cmd.Parameters.Add(ManufacturedMaxLoads != null ? ManufacturedMaxLoads : 0);
                     cmd.Parameters.Add(NumberOfLegSS != null ? NumberOfLegSS : 0);
                     cmd.ExecuteNonQuery();
+                   
                     //connection.Close();
                     List<int> InsertedIds = new List<int>();
                     //Check if LastId is null then table is empty
@@ -1722,170 +1707,239 @@ namespace TLIS_Service.Services
                                 InsertedIds.Add(Reader.GetInt32(0));
                             }
                         }
+
                     }
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        UserId = UserId,
+                        TablesNameId = TableNameEntity.Id,
+                        HistoryTypeId = 1,
+
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
+
+                    foreach (int recordId in InsertedIds)
+                    {
+                        var RecordName = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == recordId);
+                        if (RecordName != null)
+                        {
+                            var attributeNames = RecordName.GetType().GetProperties()
+                                .Where(x =>
+                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                        new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                        .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                    .Contains(x.PropertyType)
+                                )
+                                .ToList();
+
+                            foreach (var propertyInfo in attributeNames)
+                            {
+                                // احصل على اسم الخاصية
+                                var propertyName = propertyInfo.Name;
+
+                                // احصل على قيمة الخاصية
+                                var propertyValue = propertyInfo.GetValue(RecordName)?.ToString().Trim();
+
+                                // إنشاء كائن TLIhistoryDet
+                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                {
+                                    HistoryId = tLIhistory.Id,
+                                    TablesNameId = TableNameEntity.Id,
+                                    RecordId = recordId.ToString(),
+                                    AttributeName = propertyName,
+                                    NewValue = propertyValue
+                                };
+
+                                // أضف الكائن إلى السياق
+                                _dbContext.TLIhistoryDet.Add(tLIhistoryDet);
+                            }
+                        }
+                    }
+
+
+                    // بعد إضافة جميع السجلات، احفظ التغييرات
+                    _dbContext.SaveChanges();
+
                     //loop on each dynamic attribute
                     foreach (var DynamicAtt in DynamicAtts)
                     {
-                        List<string> StringValues = new List<string>();
-                        List<int> IntValues = new List<int>();
-                        List<double> DoubleValues = new List<double>();
-                        List<DateTime> DateTimeValues = new List<DateTime>();
-                        List<Int32> BooleanValues = new List<Int32>();
-                        List<int> DynamicAttIds = new List<int>();
-                        List<bool> disables = new List<bool>();
-                        List<int?> sideArmLibIds = new List<int?>();
-                        List<int?> sideArmLibraryIds = new List<int?>();
-                        List<int> InventoryIds = new List<int>();
-                        List<int> tablesNamesIds = new List<int>();
-                        if (DynamicAtt.Item2 == "string")
+                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
                         {
-                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
-                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                                {
-                                    StringValues.Add(DynamicAtt.Item3[k].ToString());
-                                    DynamicAttIds.Add(DynamicAtt.Item1);
-                                    disables.Add(false);
-                                    sideArmLibIds.Add(null);
-                                    sideArmLibraryIds.Add(null);
-                                    InventoryIds.Add(Convert.ToInt32(InsertedIds[k]));
-                                    tablesNamesIds.Add(TableNameEntity.Id);
-                                }
+
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                if (Message != "Success")
+                                    goto ERROR;
+
                             }
-                        }
-                        else if (DynamicAtt.Item2 == "double")
-                        {
-                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                            {
-                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                                {
-                                    DoubleValues.Add(Convert.ToInt32(DynamicAtt.Item3[k]));
-                                    DynamicAttIds.Add(DynamicAtt.Item1);
-                                    disables.Add(false);
-                                    sideArmLibIds.Add(null);
-                                    sideArmLibraryIds.Add(null);
-                                    InventoryIds.Add(Convert.ToInt32(InsertedIds[k]));
-                                    tablesNamesIds.Add(TableNameEntity.Id);
-                                }
-                            }
+
                         }
 
 
-                        else if (DynamicAtt.Item2 == "datetime")
-                        {
-                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                            {
-                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                                {
-                                    DateTimeValues.Add(Convert.ToDateTime(DynamicAtt.Item3[k]));
-                                    DynamicAttIds.Add(DynamicAtt.Item1);
-                                    disables.Add(false);
-                                    sideArmLibIds.Add(null);
-                                    sideArmLibraryIds.Add(null);
-                                    InventoryIds.Add(Convert.ToInt32(InsertedIds[k]));
-                                    tablesNamesIds.Add(TableNameEntity.Id);
-                                }
-                            }
-                        }
-                        else if (DynamicAtt.Item2 == "boolean")
-                        {
-                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                            {
-                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                                {
-                                    bool BoolValue = Convert.ToBoolean(DynamicAtt.Item3[k]);
-                                    if (BoolValue == true)
-                                    {
-                                        BooleanValues.Add(1);
-                                    }
-                                    else
-                                    {
-                                        BooleanValues.Add(0);
-                                    }
-                                    DynamicAttIds.Add(DynamicAtt.Item1);
-                                    disables.Add(false);
-                                    sideArmLibIds.Add(null);
-                                    sideArmLibraryIds.Add(null);
-                                    InventoryIds.Add(Convert.ToInt32(InsertedIds[k]));
-                                    tablesNamesIds.Add(TableNameEntity.Id);
-                                }
-                            }
-                        }
-                        //connection.Open();
-                        OracleParameter value = new OracleParameter();
-                        if (DynamicAtt.Item2 == "string")
-                        {
-                            value.OracleDbType = OracleDbType.NVarchar2;
-                            value.Value = StringValues.ToArray();
-                        }
-                        else if (DynamicAtt.Item2 == "double")
-                        {
-                            value.OracleDbType = OracleDbType.BinaryDouble;
-                            value.Value = DoubleValues.ToArray();
-                        }
-                        else if (DynamicAtt.Item2 == "datetime")
-                        {
-                            value.OracleDbType = OracleDbType.Date;
-                            value.Value = DateTimeValues.ToArray();
-                        }
-                        else if (DynamicAtt.Item2 == "boolean")
-                        {
-                            value.OracleDbType = OracleDbType.Int32;
-                            value.Value = BooleanValues.ToArray();
-                        }
-                        OracleParameter DynamicAttId = new OracleParameter();
-                        DynamicAttId.OracleDbType = OracleDbType.Int32;
-                        DynamicAttId.Value = DynamicAttIds.ToArray();
+                        //List<string> StringValues = new List<string>();
+                        //List<int> IntValues = new List<int>();
+                        //List<double> DoubleValues = new List<double>();
+                        //List<DateTime> DateTimeValues = new List<DateTime>();
+                        //List<Int32> BooleanValues = new List<Int32>();
+                        //List<int> DynamicAttIds = new List<int>();
+                        //List<bool> disables = new List<bool>();
+                        //List<int?> sideArmLibIds = new List<int?>();
+                        //List<int?> sideArmLibraryIds = new List<int?>();
+                        //List<int> InventoryIds = new List<int>();
+                        //List<int> tablesNamesIds = new List<int>();
+                        //if (DynamicAtt.Item2 == "string")
+                        //{
+                        //    for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        //    {
+                        //        if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                        //        {
+                        //            StringValues.Add(DynamicAtt.Item3[k].ToString());
+                        //            DynamicAttIds.Add(DynamicAtt.Item1);
+                        //            disables.Add(false);
+                        //            sideArmLibIds.Add(null);
+                        //            sideArmLibraryIds.Add(null);
+                        //            InventoryIds.Add(Convert.ToInt32(InsertedIds[k]));
+                        //            tablesNamesIds.Add(TableNameEntity.Id);
+                        //        }
+                        //    }
+                        //}
+                        //else if (DynamicAtt.Item2 == "double")
+                        //{
+                        //    for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        //    {
+                        //        if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                        //        {
+                        //            DoubleValues.Add(Convert.ToInt32(DynamicAtt.Item3[k]));
+                        //            DynamicAttIds.Add(DynamicAtt.Item1);
+                        //            disables.Add(false);
+                        //            sideArmLibIds.Add(null);
+                        //            sideArmLibraryIds.Add(null);
+                        //            InventoryIds.Add(Convert.ToInt32(InsertedIds[k]));
+                        //            tablesNamesIds.Add(TableNameEntity.Id);
+                        //        }
+                        //    }
+                        //}
 
-                        OracleParameter disable = new OracleParameter();
-                        disable.OracleDbType = OracleDbType.Boolean;
-                        disable.Value = disables.ToArray();
 
-                        OracleParameter sideArmLibId = new OracleParameter();
-                        sideArmLibId.OracleDbType = OracleDbType.Int32;
-                        sideArmLibId.Value = sideArmLibIds.ToArray();
+                        //else if (DynamicAtt.Item2 == "datetime")
+                        //{
+                        //    for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        //    {
+                        //        if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                        //        {
+                        //            DateTimeValues.Add(Convert.ToDateTime(DynamicAtt.Item3[k]));
+                        //            DynamicAttIds.Add(DynamicAtt.Item1);
+                        //            disables.Add(false);
+                        //            sideArmLibIds.Add(null);
+                        //            sideArmLibraryIds.Add(null);
+                        //            InventoryIds.Add(Convert.ToInt32(InsertedIds[k]));
+                        //            tablesNamesIds.Add(TableNameEntity.Id);
+                        //        }
+                        //    }
+                        //}
+                        //else if (DynamicAtt.Item2 == "boolean")
+                        //{
+                        //    for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        //    {
+                        //        if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                        //        {
+                        //            bool BoolValue = Convert.ToBoolean(DynamicAtt.Item3[k]);
+                        //            if (BoolValue == true)
+                        //            {
+                        //                BooleanValues.Add(1);
+                        //            }
+                        //            else
+                        //            {
+                        //                BooleanValues.Add(0);
+                        //            }
+                        //            DynamicAttIds.Add(DynamicAtt.Item1);
+                        //            disables.Add(false);
+                        //            sideArmLibIds.Add(null);
+                        //            sideArmLibraryIds.Add(null);
+                        //            InventoryIds.Add(Convert.ToInt32(InsertedIds[k]));
+                        //            tablesNamesIds.Add(TableNameEntity.Id);
+                        //        }
+                        //    }
+                        //}
+                        ////connection.Open();
+                        //OracleParameter value = new OracleParameter();
+                        //if (DynamicAtt.Item2 == "string")
+                        //{
+                        //    value.OracleDbType = OracleDbType.NVarchar2;
+                        //    value.Value = StringValues.ToArray();
+                        //}
+                        //else if (DynamicAtt.Item2 == "double")
+                        //{
+                        //    value.OracleDbType = OracleDbType.BinaryDouble;
+                        //    value.Value = DoubleValues.ToArray();
+                        //}
+                        //else if (DynamicAtt.Item2 == "datetime")
+                        //{
+                        //    value.OracleDbType = OracleDbType.Date;
+                        //    value.Value = DateTimeValues.ToArray();
+                        //}
+                        //else if (DynamicAtt.Item2 == "boolean")
+                        //{
+                        //    value.OracleDbType = OracleDbType.Int32;
+                        //    value.Value = BooleanValues.ToArray();
+                        //}
+                        //OracleParameter DynamicAttId = new OracleParameter();
+                        //DynamicAttId.OracleDbType = OracleDbType.Int32;
+                        //DynamicAttId.Value = DynamicAttIds.ToArray();
 
-                        OracleParameter sideArmLibraryId = new OracleParameter();
-                        sideArmLibraryId.OracleDbType = OracleDbType.Int32;
-                        sideArmLibraryId.Value = sideArmLibraryIds.ToArray();
+                        //OracleParameter disable = new OracleParameter();
+                        //disable.OracleDbType = OracleDbType.Boolean;
+                        //disable.Value = disables.ToArray();
 
-                        OracleParameter InventoryId = new OracleParameter();
-                        InventoryId.OracleDbType = OracleDbType.Int32;
-                        InventoryId.Value = InventoryIds.ToArray();
+                        //OracleParameter sideArmLibId = new OracleParameter();
+                        //sideArmLibId.OracleDbType = OracleDbType.Int32;
+                        //sideArmLibId.Value = sideArmLibIds.ToArray();
 
-                        OracleParameter tablesNamesId = new OracleParameter();
-                        tablesNamesId.OracleDbType = OracleDbType.Int32;
-                        tablesNamesId.Value = tablesNamesIds.ToArray();
+                        //OracleParameter sideArmLibraryId = new OracleParameter();
+                        //sideArmLibraryId.OracleDbType = OracleDbType.Int32;
+                        //sideArmLibraryId.Value = sideArmLibraryIds.ToArray();
 
-                        OracleCommand dalvcmd = connection.CreateCommand();
-                        if (DynamicAtt.Item2 == "string")
-                        {
-                            dalvcmd.CommandText = "INSERT INTO \"TLIdynamicAttLibValue\" (\"DynamicAttId\", \"InventoryId\", \"tablesNamesId\", \"ValueString\") VALUES ( :1, :2, :3, :4)";
-                            dalvcmd.ArrayBindCount = StringValues.Count;
-                        }
-                        else if (DynamicAtt.Item2 == "double")
-                        {
-                            dalvcmd.CommandText = "INSERT INTO \"TLIdynamicAttLibValue\" (\"DynamicAttId\", \"InventoryId\", \"tablesNamesId\", \"ValueDouble\") VALUES ( :1, :2, :3, :4)";
-                            dalvcmd.ArrayBindCount = DoubleValues.Count;
-                        }
-                        else if (DynamicAtt.Item2 == "datetime")
-                        {
-                            dalvcmd.CommandText = "INSERT INTO \"TLIdynamicAttLibValue\" (\"DynamicAttId\", \"InventoryId\", \"tablesNamesId\", \"ValueDateTime\") VALUES ( :1, :2, :3, :4)";
-                            dalvcmd.ArrayBindCount = DateTimeValues.Count;
-                        }
-                        else if (DynamicAtt.Item2 == "boolean")
-                        {
-                            dalvcmd.CommandText = "INSERT INTO \"TLIdynamicAttLibValue\" (\"DynamicAttId\", \"InventoryId\", \"tablesNamesId\", \"ValueBoolean\") VALUES ( :1, :2, :3, :4)";
-                            dalvcmd.ArrayBindCount = BooleanValues.Count;
-                        }
-                        //dalvcmd.Parameters.Clear();
-                        dalvcmd.Parameters.Add(DynamicAttId);
-                        dalvcmd.Parameters.Add(InventoryId);
-                        dalvcmd.Parameters.Add(tablesNamesId);
-                        dalvcmd.Parameters.Add(value);
-                        dalvcmd.ExecuteNonQuery();
+                        //OracleParameter InventoryId = new OracleParameter();
+                        //InventoryId.OracleDbType = OracleDbType.Int32;
+                        //InventoryId.Value = InventoryIds.ToArray();
+
+                        //OracleParameter tablesNamesId = new OracleParameter();
+                        //tablesNamesId.OracleDbType = OracleDbType.Int32;
+                        //tablesNamesId.Value = tablesNamesIds.ToArray();
+
+                        //OracleCommand dalvcmd = connection.CreateCommand();
+                        //if (DynamicAtt.Item2 == "string")
+                        //{
+                        //    dalvcmd.CommandText = "INSERT INTO \"TLIdynamicAttLibValue\" (\"DynamicAttId\", \"InventoryId\", \"tablesNamesId\", \"ValueString\") VALUES ( :1, :2, :3, :4)";
+                        //    dalvcmd.ArrayBindCount = StringValues.Count;
+                        //}
+                        //else if (DynamicAtt.Item2 == "double")
+                        //{
+                        //    dalvcmd.CommandText = "INSERT INTO \"TLIdynamicAttLibValue\" (\"DynamicAttId\", \"InventoryId\", \"tablesNamesId\", \"ValueDouble\") VALUES ( :1, :2, :3, :4)";
+                        //    dalvcmd.ArrayBindCount = DoubleValues.Count;
+                        //}
+                        //else if (DynamicAtt.Item2 == "datetime")
+                        //{
+                        //    dalvcmd.CommandText = "INSERT INTO \"TLIdynamicAttLibValue\" (\"DynamicAttId\", \"InventoryId\", \"tablesNamesId\", \"ValueDateTime\") VALUES ( :1, :2, :3, :4)";
+                        //    dalvcmd.ArrayBindCount = DateTimeValues.Count;
+                        //}
+                        //else if (DynamicAtt.Item2 == "boolean")
+                        //{
+                        //    dalvcmd.CommandText = "INSERT INTO \"TLIdynamicAttLibValue\" (\"DynamicAttId\", \"InventoryId\", \"tablesNamesId\", \"ValueBoolean\") VALUES ( :1, :2, :3, :4)";
+                        //    dalvcmd.ArrayBindCount = BooleanValues.Count;
+                        //}
+                        ////dalvcmd.Parameters.Clear();
+                        //dalvcmd.Parameters.Add(DynamicAttId);
+                        //dalvcmd.Parameters.Add(InventoryId);
+                        //dalvcmd.Parameters.Add(tablesNamesId);
+                        //dalvcmd.Parameters.Add(value);
+                        //dalvcmd.ExecuteNonQuery();
 
                     }
+                ERROR:;
                     RecordId.AddRange(InsertedIds);
                 }
 

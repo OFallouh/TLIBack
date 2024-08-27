@@ -175,6 +175,29 @@ namespace TLIS_Service.IService
         Response<bool> DismantleCivilWithLegsInstallation(int? UserId, string SiteCode, int CivilId, int? TaskId, string connectionString, string UserName);
         Response<bool> DismantleCivilWithoutLegsInstallation(int? UserId, string SiteCode, int CivilId, int? TaskId, string connectionString, string UserName);
         Response<bool> DismantleCivilNonSteelInstallation(int? UserId, string SiteCode, int CivilId, int? TaskId, string connectionString, string UserName);
+        Response<GetEnableAttribute> GetCivilNonSteelWithEnableAttInternal(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAttInternal(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAttInternal(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAttInternal(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithLegsWithEnableAttInternal(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetForAddLoadObject> GetMWDishInstallationById(int MWInsId, string TableName, int? UserId, string UserName);
+        Response<GetForAddLoadObject> GetMWBUInstallationById(int MWInsId, string TableName, int? UserId, string UserName);
+        Response<GetForAddLoadObject> GetMWRFUInstallationById(int MWInsId, string TableName, int? UserId, string UserName);
+
+        Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName, int? UserId, string UserName);
+        Response<GetForAddLoadObject> GetMWOtherInstallationById(int MWOtherId, string TableName, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWOtherInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWRFUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddMWODUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWOtherInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWRFUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<AllCivilInstallation> GetCivilsBySiteCode(string siteCode, string ConnectionString, int? UserId, string UserName);
     }
 
 }

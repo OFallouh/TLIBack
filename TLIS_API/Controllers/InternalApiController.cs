@@ -101,7 +101,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilsBySiteCode(SiteCode, connectionString,userId,null);
+                var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(SiteCode, connectionString,userId,null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -112,7 +112,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilsBySiteCode(SiteCode, connectionString,null,username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(SiteCode, connectionString,null,username);
                 return Ok(response);
             }
             else
@@ -1093,7 +1093,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId, null);
+                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId, null);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -1104,7 +1104,7 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, null, username);
+                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, null, username);
                     return Ok(response);
                 }
                 else
@@ -1148,7 +1148,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId, null);
+                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId, null);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -1159,7 +1159,7 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, null, username);
+                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, null, username);
                     return Ok(response);
                 }
                 else
@@ -1205,7 +1205,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId, null);
+                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId, null);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -1216,7 +1216,7 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, null, username);
+                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, null, username);
                     return Ok(response);
                 }
                 else
@@ -1260,7 +1260,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -1271,7 +1271,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, null, username);
                 return Ok(response);
             }
             else
@@ -1309,7 +1309,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -1320,7 +1320,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, null, username);
                 return Ok(response);
             }
             else
@@ -2313,7 +2313,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2324,7 +2324,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), null, username);
                 return Ok(response);
             }
             else
@@ -2361,7 +2361,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2372,7 +2372,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), null, username);
                 return Ok(response);
             }
             else
@@ -2407,7 +2407,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2418,7 +2418,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), null, username);
                 return Ok(response);
             }
             else
@@ -2453,7 +2453,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2464,7 +2464,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), null, username);
                 return Ok(response);
             }
             else
@@ -2499,7 +2499,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2510,7 +2510,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), null, username);
                 return Ok(response);
             }
             else
@@ -2905,7 +2905,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2916,7 +2916,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -2951,7 +2951,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2962,7 +2962,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -2997,7 +2997,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -3008,7 +3008,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -3044,7 +3044,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -3055,7 +3055,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -3090,7 +3090,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -3101,7 +3101,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -4078,7 +4078,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithLegsWithEnableAttInternal(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4089,7 +4089,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithLegsWithEnableAttInternal(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -4123,7 +4123,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegMastWithEnableAttInternal(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4134,7 +4134,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegMastWithEnableAttInternal(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -4169,7 +4169,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegMonopoleWithEnableAttInternal(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4180,7 +4180,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegMonopoleWithEnableAttInternal(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -4215,7 +4215,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegCapsuleWithEnableAttInternal(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4226,7 +4226,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegCapsuleWithEnableAttInternal(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -4260,7 +4260,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelWithEnableAttInternal(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4271,7 +4271,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(SiteCode, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelWithEnableAttInternal(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else

@@ -72,20 +72,9 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId, null);
+                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId);
                         return Ok(response);
-                    }
-                    else if (authHeader.ToLower().StartsWith("basic "))
-                    {
-
-                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                        var username = decodedUsernamePassword.Split(':')[0];
-                        var password = decodedUsernamePassword.Split(':')[1];
-                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, null, username);
-                        return Ok(response);
-                    }
+                    }  
                     else
                     {
                         return Unauthorized();
@@ -128,20 +117,10 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId, null);
+                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId);
                         return Ok(response);
                     }
-                    else if (authHeader.ToLower().StartsWith("basic "))
-                    {
-
-                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                        var username = decodedUsernamePassword.Split(':')[0];
-                        var password = decodedUsernamePassword.Split(':')[1];
-                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, null, username);
-                        return Ok(response);
-                    }
+                   
                     else
                     {
                         return Unauthorized();
@@ -185,20 +164,10 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId, null);
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId);
                     return Ok(response);
                 }
-                else if (authHeader.ToLower().StartsWith("basic "))
-                {
-
-                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                    var username = decodedUsernamePassword.Split(':')[0];
-                    var password = decodedUsernamePassword.Split(':')[1];
-                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, null, username);
-                    return Ok(response);
-                }
+               
                 else
                 {
                     return Unauthorized();
@@ -240,20 +209,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -289,20 +248,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -847,20 +796,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), null, username);
-                return Ok(response);
-            }
+          
             else
             {
                 return Unauthorized();
@@ -895,20 +834,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -942,20 +871,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), null, username);
-                return Ok(response);
-            }
+            
             else
             {
                 return Unauthorized();
@@ -989,20 +908,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -1036,20 +945,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), null, username);
-                return Ok(response);
-            }
+            
             else
             {
                 return Unauthorized();
@@ -1193,20 +1092,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+            
             else
             {
                 return Unauthorized();
@@ -1239,20 +1128,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -1286,20 +1165,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -1332,20 +1201,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();
@@ -1380,20 +1239,10 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, userId);
                 return Ok(response);
             }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationWithEnableAtt(SiteCode, connectionString, null, username);
-                return Ok(response);
-            }
+           
             else
             {
                 return Unauthorized();

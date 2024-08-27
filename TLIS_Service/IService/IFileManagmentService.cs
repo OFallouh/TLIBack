@@ -12,7 +12,7 @@ namespace TLIS_Service.IService
     public interface IFileManagmentService
     {
         Response<string> GenerateExcelTemplacteByTableName(string TableName, string fileDirectory, int? CategoryId);
-        Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, int? CategoryId, string ConnectionString);
+        Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, int? CategoryId, string ConnectionString, int UserId);
         Response<string> AttachFile(IFormFile file, int documenttypeId, string Model, string Name, string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset);
         Response<string> DeleteFile(string FileName, int RecordId, string TableName, string SiteCode);
        
