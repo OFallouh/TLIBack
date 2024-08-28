@@ -7675,7 +7675,7 @@ namespace TLIS_Service.Services
             });
         }
         #region Get Enabled Attributes Only With Dynamic Objects...
-        public Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode,string ConnectionString, int? UserId)
+        public Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode,string ConnectionString )
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -7886,7 +7886,7 @@ namespace TLIS_Service.Services
             }
         }
        
-        public Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId )
+        public Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString )
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -8381,7 +8381,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode,string ConnectionString, int? UserId )
+        public Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode,string ConnectionString )
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -8877,7 +8877,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId )
+        public Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString )
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -9643,7 +9643,7 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<object>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId)
+        public Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {

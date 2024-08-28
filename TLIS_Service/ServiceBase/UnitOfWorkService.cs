@@ -136,7 +136,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_siteService == null)
-                    _siteService = new SiteService(_unitOfWork, _services, db,_mapper, Services);
+                    _siteService = new SiteService(_unitOfWork, _services, db,_mapper, Services, _config);
 
                 return _siteService;
             }

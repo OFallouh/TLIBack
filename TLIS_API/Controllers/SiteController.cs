@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using TLIS_API.Middleware.WorkFlow;
 using TLIS_DAL.Helper;
@@ -563,6 +565,23 @@ namespace TLIS_API.Controllers
         {
             var response = _unitOfWorkService.SiteService.RecalculateSite();
             return Ok(response);
+        }
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAllInstallationOnSite")]
+        [ProducesResponseType(200, Type = typeof(List<RegionViewModel>))]
+        public async Task<ActionResult> GetAllInstallationOnSite(string SiteCode,string TableName, int? CategoryId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SiteService.GetConfigurationTables(SiteCode, TableName, CategoryId, ConnectionString);
+            var fullPath = response.Data + "/" + TableName + ".xlsx";
+            var bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(fullPath, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return File(bytes, contentType, Path.GetFileName(fullPath));
+
         }
 
     }

@@ -42,9 +42,9 @@ namespace TLIS_Service.IService
         Response<ObjectInstAtts> AddCivilWithLegsInstallation(AddCivilWithLegsViewModel AddCivilWithLegsViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId);
         Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId, int userId, string connectionString);
         Response<GetForAddCivilWithLegObject> GetCivilWithLegsInstallationById(int CivilInsId, string TableName);
-        Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
+        Response<GetEnableAttribute> GetCivilWithLegsWithEnableAtt(string? SiteCode, string ConnectionString);
         Response<ReturnWithFilters<object>> GetCivilWithoutLegWithEnableAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int CategoryId);
-        Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId );
+        Response<GetEnableAttribute> GetCivilNonSteelWithEnableAtt(string? SiteCode, string ConnectionString );
         //Response<AllCivilsViewModel> GetAllCivils(SiteBaseFilter BaseFilter, bool WithFilterData, ParameterPagination parameterPagination, string SiteCode);
         Response<List<ListOfCivilLoadDto>> GetAllCivilLoad(string SearchName, ParameterPagination parameters);
         Response<LoadOnSideArm> GetLoadForSideArm(int sidearmid, int civilid);
@@ -67,8 +67,8 @@ namespace TLIS_Service.IService
         Response<SideArmAndLoadsOnCivil> CheckFilterSideArm_LoadsOnCivils(int CivilId, string CivilType);
         Response<LoadsCountOnSideArm> CheckLoadsOnSideArm(int SideArmId);
         Response<List<RecalculatSpace>> RecalculatSpace(int CivilId, string CivilType);
-        Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
-        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode , string ConnectionString, int? UserId);
-        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId );
+        Response<GetEnableAttribute> GetCivilWithoutLegMastWithEnableAtt(string? SiteCode, string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleWithEnableAtt(string? SiteCode , string ConnectionString);
+        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleWithEnableAtt(string? SiteCode, string ConnectionString );
     }
 }

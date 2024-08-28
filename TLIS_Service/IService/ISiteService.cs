@@ -10,6 +10,7 @@ using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.AreaDTOs;
 using TLIS_DAL.ViewModels.AttachedFilesDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.LoadPartDTOs;
 using TLIS_DAL.ViewModels.LocationTypeDTOs;
 using TLIS_DAL.ViewModels.MW_BUDTOs;
@@ -80,5 +81,6 @@ namespace TLIS_Service.IService
         Response<UsedSitesViewModel> GetUsedSitesCount();
         Response<ItemsOnSite> GetItemsOnSite(string SiteCode);
         Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination( bool? GetItemsCountOnEachSite);
+        Response<string> GetConfigurationTables(string SiteCode, string TableNameInstallation, int? CategoryId, string ConnectionString);
     }
 }

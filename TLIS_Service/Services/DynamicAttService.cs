@@ -80,6 +80,7 @@ using AutoMapper.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Castle.Components.DictionaryAdapter.Xml;
 
 namespace TLIS_Service.Services
 {
@@ -11815,7 +11816,39 @@ namespace TLIS_Service.Services
                                 var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower());
                                 if(DynamicKey !=null)
                                     return new Response<AddDynamicObject>(true, null, null, $"This Key {addDynamicObject.general.name} is Already Exist in Table {TabelName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
+                                double double_Test = 0;
+                                DateTime datetime_Test = DateTime.Now;
+                                Boolean boolean_Test = false;
+                                if (addDynamicObject.general.dataType== 21 || addDynamicObject.general.dataType == 22)
+                                {
+                                    var DefultVale = double.TryParse(addDynamicObject.general.defualtValue.ToString(), out double_Test);
+                                    if (DefultVale == false)
+                                    {
+                                        
+                                        return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                    }
+                                   
+                                }
+                                else if (addDynamicObject.general.dataType == 25)
+                                {
+                                    var DefultVale = DateTime.TryParse(addDynamicObject.general.defualtValue.ToString(), out datetime_Test);
+                                    if (DefultVale == false)
+                                    {
 
+                                        return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                    }
+
+                                }
+                                else if (addDynamicObject.general.dataType == 24)
+                                {
+                                    var DefultVale = Boolean.TryParse(addDynamicObject.general.defualtValue.ToString(), out boolean_Test);
+                                    if (DefultVale == false)
+                                    {
+
+                                        return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                    }
+
+                                }
                                 if (addDynamicObject.type == 1)
                                 {
                                     if (addDynamicObject.validation != null)
@@ -12105,6 +12138,36 @@ namespace TLIS_Service.Services
                                 {
                                     if (addDynamicObject.dependency != null)
                                     {
+                                        if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+                                        {
+                                            var DefultVale = double.TryParse(addDynamicObject.dependency.result.ToString(), out double_Test);
+                                            if (DefultVale == false)
+                                            {
+
+                                                return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                            }
+
+                                        }
+                                        else if (addDynamicObject.general.dataType == 25)
+                                        {
+                                            var DefultVale = DateTime.TryParse(addDynamicObject.dependency.result.ToString(), out datetime_Test);
+                                            if (DefultVale == false)
+                                            {
+
+                                                return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                            }
+
+                                        }
+                                        else if (addDynamicObject.general.dataType == 24)
+                                        {
+                                            var DefultVale = Boolean.TryParse(addDynamicObject.dependency.result.ToString(), out boolean_Test);
+                                            if (DefultVale == false)
+                                            {
+
+                                                return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                            }
+
+                                        }
                                         TLIdynamicAtt tLIdynamicAtt = new TLIdynamicAtt()
                                         {
                                             Key = addDynamicObject.general.name,

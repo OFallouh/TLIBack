@@ -107,18 +107,7 @@ namespace TLIS_API.Controllers.LoadLibrary
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), userId, null);
-                return Ok(response);
-            }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), null, username);
+                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString());
                 return Ok(response);
             }
             else

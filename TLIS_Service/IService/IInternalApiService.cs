@@ -49,12 +49,12 @@ namespace TLIS_Service.IService
     public interface IInternalApiService
     {
         Response<GetEnableAttribute> GetAlOtherInventoryonSitebyType(string OtherInventoryTypeName, string SiteCode, string ConnectionString, int? UserId, string UserName);
-        Response<GetEnableAttribute> GetConfigurationTables(string siteCode, string TableNameInstallation, int CategoryId, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetConfigurationTables(string siteCode, string TableNameInstallation, int? CategoryId, string ConnectionString, int? UserId, string UserName);
         Response<LoadsDtoInternal> GetAllLoadonSitebyPartandType(String SiteCode, string PartName, string TypeName, int? UserId, string UserName);
         Response<List<ListOfCivilLoads>> GetAllItemsonSite(string SiteCode, int? UserId, string UserName);
         Response<List<BassAttViewModel>> GetConfigurationAttributes(string TableName, bool IsDynamic, int CategoryId, int? UserId, string UserName);
         Response<List<GetForAddCivilLoadObject>> GetSideArmsBySiteCode(string SiteCode, string CivilType, string CivilName, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase, int? UserId, string UserName);
-        Response<GetEnableAttribute> GetLibraryforSpecificType(string ConnectionString, string TableNameLibrary, int CategoryId, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetLibraryforSpecificType(string ConnectionString, string TableNameLibrary, int? CategoryId, int? UserId, string UserName);
         Response<IEnumerable<SiteViewModel>> GetAllSitesDetails(ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
               
         Response<AddDependencyInstViewModel> AddDynamicAttInst(AddDependencyInstViewModel addDependencyInstViewModel, string ConnectionString);
@@ -198,6 +198,46 @@ namespace TLIS_Service.IService
         Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
         Response<GetEnableAttribute> GetMWBUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
         Response<AllCivilInstallation> GetCivilsBySiteCode(string siteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetForAddCivilLibrarybject> GetForAddRadioLibrary(string TableName, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioAntennaInstallation(int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioOtherInstallation(int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> GetAttForAddRadioRRUInstallation(int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddCabinetPowerInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddCabinetTelecomInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddSolarInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddOtherInventoryInstallationObject> GetSolarInstallationById(int SolarId, string TableName, int? UserId, string UserName);
+        Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int GeneratorId, string TableName, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetSolarWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetGeneratorWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<ObjectInstAttsForSideArm> GetSideArmById(int SideArmId, string TableName, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetSideArmInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
+        Response<GetForAddCivilLoadObject> GetAttForAddSideArm(int LibraryId, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithoutLegCapsuleLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithoutLegMonopoleLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilWithoutLegMastLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetCivilNonSteelLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetForAddCivilLibrarybject> GetForAddMWLibrary(string TableName, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWODULibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWOtherLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWBULibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWRFULibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetMWDishLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutCapsuleLibrary(string TableName, int? UserId, string UserName);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMonopleLibrary(string TableName, int? UserId, string UserName);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMastLibrary(string TableName, int? UserId, string UserName);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilLibrary(string TableName, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetSolarLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetGeneratorLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCiviNonSteelInstallation(string TableName, int CivilLibraryId, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Monople(string TableName, int CivilLibraryId, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Capsule(string TableName, int CivilLibraryId, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Mast(string TableName, int CivilLibraryId, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddCivilWithLegObject> GetForAddCivilWithLegInstallation(string TableName, int CivilLibraryId, string SiteCode, int? UserId, string UserName);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetCivilNonSteelInstallationById(int CivilInsId, string TableName, int? UserId, string UserName);
+        Response<GetForAddCivilWithOutLegInstallationcs> GetCivilWithoutLegsInstallationById(int CivilInsId, string TableName, int CategoryId, int? UserId, string UserName);
+        Response<GetForAddCivilWithLegObject> GetCivilWithLegsInstallationById(int CivilInsId, string TableName, int? UserId, string UserName);
     }
 
 }

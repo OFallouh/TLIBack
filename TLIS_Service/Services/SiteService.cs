@@ -74,6 +74,8 @@ using System.Text.Json;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using static TLIS_Repository.Repositories.SiteRepository;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
+using OfficeOpenXml;
 
 
 
@@ -89,13 +91,14 @@ namespace TLIS_Service.Services
         ServiceProvider _serviceProvider;
         public static List<TLIsite> _MySites;
         IServiceProvider Services;
-        public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper,IServiceProvider service)
+        private readonly IConfiguration _configuration;
+        public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper,IServiceProvider serviceو, IConfiguration configuration)
         {
             _context = context;
             _unitOfWork = unitOfWork;
             _services = services;
             _mapper = mapper;
-            Services = service;
+            _configuration = configuration;
         }
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId,int UserId)
         {
@@ -8089,12 +8092,4317 @@ namespace TLIS_Service.Services
             }
             
         }
+        public Response<string> GetConfigurationTables(string SiteCode, string TableNameInstallation, int? CategoryId, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+               
+                if (Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == TableNameInstallation)
+                {
+                    try
+                    {
+
+                        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                        connection.Open();
+                        //string storedProcedureName = "create_dynamic_pivot_withleg ";
+                        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                        //{
+                        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                        //    procedureCommand.ExecuteNonQuery();
+                        //}
+                        var attActivated = _context.TLIattributeViewManagment
+                            .Include(x => x.EditableManagmentView)
+                            .Include(x => x.AttributeActivated)
+                            .Include(x => x.DynamicAtt)
+                            .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithLegInstallation" &&
+                            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                            .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                                .ThenBy(x => x.attribute == null)
+                                .ThenBy(x => x.attribute)
+                                .ToList();
+                        getEnableAttribute.Type = attActivated;
+                        List<string> propertyNamesStatic = new List<string>();
+                        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                        foreach (var key in attActivated)
+                        {
+                            if (key.attribute != null)
+                            {
+                                string name = key.attribute;
+                                if (name != "Id" && name.EndsWith("Id"))
+                                {
+                                    string fk = name.Remove(name.Length - 2);
+                                    propertyNamesStatic.Add(fk);
+                                }
+                                else
+                                {
+                                    propertyNamesStatic.Add(name);
+                                }
+
+                            }
+                            else
+                            {
+                                string name = key.dynamic;
+                                string datatype = key.dataType;
+                                propertyNamesDynamic.Add(name, datatype);
+                            }
+
+                        }
+                        propertyNamesStatic.Add("SITECODE");
+                        if (SiteCode == null)
+                        {
+                            if (propertyNamesDynamic.Count == 0)
+                            {
+                                var query = _context.MV_CIVIL_WITHLEGS_VIEW.Where(x =>
+                                !x.Dismantle).AsEnumerable()
+                                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                                int count = query.Count();
+
+                                getEnableAttribute.Model = query;
+                                var excelFilePath = ExportToExcel(query.Select(x => (object)x).ToList());
+
+                                return new Response<string>(false, excelFilePath, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                            }
+                            else
+                            {
+                                var query = _context.MV_CIVIL_WITHLEGS_VIEW.Where(x =>
+                                  !x.Dismantle).AsEnumerable()
+                            .GroupBy(x => new
+                            {
+
+                                Id = x.Id,
+                                Name = x.Name,
+                                SITECODE = x.SITECODE,
+                                WindMaxLoadm2 = x.WindMaxLoadm2,
+                                LocationHeight = x.LocationHeight,
+                                PoType = x.PoType,
+                                PoNo = x.PoNo,
+                                PoDate = x.PoDate,
+                                HeightImplemented = x.HeightImplemented,
+                                BuildingMaxLoad = x.BuildingMaxLoad,
+                                SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                                CurrentLoads = x.CurrentLoads,
+                                warningpercentageloads = x.warningpercentageloads,
+                                VisiableStatus = x.VisiableStatus,
+                                VerticalMeasured = x.VerticalMeasured,
+                                OtherBaseType = x.OtherBaseType,
+                                IsEnforeced = x.IsEnforeced,
+                                H2height = x.H2height,
+                                HeightBase = x.HeightBase,
+                                DimensionsLeg = x.DimensionsLeg,
+                                DiagonalMemberSection = x.DiagonalMemberSection,
+                                DiagonalMemberDimensions = x.DiagonalMemberDimensions,
+                                BoltHoles = x.BoltHoles,
+                                BasePlatethickness = x.BasePlatethickness,
+                                BasePlateShape = x.BasePlateShape,
+                                BasePlateDimensions = x.BasePlateDimensions,
+                                BaseNote = x.BaseNote,
+                                LOCATIONTYPE = x.LOCATIONTYPE,
+                                BASETYPE = x.BASETYPE,
+                                VerticalMeasurement = x.VerticalMeasurement,
+                                SteelCrossSection = x.SteelCrossSection,
+                                DiagonalMemberPrefix = x.DiagonalMemberPrefix,
+                                EnforcementHeightBase = x.EnforcementHeightBase,
+                                Enforcementlevel = x.Enforcementlevel,
+                                StructureType = x.StructureType,
+                                SectionsLegType = x.SectionsLegType,
+                                TotalHeight = x.TotalHeight,
+                                SpaceInstallation = x.SpaceInstallation,
+                                OWNER = x.OWNER,
+                                CIVILWITHLEGSLIB = x.CIVILWITHLEGSLIB,
+                                GUYLINETYPE = x.GUYLINETYPE,
+                                CIVILWITHLEGSTYPE = x.BASECIVILWITHLEGTYPE,
+                                SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
+                                BaseCivilWithLegType = x.BASECIVILWITHLEGTYPE,
+                                Support_Limited_Load = x.Support_Limited_Load,
+                                ENFORCMENTCATEGORY = x.ENFORCMENTCATEGORY,
+                                Remark = x.Remark,
+                                Dismantle = x.Dismantle,
+                            }).OrderBy(x => x.Key.Name)
+                            .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                                int count = query.Count();
+                                getEnableAttribute.Model = query;
+                                var excelFilePath = ExportToExcel(query.Select(x => (object)x).ToList());
+
+                                return new Response<string>(false, excelFilePath, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                            }
+                        }
+                        if (propertyNamesDynamic.Count == 0)
+                        {
+                            var query = _context.MV_CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                            && !x.Dismantle).AsEnumerable()
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+
+                            getEnableAttribute.Model = query;
+
+                            var excelFilePath = ExportToExcel(query.Select(x => (object)x).ToList());
+
+                            return new Response<string>(false, excelFilePath, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        }
+                        else
+                        {
+                            var query = _context.MV_CIVIL_WITHLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                             && !x.Dismantle).AsEnumerable()
+                        .GroupBy(x => new
+                        {
+
+                            Id = x.Id,
+                            Name = x.Name,
+                            SITECODE = x.SITECODE,
+                            WindMaxLoadm2 = x.WindMaxLoadm2,
+                            LocationHeight = x.LocationHeight,
+                            PoType = x.PoType,
+                            PoNo = x.PoNo,
+                            PoDate = x.PoDate,
+                            HeightImplemented = x.HeightImplemented,
+                            BuildingMaxLoad = x.BuildingMaxLoad,
+                            SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                            CurrentLoads = x.CurrentLoads,
+                            warningpercentageloads = x.warningpercentageloads,
+                            VisiableStatus = x.VisiableStatus,
+                            VerticalMeasured = x.VerticalMeasured,
+                            OtherBaseType = x.OtherBaseType,
+                            IsEnforeced = x.IsEnforeced,
+                            H2height = x.H2height,
+                            HeightBase = x.HeightBase,
+                            DimensionsLeg = x.DimensionsLeg,
+                            DiagonalMemberSection = x.DiagonalMemberSection,
+                            DiagonalMemberDimensions = x.DiagonalMemberDimensions,
+                            BoltHoles = x.BoltHoles,
+                            BasePlatethickness = x.BasePlatethickness,
+                            BasePlateShape = x.BasePlateShape,
+                            BasePlateDimensions = x.BasePlateDimensions,
+                            BaseNote = x.BaseNote,
+                            LOCATIONTYPE = x.LOCATIONTYPE,
+                            BASETYPE = x.BASETYPE,
+                            VerticalMeasurement = x.VerticalMeasurement,
+                            SteelCrossSection = x.SteelCrossSection,
+                            DiagonalMemberPrefix = x.DiagonalMemberPrefix,
+                            EnforcementHeightBase = x.EnforcementHeightBase,
+                            Enforcementlevel = x.Enforcementlevel,
+                            StructureType = x.StructureType,
+                            SectionsLegType = x.SectionsLegType,
+                            TotalHeight = x.TotalHeight,
+                            SpaceInstallation = x.SpaceInstallation,
+                            OWNER = x.OWNER,
+                            CIVILWITHLEGSLIB = x.CIVILWITHLEGSLIB,
+                            GUYLINETYPE = x.GUYLINETYPE,
+                            CIVILWITHLEGSTYPE = x.BASECIVILWITHLEGTYPE,
+                            SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
+                            BaseCivilWithLegType = x.BASECIVILWITHLEGTYPE,
+                            Support_Limited_Load = x.Support_Limited_Load,
+                            ENFORCMENTCATEGORY = x.ENFORCMENTCATEGORY,
+                            Remark = x.Remark,
+                            Dismantle = x.Dismantle,
+                        }).OrderBy(x => x.Key.Name)
+                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+                            getEnableAttribute.Model = query;
+                            var excelFilePath = ExportToExcel(query.Select(x => (object)x).ToList());
+
+                            return new Response<string>(false, excelFilePath, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                        }
+
+                    }
+                    catch (Exception err)
+                    {
+                        return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                }
+                //else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableNameInstallation && CategoryId == 1)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment
+                //            .Include(x => x.EditableManagmentView)
+                //            .Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt)
+                //            .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMast" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //             .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SITECODE");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+
+                //                var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW
+                //                .Where(x =>
+                //                 x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast" && !x.Dismantle)
+                //                .AsEnumerable().Select(x =>
+
+                //                     new
+                //                     {
+                //                         HieghFromLand = x.HieghFromLand,
+                //                         EquivalentSpace = x.EquivalentSpace,
+                //                         Support_Limited_Load = x.Support_Limited_Load,
+                //                         SITECODE = x.SITECODE,
+                //                         Id = x.Id,
+                //                         Name = x.Name,
+                //                         UpperPartLengthm = x.UpperPartLengthm,
+                //                         UpperPartDiameterm = x.UpperPartDiameterm,
+                //                         SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                         SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                         ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                         SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                         NumberOfCivilParts = x.NumberOfCivilParts,
+                //                         NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                         NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                         CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                         CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                         LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                         HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                         HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                         FlangeThicknesscm = x.FlangeThicknesscm,
+                //                         FlangeDiametercm = x.FlangeDiametercm,
+                //                         FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                         ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                         ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                         Civil_Remarks = x.Civil_Remarks,
+                //                         BottomPartLengthm = x.BottomPartLengthm,
+                //                         BottomPartDiameterm = x.BottomPartDiameterm,
+                //                         BasePlateWidthcm = x.BasePlateWidthcm,
+                //                         BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                         BasePlateLengthcm = x.BasePlateLengthcm,
+                //                         BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                         BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                         WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                         Location_Height = x.Location_Height,
+                //                         PoType = x.PoType,
+                //                         PoNo = x.PoNo,
+                //                         PoDate = x.PoDate,
+                //                         HeightImplemented = x.HeightImplemented,
+                //                         BuildingMaxLoad = x.BuildingMaxLoad,
+                //                         SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                         CurrentLoads = x.CurrentLoads,
+                //                         WarningPercentageLoads = x.WarningPercentageLoads,
+                //                         Visiable_Status = x.Visiable_Status,
+                //                         SpaceInstallation = x.SpaceInstallation,
+                //                         CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                         OWNER = x.OWNER,
+                //                         SUBTYPE = x.SUBTYPE,
+                //                         HeightBase = x.HeightBase,
+                //                         BuildingHeightH3 = x.BuildingHeightH3,
+                //                         reinforced = x.reinforced,
+                //                         ladderSteps = x.ladderSteps,
+                //                         availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                         equipmentsLocation = x.equipmentsLocation,
+                //                         CenterHigh = x.CenterHigh,
+                //                         HBA = x.HBA,
+                //                         CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                         Dismantle = x.Dismantle
+
+                //                     }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                //              ;
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x =>
+                //                 x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast" && !x.Dismantle).Select(x =>
+
+                //                     new
+                //                     {
+                //                         HieghFromLand = x.HieghFromLand,
+                //                         EquivalentSpace = x.EquivalentSpace,
+                //                         Support_Limited_Load = x.Support_Limited_Load,
+                //                         SITECODE = x.SITECODE,
+                //                         Id = x.Id,
+                //                         Name = x.Name,
+                //                         UpperPartLengthm = x.UpperPartLengthm,
+                //                         UpperPartDiameterm = x.UpperPartDiameterm,
+                //                         SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                         SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                         ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                         SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                         NumberOfCivilParts = x.NumberOfCivilParts,
+                //                         NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                         NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                         CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                         CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                         LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                         HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                         HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                         FlangeThicknesscm = x.FlangeThicknesscm,
+                //                         FlangeDiametercm = x.FlangeDiametercm,
+                //                         FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                         ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                         ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                         Civil_Remarks = x.Civil_Remarks,
+                //                         BottomPartLengthm = x.BottomPartLengthm,
+                //                         BottomPartDiameterm = x.BottomPartDiameterm,
+                //                         BasePlateWidthcm = x.BasePlateWidthcm,
+                //                         BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                         BasePlateLengthcm = x.BasePlateLengthcm,
+                //                         BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                         BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                         WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                         Location_Height = x.Location_Height,
+                //                         PoType = x.PoType,
+                //                         PoNo = x.PoNo,
+                //                         PoDate = x.PoDate,
+                //                         HeightImplemented = x.HeightImplemented,
+                //                         BuildingMaxLoad = x.BuildingMaxLoad,
+                //                         SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                         CurrentLoads = x.CurrentLoads,
+                //                         WarningPercentageLoads = x.WarningPercentageLoads,
+                //                         Visiable_Status = x.Visiable_Status,
+                //                         SpaceInstallation = x.SpaceInstallation,
+                //                         CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                         OWNER = x.OWNER,
+                //                         SUBTYPE = x.SUBTYPE,
+                //                         HeightBase = x.HeightBase,
+                //                         BuildingHeightH3 = x.BuildingHeightH3,
+                //                         reinforced = x.reinforced,
+                //                         ladderSteps = x.ladderSteps,
+                //                         availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                         equipmentsLocation = x.equipmentsLocation,
+                //                         CenterHigh = x.CenterHigh,
+                //                         HBA = x.HBA,
+                //                         INPUTVALUE = x.INPUTVALUE,
+                //                         Key = x.Key,
+                //                         CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                         Dismantle = x.Dismantle
+
+                //                     }).AsEnumerable()
+                //            .GroupBy(x => new
+                //            {
+                //                HieghFromLand = x.HieghFromLand,
+                //                EquivalentSpace = x.EquivalentSpace,
+                //                Support_Limited_Load = x.Support_Limited_Load,
+                //                SITECODE = x.SITECODE,
+                //                Id = x.Id,
+                //                Name = x.Name,
+                //                UpperPartLengthm = x.UpperPartLengthm,
+                //                UpperPartDiameterm = x.UpperPartDiameterm,
+                //                SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                NumberOfCivilParts = x.NumberOfCivilParts,
+                //                NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                FlangeThicknesscm = x.FlangeThicknesscm,
+                //                FlangeDiametercm = x.FlangeDiametercm,
+                //                FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                Civil_Remarks = x.Civil_Remarks,
+                //                BottomPartLengthm = x.BottomPartLengthm,
+                //                BottomPartDiameterm = x.BottomPartDiameterm,
+                //                BasePlateWidthcm = x.BasePlateWidthcm,
+                //                BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                BasePlateLengthcm = x.BasePlateLengthcm,
+                //                BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                Location_Height = x.Location_Height,
+                //                PoType = x.PoType,
+                //                PoNo = x.PoNo,
+                //                PoDate = x.PoDate,
+                //                HeightImplemented = x.HeightImplemented,
+                //                BuildingMaxLoad = x.BuildingMaxLoad,
+                //                SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                CurrentLoads = x.CurrentLoads,
+                //                WarningPercentageLoads = x.WarningPercentageLoads,
+                //                Visiable_Status = x.Visiable_Status,
+                //                SpaceInstallation = x.SpaceInstallation,
+                //                CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                OWNER = x.OWNER,
+                //                SUBTYPE = x.SUBTYPE,
+                //                HeightBase = x.HeightBase,
+                //                BuildingHeightH3 = x.BuildingHeightH3,
+                //                reinforced = x.reinforced,
+                //                ladderSteps = x.ladderSteps,
+                //                availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                equipmentsLocation = x.equipmentsLocation,
+                //                CenterHigh = x.CenterHigh,
+                //                HBA = x.HBA,
+                //                CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                Dismantle = x.Dismantle
+                //            }).OrderBy(x => x.Key.Name)
+                //            .Select(x =>
+                //                new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                //            )
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+
+                //            var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW
+                //            .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                //             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast" && !x.Dismantle)
+                //            .AsEnumerable().Select(x =>
+
+                //                 new
+                //                 {
+                //                     HieghFromLand = x.HieghFromLand,
+                //                     EquivalentSpace = x.EquivalentSpace,
+                //                     Support_Limited_Load = x.Support_Limited_Load,
+                //                     SITECODE = x.SITECODE,
+                //                     Id = x.Id,
+                //                     Name = x.Name,
+                //                     UpperPartLengthm = x.UpperPartLengthm,
+                //                     UpperPartDiameterm = x.UpperPartDiameterm,
+                //                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                     NumberOfCivilParts = x.NumberOfCivilParts,
+                //                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                     FlangeThicknesscm = x.FlangeThicknesscm,
+                //                     FlangeDiametercm = x.FlangeDiametercm,
+                //                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                     Civil_Remarks = x.Civil_Remarks,
+                //                     BottomPartLengthm = x.BottomPartLengthm,
+                //                     BottomPartDiameterm = x.BottomPartDiameterm,
+                //                     BasePlateWidthcm = x.BasePlateWidthcm,
+                //                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                     BasePlateLengthcm = x.BasePlateLengthcm,
+                //                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                     Location_Height = x.Location_Height,
+                //                     PoType = x.PoType,
+                //                     PoNo = x.PoNo,
+                //                     PoDate = x.PoDate,
+                //                     HeightImplemented = x.HeightImplemented,
+                //                     BuildingMaxLoad = x.BuildingMaxLoad,
+                //                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                     CurrentLoads = x.CurrentLoads,
+                //                     WarningPercentageLoads = x.WarningPercentageLoads,
+                //                     Visiable_Status = x.Visiable_Status,
+                //                     SpaceInstallation = x.SpaceInstallation,
+                //                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                     OWNER = x.OWNER,
+                //                     SUBTYPE = x.SUBTYPE,
+                //                     HeightBase = x.HeightBase,
+                //                     BuildingHeightH3 = x.BuildingHeightH3,
+                //                     reinforced = x.reinforced,
+                //                     ladderSteps = x.ladderSteps,
+                //                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                     equipmentsLocation = x.equipmentsLocation,
+                //                     CenterHigh = x.CenterHigh,
+                //                     HBA = x.HBA,
+                //                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                     Dismantle = x.Dismantle
+
+                //                 }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                //          ;
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                //             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "mast" && !x.Dismantle).Select(x =>
+
+                //                 new
+                //                 {
+                //                     HieghFromLand = x.HieghFromLand,
+                //                     EquivalentSpace = x.EquivalentSpace,
+                //                     Support_Limited_Load = x.Support_Limited_Load,
+                //                     SITECODE = x.SITECODE,
+                //                     Id = x.Id,
+                //                     Name = x.Name,
+                //                     UpperPartLengthm = x.UpperPartLengthm,
+                //                     UpperPartDiameterm = x.UpperPartDiameterm,
+                //                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                     NumberOfCivilParts = x.NumberOfCivilParts,
+                //                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                     FlangeThicknesscm = x.FlangeThicknesscm,
+                //                     FlangeDiametercm = x.FlangeDiametercm,
+                //                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                     Civil_Remarks = x.Civil_Remarks,
+                //                     BottomPartLengthm = x.BottomPartLengthm,
+                //                     BottomPartDiameterm = x.BottomPartDiameterm,
+                //                     BasePlateWidthcm = x.BasePlateWidthcm,
+                //                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                     BasePlateLengthcm = x.BasePlateLengthcm,
+                //                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                     Location_Height = x.Location_Height,
+                //                     PoType = x.PoType,
+                //                     PoNo = x.PoNo,
+                //                     PoDate = x.PoDate,
+                //                     HeightImplemented = x.HeightImplemented,
+                //                     BuildingMaxLoad = x.BuildingMaxLoad,
+                //                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                     CurrentLoads = x.CurrentLoads,
+                //                     WarningPercentageLoads = x.WarningPercentageLoads,
+                //                     Visiable_Status = x.Visiable_Status,
+                //                     SpaceInstallation = x.SpaceInstallation,
+                //                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                     OWNER = x.OWNER,
+                //                     SUBTYPE = x.SUBTYPE,
+                //                     HeightBase = x.HeightBase,
+                //                     BuildingHeightH3 = x.BuildingHeightH3,
+                //                     reinforced = x.reinforced,
+                //                     ladderSteps = x.ladderSteps,
+                //                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                     equipmentsLocation = x.equipmentsLocation,
+                //                     CenterHigh = x.CenterHigh,
+                //                     HBA = x.HBA,
+                //                     INPUTVALUE = x.INPUTVALUE,
+                //                     Key = x.Key,
+                //                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                     Dismantle = x.Dismantle
+
+                //                 }).AsEnumerable()
+                //        .GroupBy(x => new
+                //        {
+                //            HieghFromLand = x.HieghFromLand,
+                //            EquivalentSpace = x.EquivalentSpace,
+                //            Support_Limited_Load = x.Support_Limited_Load,
+                //            SITECODE = x.SITECODE,
+                //            Id = x.Id,
+                //            Name = x.Name,
+                //            UpperPartLengthm = x.UpperPartLengthm,
+                //            UpperPartDiameterm = x.UpperPartDiameterm,
+                //            SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //            SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //            ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //            SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //            NumberOfCivilParts = x.NumberOfCivilParts,
+                //            NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //            NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //            CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //            CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //            LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //            HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //            HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //            FlangeThicknesscm = x.FlangeThicknesscm,
+                //            FlangeDiametercm = x.FlangeDiametercm,
+                //            FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //            ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //            ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //            Civil_Remarks = x.Civil_Remarks,
+                //            BottomPartLengthm = x.BottomPartLengthm,
+                //            BottomPartDiameterm = x.BottomPartDiameterm,
+                //            BasePlateWidthcm = x.BasePlateWidthcm,
+                //            BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //            BasePlateLengthcm = x.BasePlateLengthcm,
+                //            BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //            BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //            WindMaxLoadm2 = x.WindMaxLoadm2,
+                //            Location_Height = x.Location_Height,
+                //            PoType = x.PoType,
+                //            PoNo = x.PoNo,
+                //            PoDate = x.PoDate,
+                //            HeightImplemented = x.HeightImplemented,
+                //            BuildingMaxLoad = x.BuildingMaxLoad,
+                //            SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //            CurrentLoads = x.CurrentLoads,
+                //            WarningPercentageLoads = x.WarningPercentageLoads,
+                //            Visiable_Status = x.Visiable_Status,
+                //            SpaceInstallation = x.SpaceInstallation,
+                //            CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //            OWNER = x.OWNER,
+                //            SUBTYPE = x.SUBTYPE,
+                //            HeightBase = x.HeightBase,
+                //            BuildingHeightH3 = x.BuildingHeightH3,
+                //            reinforced = x.reinforced,
+                //            ladderSteps = x.ladderSteps,
+                //            availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //            equipmentsLocation = x.equipmentsLocation,
+                //            CenterHigh = x.CenterHigh,
+                //            HBA = x.HBA,
+                //            CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //            Dismantle = x.Dismantle
+                //        }).OrderBy(x => x.Key.Name)
+                //        .Select(x =>
+                //            new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                //        )
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableNameInstallation && CategoryId == 2)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment
+                //            .Include(x => x.EditableManagmentView)
+                //            .Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt)
+                //            .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationCapsule" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //            .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+
+                //        }
+                //        propertyNamesStatic.Add("SITECODE");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+
+                //                var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW
+                //                .Where(x =>
+                //                 x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle)
+                //                .AsEnumerable().Select(x =>
+
+                //                     new
+                //                     {
+                //                         HieghFromLand = x.HieghFromLand,
+                //                         EquivalentSpace = x.EquivalentSpace,
+                //                         Support_Limited_Load = x.Support_Limited_Load,
+                //                         SITECODE = x.SITECODE,
+                //                         Id = x.Id,
+                //                         Name = x.Name,
+                //                         UpperPartLengthm = x.UpperPartLengthm,
+                //                         UpperPartDiameterm = x.UpperPartDiameterm,
+                //                         SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                         SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                         ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                         SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                         NumberOfCivilParts = x.NumberOfCivilParts,
+                //                         NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                         NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                         CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                         CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                         LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                         HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                         HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                         FlangeThicknesscm = x.FlangeThicknesscm,
+                //                         FlangeDiametercm = x.FlangeDiametercm,
+                //                         FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                         ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                         ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                         Civil_Remarks = x.Civil_Remarks,
+                //                         BottomPartLengthm = x.BottomPartLengthm,
+                //                         BottomPartDiameterm = x.BottomPartDiameterm,
+                //                         BasePlateWidthcm = x.BasePlateWidthcm,
+                //                         BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                         BasePlateLengthcm = x.BasePlateLengthcm,
+                //                         BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                         BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                         WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                         Location_Height = x.Location_Height,
+                //                         PoType = x.PoType,
+                //                         PoNo = x.PoNo,
+                //                         PoDate = x.PoDate,
+                //                         HeightImplemented = x.HeightImplemented,
+                //                         BuildingMaxLoad = x.BuildingMaxLoad,
+                //                         SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                         CurrentLoads = x.CurrentLoads,
+                //                         WarningPercentageLoads = x.WarningPercentageLoads,
+                //                         Visiable_Status = x.Visiable_Status,
+                //                         SpaceInstallation = x.SpaceInstallation,
+                //                         CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                         OWNER = x.OWNER,
+                //                         SUBTYPE = x.SUBTYPE,
+                //                         HeightBase = x.HeightBase,
+                //                         BuildingHeightH3 = x.BuildingHeightH3,
+                //                         reinforced = x.reinforced,
+                //                         ladderSteps = x.ladderSteps,
+                //                         availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                         equipmentsLocation = x.equipmentsLocation,
+                //                         CenterHigh = x.CenterHigh,
+                //                         HBA = x.HBA,
+                //                         CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                         Dismantle = x.Dismantle
+
+                //                     }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                //              ;
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x =>
+                //                 x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).Select(x =>
+
+                //                     new
+                //                     {
+                //                         HieghFromLand = x.HieghFromLand,
+                //                         EquivalentSpace = x.EquivalentSpace,
+                //                         Support_Limited_Load = x.Support_Limited_Load,
+                //                         SITECODE = x.SITECODE,
+                //                         Id = x.Id,
+                //                         Name = x.Name,
+                //                         UpperPartLengthm = x.UpperPartLengthm,
+                //                         UpperPartDiameterm = x.UpperPartDiameterm,
+                //                         SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                         SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                         ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                         SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                         NumberOfCivilParts = x.NumberOfCivilParts,
+                //                         NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                         NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                         CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                         CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                         LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                         HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                         HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                         FlangeThicknesscm = x.FlangeThicknesscm,
+                //                         FlangeDiametercm = x.FlangeDiametercm,
+                //                         FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                         ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                         ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                         Civil_Remarks = x.Civil_Remarks,
+                //                         BottomPartLengthm = x.BottomPartLengthm,
+                //                         BottomPartDiameterm = x.BottomPartDiameterm,
+                //                         BasePlateWidthcm = x.BasePlateWidthcm,
+                //                         BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                         BasePlateLengthcm = x.BasePlateLengthcm,
+                //                         BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                         BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                         WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                         Location_Height = x.Location_Height,
+                //                         PoType = x.PoType,
+                //                         PoNo = x.PoNo,
+                //                         PoDate = x.PoDate,
+                //                         HeightImplemented = x.HeightImplemented,
+                //                         BuildingMaxLoad = x.BuildingMaxLoad,
+                //                         SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                         CurrentLoads = x.CurrentLoads,
+                //                         WarningPercentageLoads = x.WarningPercentageLoads,
+                //                         Visiable_Status = x.Visiable_Status,
+                //                         SpaceInstallation = x.SpaceInstallation,
+                //                         CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                         OWNER = x.OWNER,
+                //                         SUBTYPE = x.SUBTYPE,
+                //                         HeightBase = x.HeightBase,
+                //                         BuildingHeightH3 = x.BuildingHeightH3,
+                //                         reinforced = x.reinforced,
+                //                         ladderSteps = x.ladderSteps,
+                //                         availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                         equipmentsLocation = x.equipmentsLocation,
+                //                         CenterHigh = x.CenterHigh,
+                //                         HBA = x.HBA,
+                //                         INPUTVALUE = x.INPUTVALUE,
+                //                         Key = x.Key,
+                //                         CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                         Dismantle = x.Dismantle
+
+                //                     }).AsEnumerable()
+                //            .GroupBy(x => new
+                //            {
+                //                HieghFromLand = x.HieghFromLand,
+                //                EquivalentSpace = x.EquivalentSpace,
+                //                Support_Limited_Load = x.Support_Limited_Load,
+                //                SITECODE = x.SITECODE,
+                //                Id = x.Id,
+                //                Name = x.Name,
+                //                UpperPartLengthm = x.UpperPartLengthm,
+                //                UpperPartDiameterm = x.UpperPartDiameterm,
+                //                SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                NumberOfCivilParts = x.NumberOfCivilParts,
+                //                NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                FlangeThicknesscm = x.FlangeThicknesscm,
+                //                FlangeDiametercm = x.FlangeDiametercm,
+                //                FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                Civil_Remarks = x.Civil_Remarks,
+                //                BottomPartLengthm = x.BottomPartLengthm,
+                //                BottomPartDiameterm = x.BottomPartDiameterm,
+                //                BasePlateWidthcm = x.BasePlateWidthcm,
+                //                BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                BasePlateLengthcm = x.BasePlateLengthcm,
+                //                BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                Location_Height = x.Location_Height,
+                //                PoType = x.PoType,
+                //                PoNo = x.PoNo,
+                //                PoDate = x.PoDate,
+                //                HeightImplemented = x.HeightImplemented,
+                //                BuildingMaxLoad = x.BuildingMaxLoad,
+                //                SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                CurrentLoads = x.CurrentLoads,
+                //                WarningPercentageLoads = x.WarningPercentageLoads,
+                //                Visiable_Status = x.Visiable_Status,
+                //                SpaceInstallation = x.SpaceInstallation,
+                //                CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                OWNER = x.OWNER,
+                //                SUBTYPE = x.SUBTYPE,
+                //                HeightBase = x.HeightBase,
+                //                BuildingHeightH3 = x.BuildingHeightH3,
+                //                reinforced = x.reinforced,
+                //                ladderSteps = x.ladderSteps,
+                //                availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                equipmentsLocation = x.equipmentsLocation,
+                //                CenterHigh = x.CenterHigh,
+                //                HBA = x.HBA,
+                //                CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                Dismantle = x.Dismantle
+                //            }).OrderBy(x => x.Key.Name)
+                //            .Select(x =>
+                //                new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                //            )
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+
+                //            var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW
+                //            .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                //             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle)
+                //            .AsEnumerable().Select(x =>
+
+                //                 new
+                //                 {
+                //                     HieghFromLand = x.HieghFromLand,
+                //                     EquivalentSpace = x.EquivalentSpace,
+                //                     Support_Limited_Load = x.Support_Limited_Load,
+                //                     SITECODE = x.SITECODE,
+                //                     Id = x.Id,
+                //                     Name = x.Name,
+                //                     UpperPartLengthm = x.UpperPartLengthm,
+                //                     UpperPartDiameterm = x.UpperPartDiameterm,
+                //                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                     NumberOfCivilParts = x.NumberOfCivilParts,
+                //                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                     FlangeThicknesscm = x.FlangeThicknesscm,
+                //                     FlangeDiametercm = x.FlangeDiametercm,
+                //                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                     Civil_Remarks = x.Civil_Remarks,
+                //                     BottomPartLengthm = x.BottomPartLengthm,
+                //                     BottomPartDiameterm = x.BottomPartDiameterm,
+                //                     BasePlateWidthcm = x.BasePlateWidthcm,
+                //                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                     BasePlateLengthcm = x.BasePlateLengthcm,
+                //                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                     Location_Height = x.Location_Height,
+                //                     PoType = x.PoType,
+                //                     PoNo = x.PoNo,
+                //                     PoDate = x.PoDate,
+                //                     HeightImplemented = x.HeightImplemented,
+                //                     BuildingMaxLoad = x.BuildingMaxLoad,
+                //                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                     CurrentLoads = x.CurrentLoads,
+                //                     WarningPercentageLoads = x.WarningPercentageLoads,
+                //                     Visiable_Status = x.Visiable_Status,
+                //                     SpaceInstallation = x.SpaceInstallation,
+                //                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                     OWNER = x.OWNER,
+                //                     SUBTYPE = x.SUBTYPE,
+                //                     HeightBase = x.HeightBase,
+                //                     BuildingHeightH3 = x.BuildingHeightH3,
+                //                     reinforced = x.reinforced,
+                //                     ladderSteps = x.ladderSteps,
+                //                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                     equipmentsLocation = x.equipmentsLocation,
+                //                     CenterHigh = x.CenterHigh,
+                //                     HBA = x.HBA,
+                //                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                     Dismantle = x.Dismantle
+
+                //                 }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                //          ;
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                //             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "capsule" && !x.Dismantle).Select(x =>
+
+                //                 new
+                //                 {
+                //                     HieghFromLand = x.HieghFromLand,
+                //                     EquivalentSpace = x.EquivalentSpace,
+                //                     Support_Limited_Load = x.Support_Limited_Load,
+                //                     SITECODE = x.SITECODE,
+                //                     Id = x.Id,
+                //                     Name = x.Name,
+                //                     UpperPartLengthm = x.UpperPartLengthm,
+                //                     UpperPartDiameterm = x.UpperPartDiameterm,
+                //                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                     NumberOfCivilParts = x.NumberOfCivilParts,
+                //                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                     FlangeThicknesscm = x.FlangeThicknesscm,
+                //                     FlangeDiametercm = x.FlangeDiametercm,
+                //                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                     Civil_Remarks = x.Civil_Remarks,
+                //                     BottomPartLengthm = x.BottomPartLengthm,
+                //                     BottomPartDiameterm = x.BottomPartDiameterm,
+                //                     BasePlateWidthcm = x.BasePlateWidthcm,
+                //                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                     BasePlateLengthcm = x.BasePlateLengthcm,
+                //                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                     Location_Height = x.Location_Height,
+                //                     PoType = x.PoType,
+                //                     PoNo = x.PoNo,
+                //                     PoDate = x.PoDate,
+                //                     HeightImplemented = x.HeightImplemented,
+                //                     BuildingMaxLoad = x.BuildingMaxLoad,
+                //                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                     CurrentLoads = x.CurrentLoads,
+                //                     WarningPercentageLoads = x.WarningPercentageLoads,
+                //                     Visiable_Status = x.Visiable_Status,
+                //                     SpaceInstallation = x.SpaceInstallation,
+                //                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                     OWNER = x.OWNER,
+                //                     SUBTYPE = x.SUBTYPE,
+                //                     HeightBase = x.HeightBase,
+                //                     BuildingHeightH3 = x.BuildingHeightH3,
+                //                     reinforced = x.reinforced,
+                //                     ladderSteps = x.ladderSteps,
+                //                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                     equipmentsLocation = x.equipmentsLocation,
+                //                     CenterHigh = x.CenterHigh,
+                //                     HBA = x.HBA,
+                //                     INPUTVALUE = x.INPUTVALUE,
+                //                     Key = x.Key,
+                //                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                     Dismantle = x.Dismantle
+
+                //                 }).AsEnumerable()
+                //        .GroupBy(x => new
+                //        {
+                //            HieghFromLand = x.HieghFromLand,
+                //            EquivalentSpace = x.EquivalentSpace,
+                //            Support_Limited_Load = x.Support_Limited_Load,
+                //            SITECODE = x.SITECODE,
+                //            Id = x.Id,
+                //            Name = x.Name,
+                //            UpperPartLengthm = x.UpperPartLengthm,
+                //            UpperPartDiameterm = x.UpperPartDiameterm,
+                //            SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //            SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //            ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //            SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //            NumberOfCivilParts = x.NumberOfCivilParts,
+                //            NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //            NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //            CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //            CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //            LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //            HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //            HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //            FlangeThicknesscm = x.FlangeThicknesscm,
+                //            FlangeDiametercm = x.FlangeDiametercm,
+                //            FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //            ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //            ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //            Civil_Remarks = x.Civil_Remarks,
+                //            BottomPartLengthm = x.BottomPartLengthm,
+                //            BottomPartDiameterm = x.BottomPartDiameterm,
+                //            BasePlateWidthcm = x.BasePlateWidthcm,
+                //            BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //            BasePlateLengthcm = x.BasePlateLengthcm,
+                //            BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //            BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //            WindMaxLoadm2 = x.WindMaxLoadm2,
+                //            Location_Height = x.Location_Height,
+                //            PoType = x.PoType,
+                //            PoNo = x.PoNo,
+                //            PoDate = x.PoDate,
+                //            HeightImplemented = x.HeightImplemented,
+                //            BuildingMaxLoad = x.BuildingMaxLoad,
+                //            SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //            CurrentLoads = x.CurrentLoads,
+                //            WarningPercentageLoads = x.WarningPercentageLoads,
+                //            Visiable_Status = x.Visiable_Status,
+                //            SpaceInstallation = x.SpaceInstallation,
+                //            CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //            OWNER = x.OWNER,
+                //            SUBTYPE = x.SUBTYPE,
+                //            HeightBase = x.HeightBase,
+                //            BuildingHeightH3 = x.BuildingHeightH3,
+                //            reinforced = x.reinforced,
+                //            ladderSteps = x.ladderSteps,
+                //            availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //            equipmentsLocation = x.equipmentsLocation,
+                //            CenterHigh = x.CenterHigh,
+                //            HBA = x.HBA,
+                //            CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //            Dismantle = x.Dismantle
+                //        }).OrderBy(x => x.Key.Name)
+                //        .Select(x =>
+                //            new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                //        )
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TableNameInstallation && CategoryId == 3)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_WITHOUTLEG";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment
+                //            .Include(x => x.EditableManagmentView)
+                //            .Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt)
+                //            .Where(x => x.Enable && x.EditableManagmentView.View == "CivilWithoutLegInstallationMonopole" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //              .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SITECODE");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+
+                //                var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW
+                //                .Where(x =>
+                //                 x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle)
+                //                .AsEnumerable().Select(x =>
+
+                //                     new
+                //                     {
+                //                         HieghFromLand = x.HieghFromLand,
+                //                         EquivalentSpace = x.EquivalentSpace,
+                //                         Support_Limited_Load = x.Support_Limited_Load,
+                //                         SITECODE = x.SITECODE,
+                //                         Id = x.Id,
+                //                         Name = x.Name,
+                //                         UpperPartLengthm = x.UpperPartLengthm,
+                //                         UpperPartDiameterm = x.UpperPartDiameterm,
+                //                         SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                         SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                         ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                         SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                         NumberOfCivilParts = x.NumberOfCivilParts,
+                //                         NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                         NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                         CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                         CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                         LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                         HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                         HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                         FlangeThicknesscm = x.FlangeThicknesscm,
+                //                         FlangeDiametercm = x.FlangeDiametercm,
+                //                         FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                         ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                         ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                         Civil_Remarks = x.Civil_Remarks,
+                //                         BottomPartLengthm = x.BottomPartLengthm,
+                //                         BottomPartDiameterm = x.BottomPartDiameterm,
+                //                         BasePlateWidthcm = x.BasePlateWidthcm,
+                //                         BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                         BasePlateLengthcm = x.BasePlateLengthcm,
+                //                         BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                         BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                         WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                         Location_Height = x.Location_Height,
+                //                         PoType = x.PoType,
+                //                         PoNo = x.PoNo,
+                //                         PoDate = x.PoDate,
+                //                         HeightImplemented = x.HeightImplemented,
+                //                         BuildingMaxLoad = x.BuildingMaxLoad,
+                //                         SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                         CurrentLoads = x.CurrentLoads,
+                //                         WarningPercentageLoads = x.WarningPercentageLoads,
+                //                         Visiable_Status = x.Visiable_Status,
+                //                         SpaceInstallation = x.SpaceInstallation,
+                //                         CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                         OWNER = x.OWNER,
+                //                         SUBTYPE = x.SUBTYPE,
+                //                         HeightBase = x.HeightBase,
+                //                         BuildingHeightH3 = x.BuildingHeightH3,
+                //                         reinforced = x.reinforced,
+                //                         ladderSteps = x.ladderSteps,
+                //                         availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                         equipmentsLocation = x.equipmentsLocation,
+                //                         CenterHigh = x.CenterHigh,
+                //                         HBA = x.HBA,
+                //                         CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                         Dismantle = x.Dismantle
+
+                //                     }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                //              ;
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x =>
+                //                 x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).Select(x =>
+
+                //                     new
+                //                     {
+                //                         HieghFromLand = x.HieghFromLand,
+                //                         EquivalentSpace = x.EquivalentSpace,
+                //                         Support_Limited_Load = x.Support_Limited_Load,
+                //                         SITECODE = x.SITECODE,
+                //                         Id = x.Id,
+                //                         Name = x.Name,
+                //                         UpperPartLengthm = x.UpperPartLengthm,
+                //                         UpperPartDiameterm = x.UpperPartDiameterm,
+                //                         SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                         SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                         ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                         SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                         NumberOfCivilParts = x.NumberOfCivilParts,
+                //                         NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                         NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                         CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                         CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                         LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                         HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                         HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                         FlangeThicknesscm = x.FlangeThicknesscm,
+                //                         FlangeDiametercm = x.FlangeDiametercm,
+                //                         FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                         ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                         ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                         Civil_Remarks = x.Civil_Remarks,
+                //                         BottomPartLengthm = x.BottomPartLengthm,
+                //                         BottomPartDiameterm = x.BottomPartDiameterm,
+                //                         BasePlateWidthcm = x.BasePlateWidthcm,
+                //                         BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                         BasePlateLengthcm = x.BasePlateLengthcm,
+                //                         BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                         BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                         WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                         Location_Height = x.Location_Height,
+                //                         PoType = x.PoType,
+                //                         PoNo = x.PoNo,
+                //                         PoDate = x.PoDate,
+                //                         HeightImplemented = x.HeightImplemented,
+                //                         BuildingMaxLoad = x.BuildingMaxLoad,
+                //                         SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                         CurrentLoads = x.CurrentLoads,
+                //                         WarningPercentageLoads = x.WarningPercentageLoads,
+                //                         Visiable_Status = x.Visiable_Status,
+                //                         SpaceInstallation = x.SpaceInstallation,
+                //                         CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                         OWNER = x.OWNER,
+                //                         SUBTYPE = x.SUBTYPE,
+                //                         HeightBase = x.HeightBase,
+                //                         BuildingHeightH3 = x.BuildingHeightH3,
+                //                         reinforced = x.reinforced,
+                //                         ladderSteps = x.ladderSteps,
+                //                         availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                         equipmentsLocation = x.equipmentsLocation,
+                //                         CenterHigh = x.CenterHigh,
+                //                         HBA = x.HBA,
+                //                         INPUTVALUE = x.INPUTVALUE,
+                //                         Key = x.Key,
+                //                         CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                         Dismantle = x.Dismantle
+
+                //                     }).AsEnumerable()
+                //            .GroupBy(x => new
+                //            {
+                //                HieghFromLand = x.HieghFromLand,
+                //                EquivalentSpace = x.EquivalentSpace,
+                //                Support_Limited_Load = x.Support_Limited_Load,
+                //                SITECODE = x.SITECODE,
+                //                Id = x.Id,
+                //                Name = x.Name,
+                //                UpperPartLengthm = x.UpperPartLengthm,
+                //                UpperPartDiameterm = x.UpperPartDiameterm,
+                //                SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                NumberOfCivilParts = x.NumberOfCivilParts,
+                //                NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                FlangeThicknesscm = x.FlangeThicknesscm,
+                //                FlangeDiametercm = x.FlangeDiametercm,
+                //                FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                Civil_Remarks = x.Civil_Remarks,
+                //                BottomPartLengthm = x.BottomPartLengthm,
+                //                BottomPartDiameterm = x.BottomPartDiameterm,
+                //                BasePlateWidthcm = x.BasePlateWidthcm,
+                //                BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                BasePlateLengthcm = x.BasePlateLengthcm,
+                //                BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                Location_Height = x.Location_Height,
+                //                PoType = x.PoType,
+                //                PoNo = x.PoNo,
+                //                PoDate = x.PoDate,
+                //                HeightImplemented = x.HeightImplemented,
+                //                BuildingMaxLoad = x.BuildingMaxLoad,
+                //                SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                CurrentLoads = x.CurrentLoads,
+                //                WarningPercentageLoads = x.WarningPercentageLoads,
+                //                Visiable_Status = x.Visiable_Status,
+                //                SpaceInstallation = x.SpaceInstallation,
+                //                CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                OWNER = x.OWNER,
+                //                SUBTYPE = x.SUBTYPE,
+                //                HeightBase = x.HeightBase,
+                //                BuildingHeightH3 = x.BuildingHeightH3,
+                //                reinforced = x.reinforced,
+                //                ladderSteps = x.ladderSteps,
+                //                availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                equipmentsLocation = x.equipmentsLocation,
+                //                CenterHigh = x.CenterHigh,
+                //                HBA = x.HBA,
+                //                CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                Dismantle = x.Dismantle
+                //            }).OrderBy(x => x.Key.Name)
+                //            .Select(x =>
+                //                new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                //            )
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+
+                //            var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW
+                //            .Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                //             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle)
+                //            .AsEnumerable().Select(x =>
+
+                //                 new
+                //                 {
+                //                     HieghFromLand = x.HieghFromLand,
+                //                     EquivalentSpace = x.EquivalentSpace,
+                //                     Support_Limited_Load = x.Support_Limited_Load,
+                //                     SITECODE = x.SITECODE,
+                //                     Id = x.Id,
+                //                     Name = x.Name,
+                //                     UpperPartLengthm = x.UpperPartLengthm,
+                //                     UpperPartDiameterm = x.UpperPartDiameterm,
+                //                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                     NumberOfCivilParts = x.NumberOfCivilParts,
+                //                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                     FlangeThicknesscm = x.FlangeThicknesscm,
+                //                     FlangeDiametercm = x.FlangeDiametercm,
+                //                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                     Civil_Remarks = x.Civil_Remarks,
+                //                     BottomPartLengthm = x.BottomPartLengthm,
+                //                     BottomPartDiameterm = x.BottomPartDiameterm,
+                //                     BasePlateWidthcm = x.BasePlateWidthcm,
+                //                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                     BasePlateLengthcm = x.BasePlateLengthcm,
+                //                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                     Location_Height = x.Location_Height,
+                //                     PoType = x.PoType,
+                //                     PoNo = x.PoNo,
+                //                     PoDate = x.PoDate,
+                //                     HeightImplemented = x.HeightImplemented,
+                //                     BuildingMaxLoad = x.BuildingMaxLoad,
+                //                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                     CurrentLoads = x.CurrentLoads,
+                //                     WarningPercentageLoads = x.WarningPercentageLoads,
+                //                     Visiable_Status = x.Visiable_Status,
+                //                     SpaceInstallation = x.SpaceInstallation,
+                //                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                     OWNER = x.OWNER,
+                //                     SUBTYPE = x.SUBTYPE,
+                //                     HeightBase = x.HeightBase,
+                //                     BuildingHeightH3 = x.BuildingHeightH3,
+                //                     reinforced = x.reinforced,
+                //                     ladderSteps = x.ladderSteps,
+                //                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                     equipmentsLocation = x.equipmentsLocation,
+                //                     CenterHigh = x.CenterHigh,
+                //                     HBA = x.HBA,
+                //                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                     Dismantle = x.Dismantle
+
+                //                 }).Distinct().Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic))
+                //          ;
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_CIVIL_WITHOUTLEGS_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() &&
+                //             x.CIVILWITHOUTLEGCATEGORY.ToLower() == "monopole" && !x.Dismantle).Select(x =>
+
+                //                 new
+                //                 {
+                //                     HieghFromLand = x.HieghFromLand,
+                //                     EquivalentSpace = x.EquivalentSpace,
+                //                     Support_Limited_Load = x.Support_Limited_Load,
+                //                     SITECODE = x.SITECODE,
+                //                     Id = x.Id,
+                //                     Name = x.Name,
+                //                     UpperPartLengthm = x.UpperPartLengthm,
+                //                     UpperPartDiameterm = x.UpperPartDiameterm,
+                //                     SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //                     SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //                     ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //                     SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //                     NumberOfCivilParts = x.NumberOfCivilParts,
+                //                     NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //                     NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //                     CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //                     CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //                     LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //                     HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //                     HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //                     FlangeThicknesscm = x.FlangeThicknesscm,
+                //                     FlangeDiametercm = x.FlangeDiametercm,
+                //                     FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //                     ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //                     ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //                     Civil_Remarks = x.Civil_Remarks,
+                //                     BottomPartLengthm = x.BottomPartLengthm,
+                //                     BottomPartDiameterm = x.BottomPartDiameterm,
+                //                     BasePlateWidthcm = x.BasePlateWidthcm,
+                //                     BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //                     BasePlateLengthcm = x.BasePlateLengthcm,
+                //                     BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //                     BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //                     WindMaxLoadm2 = x.WindMaxLoadm2,
+                //                     Location_Height = x.Location_Height,
+                //                     PoType = x.PoType,
+                //                     PoNo = x.PoNo,
+                //                     PoDate = x.PoDate,
+                //                     HeightImplemented = x.HeightImplemented,
+                //                     BuildingMaxLoad = x.BuildingMaxLoad,
+                //                     SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //                     CurrentLoads = x.CurrentLoads,
+                //                     WarningPercentageLoads = x.WarningPercentageLoads,
+                //                     Visiable_Status = x.Visiable_Status,
+                //                     SpaceInstallation = x.SpaceInstallation,
+                //                     CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //                     OWNER = x.OWNER,
+                //                     SUBTYPE = x.SUBTYPE,
+                //                     HeightBase = x.HeightBase,
+                //                     BuildingHeightH3 = x.BuildingHeightH3,
+                //                     reinforced = x.reinforced,
+                //                     ladderSteps = x.ladderSteps,
+                //                     availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //                     equipmentsLocation = x.equipmentsLocation,
+                //                     CenterHigh = x.CenterHigh,
+                //                     HBA = x.HBA,
+                //                     INPUTVALUE = x.INPUTVALUE,
+                //                     Key = x.Key,
+                //                     CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //                     Dismantle = x.Dismantle
+
+                //                 }).AsEnumerable()
+                //        .GroupBy(x => new
+                //        {
+                //            HieghFromLand = x.HieghFromLand,
+                //            EquivalentSpace = x.EquivalentSpace,
+                //            Support_Limited_Load = x.Support_Limited_Load,
+                //            SITECODE = x.SITECODE,
+                //            Id = x.Id,
+                //            Name = x.Name,
+                //            UpperPartLengthm = x.UpperPartLengthm,
+                //            UpperPartDiameterm = x.UpperPartDiameterm,
+                //            SpindlesBasePlateLengthcm = x.SpindlesBasePlateLengthcm,
+                //            SpindlesBasePlateWidthcm = x.SpindlesBasePlateWidthcm,
+                //            ConcreteBaseWidthm = x.ConcreteBaseWidthm,
+                //            SpinBasePlateAnchorDiametercm = x.SpinBasePlateAnchorDiametercm,
+                //            NumberOfCivilParts = x.NumberOfCivilParts,
+                //            NumberOfLongitudinalSpindles = x.NumberOfLongitudinalSpindles,
+                //            NumberOfhorizontalSpindle = x.NumberOfhorizontalSpindle,
+                //            CivilLengthAboveEndOfSpindles = x.CivilLengthAboveEndOfSpindles,
+                //            CivilBaseLevelFromGround = x.CivilBaseLevelFromGround,
+                //            LongitudinalSpinDiameterrmm = x.LongitudinalSpinDiameterrmm,
+                //            HorizontalSpindlesHBAm = x.HorizontalSpindlesHBAm,
+                //            HorizontalSpindleDiametermm = x.HorizontalSpindleDiametermm,
+                //            FlangeThicknesscm = x.FlangeThicknesscm,
+                //            FlangeDiametercm = x.FlangeDiametercm,
+                //            FlangeBoltsDiametermm = x.FlangeBoltsDiametermm,
+                //            ConcreteBaseThicknessm = x.ConcreteBaseThicknessm,
+                //            ConcreteBaseLengthm = x.ConcreteBaseLengthm,
+                //            Civil_Remarks = x.Civil_Remarks,
+                //            BottomPartLengthm = x.BottomPartLengthm,
+                //            BottomPartDiameterm = x.BottomPartDiameterm,
+                //            BasePlateWidthcm = x.BasePlateWidthcm,
+                //            BasePlateThicknesscm = x.BasePlateThicknesscm,
+                //            BasePlateLengthcm = x.BasePlateLengthcm,
+                //            BPlateBoltsAnchorDiametermm = x.BPlateBoltsAnchorDiametermm,
+                //            BaseBeamSectionmm = x.BaseBeamSectionmm,
+                //            WindMaxLoadm2 = x.WindMaxLoadm2,
+                //            Location_Height = x.Location_Height,
+                //            PoType = x.PoType,
+                //            PoNo = x.PoNo,
+                //            PoDate = x.PoDate,
+                //            HeightImplemented = x.HeightImplemented,
+                //            BuildingMaxLoad = x.BuildingMaxLoad,
+                //            SupportMaxLoadAfterInforcement = x.SupportMaxLoadAfterInforcement,
+                //            CurrentLoads = x.CurrentLoads,
+                //            WarningPercentageLoads = x.WarningPercentageLoads,
+                //            Visiable_Status = x.Visiable_Status,
+                //            SpaceInstallation = x.SpaceInstallation,
+                //            CIVILWITHOUTLEGSLIB = x.CIVILWITHOUTLEGSLIB,
+                //            OWNER = x.OWNER,
+                //            SUBTYPE = x.SUBTYPE,
+                //            HeightBase = x.HeightBase,
+                //            BuildingHeightH3 = x.BuildingHeightH3,
+                //            reinforced = x.reinforced,
+                //            ladderSteps = x.ladderSteps,
+                //            availabilityOfWorkPlatforms = x.availabilityOfWorkPlatforms,
+                //            equipmentsLocation = x.equipmentsLocation,
+                //            CenterHigh = x.CenterHigh,
+                //            HBA = x.HBA,
+                //            CIVILWITHOUTLEGCATEGORY = x.CIVILWITHOUTLEGCATEGORY,
+                //            Dismantle = x.Dismantle
+                //        }).OrderBy(x => x.Key.Name)
+                //        .Select(x =>
+                //            new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) }
+                //        )
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_NONSTEEL ";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "CivilNonSteelInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //            .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList(); ;
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SITECODE");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_CIVIL_NONSTEEL_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //              .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_CIVIL_NONSTEEL_VIEW.Where(x =>
+                //                   !x.Dismantle).AsEnumerable()
+                //                .GroupBy(x => new
+                //                {
+                //                    SITECODE = x.SITECODE,
+                //                    Id = x.Id,
+                //                    Name = x.Name,
+                //                    CurrentLoads = x.CurrentLoads,
+                //                    SpaceInstallation = x.SpaceInstallation,
+                //                    CIVILNONSTEELLIBRARY = x.CIVILNONSTEELLIBRARY,
+                //                    OWNER = x.OWNER,
+                //                    SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
+                //                    LOCATIONTYPE = x.LOCATIONTYPE,
+                //                    locationHeight = x.locationHeight,
+                //                    BuildingMaxLoad = x.BuildingMaxLoad,
+                //                    CivilSupportCurrentLoad = x.CivilSupportCurrentLoad,
+                //                    H2Height = x.H2Height,
+                //                    CenterHigh = x.CenterHigh,
+                //                    HBA = x.HBA,
+                //                    HieghFromLand = x.HieghFromLand,
+                //                    EquivalentSpace = x.EquivalentSpace,
+                //                    Support_Limited_Load = x.Support_Limited_Load,
+                //                })
+                //                .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+
+                //            var query = _context.MV_CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //             && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_CIVIL_NONSTEEL_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //             && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SITECODE = x.SITECODE,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               CurrentLoads = x.CurrentLoads,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               CIVILNONSTEELLIBRARY = x.CIVILNONSTEELLIBRARY,
+                //               OWNER = x.OWNER,
+                //               SUPPORTTYPEIMPLEMENTED = x.SUPPORTTYPEIMPLEMENTED,
+                //               LOCATIONTYPE = x.LOCATIONTYPE,
+                //               locationHeight = x.locationHeight,
+                //               BuildingMaxLoad = x.BuildingMaxLoad,
+                //               CivilSupportCurrentLoad = x.CivilSupportCurrentLoad,
+                //               H2Height = x.H2Height,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               HieghFromLand = x.HieghFromLand,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               Support_Limited_Load = x.Support_Limited_Load,
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+
+
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLIsideArm.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_SIDEARM ";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "SideArmInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //               .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        propertyNamesStatic.Add("SITECODE");
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVILID");
+                //        propertyNamesStatic.Add("FIRST_LEG");
+                //        propertyNamesStatic.Add("FIRST_LEG_ID");
+                //        propertyNamesStatic.Add("SECOND_LEG");
+                //        propertyNamesStatic.Add("SECOND_LEG_ID");
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+
+                //                var query = _context.MV_SIDEARM_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_SIDEARM_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SITECODE = x.SITECODE,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVILID = x.CIVILID,
+                //                   FIRST_LEG = x.FIRST_LEG,
+                //                   SECOND_LEG = x.SECOND_LEG,
+                //                   Notes = x.Notes,
+                //                   HeightBase = x.HeightBase,
+                //                   Azimuth = x.Azimuth,
+                //                   ReservedSpace = x.ReservedSpace,
+                //                   Active = x.Active,
+                //                   VisibleStatus = x.VisibleStatus,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   SIDEARMLIBRARY = x.SIDEARMLIBRARY,
+                //                   SIDEARMINSTALLATIONPLACE = x.SIDEARMINSTALLATIONPLACE,
+                //                   OWNER = x.OWNER,
+                //                   SIDEARMTYPE = x.SIDEARMTYPE,
+                //                   Draft = x.Draft,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   FIRST_LEG_ID = x.FIRST_LEG_ID,
+                //                   SECOND_LEG_ID = x.SECOND_LEG_ID,
+                //                   ALLCIVIL_ID = x.ALLCIVIL_ID,
+                //                   Dismantle = x.Dismantle
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+
+                //            var query = _context.MV_SIDEARM_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_SIDEARM_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SITECODE = x.SITECODE,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVILID = x.CIVILID,
+                //               FIRST_LEG = x.FIRST_LEG,
+                //               SECOND_LEG = x.SECOND_LEG,
+                //               Notes = x.Notes,
+                //               HeightBase = x.HeightBase,
+                //               Azimuth = x.Azimuth,
+                //               ReservedSpace = x.ReservedSpace,
+                //               Active = x.Active,
+                //               VisibleStatus = x.VisibleStatus,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               SIDEARMLIBRARY = x.SIDEARMLIBRARY,
+                //               SIDEARMINSTALLATIONPLACE = x.SIDEARMINSTALLATIONPLACE,
+                //               OWNER = x.OWNER,
+                //               SIDEARMTYPE = x.SIDEARMTYPE,
+                //               Draft = x.Draft,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               HieghFromLand = x.HieghFromLand,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               FIRST_LEG_ID = x.FIRST_LEG_ID,
+                //               SECOND_LEG_ID = x.SECOND_LEG_ID,
+                //               ALLCIVIL_ID = x.ALLCIVIL_ID,
+                //               Dismantle = x.Dismantle
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLIloadOther.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "OtherLoadInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SiteCode");
+                //        propertyNamesStatic.Add("LEG_NAME");
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEG_ID");
+
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_LOAD_OTHER_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_LOAD_OTHER_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Azimuth = x.Azimuth,
+                //                   Notes = x.Notes,
+                //                   HeightBase = x.HeightBase,
+                //                   HeightLand = x.HeightLand,
+                //                   SerialNumber = x.SerialNumber,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   LOADOTHERLIBRARY = x.LOADOTHERLIBRARY,
+                //                   INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   Dismantle = x.Dismantle,
+                //                   LEG_NAME = x.LEG_NAME,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   LEG_ID = x.LEG_ID,
+                //                   SideArmSec_Name = x.SideArmSec_Name,
+                //                   SideArmSec_Id = x.SideArmSec_Id
+
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_LOAD_OTHER_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_LOAD_OTHER_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Azimuth = x.Azimuth,
+                //               Notes = x.Notes,
+                //               HeightBase = x.HeightBase,
+                //               HeightLand = x.HeightLand,
+                //               SerialNumber = x.SerialNumber,
+                //               HieghFromLand = x.HieghFromLand,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               LOADOTHERLIBRARY = x.LOADOTHERLIBRARY,
+                //               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               Dismantle = x.Dismantle,
+                //               LEG_NAME = x.LEG_NAME,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               LEG_ID = x.LEG_ID,
+                //               SideArmSec_Name = x.SideArmSec_Name,
+                //               SideArmSec_Id = x.SideArmSec_Id
+
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLIpower.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "PowerInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEGID");
+                //        propertyNamesStatic.Add("LEGNAME");
+                //        propertyNamesStatic.Add("SiteCode");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_POWER_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_POWER_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Azimuth = x.Azimuth,
+                //                   Notes = x.Notes,
+                //                   VisibleStatus = x.VisibleStatus,
+                //                   POWERTYPE = x.POWERTYPE,
+                //                   SerialNumber = x.SerialNumber,
+                //                   HBA = x.HBA,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   HeightBase = x.HeightBase,
+                //                   HeightLand = x.HeightLand,
+                //                   INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //                   POWERLIBRARY = x.POWERLIBRARY,
+                //                   Dismantle = x.Dismantle,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   LEGNAME = x.LEGNAME,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   LEGID = x.LEGID,
+                //                   OWNER = x.OWNER,
+                //                   Height = x.Height
+
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_POWER_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_POWER_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Azimuth = x.Azimuth,
+                //               Notes = x.Notes,
+                //               VisibleStatus = x.VisibleStatus,
+                //               POWERTYPE = x.POWERTYPE,
+                //               SerialNumber = x.SerialNumber,
+                //               HBA = x.HBA,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               HeightBase = x.HeightBase,
+                //               HeightLand = x.HeightLand,
+                //               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //               POWERLIBRARY = x.POWERLIBRARY,
+                //               Dismantle = x.Dismantle,
+                //               CenterHigh = x.CenterHigh,
+                //               HieghFromLand = x.HieghFromLand,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               LEGNAME = x.LEGNAME,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               LEGID = x.LEGID,
+                //               OWNER = x.OWNER,
+                //               Height = x.Height
+
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLImwBU.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWODU";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "MW_BUInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SiteCode");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEG_ID");
+                //        propertyNamesStatic.Add("LEG_NAME");
+                //        propertyNamesStatic.Add("SideArmSec_Id");
+                //        propertyNamesStatic.Add("SideArmSec_Name");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_MWBU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_MWBU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Serial_Number = x.Serial_Number,
+                //                   Notes = x.Notes,
+                //                   Height = x.Height,
+                //                   BUNumber = x.BUNumber,
+                //                   Visiable_Status = x.Visiable_Status,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   OWNER = x.OWNER,
+                //                   BASEBU = x.BASEBU,
+                //                   MWBULIBRARY = x.MWBULIBRARY,
+                //                   MAINDISH = x.MAINDISH,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   Azimuth = x.Azimuth,
+                //                   SDDISH = x.SDDISH,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   Dismantle = x.Dismantle,
+                //                   PORTCASCADE = x.PORTCASCADE,
+                //                   SideArmSec_Name = x.SideArmSec_Name,
+                //                   LEG_NAME = x.LEG_NAME,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   ALLLOAD_ID = x.ALLLOAD_ID,
+                //                   LEG_ID = x.LEG_ID,
+                //                   INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   SideArmSec_Id = x.SideArmSec_Id
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_MWBU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_MWBU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Serial_Number = x.Serial_Number,
+                //               Notes = x.Notes,
+                //               Height = x.Height,
+                //               BUNumber = x.BUNumber,
+                //               Visiable_Status = x.Visiable_Status,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               OWNER = x.OWNER,
+                //               BASEBU = x.BASEBU,
+                //               MWBULIBRARY = x.MWBULIBRARY,
+                //               MAINDISH = x.MAINDISH,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               HieghFromLand = x.HieghFromLand,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               Azimuth = x.Azimuth,
+                //               SDDISH = x.SDDISH,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               Dismantle = x.Dismantle,
+                //               PORTCASCADE = x.PORTCASCADE,
+                //               SideArmSec_Name = x.SideArmSec_Name,
+                //               LEG_NAME = x.LEG_NAME,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               ALLLOAD_ID = x.ALLLOAD_ID,
+                //               LEG_ID = x.LEG_ID,
+                //               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               SideArmSec_Id = x.SideArmSec_Id
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+
+
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLImwRFU.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "MW_RFUInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SiteCode");
+                //        propertyNamesStatic.Add("LEG_NAME");
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEG_ID");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_MWRFU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_MWRFU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Azimuth = x.Azimuth,
+                //                   heightBase = x.heightBase,
+                //                   Note = x.Note,
+                //                   OWNER = x.OWNER,
+                //                   SerialNumber = x.SerialNumber,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   MWRFULIBRARY = x.MWRFULIBRARY,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   MWPORT = x.MWPORT,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   Dismantle = x.Dismantle,
+                //                   LEG_NAME = x.LEG_NAME,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   LEG_ID = x.LEG_ID,
+                //                   SideArmSec_Name = x.SideArmSec_Name,
+                //                   SideArmSec_Id = x.SideArmSec_Id
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_MWRFU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_MWRFU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Azimuth = x.Azimuth,
+                //               heightBase = x.heightBase,
+                //               Note = x.Note,
+                //               OWNER = x.OWNER,
+                //               SerialNumber = x.SerialNumber,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               MWRFULIBRARY = x.MWRFULIBRARY,
+                //               HieghFromLand = x.HieghFromLand,
+                //               MWPORT = x.MWPORT,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               Dismantle = x.Dismantle,
+                //               LEG_NAME = x.LEG_NAME,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               LEG_ID = x.LEG_ID,
+                //               SideArmSec_Name = x.SideArmSec_Name,
+                //               SideArmSec_Id = x.SideArmSec_Id
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLImwODU.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWODU";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "MW_ODUInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SiteCode");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("SIDEARMID");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("ALLCIVILID");
+                //        propertyNamesStatic.Add("MW_DISH_ID");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_MWODU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_MWODU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Serial_Number = x.Serial_Number,
+                //                   Notes = x.Notes,
+                //                   Height = x.Height,
+                //                   ODUConnections = x.ODUConnections,
+                //                   Visiable_Status = x.Visiable_Status,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   OWNER = x.OWNER,
+                //                   MW_DISH = x.MW_DISH,
+                //                   ODUINSTALLATIONTYPE = x.ODUINSTALLATIONTYPE,
+                //                   MWODULIBRARY = x.MWODULIBRARY,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   Azimuth = x.Azimuth,
+                //                   SIDEARMID = x.SIDEARMID,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   Dismantle = x.Dismantle,
+                //                   ALLCIVILID = x.ALLCIVILID,
+                //                   MW_DISH_ID = x.MW_DISH_ID,
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_MWODU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_MWODU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Serial_Number = x.Serial_Number,
+                //               Notes = x.Notes,
+                //               Height = x.Height,
+                //               ODUConnections = x.ODUConnections,
+                //               Visiable_Status = x.Visiable_Status,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               OWNER = x.OWNER,
+                //               MW_DISH = x.MW_DISH,
+                //               ODUINSTALLATIONTYPE = x.ODUINSTALLATIONTYPE,
+                //               MWODULIBRARY = x.MWODULIBRARY,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               HieghFromLand = x.HieghFromLand,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               Azimuth = x.Azimuth,
+                //               SIDEARMID = x.SIDEARMID,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               Dismantle = x.Dismantle,
+                //               ALLCIVILID = x.ALLCIVILID,
+                //               MW_DISH_ID = x.MW_DISH_ID,
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+
+
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLImwDish.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "MW_DishInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("dishname"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SiteCode");
+                //        propertyNamesStatic.Add("LEG_NAME");
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEG_ID");
+                //        propertyNamesStatic.Add("ODU_COUNT");
+                //        propertyNamesStatic.Add("POLARITYTYPE");
+                //        propertyNamesStatic.Add("SideArmSec_Name");
+                //        propertyNamesStatic.Add("SideArmSec_Id");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_MWDISH_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_MWDISH_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   DishName = x.DishName,
+                //                   Azimuth = x.Azimuth,
+                //                   Notes = x.Notes,
+                //                   Far_End_Site_Code = x.Far_End_Site_Code,
+                //                   HBA_Surface = x.HBA_Surface,
+                //                   Serial_Number = x.Serial_Number,
+                //                   MW_LINK = x.MW_LINK,
+                //                   Visiable_Status = x.Visiable_Status,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   HeightBase = x.HeightBase,
+                //                   HeightLand = x.HeightLand,
+                //                   Temp = x.Temp,
+                //                   OWNER = x.OWNER,
+                //                   REPEATERTYPE = x.REPEATERTYPE,
+                //                   POLARITYONLOCATION = x.POLARITYONLOCATION,
+                //                   ITEMCONNECTTO = x.ITEMCONNECTTO,
+                //                   MWDISHLIBRARY = x.MWDISHLIBRARY,
+                //                   INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   Dismantle = x.Dismantle,
+                //                   LEG_NAME = x.LEG_NAME,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   LEG_ID = x.LEG_ID,
+                //                   ODU_COUNT = x.ODU_COUNT,
+                //                   POLARITYTYPE = x.POLARITYTYPE,
+                //                   SideArmSec_Name = x.SideArmSec_Name,
+                //                   SideArmSec_Id = x.SideArmSec_Id
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_MWDISH_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_MWDISH_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               DishName = x.DishName,
+                //               Azimuth = x.Azimuth,
+                //               Notes = x.Notes,
+                //               Far_End_Site_Code = x.Far_End_Site_Code,
+                //               HBA_Surface = x.HBA_Surface,
+                //               Serial_Number = x.Serial_Number,
+                //               MW_LINK = x.MW_LINK,
+                //               Visiable_Status = x.Visiable_Status,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               HeightBase = x.HeightBase,
+                //               HeightLand = x.HeightLand,
+                //               Temp = x.Temp,
+                //               OWNER = x.OWNER,
+                //               REPEATERTYPE = x.REPEATERTYPE,
+                //               POLARITYONLOCATION = x.POLARITYONLOCATION,
+                //               ITEMCONNECTTO = x.ITEMCONNECTTO,
+                //               MWDISHLIBRARY = x.MWDISHLIBRARY,
+                //               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               HieghFromLand = x.HieghFromLand,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               Dismantle = x.Dismantle,
+                //               LEG_NAME = x.LEG_NAME,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               LEG_ID = x.LEG_ID,
+                //               ODU_COUNT = x.ODU_COUNT,
+                //               POLARITYTYPE = x.POLARITYTYPE,
+                //               SideArmSec_Name = x.SideArmSec_Name,
+                //               SideArmSec_Id = x.SideArmSec_Id
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLImwOther.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "OtherMWInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SiteCode");
+                //        propertyNamesStatic.Add("LEG_NAME");
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEG_ID");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_MWOTHER_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_MWOTHER_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Azimuth = x.Azimuth,
+                //                   Notes = x.Notes,
+                //                   HeightBase = x.HeightBase,
+                //                   HeightLand = x.HeightLand,
+                //                   VisibleStatus = x.VisibleStatus,
+                //                   SerialNumber = x.SerialNumber,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   Spaceinstallation = x.Spaceinstallation,
+                //                   MWOTHERLIBRARY = x.MWOTHERLIBRARY,
+                //                   INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   Dismantle = x.Dismantle,
+                //                   LEG_NAME = x.LEG_NAME,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   LEG_ID = x.LEG_ID,
+                //                   SideArmSec_Name = x.SideArmSec_Name,
+                //                   SideArmSec_Id = x.SideArmSec_Id
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_MWOTHER_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_MWOTHER_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Azimuth = x.Azimuth,
+                //               Notes = x.Notes,
+                //               HeightBase = x.HeightBase,
+                //               HeightLand = x.HeightLand,
+                //               VisibleStatus = x.VisibleStatus,
+                //               SerialNumber = x.SerialNumber,
+                //               HieghFromLand = x.HieghFromLand,
+                //               Spaceinstallation = x.Spaceinstallation,
+                //               MWOTHERLIBRARY = x.MWOTHERLIBRARY,
+                //               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               Dismantle = x.Dismantle,
+                //               LEG_NAME = x.LEG_NAME,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               LEG_ID = x.LEG_ID,
+                //               SideArmSec_Name = x.SideArmSec_Name,
+                //               SideArmSec_Id = x.SideArmSec_Id
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLIradioAntenna.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "RadioAntennaInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEGID");
+                //        propertyNamesStatic.Add("LEGNAME");
+                //        propertyNamesStatic.Add("SiteCode");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_RADIO_ANTENNA_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_RADIO_ANTENNA_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Azimuth = x.Azimuth,
+                //                   Notes = x.Notes,
+                //                   VisibleStatus = x.VisibleStatus,
+                //                   MechanicalTilt = x.MechanicalTilt,
+                //                   ElectricalTilt = x.ElectricalTilt,
+                //                   SerialNumber = x.SerialNumber,
+                //                   HBASurface = x.HBASurface,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   HeightBase = x.HeightBase,
+                //                   HeightLand = x.HeightLand,
+                //                   INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //                   RADIOANTENNALIBRARY = x.RADIOANTENNALIBRARY,
+                //                   Dismantle = x.Dismantle,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   LEGNAME = x.LEGNAME,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   LEGID = x.LEGID,
+                //                   OWNER = x.OWNER
+
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_RADIO_ANTENNA_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_RADIO_ANTENNA_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Azimuth = x.Azimuth,
+                //               Notes = x.Notes,
+                //               VisibleStatus = x.VisibleStatus,
+                //               MechanicalTilt = x.MechanicalTilt,
+                //               ElectricalTilt = x.ElectricalTilt,
+                //               SerialNumber = x.SerialNumber,
+                //               HBASurface = x.HBASurface,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               HeightBase = x.HeightBase,
+                //               HeightLand = x.HeightLand,
+                //               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //               RADIOANTENNALIBRARY = x.RADIOANTENNALIBRARY,
+                //               Dismantle = x.Dismantle,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               HieghFromLand = x.HieghFromLand,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               LEGNAME = x.LEGNAME,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               LEGID = x.LEGID,
+                //               OWNER = x.OWNER
+
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLIradioRRU.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "RadioRRUInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEGID");
+                //        propertyNamesStatic.Add("LEGNAME");
+                //        propertyNamesStatic.Add("SiteCode");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_RADIO_RRU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_RADIO_RRU_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Azimuth = x.Azimuth,
+                //                   Notes = x.Notes,
+                //                   VisibleStatus = x.VisibleStatus,
+                //                   SerialNumber = x.SerialNumber,
+                //                   HBA = x.HBA,
+                //                   SpaceInstallation = x.SpaceInstallation,
+                //                   HeightBase = x.HeightBase,
+                //                   HeightLand = x.HeightLand,
+                //                   INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //                   RADIORRULIBRARY = x.RADIORRULIBRARY,
+                //                   RADIOANTENNA = x.RADIOANTENNA,
+                //                   Dismantle = x.Dismantle,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   LEGNAME = x.LEGNAME,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   LEGID = x.LEGID,
+                //                   OWNER = x.OWNER
+
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_RADIO_RRU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_RADIO_RRU_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Azimuth = x.Azimuth,
+                //               Notes = x.Notes,
+                //               VisibleStatus = x.VisibleStatus,
+                //               SerialNumber = x.SerialNumber,
+                //               HBA = x.HBA,
+                //               SpaceInstallation = x.SpaceInstallation,
+                //               HeightBase = x.HeightBase,
+                //               HeightLand = x.HeightLand,
+                //               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //               RADIORRULIBRARY = x.RADIORRULIBRARY,
+                //               RADIOANTENNA = x.RADIOANTENNA,
+                //               Dismantle = x.Dismantle,
+                //               CenterHigh = x.CenterHigh,
+                //               HieghFromLand = x.HieghFromLand,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               LEGNAME = x.LEGNAME,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               LEGID = x.LEGID,
+                //               OWNER = x.OWNER
+
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.LoadSubType.TLIradioOther.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment.Include(x => x.EditableManagmentView).Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt).Where(x => x.Enable && x.EditableManagmentView.View == "RadioOtherInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //          .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SiteCode");
+                //        propertyNamesStatic.Add("LEG_NAME");
+                //        propertyNamesStatic.Add("CIVILNAME");
+                //        propertyNamesStatic.Add("CIVIL_ID");
+                //        propertyNamesStatic.Add("SIDEARMNAME");
+                //        propertyNamesStatic.Add("SIDEARM_ID");
+                //        propertyNamesStatic.Add("ALLCIVILINST_ID");
+                //        propertyNamesStatic.Add("LEG_ID");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_RADIO_OTHER_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_RADIO_OTHER_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                //               .GroupBy(x => new
+                //               {
+                //                   SiteCode = x.SiteCode,
+                //                   Id = x.Id,
+                //                   Name = x.Name,
+                //                   Azimuth = x.Azimuth,
+                //                   Notes = x.Notes,
+                //                   HeightBase = x.HeightBase,
+                //                   HeightLand = x.HeightLand,
+                //                   OWNER = x.OWNER,
+                //                   SerialNumber = x.SerialNumber,
+                //                   HieghFromLand = x.HieghFromLand,
+                //                   Spaceinstallation = x.Spaceinstallation,
+                //                   RADIOOTHERLIBRARY = x.RADIOOTHERLIBRARY,
+                //                   INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //                   CenterHigh = x.CenterHigh,
+                //                   HBA = x.HBA,
+                //                   EquivalentSpace = x.EquivalentSpace,
+                //                   Dismantle = x.Dismantle,
+                //                   LEG_NAME = x.LEG_NAME,
+                //                   CIVILNAME = x.CIVILNAME,
+                //                   CIVIL_ID = x.CIVIL_ID,
+                //                   SIDEARMNAME = x.SIDEARMNAME,
+                //                   SIDEARM_ID = x.SIDEARM_ID,
+                //                   ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //                   LEG_ID = x.LEG_ID,
+                //                   SideArmSec_Name = x.SideArmSec_Name,
+                //                   SideArmSec_Id = x.SideArmSec_Id
+
+
+                //               })
+                //               .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //               .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_RADIO_OTHER_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_RADIO_OTHER_VIEW.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower() && !x.Dismantle).AsEnumerable()
+                //           .GroupBy(x => new
+                //           {
+                //               SiteCode = x.SiteCode,
+                //               Id = x.Id,
+                //               Name = x.Name,
+                //               Azimuth = x.Azimuth,
+                //               Notes = x.Notes,
+                //               HeightBase = x.HeightBase,
+                //               HeightLand = x.HeightLand,
+                //               OWNER = x.OWNER,
+                //               SerialNumber = x.SerialNumber,
+                //               HieghFromLand = x.HieghFromLand,
+                //               Spaceinstallation = x.Spaceinstallation,
+                //               RADIOOTHERLIBRARY = x.RADIOOTHERLIBRARY,
+                //               INSTALLATIONPLACE = x.INSTALLATIONPLACE,
+                //               CenterHigh = x.CenterHigh,
+                //               HBA = x.HBA,
+                //               EquivalentSpace = x.EquivalentSpace,
+                //               Dismantle = x.Dismantle,
+                //               LEG_NAME = x.LEG_NAME,
+                //               CIVILNAME = x.CIVILNAME,
+                //               CIVIL_ID = x.CIVIL_ID,
+                //               SIDEARMNAME = x.SIDEARMNAME,
+                //               SIDEARM_ID = x.SIDEARM_ID,
+                //               ALLCIVILINST_ID = x.ALLCIVILINST_ID,
+                //               LEG_ID = x.LEG_ID,
+                //               SideArmSec_Name = x.SideArmSec_Name,
+                //               SideArmSec_Id = x.SideArmSec_Id
+
+
+                //           })
+                //           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.OtherInventoryType.TLIcabinetPower.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "create_dynamic_pivot_withleg ";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment
+                //            .Include(x => x.EditableManagmentView)
+                //            .Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt)
+                //            .Where(x => x.Enable && x.EditableManagmentView.View == "CabinetPowerInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //            .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SITECODE");
+                //        propertyNamesStatic.Remove("CabinetTelecomLibrary");
+
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_CABINET_POWER_VIEW.Where(x =>
+                //                !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_CABINET_POWER_VIEW.Where(x =>
+                //                  !x.Dismantle).AsEnumerable()
+                //            .GroupBy(x => new
+                //            {
+
+                //                Id = x.Id,
+                //                Name = x.Name,
+                //                SITECODE = x.SITECODE,
+                //                TPVersion = x.TPVersion,
+                //                RenewableCabinetNumberOfBatteries = x.RenewableCabinetNumberOfBatteries,
+                //                NUmberOfPSU = x.NUmberOfPSU,
+                //                SpaceInstallation = x.SpaceInstallation,
+                //                VisibleStatus = x.VisibleStatus,
+                //                CABINETPOWERLIBRARY = x.CABINETPOWERLIBRARY,
+                //                RENEWABLECABINETTYPE = x.RENEWABLECABINETTYPE,
+                //                Dismantle = x.Dismantle,
+                //            }).OrderBy(x => x.Key.Name)
+                //            .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_CABINET_POWER_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //            && !x.Dismantle).AsEnumerable()
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_CABINET_POWER_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //             && !x.Dismantle).AsEnumerable()
+                //        .GroupBy(x => new
+                //        {
+
+                //            Id = x.Id,
+                //            Name = x.Name,
+                //            SITECODE = x.SITECODE,
+                //            TPVersion = x.TPVersion,
+                //            RenewableCabinetNumberOfBatteries = x.RenewableCabinetNumberOfBatteries,
+                //            NUmberOfPSU = x.NUmberOfPSU,
+                //            SpaceInstallation = x.SpaceInstallation,
+                //            VisibleStatus = x.VisibleStatus,
+                //            CABINETPOWERLIBRARY = x.CABINETPOWERLIBRARY,
+                //            RENEWABLECABINETTYPE = x.RENEWABLECABINETTYPE,
+                //            Dismantle = x.Dismantle,
+                //        }).OrderBy(x => x.Key.Name)
+                //        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.OtherInventoryType.TLIcabinetTelecom.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "create_dynamic_pivot_withleg ";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment
+                //            .Include(x => x.EditableManagmentView)
+                //            .Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt)
+                //            .Where(x => x.Enable && x.EditableManagmentView.View == "CabinetTelecomInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //            .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SITECODE");
+                //        propertyNamesStatic.Remove("CabinetPowerLibrary");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_CABINET_TELECOM_VIEW.Where(x =>
+                //                !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_CABINET_TELECOM_VIEW.Where(x =>
+                //                  !x.Dismantle).AsEnumerable()
+                //            .GroupBy(x => new
+                //            {
+
+                //                Id = x.Id,
+                //                Name = x.Name,
+                //                SITECODE = x.SITECODE,
+                //                TPVersion = x.TPVersion,
+                //                RenewableCabinetNumberOfBatteries = x.RenewableCabinetNumberOfBatteries,
+                //                NUmberOfPSU = x.NUmberOfPSU,
+                //                SpaceInstallation = x.SpaceInstallation,
+                //                VisibleStatus = x.VisibleStatus,
+                //                CABINETTELECOMLIBRARY = x.CABINETTELECOMLIBRARY,
+                //                RENEWABLECABINETTYPE = x.RENEWABLECABINETTYPE,
+                //                Dismantle = x.Dismantle,
+                //            }).OrderBy(x => x.Key.Name)
+                //            .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_CABINET_TELECOM_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //            && !x.Dismantle).AsEnumerable()
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_CABINET_TELECOM_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //             && !x.Dismantle).AsEnumerable()
+                //        .GroupBy(x => new
+                //        {
+
+                //            Id = x.Id,
+                //            Name = x.Name,
+                //            SITECODE = x.SITECODE,
+                //            TPVersion = x.TPVersion,
+                //            RenewableCabinetNumberOfBatteries = x.RenewableCabinetNumberOfBatteries,
+                //            NUmberOfPSU = x.NUmberOfPSU,
+                //            SpaceInstallation = x.SpaceInstallation,
+                //            VisibleStatus = x.VisibleStatus,
+                //            CABINETTELECOMLIBRARY = x.CABINETTELECOMLIBRARY,
+                //            RENEWABLECABINETTYPE = x.RENEWABLECABINETTYPE,
+                //            Dismantle = x.Dismantle,
+                //        }).OrderBy(x => x.Key.Name)
+                //        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.OtherInventoryType.TLIsolar.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "create_dynamic_pivot_withleg ";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment
+                //            .Include(x => x.EditableManagmentView)
+                //            .Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt)
+                //            .Where(x => x.Enable && x.EditableManagmentView.View == "SolarInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //            .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SITECODE");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_SOLAR_VIEW.Where(x =>
+                //                !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_SOLAR_VIEW.Where(x =>
+                //                  !x.Dismantle).AsEnumerable()
+                //            .GroupBy(x => new
+                //            {
+                //                Id = x.Id,
+                //                Name = x.Name,
+                //                SITECODE = x.SITECODE,
+                //                PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
+                //                PVArrayAzimuth = x.PVArrayAzimuth,
+                //                PVArrayAngel = x.PVArrayAngel,
+                //                SpaceInstallation = x.SpaceInstallation,
+                //                VisibleStatus = x.VisibleStatus,
+                //                Prefix = x.Prefix,
+                //                PowerLossRatio = x.PowerLossRatio,
+                //                NumberOfSSU = x.NumberOfSSU,
+                //                NumberOfLightingRod = x.NumberOfLightingRod,
+                //                NumberOfInstallPVs = x.NumberOfInstallPVs,
+                //                LocationDescription = x.LocationDescription,
+                //                ExtenstionDimension = x.ExtenstionDimension,
+                //                Extension = x.Extension,
+                //                SOLARLIBRARY = x.SOLARLIBRARY,
+                //                CABINET = x.CABINET,
+                //                Dismantle = x.Dismantle,
+
+                //            }).OrderBy(x => x.Key.Name)
+                //            .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //            && !x.Dismantle).AsEnumerable()
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //             && !x.Dismantle).AsEnumerable()
+                //        .GroupBy(x => new
+                //        {
+                //            Id = x.Id,
+                //            Name = x.Name,
+                //            SITECODE = x.SITECODE,
+                //            PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
+                //            PVArrayAzimuth = x.PVArrayAzimuth,
+                //            PVArrayAngel = x.PVArrayAngel,
+                //            SpaceInstallation = x.SpaceInstallation,
+                //            VisibleStatus = x.VisibleStatus,
+                //            Prefix = x.Prefix,
+                //            PowerLossRatio = x.PowerLossRatio,
+                //            NumberOfSSU = x.NumberOfSSU,
+                //            NumberOfLightingRod = x.NumberOfLightingRod,
+                //            NumberOfInstallPVs = x.NumberOfInstallPVs,
+                //            LocationDescription = x.LocationDescription,
+                //            ExtenstionDimension = x.ExtenstionDimension,
+                //            Extension = x.Extension,
+                //            SOLARLIBRARY = x.SOLARLIBRARY,
+                //            CABINET = x.CABINET,
+                //            Dismantle = x.Dismantle,
+
+                //        }).OrderBy(x => x.Key.Name)
+                //        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+                //else if (Helpers.Constants.OtherInventoryType.TLIgenerator.ToString() == TableNameInstallation)
+                //{
+                //    try
+                //    {
+                //        GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                //        connection.Open();
+                //        //string storedProcedureName = "create_dynamic_pivot_withleg ";
+                //        //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                //        //{
+                //        //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                //        //    procedureCommand.ExecuteNonQuery();
+                //        //}
+                //        var attActivated = _context.TLIattributeViewManagment
+                //            .Include(x => x.EditableManagmentView)
+                //            .Include(x => x.AttributeActivated)
+                //            .Include(x => x.DynamicAtt)
+                //            .Where(x => x.Enable && x.EditableManagmentView.View == "GeneratorInstallation" &&
+                //            ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                //            .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                //            .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                //                .ThenBy(x => x.attribute == null)
+                //                .ThenBy(x => x.attribute)
+                //                .ToList();
+                //        getEnableAttribute.Type = attActivated;
+                //        List<string> propertyNamesStatic = new List<string>();
+                //        Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                //        foreach (var key in attActivated)
+                //        {
+                //            if (key.attribute != null)
+                //            {
+                //                string name = key.attribute;
+                //                if (name != "Id" && name.EndsWith("Id"))
+                //                {
+                //                    string fk = name.Remove(name.Length - 2);
+                //                    propertyNamesStatic.Add(fk);
+                //                }
+                //                else
+                //                {
+                //                    propertyNamesStatic.Add(name);
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                string name = key.dynamic;
+                //                string datatype = key.dataType;
+                //                propertyNamesDynamic.Add(name, datatype);
+                //            }
+
+                //        }
+                //        propertyNamesStatic.Add("SITECODE");
+                //        if (SiteCode == null)
+                //        {
+                //            if (propertyNamesDynamic.Count == 0)
+                //            {
+                //                var query = _context.MV_GENERATOR_VIEW.Where(x =>
+                //                !x.Dismantle).AsEnumerable()
+                //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //            else
+                //            {
+                //                var query = _context.MV_GENERATOR_VIEW.Where(x =>
+                //                  !x.Dismantle).AsEnumerable()
+                //            .GroupBy(x => new
+                //            {
+
+                //                Id = x.Id,
+                //                Name = x.Name,
+                //                SITECODE = x.SITECODE,
+                //                SerialNumber = x.SerialNumber,
+                //                NumberOfFuelTanks = x.NumberOfFuelTanks,
+                //                BaseExisting = x.BaseExisting,
+                //                SpaceInstallation = x.SpaceInstallation,
+                //                VisibleStatus = x.VisibleStatus,
+                //                BASEGENERATORTYPE = x.BASEGENERATORTYPE,
+                //                GENERATORLIBRARY = x.GENERATORLIBRARY,
+                //                Dismantle = x.Dismantle,
+                //            }).OrderBy(x => x.Key.Name)
+                //            .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //                int count = query.Count();
+                //                getEnableAttribute.Model = query;
+                //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //            }
+                //        }
+                //        if (propertyNamesDynamic.Count == 0)
+                //        {
+                //            var query = _context.MV_GENERATOR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //            && !x.Dismantle).AsEnumerable()
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+                //        else
+                //        {
+                //            var query = _context.MV_GENERATOR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                //             && !x.Dismantle).AsEnumerable()
+                //        .GroupBy(x => new
+                //        {
+
+                //            Id = x.Id,
+                //            Name = x.Name,
+                //            SITECODE = x.SITECODE,
+                //            SerialNumber = x.SerialNumber,
+                //            NumberOfFuelTanks = x.NumberOfFuelTanks,
+                //            BaseExisting = x.BaseExisting,
+                //            SpaceInstallation = x.SpaceInstallation,
+                //            VisibleStatus = x.VisibleStatus,
+                //            BASEGENERATORTYPE = x.BASEGENERATORTYPE,
+                //            GENERATORLIBRARY = x.GENERATORLIBRARY,
+                //            Dismantle = x.Dismantle,
+                //        }).OrderBy(x => x.Key.Name)
+                //        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                //        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                //            int count = query.Count();
+                //            getEnableAttribute.Model = query;
+                //            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                //        }
+
+                //    }
+                //    catch (Exception err)
+                //    {
+                //        return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                //    }
+                //}
+            
+                return new Response<string>(false, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+        }
+        private string ExportToExcel(List<object> data)
+        {
+            // Set the license context for EPPlus
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            // Define the base directory for storing files
+            string contentRootPath = _configuration["StoreFiles"];
+            string downloadFolder = Path.Combine(contentRootPath, "GenerateFiles");
+
+            // Ensure the directory exists
+            if (!Directory.Exists(downloadFolder))
+            {
+                Directory.CreateDirectory(downloadFolder);
+            }
+
+            // Define the full file path
+            string filePath = Path.Combine(downloadFolder, "TLIcivilWithLegs.xlsx");
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Report");
+
+                // Adding headers
+                var properties = data.FirstOrDefault()?.GetType().GetProperties();
+                if (properties != null)
+                {
+                    for (int i = 0; i < properties.Length; i++)
+                    {
+                        worksheet.Cells[1, i + 1].Value = properties[i].Name;
+                    }
+
+                    // Adding data
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        var item = data[i];
+                        for (int j = 0; j < properties.Length; j++)
+                        {
+                            worksheet.Cells[i + 2, j + 1].Value = properties[j].GetValue(item)?.ToString();
+                        }
+                    }
+                }
+
+                // Save Excel file
+                var excelFile = new FileInfo(filePath);
+                package.SaveAs(excelFile);
+            }
+
+            // Return the file path if the file was successfully created
+            if (File.Exists(filePath))
+            {
+                return filePath;
+            }
+            else
+            {
+                throw new FileNotFoundException($"Could not create or find the file at {filePath}");
+            }
+        }
+
+
 
 
     }
 
 
+
+
+
+
 }
+
+
+
 
 
 

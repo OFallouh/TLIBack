@@ -1598,7 +1598,7 @@ namespace TLIS_Service.Services
                         {
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                         }
-                    ERROR:;
+                   
 
                     }
                     catch (Exception err)
@@ -1772,7 +1772,10 @@ namespace TLIS_Service.Services
 
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
                                 if (Message != "Success")
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + $"in Colum Name {ColName} in Row Number {k + 2} "));
                                     goto ERROR;
+                                }
 
                             }
 
@@ -1939,10 +1942,11 @@ namespace TLIS_Service.Services
                         //dalvcmd.ExecuteNonQuery();
 
                     }
-                ERROR:;
+              
                     RecordId.AddRange(InsertedIds);
                 }
 
+            ERROR:;
 
             }
             catch (Exception err)

@@ -84,35 +84,11 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithLegsWithEnableAtt([FromQuery] string? SiteCode)
         {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
-
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
-            if (authHeader.ToLower().StartsWith("bearer "))
-            {
-
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                if (jsonToken == null)
-                {
-                    return Unauthorized();
-                }
-
-                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-                var userId = Convert.ToInt32(userInfo);
+            
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, connectionString, userId);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsWithEnableAtt(SiteCode, connectionString);
                 return Ok(response);
-            }
-           
-            else
-            {
-                return Unauthorized();
-            }
+            
          
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -136,35 +112,11 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegMastWithEnableAttt( [FromQuery] string? SiteCode)
         {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
-
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
-            if (authHeader.ToLower().StartsWith("bearer "))
-            {
-
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                if (jsonToken == null)
-                {
-                    return Unauthorized();
-                }
-
-                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-                var userId = Convert.ToInt32(userInfo);
+           
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, connectionString, userId);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMastWithEnableAtt(SiteCode, connectionString);
                 return Ok(response);
-            }
-            
-            else
-            {
-                return Unauthorized();
-            }
+           
            
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -172,35 +124,11 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegMonopoleWithEnableAtt([FromQuery] string? SiteCode)
         {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
-
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
-            if (authHeader.ToLower().StartsWith("bearer "))
-            {
-
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                if (jsonToken == null)
-                {
-                    return Unauthorized();
-                }
-
-                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-                var userId = Convert.ToInt32(userInfo);
+            
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, connectionString, userId);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegMonopoleWithEnableAtt(SiteCode, connectionString);
                 return Ok(response);
-            }
-           
-            else
-            {
-                return Unauthorized();
-            }
+            
       
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -208,35 +136,11 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegCapsuleWithEnableAtt([FromQuery] string? SiteCode )
         {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
-
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
-            if (authHeader.ToLower().StartsWith("bearer "))
-            {
-
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                if (jsonToken == null)
-                {
-                    return Unauthorized();
-                }
-
-                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-                var userId = Convert.ToInt32(userInfo);
+          
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, connectionString, userId);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegCapsuleWithEnableAtt(SiteCode, connectionString);
                 return Ok(response);
-            }
-            
-            else
-            {
-                return Unauthorized();
-            }
+           
          
         }
        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -244,35 +148,11 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilNonSteelWithEnableAtt( [FromQuery] string? SiteCode)
         {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
-
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
-            if (authHeader.ToLower().StartsWith("bearer "))
-            {
-
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                if (jsonToken == null)
-                {
-                    return Unauthorized();
-                }
-
-                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-                var userId = Convert.ToInt32(userInfo);
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(SiteCode, connectionString, userId);
-                return Ok(response);
-            }
         
-            else
-            {
-                return Unauthorized();
-            }
+            var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelWithEnableAtt(SiteCode, connectionString);
+            return Ok(response);
+           
             
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
