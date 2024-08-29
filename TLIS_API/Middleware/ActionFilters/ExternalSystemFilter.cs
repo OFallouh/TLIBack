@@ -197,7 +197,9 @@ namespace TLIS_API.Middleware.ActionFilters
                     // Try to validate and decode the token
                     var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
 
-                    var userId = claimsPrincipal.FindFirstValue("userId");
+
+                    var userId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+
                     var SysId = Convert.ToInt32(userId);
                     if (CheckTokenValidation(SysId) == true)
                     {

@@ -11849,6 +11849,115 @@ namespace TLIS_Service.Services
                                     }
 
                                 }
+                                else if (addDynamicObject.type == 0)
+                                {
+                                    TLIdynamicAtt tLIdynamicAtt = new TLIdynamicAtt()
+                                    {
+                                        Key = addDynamicObject.general.name,
+                                        Description = addDynamicObject.general.description,
+                                        Required = addDynamicObject.general.isRequired,
+                                        DefaultValue = addDynamicObject.general.defualtValue.ToString(),
+                                        DataTypeId = addDynamicObject.general.dataType,
+                                        tablesNamesId = TabelNameId,
+                                        disable = false,
+                                        LibraryAtt = true,
+                                        CivilWithoutLegCategoryId = CategoryId,
+                                        Type = 3
+
+                                    };
+                                    var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);
+                                    _unitOfWork.SaveChanges();
+                                    var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
+                                    TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
+                                    {
+                                        DynamicAttId = tLIdynamicAtt.Id,
+                                        EditableManagmentViewId = EditabelViewManagment,
+                                        AttributeActivatedId = null,
+                                        Enable = true
+                                    };
+                                    _unitOfWork.AttributeViewManagmentRepository.AddWithHDynamic(UserId, TabelNameTLIattributeViewManagment, tLIattributeViewManagment, HistoryId);
+                                    _unitOfWork.SaveChanges();
+                                    if (addDynamicObject.general.dataType == 1)
+                                    {
+                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+
+                                        foreach (int RecordId in RecordsIds)
+                                        {
+                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                            {
+                                                disable = false,
+                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = TabelNameId,
+                                                ValueString = addDynamicObject.general.defualtValue.ToString()
+                                            });
+                                        }
+
+                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        _unitOfWork.SaveChanges();
+                                    }
+                                    else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+                                    {
+
+                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+                                        foreach (int RecordId in RecordsIds)
+                                        {
+                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                            {
+                                                disable = false,
+                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = TabelNameId,
+                                                ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                            });
+                                        }
+
+                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        _unitOfWork.SaveChanges();
+                                    }
+                                    else if (addDynamicObject.general.dataType == 25)
+                                    {
+                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+                                        foreach (int RecordId in RecordsIds)
+                                        {
+                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                            {
+                                                disable = false,
+                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = TabelNameId,
+                                                ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                            });
+                                        }
+
+                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        _unitOfWork.SaveChanges();
+
+                                    }
+                                    else if (addDynamicObject.general.dataType == 24)
+                                    {
+                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+
+                                        foreach (int RecordId in RecordsIds)
+                                        {
+                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                            {
+                                                disable = false,
+                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = TabelNameId,
+                                                ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                            });
+                                        }
+
+                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                        _unitOfWork.SaveChanges();
+                                    }
+                                }
                                 if (addDynamicObject.type == 1)
                                 {
                                     if (addDynamicObject.validation != null)
@@ -15190,6 +15299,7 @@ namespace TLIS_Service.Services
 
 
                                 }
+                              
                             }
                             else
                             {
