@@ -63,7 +63,7 @@ using static TLIS_API.Helpers.Constants;
 
 namespace TLIS_API.Controllers
 {
-    [ServiceFilter(typeof(WorkFlowMiddleware))]
+    //[ServiceFilter(typeof(WorkFlowMiddleware))]
     [ServiceFilter(typeof(ExternalSystemFilter))]
     [Route("api/[controller]")]
     [ApiController]
@@ -169,7 +169,7 @@ namespace TLIS_API.Controllers
        
         [HttpPost("GetLibraryforSpecificType")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetLibraryforSpecificType(string TableNameLibrary, int? CategoryId, [FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetLibraryforSpecificType(string TableNameLibrary, [FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -192,7 +192,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetLibraryforSpecificType(connectionString,TableNameLibrary, CategoryId, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetLibraryforSpecificType(connectionString,TableNameLibrary, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -203,7 +203,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetLibraryforSpecificType(connectionString,TableNameLibrary, CategoryId, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetLibraryforSpecificType(connectionString,TableNameLibrary, null, username);
                 return Ok(response);
             }
             else
@@ -257,7 +257,6 @@ namespace TLIS_API.Controllers
             }
 
         }
-        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAllLoadonSitebyPartandType")]
         [ProducesResponseType(200, Type = typeof(Response<LoadsDto>))]
         public IActionResult GetAllLoadonSitebyPartandType([Required] String SiteCode, string PartName, string TypeName)
@@ -349,7 +348,7 @@ namespace TLIS_API.Controllers
             }
             
         }
-        [HttpGet("GetAllItemsonSite ")]
+        [HttpGet("GetAllItemsOnSite ")]
         [ProducesResponseType(200, Type = typeof(Response<List<ListOfCivilLoads>>))]
         public IActionResult GetAllItemsonSite(string SiteCode)
         {
@@ -396,7 +395,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetConfigurationTablesInstallation ")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
-        public IActionResult GetConfigurationTablesInstallation([FromQuery] string siteCode, [Required] string TableNameInstallation, int? CategoryId, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
+        public IActionResult GetConfigurationTablesInstallation([FromQuery] string siteCode, [Required] string TableNameInstallation, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -419,7 +418,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetConfigurationTables(siteCode, TableNameInstallation, CategoryId, connectionString, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetConfigurationTables(siteCode, TableNameInstallation, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -430,7 +429,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetConfigurationTables(siteCode, TableNameInstallation, CategoryId, connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetConfigurationTables(siteCode, TableNameInstallation, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -442,7 +441,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetConfigurationAttributes")]
         [ProducesResponseType(200, Type = typeof(Response<List<BassAttViewModel>>))]
-        public IActionResult GetConfigurationAttributes(string TableName, bool IsDynamic, int CategoryId)
+        public IActionResult GetConfigurationAttributes(string TableName, bool IsDynamic)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -465,7 +464,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetConfigurationAttributes(TableName, IsDynamic, CategoryId, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetConfigurationAttributes(TableName, IsDynamic, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -476,7 +475,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetConfigurationAttributes(TableName, IsDynamic, CategoryId, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetConfigurationAttributes(TableName, IsDynamic, null, username);
                 return Ok(response);
             }
             else
@@ -486,15 +485,52 @@ namespace TLIS_API.Controllers
        
 
         }
-        [HttpPost("AddDynamicAttLibrary")]
+        [HttpPost("AddDynamicAttributeLibrary")]
         [ProducesResponseType(200, Type = typeof(AddDynamicAttViewModel))]
-        public IActionResult AddDynamicAttLibrary([FromBody] AddDependencyViewModel addDependencyView)
+        public IActionResult AddDynamicAttLibrary([FromBody] AddDynamicObject addDynamicObject,string TabelName,int? CategoryId)
         {
             if (ModelState.IsValid)
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var responceResult = _unitOfWorkService.InternalApiService.AddDynamicAtts(addDependencyView, ConnectionString);
-                return Ok(responceResult);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddDynamicInternal(addDynamicObject, connectionString, TabelName, userId, CategoryId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddDynamicInternal(addDynamicObject, connectionString, TabelName, null, CategoryId, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+              
             }
             else
             {
@@ -505,30 +541,116 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpPost("AddDynamicAttInstallation")]
+        [HttpPost("AddDynamicAttributeInstallation")]
         [ProducesResponseType(200, Type = typeof(List<AddDependencyInstViewModel>))]
-        public IActionResult AddDynamicAttInstallation([FromBody] AddDependencyInstViewModel addDependencyInstViewModel)
+        public IActionResult AddDynamicAttInstallation([FromBody] AddDynamicObject addDynamicObject, string TabelName, int? CategoryId)
         {
             if (ModelState.IsValid)
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var responceResult = _unitOfWorkService.InternalApiService.AddDynamicAttInst(addDependencyInstViewModel, ConnectionString);
-                return Ok(responceResult);
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddDynamicInternal(addDynamicObject, connectionString, TabelName, userId, CategoryId, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.AddDynamicInternal(addDynamicObject, connectionString, TabelName, null, CategoryId, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
             }
             else
             {
                 var ErrorMessages = from state in ModelState.Values
                                     from error in state.Errors
                                     select error.ErrorMessage;
-                return Ok(new Response<List<AddDynamicAttInstViewModel>>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                return Ok(new Response<AddDynamicAttViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
         [HttpPost("EditDynamicAttLibraryAndInstallation")]
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
-        public async Task<IActionResult> EditDynamicAttLibraryAndInstallation([FromBody] EditDynamicAttViewModel dynamicAttViewModel)
+        public async Task<IActionResult> EditDynamicAttLibraryAndInstallation(int DynamicAttributeId,[FromBody] AddDynamicObject dynamicAttViewModel)
         {
-            var response = await _unitOfWorkService.InternalApiService.Edit(dynamicAttViewModel);
-            return Ok(response);
+            if (ModelState.IsValid)
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.EditDynamicAttribute(DynamicAttributeId, dynamicAttViewModel, userId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.EditDynamicAttribute(DynamicAttributeId, dynamicAttViewModel, null, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddDynamicAttViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+         
         }
         [HttpPost("AddRadioRRULibrary")]
         [ProducesResponseType(200, Type = typeof(AddRadioRRULibraryObject))]
@@ -1064,7 +1186,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetAttForAddMW_BU")]
+        [HttpGet("GetAttForAddMWBUInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMWBUInstallation(int LibId, string SiteCode)
         {
@@ -1119,7 +1241,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpGet("GetAttForAddMW_ODU")]
+        [HttpGet("GetAttForAddMWODUInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMW_ODU(int LibId, string SiteCode)
         {
@@ -1176,7 +1298,7 @@ namespace TLIS_API.Controllers
 
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddMW_Dish")]
+        [HttpGet("GetAttForAddMWDishInstallation")]
         [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddMW_Dish(int LibId, string SiteCode)
         {
@@ -1234,7 +1356,7 @@ namespace TLIS_API.Controllers
 
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddMW_RFU")]
+        [HttpGet("GetAttForAddMWRFUInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMWRFUInstallation(int LibId, string SiteCode)
         {
@@ -1282,8 +1404,7 @@ namespace TLIS_API.Controllers
 
 
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAttForAddMW_Other")]
+        [HttpGet("GetAttForAddMWOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddMWOtherInstallation(int LibId, string SiteCode)
         {
@@ -1332,7 +1453,7 @@ namespace TLIS_API.Controllers
         }
 
 
-        [HttpPost("AddMW_BU")]
+        [HttpPost("AddMWBUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWBUInstallationObject))]
         public IActionResult AddMW_BU([FromBody] AddMWBUInstallationObject AddMW_BUViewModel, string SiteCode, int TaskId)
         {
@@ -1362,7 +1483,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId,AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1373,7 +1494,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null,AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, username);
                         return Ok(response);
                     }
                     else
@@ -1395,7 +1516,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("AddMW_ODU")]
+        [HttpPost("AddMWODUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMwODUinstallationObject))]
         public IActionResult AddMW_ODU([FromBody] AddMwODUinstallationObject AddMW_ODUViewModel, string SiteCode, int TaskId)
         {
@@ -1425,7 +1546,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId,AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1436,7 +1557,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null,AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, username);
                         return Ok(response);
                     }
                     else
@@ -1458,7 +1579,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("AddMW_Dish")]
+        [HttpPost("AddMWDishInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWDishInstallationObject))]
         public IActionResult AddMW_Dish([FromBody] AddMWDishInstallationObject AddMW_DishViewModel, string SiteCode, int TaskId)
         {
@@ -1488,7 +1609,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId,AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1499,7 +1620,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null,AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, username);
                         return Ok(response);
                     }
                     else
@@ -1521,7 +1642,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("AddMW_RFU")]
+        [HttpPost("AddMWRFUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWRFUInstallation))]
         public IActionResult AddMW_RFU([FromBody] AddMWRFUInstallation AddMW_RFUViewModel, string SiteCode, int TaskId)
         {
@@ -1551,7 +1672,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, userId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1562,7 +1683,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, null, username);
                         return Ok(response);
                     }
                     else
@@ -1585,7 +1706,7 @@ namespace TLIS_API.Controllers
             }
         }
 
-        [HttpPost("AddMW_Other")]
+        [HttpPost("AddMWOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWOtherInstallationObject))]
         public IActionResult AddMW_Other([FromBody] AddMWOtherInstallationObject AddMw_OtherViewModel, string SiteCode, int TaskId)
         {
@@ -1615,7 +1736,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId,AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1626,7 +1747,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null,AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, username);
                         return Ok(response);
                     }
                     else
@@ -1648,7 +1769,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("EditMW_BU")]
+        [HttpPost("EditMWBUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWBUInstallationObject))]
         public async Task<IActionResult> EditMW_BU([FromBody] EditMWBUInstallationObject MW_BU,int TaskId)
         {
@@ -1711,7 +1832,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("EditMW_Dish")]
+        [HttpPost("EditMWDishInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWDishInstallationObject))]
         public async Task<IActionResult> EditMW_Dish([FromBody] EditMWDishInstallationObject MW_Dish, int TaskId)
         {
@@ -1774,7 +1895,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("EditMW_ODU")]
+        [HttpPost("EditMWODUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWODUInstallationObject))]
         public async Task<IActionResult> EditMW_ODU([FromBody] EditMWODUInstallationObject MW_ODU,int TaskId)
         {
@@ -1837,7 +1958,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("EditMW_RFU")]
+        [HttpPost("EditMWRFUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWRFUInstallationObject))]
         public async Task<IActionResult> EditMW_RFU([FromBody] EditMWRFUInstallationObject MW_RFU,int TaskId)
         {
@@ -1900,7 +2021,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("EditMw_Other")]
+        [HttpPost("EditMwOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWOtherInstallationObject))]
         public async Task<IActionResult> EditMw_Other([FromBody] EditMWOtherInstallationObject Mw_Other,int TaskId)
         {
@@ -1963,7 +2084,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("DismantleMW_BU")]
+        [HttpPost("DismantleMWBUInstallation")]
 
         public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
@@ -2017,7 +2138,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("DismantleMW_ODU")]
+        [HttpPost("DismantleMWODUInstallation")]
 
         public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
@@ -2072,7 +2193,7 @@ namespace TLIS_API.Controllers
             }
         }
 
-       [ HttpPost("DismantleMW_RFU")]
+       [ HttpPost("DismantleMWRFUInstallation")]
 
         public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName,int TaskId)
         {
@@ -2126,7 +2247,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("DismantleMW_Dish")]
+        [HttpPost("DismantleMWDishInstallation")]
 
         public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName,int TaskId)
         {
@@ -2180,7 +2301,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("DismantleMW_Other")]
+        [HttpPost("DismantleMWOtherInstallation")]
 
         public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName,int TaskId)
         {
@@ -2234,7 +2355,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("DismantlesideArm")]
+        [HttpPost("DismantlesideArmInstallation")]
         public IActionResult DismantlesideArm(string SiteCode, int sideArmId,int  TaskId)
         {
             try
@@ -2287,7 +2408,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetMW_BUById")]
+        [HttpGet("GetMWBUByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetMWBUInstallationById(int MW_BU)
         {
@@ -2335,7 +2456,7 @@ namespace TLIS_API.Controllers
 
         }
 
-        [HttpGet("GetMW_ODUById")]
+        [HttpGet("GetMWODUByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMW_ODUById(int MW_ODU)
         {
@@ -2381,7 +2502,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpGet("GetMW_DishById")]
+        [HttpGet("GetMWDishByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMW_DishById(int MW_Dish)
         {
@@ -2427,7 +2548,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpGet("GetMW_RFUById")]
+        [HttpGet("GetMWRFUByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMWRFUInstallationById(int MW_RFU)
         {
@@ -2473,7 +2594,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpGet("GetMW_OtherById")]
+        [HttpGet("GetMWOtherByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetMWOtherInstallationById(int mwOther)
         {
@@ -2520,7 +2641,7 @@ namespace TLIS_API.Controllers
 
         }
 
-        [HttpGet("GetAttForAddSolar")]
+        [HttpGet("GetAttForAddSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddSolarInstallation(int SolarLibraryId, string SiteCode)
         {
@@ -2566,7 +2687,7 @@ namespace TLIS_API.Controllers
             }
            
         }
-        [HttpGet("GetAttForAddGenerator")]
+        [HttpGet("GetAttForAddGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddGeneratorInstallation(int GeneratorIdLibraryId, string SiteCode)
         {
@@ -2613,7 +2734,7 @@ namespace TLIS_API.Controllers
          
         }
        
-        [HttpPost("AddSolar")]
+        [HttpPost("AddSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(AddSolarInstallationObject))]
         public IActionResult AddSolar([FromBody] AddSolarInstallationObject addSolarViewModel, string SiteCode,int TaskId)
         {
@@ -2677,7 +2798,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpPost("AddGenerator")]
+        [HttpPost("AddGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(AddGeneratorInstallationObject))]
         public IActionResult AddGenerator([FromBody] AddGeneratorInstallationObject addGeneratorViewModel, string SiteCode,int TaskId)
         {
@@ -2741,7 +2862,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpGet("GetSolarById")]
+        [HttpGet("GetSolarByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetSolarInstallationById(int SolarId)
         {
@@ -2788,7 +2909,7 @@ namespace TLIS_API.Controllers
            
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetGeneratorById")]
+        [HttpGet("GetGeneratorByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetGenertorInstallationById(int GeneratorId)
         {
@@ -2834,7 +2955,7 @@ namespace TLIS_API.Controllers
             }
         }
         
-        [HttpPost("EditSolar")]
+        [HttpPost("EditSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(EditSolarInstallationObject))]
         public async Task<IActionResult> EditSolar([FromBody] EditSolarInstallationObject editSolarViewModel,int TaskId)
         {
@@ -2898,7 +3019,7 @@ namespace TLIS_API.Controllers
             }
         }
 
-        [HttpPost("EditGenerator")]
+        [HttpPost("EditGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorInstallationObject))]
         public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorInstallationObject editGeneratorViewModel,int TaskId)
         {
@@ -2962,7 +3083,7 @@ namespace TLIS_API.Controllers
             }
         }
         //---------------------------------------------------------------------------------
-        [HttpGet("DismantleOtherInventory")]
+        [HttpGet("DismantleOtherInventoryInstallation")]
         public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int TaskId)
         {
             try
@@ -3107,7 +3228,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        [HttpPost("GetMW_DishOnSiteWithEnableAtt")]
+        [HttpPost("GetMWDishOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetMW_DishOnSiteWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -3153,7 +3274,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpPost("GetMW_BUOnSiteWithEnableAtt")]
+        [HttpPost("GetMWBUOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetMWBUInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -3199,7 +3320,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpPost("GetMW_ODUOnSiteWithEnableAtt")]
+        [HttpPost("GetMWODUOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetMWODUInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -3246,7 +3367,7 @@ namespace TLIS_API.Controllers
 
 
         }
-        [HttpPost("GetMW_RFUOnSiteWithEnableAtt")]
+        [HttpPost("GetMWRFUOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetMWRFUInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -3292,7 +3413,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpPost("GetMW_OtherOnSiteWithEnableAtt")]
+        [HttpPost("GetMWOtherOnSiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetMWOtherInstallationWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -3340,7 +3461,7 @@ namespace TLIS_API.Controllers
 
 
         }
-        [HttpGet("GetSideArmById")]
+        [HttpGet("GetSideArmByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
         public IActionResult GetSideArmById(int SideId)
         {
@@ -3387,7 +3508,7 @@ namespace TLIS_API.Controllers
 
           
         }
-        [HttpPost("AddSideArm")]
+        [HttpPost("AddSideArmInstallation")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public async Task<IActionResult> AddSideArm([FromBody] SideArmViewDto sideArmViewDto,string SiteCode, int TaskId)
         {
@@ -3450,7 +3571,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("UpdateSideArm")]
+        [HttpPost("UpdateSideArmInstallation")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public async Task<IActionResult> UpdateSideArm([FromBody] EditSidearmInstallationObject SideArmViewModel,int TaskId)
         {
@@ -3513,7 +3634,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetAttForAddSideArm")]
+        [HttpGet("GetAttForAddSideArmInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(int LibId)
         {
@@ -3559,7 +3680,7 @@ namespace TLIS_API.Controllers
             }
             
         }
-        [HttpPost("getSideArmsWithEnabledAtt")]
+        [HttpPost("getSideArmsBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<object>))]
         public IActionResult getSideArmsWithEnabledAtt([FromQuery] string? SiteCode)
         {
@@ -3605,7 +3726,7 @@ namespace TLIS_API.Controllers
             }
            
         }
-        [HttpPost("GetCivilNonSteelLibrariesEnabledAtt")]
+        [HttpPost("GetCivilNonSteelLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilNonSteelWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -3705,7 +3826,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("GetCivilWithoutLegMastLibrariesEnabledAtt")]
+        [HttpPost("GetCivilWithoutLegMastLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilWithoutLegMastLibrariesEnabledAtt()
         {
@@ -3750,7 +3871,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        [HttpPost("GetCivilWithoutLegMonopoleLibrariesEnabledAtt")]
+        [HttpPost("GetCivilWithoutLegMonopoleLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilWithoutLegMonopoleLibrariesEnabledAtt()
         {
@@ -3795,7 +3916,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        [HttpPost("GetCivilWithoutLegCapsuleLibrariesEnabledAtt")]
+        [HttpPost("GetCivilWithoutLegCapsuleLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilWithoutLegCapsuleLibrariesEnabledAtt()
         {
@@ -3840,7 +3961,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        [HttpPost("GetMW_ODULibraries")]
+        [HttpPost("GetMWODULibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetMW_ODULibraries()
         {
@@ -3886,7 +4007,7 @@ namespace TLIS_API.Controllers
             }
             
         }
-        [HttpPost("GetMW_BULibraries")]
+        [HttpPost("GetMWBULibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetMWBULibrariesEnabledAtt()
         {
@@ -3932,7 +4053,7 @@ namespace TLIS_API.Controllers
             }
            
         }
-        [HttpPost("GetMW_OtherLibraries")]
+        [HttpPost("GetMWOtherLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetMWOtherLibrariesEnabledAtt()
         {
@@ -3978,7 +4099,7 @@ namespace TLIS_API.Controllers
             }
             
         }
-        [HttpPost("AddSolarLibrary")]
+        [HttpPost("AddSolarLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult AddSolarLibrary([FromBody] AddSolarLibraryObject addSolarLibrary)
         {
@@ -4215,7 +4336,7 @@ namespace TLIS_API.Controllers
             }
         }
 
-        [HttpPost("GetMW_RFULibraries")]
+        [HttpPost("GetMWRFULibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetMW_RFULibraries()
         {
@@ -4223,7 +4344,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.MWLibraryService.GetMWRFULibrariesEnabledAtt(ConnectionString);
             return Ok(response);
         }
-        [HttpPost("AddMW_OtherLibrary")]
+        [HttpPost("AddMWOtherLibrary")]
         [ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
         public IActionResult AddMW_OtherLibrary([FromBody] AddMWOtherLibraryObject addMW_OtherLibraryViewModel)
         {
@@ -4286,7 +4407,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("AddMW_BULibrary")]
+        [HttpPost("AddMWBULibrary")]
         [ProducesResponseType(200, Type = typeof(AddMWBULibraryObject))]
         public IActionResult AddMW_BULibrary([FromBody] AddMWBULibraryObject addMW_BULibraryViewModel)
         {
@@ -4349,7 +4470,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("AddMW_DishLibrary")]
+        [HttpPost("AddMWDishLibrary")]
         [ProducesResponseType(200, Type = typeof(AddMWDishLibraryObject))]
         public IActionResult AddMW_DishLibrary([FromBody] AddMWDishLibraryObject addMW_BULibraryViewModel)
         {
@@ -4412,7 +4533,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("GetMW_DishLibraries")]
+        [HttpPost("GetMWDishLibraries")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetMW_DishLibraries()
         {
@@ -4905,7 +5026,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        [HttpPost("AddMW_ODULibrary")]
+        [HttpPost("AddMWODULibrary")]
         [ProducesResponseType(200, Type = typeof(ADDMWODULibraryObject))]
         public IActionResult AddMW_ODULibrary([FromBody] ADDMWODULibraryObject addMW_ODULibraryViewModel)
         {
@@ -4968,9 +5089,9 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("AddCivilWithoutLegLibrary")]
+        [HttpPost("AddCivilWithoutLegLibraryCapsule")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
-        public IActionResult AddCivilWithoutLegLibrary([FromBody] AddCivilWithoutLegsLibraryObject addCivilWithoutLegLibraryViewModel)
+        public IActionResult AddCivilWithoutLegLibraryCapsule([FromBody] AddCivilWithoutLegsLibraryObject addCivilWithoutLegLibraryViewModel)
         {
             try
             {
@@ -5010,6 +5131,132 @@ namespace TLIS_API.Controllers
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
                         var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString,null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithoutLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("AddCivilWithoutLegLibraryMonople")]
+        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
+        public IActionResult AddCivilWithoutLegLibraryMonople([FromBody] AddCivilWithoutLegsLibraryObject addCivilWithoutLegLibraryViewModel)
+        {
+            try
+            {
+                if (TryValidateModel(addCivilWithoutLegLibraryViewModel, nameof(AddCivilWithoutLegsLibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithoutLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("AddCivilWithoutLegLibraryMast")]
+        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
+        public IActionResult AddCivilWithoutLegLibraryMast([FromBody] AddCivilWithoutLegsLibraryObject addCivilWithoutLegLibraryViewModel)
+        {
+            try
+            {
+                if (TryValidateModel(addCivilWithoutLegLibraryViewModel, nameof(AddCivilWithoutLegsLibraryObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, null, username);
                         return Ok(response);
                     }
                     else
@@ -5094,7 +5341,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("GetCivilWithLegLibrariesEnabledAtt")]
+        [HttpPost("GetCivilWithLegLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilWithLegLibrariesEnabledAtt()
         {
@@ -5186,7 +5433,7 @@ namespace TLIS_API.Controllers
             }
          
         }
-        [HttpGet("GetAttForAddCivilWithLegs")]
+        [HttpGet("GetAttForAddCivilWithLegsInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId, string SiteCode)
         {
@@ -5233,7 +5480,7 @@ namespace TLIS_API.Controllers
            
         }
 
-        [HttpPost("GetCivilWithLegsWithEnableAtt")]
+        [HttpPost("GetCivilWithLegsBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilWithLegsWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -5278,7 +5525,7 @@ namespace TLIS_API.Controllers
             }
             
         }
-        [HttpPost("GetCivilWithoutLegMastWithEnableAtt")]
+        [HttpPost("GetCivilWithoutLegMastBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegMastWithEnableAttt([FromQuery] string? SiteCode)
         {
@@ -5324,7 +5571,7 @@ namespace TLIS_API.Controllers
         
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetCivilWithoutLegMonopoleWithEnableAtt")]
+        [HttpPost("GetCivilWithoutLegMonopoleBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegMonopoleWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -5370,7 +5617,7 @@ namespace TLIS_API.Controllers
            
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetCivilWithoutLegCapsuleWithEnableAtt")]
+        [HttpPost("GetCivilWithoutLegCapsuleBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetCivilWithoutLegCapsuleWithEnableAtt([FromQuery] string? SiteCode)
         {
@@ -5415,7 +5662,7 @@ namespace TLIS_API.Controllers
             }
           
         }
-        [HttpPost("GetCivilNonSteelWithEnableAtt")]
+        [HttpPost("GetCivilNonSteelBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetCivilNonSteel([FromQuery] string? SiteCode)
         {
@@ -5460,7 +5707,7 @@ namespace TLIS_API.Controllers
             }
             
         }
-        [HttpGet("GetForAddCivilWithOutLegInstallation_Capsule")]
+        [HttpGet("GetForAddCivilWithOutLeg_CapsuleInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetForAddCivilWithOutLegInstallation_Capsule(int CivilLibraryId, string SiteCode)
         {
@@ -5505,7 +5752,7 @@ namespace TLIS_API.Controllers
             }
         }
         ///[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetForAddCivilWithOutLegInstallation_Mast")]
+        [HttpGet("GetForAddCivilWithOutLeg_MastInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetForAddCivilWithOutLegInstallation_Mast(int CivilLibraryId, string SiteCode)
         {
@@ -5550,7 +5797,7 @@ namespace TLIS_API.Controllers
             }
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetForAddCivilWithOutLegInstallation_Monople")]
+        [HttpGet("GetForAddCivilWithOutLeg_MonopleInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetForAddCivilWithOutLegInstallation_Monople(int CivilLibraryId, string SiteCode)
         {
@@ -5594,7 +5841,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        [HttpGet("GetAttForAddCivilNonSteel")]
+        [HttpGet("GetAttForAddCivilNonSteelInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetForAddCiviNonSteelInstallation(int CivilLibraryId, string SiteCode)
         {
@@ -5638,7 +5885,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        [HttpPost("AddCivilWithLegs/{SiteCode}")]
+        [HttpPost("AddCivilWithLegsInstallation")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
         public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode,int TaskId)
         {
@@ -5703,9 +5950,137 @@ namespace TLIS_API.Controllers
 
         }
 
-        [HttpPost("AddCivilWithoutLegs/{SiteCode}")]
+        [HttpPost("AddCivilWithoutLegsInstallationMast")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
-        public IActionResult AddCivilWithoutLegs([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode,int TaskId)
+        public IActionResult AddCivilWithoutLegsInstallationMast([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode,int TaskId)
+        {
+            try
+            {
+                if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        [HttpPost("AddCivilWithoutLegsInstallationMonople")]
+        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
+        public IActionResult AddCivilWithoutLegsInstallationMonople([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId)
+        {
+            try
+            {
+                if (TryValidateModel(addCivilWithoutLeg, nameof(AddCivilWithoutLegViewModel)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<AddCivilWithoutLegViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        [HttpPost("AddCivilWithoutLegsInstallationCapsule")]
+        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
+        public IActionResult AddCivilWithoutLegsInstallationCapsule([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId)
         {
             try
             {
@@ -5768,7 +6143,7 @@ namespace TLIS_API.Controllers
 
         }
 
-        [HttpPost("AddCivilNonSteel/{SiteCode}")]
+        [HttpPost("AddCivilNonSteelInstallation")]
         [ProducesResponseType(200, Type = typeof(AddCivilNonSteelObject))]
         public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelObject addCivilNonSteel, string SiteCode,int TaskId)
         {
@@ -5831,7 +6206,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetCivilWithLegsById")]
+        [HttpGet("GetCivilWithLegsByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilWithLegsInstallationById(int CivilId)
         {
@@ -5876,9 +6251,9 @@ namespace TLIS_API.Controllers
             }
             
         }
-        [HttpGet("GetCivilWithoutLegsById")]
+        [HttpGet("GetCivilWithoutLegsMastByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCivilWithoutLegsInstallationById(int CivilId, int CategoryId)
+        public IActionResult GetCivilWithoutLegsMastByIdInstallation(int CivilId )
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -5901,7 +6276,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CategoryId, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 1, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5912,7 +6287,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CategoryId, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 1, null, username);
                 return Ok(response);
             }
             else
@@ -5920,7 +6295,95 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        [HttpGet("GetCivilNonSteelById")]
+        [HttpGet("GetCivilWithoutLegsMonopleByIdInstallation")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetCivilWithoutLegsMonopleByIdInstallation(int CivilId)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 3, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 3, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+        [HttpGet("GetCivilWithoutLegsCapsuleByIdInstallation")]
+        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        public IActionResult GetCivilWithoutLegsCapsuleByIdInstallation(int CivilId)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 2, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 2, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+        [HttpGet("GetCivilNonSteelByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetCivilNonSteelById(int CivilId)
         {
@@ -5966,7 +6429,7 @@ namespace TLIS_API.Controllers
            
         }
 
-        [HttpPost("EditCivilWithLegs")]
+        [HttpPost("EditCivilWithLegsInstallation")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithLegsInstallationObject))]
         public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg,int TaskId)
         {
@@ -6030,7 +6493,7 @@ namespace TLIS_API.Controllers
             }
         }
 
-        [HttpPost("EditCivilWithoutLegs")]
+        [HttpPost("EditCivilWithoutLegsInstallationCapsule")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
         public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg,int TaskId)
         {
@@ -6094,7 +6557,135 @@ namespace TLIS_API.Controllers
             }
         }
 
-        [HttpPost("EditCivilNonSteel")]
+        [HttpPost("EditCivilWithoutLegsInstallationMast")]
+        [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
+        public async Task<IActionResult> EditCivilWithoutLegsInstallationMast([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int TaskId)
+        {
+            try
+            {
+                if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegsInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditCivilWithoutLegsInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("EditCivilWithoutLegsInstallationMonople")]
+        [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
+        public async Task<IActionResult> EditCivilWithoutLegsInstallationMonople([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int TaskId)
+        {
+            try
+            {
+                if (TryValidateModel(CivilWithoutLeg, nameof(EditCivilWithoutLegsInstallationObject)))
+                {
+                    string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                    {
+                        return Unauthorized();
+                    }
+
+                    if (authHeader.ToLower().StartsWith("bearer "))
+                    {
+
+                        var token = authHeader.Substring("Bearer ".Length).Trim();
+                        var handler = new JwtSecurityTokenHandler();
+                        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                        if (jsonToken == null)
+                        {
+                            return Unauthorized();
+                        }
+
+                        string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                        var userId = Convert.ToInt32(userInfo);
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, null);
+                        return Ok(response);
+                    }
+                    else if (authHeader.ToLower().StartsWith("basic "))
+                    {
+
+                        var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                        var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                        var username = decodedUsernamePassword.Split(':')[0];
+                        var password = decodedUsernamePassword.Split(':')[1];
+                        var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, null, connectionString, username);
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    var ErrorMessages = from state in ModelState.Values
+                                        from error in state.Errors
+                                        select error.ErrorMessage;
+                    return Ok(new Response<EditCivilWithoutLegsInstallationObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("EditCivilNonSteelInstallation")]
         [ProducesResponseType(200, Type = typeof(EditCivilNonSteelInstallationObject))]
         public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelInstallationObject CivilNonSteel,int TaskId)
         {
@@ -6157,8 +6748,8 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("DismantleCivilWithLegsInstallation")]
-        public IActionResult DismantleCivilWithLegsInstallation(string SiteCode, int CivilId, int? TaskId)
+        [HttpPost("DismantleCivilWithLegsInstallationMast")]
+        public IActionResult DismantleCivilWithLegsInstallationMast(string SiteCode, int CivilId, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -6202,8 +6793,8 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpPost("DismantleCivilWithoutLegsInstallation")]
-        public IActionResult DismantleCivilWithoutLegsInstallation(string SiteCode, int CivilId, int? TaskId)
+        [HttpPost("DismantleCivilWithoutLegsInstallationMonople")]
+        public IActionResult DismantleCivilWithoutLegsInstallationMonople(string SiteCode, int CivilId, int? TaskId)
         {
             try
             {
@@ -6257,6 +6848,119 @@ namespace TLIS_API.Controllers
             }
 
         }
+
+        [HttpPost("DismantleCivilWithoutLegsInstallationCapsule")]
+        public IActionResult DismantleCivilWithoutLegsInstallationCapsule(string SiteCode, int CivilId, int? TaskId)
+        {
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        [HttpPost("DismantleCivilWithoutLegsInstallation")]
+        public IActionResult DismantleCivilWithoutLegsInstallation(string SiteCode, int CivilId, int? TaskId)
+        {
+            try
+            {
+
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPost("DismantleCivilNonSteelInstallation")]
         public IActionResult DismantleCivilNonSteelInstallation(string SiteCode, int CivilId, int? TaskId)
         {

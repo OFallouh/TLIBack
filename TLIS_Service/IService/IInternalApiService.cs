@@ -49,12 +49,12 @@ namespace TLIS_Service.IService
     public interface IInternalApiService
     {
         Response<GetEnableAttribute> GetAlOtherInventoryonSitebyType(string OtherInventoryTypeName, string SiteCode, string ConnectionString, int? UserId, string UserName);
-        Response<GetEnableAttribute> GetConfigurationTables(string siteCode, string TableNameInstallation, int? CategoryId, string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetConfigurationTables(string siteCode, string TableNameInstallation, string ConnectionString, int? UserId, string UserName);
         Response<LoadsDtoInternal> GetAllLoadonSitebyPartandType(String SiteCode, string PartName, string TypeName, int? UserId, string UserName);
         Response<List<ListOfCivilLoads>> GetAllItemsonSite(string SiteCode, int? UserId, string UserName);
-        Response<List<BassAttViewModel>> GetConfigurationAttributes(string TableName, bool IsDynamic, int CategoryId, int? UserId, string UserName);
+        Response<List<BassAttViewModel>> GetConfigurationAttributes(string TableName, bool IsDynamic, int? UserId, string UserName);
         Response<List<GetForAddCivilLoadObject>> GetSideArmsBySiteCode(string SiteCode, string CivilType, string CivilName, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase, int? UserId, string UserName);
-        Response<GetEnableAttribute> GetLibraryforSpecificType(string ConnectionString, string TableNameLibrary, int? CategoryId, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetLibraryforSpecificType(string ConnectionString, string TableNameLibrary, int? UserId, string UserName);
         Response<IEnumerable<SiteViewModel>> GetAllSitesDetails(ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
               
         Response<AddDependencyInstViewModel> AddDynamicAttInst(AddDependencyInstViewModel addDependencyInstViewModel, string ConnectionString);
@@ -141,7 +141,7 @@ namespace TLIS_Service.IService
         Response<AddRadioAntennaLibraryObject> AddRadioAntennaLibrary(string TableName, AddRadioAntennaLibraryObject RadioLibraryViewModel, string connectionString, int? UserId, string? UserName);
         Response<GetForAddMWDishInstallationObject> AddRadioInstallationInternal(object RadioInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId, int? UserId, string UserName);
 
-        Response<GetForAddMWDishInstallationObject> AddMWInstallationInternal (int UserId, object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId, string UserName);
+        Response<GetForAddMWDishInstallationObject> AddMWInstallationInternal (int? UserId, object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId, string UserName);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWBUInstallation(int? UserId, EditMWBUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString, string UserName);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWOtherInstallation(int? UserId, EditMWOtherInstallationObject editmwOtherInstallationObject, string TableName, int? TaskId, string ConnectionStringstring,string UserName);
         Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int? UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString, string UserName);
@@ -238,6 +238,9 @@ namespace TLIS_Service.IService
         Response<GetForAddCivilWithOutLegInstallationcs> GetCivilNonSteelInstallationById(int CivilInsId, string TableName, int? UserId, string UserName);
         Response<GetForAddCivilWithOutLegInstallationcs> GetCivilWithoutLegsInstallationById(int CivilInsId, string TableName, int CategoryId, int? UserId, string UserName);
         Response<GetForAddCivilWithLegObject> GetCivilWithLegsInstallationById(int CivilInsId, string TableName, int? UserId, string UserName);
+        Response<GetForAddMWDishInstallationObject> AddMWRFUInstallation(object AddMWRFUInstallation, string TableName, string SiteCode, string ConnectionString, int? TaskId, int? UserId, string UserName);
+        Response<AddDynamicObject> AddDynamicInternal(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int? UserId, int? CategoryId, string UserName);
+        Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId, AddDynamicObject DynamicAttViewModel, int? UserId, string connectionString, string UserName);
     }
 
 }

@@ -629,7 +629,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_IexternalSysService == null)
-                    _IexternalSysService = new ExternalSysService(_unitOfWork, _services,db,_mapper);
+                    _IexternalSysService = new ExternalSysService(_config,_unitOfWork, _services,db,_mapper);
                 return _IexternalSysService;
             }
         }

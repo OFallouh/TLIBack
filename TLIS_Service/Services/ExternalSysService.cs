@@ -35,7 +35,8 @@ using TLIS_DAL.ViewModels.ComplixFilter;
 using Microsoft.AspNetCore.Mvc;
 using TLIS_DAL.Helper.Filters;
 using System.IO;
-
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using Microsoft.Extensions.Configuration;
 namespace TLIS_Service.Services
 {
     internal class ExternalSysService : IexternalSysService
@@ -44,14 +45,16 @@ namespace TLIS_Service.Services
         IUnitOfWork _unitOfWork;
         IServiceCollection _services;
         private IMapper _mapper;
+        private IConfiguration _config;
         //private  byte[] key = new byte[16]; // 128-bit key
         //private  byte[] iv = new byte[16]; // 128-bit IV
 
-        public ExternalSysService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext _ApplicationDbContext, IMapper mapper)
+        public ExternalSysService(IConfiguration config, IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext _ApplicationDbContext, IMapper mapper)
         {
             db = _ApplicationDbContext;
             _unitOfWork = unitOfWork;
             _services = services;
+            _config = config;
             _mapper = mapper;
         }
 
@@ -66,17 +69,20 @@ namespace TLIS_Service.Services
             {
                 try
                 {
+                    var secretKey = _config["JWT:Key"];
                     TLIexternalSys ext = new TLIexternalSys(mod, Encrypt(mod.Password));
+                    db.TLIexternalSys.Add(ext);
+                    db.SaveChanges();
                     if (mod.IsToken == true)
                     {
-                        ext.Token = GenerateToken(mod.SysName, mod.UserName, mod.LifeTime);
+                        ext.Token = BuildToken(ext.Id, ext.UserName, secretKey);
 
                     }
                     else
                     {
                         ext.Token = null;
                     }
-                    db.TLIexternalSys.Add(ext);
+                    db.TLIexternalSys.Update(ext);
                     db.SaveChanges();
                     if (ext.Id != 0)
                     {
@@ -119,6 +125,7 @@ namespace TLIS_Service.Services
             {
                 try
                 {
+                    var secretKey = _config["JWT:Key"];
                     var sys = db.TLIexternalSys.AsNoTracking().FirstOrDefault(x => x.Id == mod.Id);
                     if (sys == null)
                     {
@@ -130,7 +137,7 @@ namespace TLIS_Service.Services
                     ext.IsActive = sys.IsActive;
                     if (mod.IsToken == true)
                     {
-                        ext.Token = GenerateToken(mod.SysName, mod.UserName, mod.LifeTime);
+                        ext.Token = BuildToken(mod.Id, mod.UserName, secretKey);
 
                     }
                     else
@@ -300,8 +307,8 @@ namespace TLIS_Service.Services
                 return new Response<string>(false, null, null, "Invalid system", (int)Helpers.Constants.ApiReturnCode.fail);
 
             }
-
-            system.Token = GenerateToken(system.SysName, system.UserName, system.LifeTime);
+            var secretKey = _config["JWT:Key"];
+            system.Token = BuildToken(system.Id, system.UserName, secretKey);
             system.StartLife = DateTime.Now;
             system.EndLife = system.StartLife.AddDays(system.LifeTime);
 
@@ -428,24 +435,28 @@ namespace TLIS_Service.Services
             return sys;
         }
 
-        private string GenerateToken(string systemname, string username, int lifetime)
+        public string BuildToken(int userId, string userName, string secretKey)
         {
-            string secretKey = "veryVerySecretKey";
             List<Claim> claims = new List<Claim> {
-                new Claim(JwtRegisteredClaimNames.Sub, systemname),
-                new Claim(JwtRegisteredClaimNames.FamilyName, username),
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()), // Use userId for Sub claim
+                new Claim(JwtRegisteredClaimNames.FamilyName, userName), // Use userName for FamilyName claim
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // Unique identifier for the token
             };
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken("https://localhost:44311/",
-              "https://localhost:44311/",
-              claims,
-              expires: DateTime.Now.AddDays(lifetime),
-              signingCredentials: creds);
+            var token = new JwtSecurityToken(
+                "https://localhost:44311/",
+                "https://localhost:44311/",
+                claims,
+                expires: DateTime.Now.AddMinutes(Convert.ToInt32(_config["expireToken"])), // Expiry from configuration
+                signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
         public Response<List<ExternalPermission>> GetAllExternalPermission()
         {
             try

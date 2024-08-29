@@ -2176,6 +2176,12 @@ namespace TLIS_Service.Helpers
             TLIcivilWithLegs,
             TLIcivilWithoutLeg,
             TLIcivilNonSteel,
+            TLIcivilWithoutLegLibraryMast,
+            TLIcivilWithoutLegLibraryCapsule,
+            TLIcivilWithoutLegLibraryMonople,
+            TLIcivilWithoutLegMonople,
+            TLIcivilWithoutLegCapsule,
+            TLIcivilWithoutLegMast
         }
 
         public enum LoadSubType

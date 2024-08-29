@@ -573,7 +573,7 @@ namespace TLIS_API.Controllers
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             var response = _unitOfWorkService.SiteService.GetConfigurationTables(SiteCode, TableName, CategoryId, ConnectionString);
-            var fullPath = response.Data + "/" + TableName + ".xlsx";
+            var fullPath = response.Data ;
             var bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(fullPath, out var contentType))
