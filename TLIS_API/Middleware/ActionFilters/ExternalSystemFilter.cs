@@ -197,9 +197,9 @@ namespace TLIS_API.Middleware.ActionFilters
                     // Try to validate and decode the token
                     var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
 
-                    var systemname = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                    if (CheckTokenValidation(systemname) == true)
+                    var userId = claimsPrincipal.FindFirstValue("userId");
+                    var SysId = Convert.ToInt32(userId);
+                    if (CheckTokenValidation(SysId) == true)
                     {
 
                         string controllerName = context.RouteData.Values["controller"].ToString();
@@ -207,7 +207,7 @@ namespace TLIS_API.Middleware.ActionFilters
 
 
                         var extSys = db.TLIexternalSys.Include(x => x.TLIexternalSysPermissions).
-                            FirstOrDefault(x => x.SysName == systemname  && x.IsActive == true && x.IsDeleted == false);
+                            FirstOrDefault(x => x.Id == SysId && x.IsActive == true && x.IsDeleted == false);
 
                         if (extSys != null)
                         {
@@ -312,9 +312,9 @@ namespace TLIS_API.Middleware.ActionFilters
 
         }
 
-        private bool CheckTokenValidation(string systemname)
+        private bool CheckTokenValidation(int systemId)
         {
-            var system = db.TLIexternalSys.FirstOrDefault(x=>x.SysName== systemname);
+            var system = db.TLIexternalSys.FirstOrDefault(x=>x.Id== systemId);
             if(system==null)
             {
                 return false;
