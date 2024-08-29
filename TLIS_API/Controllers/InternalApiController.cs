@@ -82,10 +82,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -101,7 +98,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(SiteCode, connectionString,userId,null);
+                var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(SiteCode, connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -112,7 +109,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(SiteCode, connectionString,null,username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilsBySiteCode(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -120,18 +117,15 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-       
-        
+
+
         [HttpPost("GetSideArmsInstalledonCivil")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAttForSideArm))]
         public IActionResult GetSideArmsInstalledonCivil([Required] string SiteCode, string CivilType, string CivilName, int? LegId, float? MinAzimuth, float? MaxAzimuth, float? MinHeightBase, float? MaxHeightBase)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -147,7 +141,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSideArmsBySiteCode(SiteCode, CivilType, CivilName, LegId, MinAzimuth, MaxAzimuth, MinHeightBase, MaxHeightBase,userId,null);
+                var response = _unitOfWorkService.InternalApiService.GetSideArmsBySiteCode(SiteCode, CivilType, CivilName, LegId, MinAzimuth, MaxAzimuth, MinHeightBase, MaxHeightBase, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -158,7 +152,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSideArmsBySiteCode(SiteCode, CivilType, CivilName, LegId, MinAzimuth, MaxAzimuth, MinHeightBase, MaxHeightBase,null,username);
+                var response = _unitOfWorkService.InternalApiService.GetSideArmsBySiteCode(SiteCode, CivilType, CivilName, LegId, MinAzimuth, MaxAzimuth, MinHeightBase, MaxHeightBase, null, username);
                 return Ok(response);
             }
             else
@@ -166,17 +160,14 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-       
+
         [HttpPost("GetLibraryforSpecificType")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
         public IActionResult GetLibraryforSpecificType(string TableNameLibrary, [FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -192,7 +183,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetLibraryforSpecificType(connectionString,TableNameLibrary, userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetLibraryforSpecificType(connectionString, TableNameLibrary, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -203,14 +194,14 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetLibraryforSpecificType(connectionString,TableNameLibrary, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetLibraryforSpecificType(connectionString, TableNameLibrary, null, username);
                 return Ok(response);
             }
             else
             {
                 return Unauthorized();
             }
-          
+
         }
         [HttpPost("GetAllSitesDetails")]
         [ProducesResponseType(200, Type = typeof(List<SiteViewModel>))]
@@ -218,10 +209,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -263,10 +251,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -282,7 +267,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAllLoadonSitebyPartandType(SiteCode, PartName, TypeName,userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetAllLoadonSitebyPartandType(SiteCode, PartName, TypeName, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -300,7 +285,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-        
+
 
         }
         [HttpPost("GetAlOtherInventoryonSitebyType")]
@@ -309,10 +294,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -346,7 +328,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpGet("GetAllItemsOnSite ")]
         [ProducesResponseType(200, Type = typeof(Response<List<ListOfCivilLoads>>))]
@@ -354,10 +336,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -391,7 +370,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpPost("GetConfigurationTablesInstallation ")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
@@ -399,10 +378,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -436,7 +412,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-          
+
 
         }
         [HttpPost("GetConfigurationAttributes")]
@@ -445,10 +421,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -482,21 +455,18 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-       
+
 
         }
         [HttpPost("AddDynamicAttributeLibrary")]
         [ProducesResponseType(200, Type = typeof(AddDynamicAttViewModel))]
-        public IActionResult AddDynamicAttLibrary([FromBody] AddDynamicObject addDynamicObject,string TabelName,int? CategoryId)
+        public IActionResult AddDynamicAttLibrary([FromBody] AddDynamicObject addDynamicObject, string TabelName, int? CategoryId)
         {
             if (ModelState.IsValid)
             {
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
 
@@ -530,7 +500,7 @@ namespace TLIS_API.Controllers
                 {
                     return Unauthorized();
                 }
-              
+
             }
             else
             {
@@ -549,10 +519,6 @@ namespace TLIS_API.Controllers
             {
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
 
@@ -598,16 +564,13 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditDynamicAttLibraryAndInstallation")]
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
-        public async Task<IActionResult> EditDynamicAttLibraryAndInstallation(int DynamicAttributeId,[FromBody] AddDynamicObject dynamicAttViewModel)
+        public async Task<IActionResult> EditDynamicAttLibraryAndInstallation(int DynamicAttributeId, [FromBody] AddDynamicObject dynamicAttViewModel)
         {
             if (ModelState.IsValid)
             {
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
 
@@ -650,7 +613,7 @@ namespace TLIS_API.Controllers
                                     select error.ErrorMessage;
                 return Ok(new Response<AddDynamicAttViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
-         
+
         }
         [HttpPost("AddRadioRRULibrary")]
         [ProducesResponseType(200, Type = typeof(AddRadioRRULibraryObject))]
@@ -660,10 +623,7 @@ namespace TLIS_API.Controllers
             {
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -715,10 +675,7 @@ namespace TLIS_API.Controllers
             {
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
 
@@ -769,10 +726,6 @@ namespace TLIS_API.Controllers
             {
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -822,10 +775,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -866,10 +816,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -912,10 +859,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -958,10 +902,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -1006,10 +947,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1026,7 +964,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioAntenna,Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(),SiteCode, connectionString, TaskId, userId,null);
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, connectionString, TaskId, userId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1037,7 +975,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioAntenna,Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(),SiteCode, connectionString, TaskId, null, username);
+                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, connectionString, TaskId, null, username);
                         return Ok(response);
                     }
                     else
@@ -1047,7 +985,7 @@ namespace TLIS_API.Controllers
                 }
 
                 else
-                        {
+                {
                     var ErrorMessages = from state in ModelState.Values
                                         from error in state.Errors
                                         select error.ErrorMessage;
@@ -1061,7 +999,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddRadioRRUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioRRUInstallationObject))]
-        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUInstallationObject addRadioRRU, string SiteCode,int TaskId)
+        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUInstallationObject addRadioRRU, string SiteCode, int TaskId)
         {
             try
             {
@@ -1069,10 +1007,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1133,10 +1068,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1195,10 +1127,7 @@ namespace TLIS_API.Controllers
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -1250,10 +1179,7 @@ namespace TLIS_API.Controllers
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -1307,10 +1233,7 @@ namespace TLIS_API.Controllers
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -1362,10 +1285,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -1410,10 +1330,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -1463,10 +1380,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1483,7 +1397,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId,AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1494,7 +1408,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null,AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, username);
                         return Ok(response);
                     }
                     else
@@ -1526,10 +1440,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1546,7 +1457,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId,AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId, AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1557,7 +1468,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null,AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null, AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, username);
                         return Ok(response);
                     }
                     else
@@ -1589,10 +1500,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1609,7 +1517,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId,AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1620,7 +1528,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null,AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, username);
                         return Ok(response);
                     }
                     else
@@ -1652,10 +1560,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1716,10 +1621,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1736,7 +1638,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId,AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId, AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1747,7 +1649,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null,AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, username);
+                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null, AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, username);
                         return Ok(response);
                     }
                     else
@@ -1771,7 +1673,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMWBUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWBUInstallationObject))]
-        public async Task<IActionResult> EditMW_BU([FromBody] EditMWBUInstallationObject MW_BU,int TaskId)
+        public async Task<IActionResult> EditMW_BU([FromBody] EditMWBUInstallationObject MW_BU, int TaskId)
         {
             try
             {
@@ -1779,10 +1681,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1842,10 +1741,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1897,7 +1793,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMWODUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWODUInstallationObject))]
-        public async Task<IActionResult> EditMW_ODU([FromBody] EditMWODUInstallationObject MW_ODU,int TaskId)
+        public async Task<IActionResult> EditMW_ODU([FromBody] EditMWODUInstallationObject MW_ODU, int TaskId)
         {
             try
             {
@@ -1905,10 +1801,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1960,7 +1853,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMWRFUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWRFUInstallationObject))]
-        public async Task<IActionResult> EditMW_RFU([FromBody] EditMWRFUInstallationObject MW_RFU,int TaskId)
+        public async Task<IActionResult> EditMW_RFU([FromBody] EditMWRFUInstallationObject MW_RFU, int TaskId)
         {
             try
             {
@@ -1968,10 +1861,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -1999,7 +1889,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), connectionString, TaskId,null, username);
+                        var response = _unitOfWorkService.InternalApiService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), connectionString, TaskId, null, username);
                         return Ok(response);
                     }
                     else
@@ -2023,7 +1913,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMwOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWOtherInstallationObject))]
-        public async Task<IActionResult> EditMw_Other([FromBody] EditMWOtherInstallationObject Mw_Other,int TaskId)
+        public async Task<IActionResult> EditMw_Other([FromBody] EditMWOtherInstallationObject Mw_Other, int TaskId)
         {
             try
             {
@@ -2031,10 +1921,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -2086,17 +1973,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMWBUInstallation")]
 
-        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName,int TaskId)
+        public IActionResult DismantleMW_BU(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {
-                
+
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -2113,7 +1997,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId,userId, connectionString, null);
+                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, userId, connectionString, null);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -2131,7 +2015,7 @@ namespace TLIS_API.Controllers
                 {
                     return Unauthorized();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -2140,17 +2024,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMWODUInstallation")]
 
-        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName,int TaskId)
+        public IActionResult DismantleMW_ODU(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -2193,19 +2074,16 @@ namespace TLIS_API.Controllers
             }
         }
 
-       [ HttpPost("DismantleMWRFUInstallation")]
+        [HttpPost("DismantleMWRFUInstallation")]
 
-        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName,int TaskId)
+        public IActionResult DismantleMW_RFU(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -2249,17 +2127,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMWDishInstallation")]
 
-        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName,int TaskId)
+        public IActionResult DismantleMW_Dish(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -2303,17 +2178,14 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMWOtherInstallation")]
 
-        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName,int TaskId)
+        public IActionResult DismantleMW_Other(string sitecode, int LoadId, string LoadName, int TaskId)
         {
             try
             {
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -2356,17 +2228,14 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("DismantlesideArmInstallation")]
-        public IActionResult DismantlesideArm(string SiteCode, int sideArmId,int  TaskId)
+        public IActionResult DismantlesideArm(string SiteCode, int sideArmId, int TaskId)
         {
             try
             {
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -2394,7 +2263,7 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleSideArmInternal(SiteCode, sideArmId, TaskId, connectionString,null, username);
+                    var response = _unitOfWorkService.InternalApiService.DismantleSideArmInternal(SiteCode, sideArmId, TaskId, connectionString, null, username);
                     return Ok(response);
                 }
                 else
@@ -2414,10 +2283,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2462,10 +2328,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2508,10 +2371,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2554,10 +2414,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2600,10 +2457,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2647,10 +2501,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2685,7 +2536,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
         [HttpGet("GetAttForAddGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
@@ -2693,10 +2544,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2731,12 +2579,12 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-         
+
         }
-       
+
         [HttpPost("AddSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(AddSolarInstallationObject))]
-        public IActionResult AddSolar([FromBody] AddSolarInstallationObject addSolarViewModel, string SiteCode,int TaskId)
+        public IActionResult AddSolar([FromBody] AddSolarInstallationObject addSolarViewModel, string SiteCode, int TaskId)
         {
             try
             {
@@ -2744,10 +2592,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -2800,7 +2645,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(AddGeneratorInstallationObject))]
-        public IActionResult AddGenerator([FromBody] AddGeneratorInstallationObject addGeneratorViewModel, string SiteCode,int TaskId)
+        public IActionResult AddGenerator([FromBody] AddGeneratorInstallationObject addGeneratorViewModel, string SiteCode, int TaskId)
         {
             try
             {
@@ -2808,10 +2653,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -2828,7 +2670,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddGeneratorInstallation(addGeneratorViewModel,SiteCode,connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, connectionString, TaskId, userId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -2868,10 +2710,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2906,7 +2745,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetGeneratorByIdInstallation")]
@@ -2915,10 +2754,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -2954,10 +2790,10 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-        
+
         [HttpPost("EditSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(EditSolarInstallationObject))]
-        public async Task<IActionResult> EditSolar([FromBody] EditSolarInstallationObject editSolarViewModel,int TaskId)
+        public async Task<IActionResult> EditSolar([FromBody] EditSolarInstallationObject editSolarViewModel, int TaskId)
         {
             try
             {
@@ -2965,10 +2801,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -2985,7 +2818,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId,userId, connectionString, null);
+                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, userId, connectionString, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -3021,7 +2854,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorInstallationObject))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorInstallationObject editGeneratorViewModel,int TaskId)
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditGeneratorInstallationObject editGeneratorViewModel, int TaskId)
         {
             try
             {
@@ -3029,10 +2862,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -3084,17 +2914,14 @@ namespace TLIS_API.Controllers
         }
         //---------------------------------------------------------------------------------
         [HttpGet("DismantleOtherInventoryInstallation")]
-        public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName,int TaskId)
+        public IActionResult DismantleOtherInventory(string SiteCode, int OtherInventoryId, string OtherInventoryName, int TaskId)
         {
             try
             {
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -3136,17 +2963,14 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
 
-        } 
+        }
         [HttpPost("GetSolarBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
         public IActionResult GetSolarBySiteWithEnabledAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3174,14 +2998,14 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSolarWithEnableAtt(SiteCode, connectionString,null, username);
+                var response = _unitOfWorkService.InternalApiService.GetSolarWithEnableAtt(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpPost("GetGeneratorBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
@@ -3189,10 +3013,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3220,7 +3041,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetGeneratorWithEnableAtt(SiteCode, connectionString,null, username);
+                var response = _unitOfWorkService.InternalApiService.GetGeneratorWithEnableAtt(SiteCode, connectionString, null, username);
                 return Ok(response);
             }
             else
@@ -3234,10 +3055,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3280,10 +3098,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3326,10 +3141,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3373,10 +3185,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3419,10 +3228,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3467,10 +3273,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3506,11 +3309,11 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
 
-          
+
         }
         [HttpPost("AddSideArmInstallation")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public async Task<IActionResult> AddSideArm([FromBody] SideArmViewDto sideArmViewDto,string SiteCode, int TaskId)
+        public async Task<IActionResult> AddSideArm([FromBody] SideArmViewDto sideArmViewDto, string SiteCode, int TaskId)
         {
             try
             {
@@ -3518,10 +3321,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -3573,7 +3373,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("UpdateSideArmInstallation")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public async Task<IActionResult> UpdateSideArm([FromBody] EditSidearmInstallationObject SideArmViewModel,int TaskId)
+        public async Task<IActionResult> UpdateSideArm([FromBody] EditSidearmInstallationObject SideArmViewModel, int TaskId)
         {
             try
             {
@@ -3581,10 +3381,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -3640,10 +3437,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3678,7 +3472,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpPost("getSideArmsBySiteWithEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<object>))]
@@ -3686,10 +3480,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3724,7 +3515,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
         [HttpPost("GetCivilNonSteelLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
@@ -3732,10 +3523,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3763,14 +3551,14 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelLibrariesEnabledAtt( connectionString, null, username);
+                var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelLibrariesEnabledAtt(connectionString, null, username);
                 return Ok(response);
             }
             else
             {
                 return Unauthorized();
             }
-          
+
         }
         [HttpPost("AddCivilNonSteelLibrary")]
         [ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryObject))]
@@ -3781,10 +3569,7 @@ namespace TLIS_API.Controllers
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -3801,7 +3586,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, connectionString, userId,null);
+                    var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, connectionString, userId, null);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -3832,10 +3617,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3877,10 +3659,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3922,10 +3701,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -3967,10 +3743,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4005,7 +3778,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpPost("GetMWBULibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
@@ -4013,10 +3786,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4051,7 +3821,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
         [HttpPost("GetMWOtherLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
@@ -4059,10 +3829,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4097,7 +3864,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpPost("AddSolarLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
@@ -4109,10 +3876,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -4168,10 +3932,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4206,7 +3967,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-          
+
         }
         [HttpPost("AddGeneratorLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
@@ -4218,10 +3979,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -4271,7 +4029,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-      
+
         [HttpPost("AddMW_RFULibrary")]
         [ProducesResponseType(200, Type = typeof(AddMW_RFULibraryViewModel))]
         public IActionResult AddMW_RFULibrary([FromBody] AddMWRFULibraryObject addMW_RFULibraryViewModel)
@@ -4282,10 +4040,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -4354,10 +4109,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -4417,10 +4169,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -4480,10 +4229,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -4539,10 +4285,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4577,7 +4320,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-          
+
         }
 
         [HttpGet("GetForAddMWDishLibrary")]
@@ -4586,10 +4329,6 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4624,7 +4363,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-          
+
         }
         [HttpGet("GetForAddMWBUibrary")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
@@ -4632,10 +4371,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4677,10 +4413,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4722,10 +4455,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4767,10 +4497,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4811,10 +4538,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4855,10 +4579,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4899,10 +4620,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4943,10 +4661,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -4987,10 +4702,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -5036,10 +4748,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -5099,10 +4808,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -5119,7 +4825,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary( Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString,userId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -5130,7 +4836,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString,null, username);
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, null, username);
                         return Ok(response);
                     }
                     else
@@ -5162,10 +4868,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -5225,10 +4928,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -5288,10 +4988,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -5347,10 +5044,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -5385,7 +5079,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-     
+
         }
         [HttpPost("GetSolarLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
@@ -5393,10 +5087,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -5431,7 +5122,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-         
+
         }
         [HttpGet("GetAttForAddCivilWithLegsInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
@@ -5439,10 +5130,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -5459,7 +5147,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode,userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5477,7 +5165,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
 
         [HttpPost("GetCivilWithLegsBySiteWithEnableAtt")]
@@ -5486,10 +5174,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5523,7 +5208,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpPost("GetCivilWithoutLegMastBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(object))]
@@ -5531,10 +5216,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5568,7 +5250,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-        
+
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegMonopoleBySiteWithEnableAtt")]
@@ -5577,10 +5259,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5614,7 +5293,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegCapsuleBySiteWithEnableAtt")]
@@ -5623,10 +5302,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5660,7 +5336,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-          
+
         }
         [HttpPost("GetCivilNonSteelBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
@@ -5668,10 +5344,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5705,7 +5378,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpGet("GetForAddCivilWithOutLeg_CapsuleInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
@@ -5713,10 +5386,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5758,10 +5428,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5803,10 +5470,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5847,10 +5511,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -5887,7 +5548,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCivilWithLegsInstallation")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
-        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode,int TaskId)
+        public IActionResult AddCivilWithLegs([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode, int TaskId)
         {
             try
             {
@@ -5895,10 +5556,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -5915,7 +5573,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsInstallation(addCivilWithLeg,Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(),SiteCode, connectionString,TaskId, userId, null);
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, connectionString, TaskId, userId, null);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -5926,7 +5584,7 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsInstallation(addCivilWithLeg,Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, connectionString, TaskId, null, username);
                         return Ok(response);
                     }
                     else
@@ -5952,7 +5610,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddCivilWithoutLegsInstallationMast")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
-        public IActionResult AddCivilWithoutLegsInstallationMast([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode,int TaskId)
+        public IActionResult AddCivilWithoutLegsInstallationMast([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId)
         {
             try
             {
@@ -5960,10 +5618,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6024,10 +5679,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6088,10 +5740,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6145,7 +5794,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddCivilNonSteelInstallation")]
         [ProducesResponseType(200, Type = typeof(AddCivilNonSteelObject))]
-        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelObject addCivilNonSteel, string SiteCode,int TaskId)
+        public IActionResult AddCivilNonSteel([FromBody] AddCivilNonSteelObject addCivilNonSteel, string SiteCode, int TaskId)
         {
             try
             {
@@ -6153,10 +5802,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6212,10 +5858,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -6249,18 +5892,15 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpGet("GetCivilWithoutLegsMastByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
-        public IActionResult GetCivilWithoutLegsMastByIdInstallation(int CivilId )
+        public IActionResult GetCivilWithoutLegsMastByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -6301,10 +5941,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -6345,10 +5982,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -6389,10 +6023,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -6426,12 +6057,12 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
 
         [HttpPost("EditCivilWithLegsInstallation")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithLegsInstallationObject))]
-        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg,int TaskId)
+        public async Task<IActionResult> EditCivilWithLegs([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg, int TaskId)
         {
             try
             {
@@ -6439,10 +6070,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6495,7 +6123,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithoutLegsInstallationCapsule")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
-        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg,int TaskId)
+        public async Task<IActionResult> EditCivilWithoutLegs([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int TaskId)
         {
             try
             {
@@ -6503,10 +6131,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6567,10 +6192,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6631,10 +6253,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6687,7 +6306,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilNonSteelInstallation")]
         [ProducesResponseType(200, Type = typeof(EditCivilNonSteelInstallationObject))]
-        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelInstallationObject CivilNonSteel,int TaskId)
+        public async Task<IActionResult> EditCivilNonSteel([FromBody] EditCivilNonSteelInstallationObject CivilNonSteel, int TaskId)
         {
             try
             {
@@ -6695,10 +6314,7 @@ namespace TLIS_API.Controllers
                 {
                     string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                    if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                    {
-                        return Unauthorized();
-                    }
+
 
                     if (authHeader.ToLower().StartsWith("bearer "))
                     {
@@ -6753,10 +6369,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
@@ -6798,13 +6411,10 @@ namespace TLIS_API.Controllers
         {
             try
             {
-              
+
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -6821,7 +6431,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString,null);
+                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -6839,7 +6449,7 @@ namespace TLIS_API.Controllers
                 {
                     return Unauthorized();
                 }
-               
+
 
             }
             catch (Exception ex)
@@ -6857,10 +6467,7 @@ namespace TLIS_API.Controllers
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -6913,10 +6520,7 @@ namespace TLIS_API.Controllers
 
                 string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-                {
-                    return Unauthorized();
-                }
+
 
                 if (authHeader.ToLower().StartsWith("bearer "))
                 {
@@ -6966,10 +6570,7 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
+
 
             if (authHeader.ToLower().StartsWith("bearer "))
             {
