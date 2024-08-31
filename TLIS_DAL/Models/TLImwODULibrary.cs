@@ -15,7 +15,7 @@ namespace TLIS_DAL.Models
         public string Model { get; set; }
         public string? Note { get; set; }
         public float Weight { get; set; }
-        public string H_W_D { get; set; }
+        public string? H_W_D { get; set; }
         public float Depth { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }

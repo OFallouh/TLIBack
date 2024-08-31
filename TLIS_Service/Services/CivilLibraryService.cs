@@ -159,7 +159,7 @@ namespace TLIS_Service.Services
                                     {
                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CivilWithLegEntites.Id, HistoryId).Message;
                                         if(Message != "Success")
-                                          return new Response<AddCivilWithLegsLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.success);
+                                          return new Response<AddCivilWithLegsLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
                                         
                                     }
 
@@ -1768,7 +1768,7 @@ namespace TLIS_Service.Services
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CivilWithLegLibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
-                                return new Response<EditCivilWithLegsLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.success);
+                                return new Response<EditCivilWithLegsLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
                         }
 

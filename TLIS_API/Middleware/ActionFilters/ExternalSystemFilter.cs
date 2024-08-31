@@ -226,7 +226,8 @@ namespace TLIS_API.Middleware.ActionFilters
                                 foreach (var s in extSys.TLIexternalSysPermissions)
                                 {
                                     var AccessApi = db.TLIinternalApis.FirstOrDefault(x => x.Id == s.InternalApiId && x.IsDeleted == false && x.IsActive == true);
-                                    if (AccessApi.ControllerName == controllerName && AccessApi.ActionName == actionName)
+                                    if (AccessApi.ControllerName.ToLower() == controllerName.ToLower() 
+                                        && AccessApi.ActionName.ToLower() == actionName.ToLower())
                                     {
                                         context.Result = null;
                                         return;

@@ -11810,10 +11810,10 @@ namespace TLIS_Service.Services
                         {
                             List<TLIdynamicAttLibValue> ListToAdd = new List<TLIdynamicAttLibValue>();
                             var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TabelName.ToLower()).Id;
-                            var EditabelViewManagment = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x => x.TLItablesNames1Id== TabelNameId && x.CivilWithoutLegCategoryId== CategoryId).Id;
                             if (TabelNameId != null)
                             {
-                                var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower());
+                                var EditabelViewManagment = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x => x.TLItablesNames1Id == TabelNameId && x.CivilWithoutLegCategoryId == CategoryId).Id;
+                                var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower() && x.tablesNames.TableName.ToLower()== TabelName.ToLower());
                                 if(DynamicKey !=null)
                                     return new Response<AddDynamicObject>(true, null, null, $"This Key {addDynamicObject.general.name} is Already Exist in Table {TabelName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
                                 double double_Test = 0;
@@ -12247,35 +12247,42 @@ namespace TLIS_Service.Services
                                 {
                                     if (addDynamicObject.dependency != null)
                                     {
-                                        if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+                                        if (addDynamicObject.dependency.result.ToString() != null)
                                         {
-                                            var DefultVale = double.TryParse(addDynamicObject.dependency.result.ToString(), out double_Test);
-                                            if (DefultVale == false)
+                                            if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                             {
+                                                var DefultVale = double.TryParse(addDynamicObject.dependency.result.ToString(), out double_Test);
+                                                if (DefultVale == false)
+                                                {
 
-                                                return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                                    return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                                }
+
                                             }
+                                            else if (addDynamicObject.general.dataType == 25)
+                                            {
+                                                var DefultVale = DateTime.TryParse(addDynamicObject.dependency.result.ToString(), out datetime_Test);
+                                                if (DefultVale == false)
+                                                {
 
+                                                    return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                                }
+
+                                            }
+                                            else if (addDynamicObject.general.dataType == 24)
+                                            {
+                                                var DefultVale = Boolean.TryParse(addDynamicObject.dependency.result.ToString(), out boolean_Test);
+                                                if (DefultVale == false)
+                                                {
+
+                                                    return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                                                }
+
+                                            }
                                         }
-                                        else if (addDynamicObject.general.dataType == 25)
+                                        else
                                         {
-                                            var DefultVale = DateTime.TryParse(addDynamicObject.dependency.result.ToString(), out datetime_Test);
-                                            if (DefultVale == false)
-                                            {
-
-                                                return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
-                                            }
-
-                                        }
-                                        else if (addDynamicObject.general.dataType == 24)
-                                        {
-                                            var DefultVale = Boolean.TryParse(addDynamicObject.dependency.result.ToString(), out boolean_Test);
-                                            if (DefultVale == false)
-                                            {
-
-                                                return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
-                                            }
-
+                                            return new Response<AddDynamicObject>(true, null, null, "Result In Dependece can not be empty.", (int)Constants.ApiReturnCode.fail);
                                         }
                                         TLIdynamicAtt tLIdynamicAtt = new TLIdynamicAtt()
                                         {
@@ -15141,11 +15148,12 @@ namespace TLIS_Service.Services
                                         }
                                         if (addDynamicObject.dependency != null)
                                         {
+                                            
                                             var TabelNameTLIdependency = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIdependency").Id;
                                             TLIdependency tLIdependency = new TLIdependency()
                                             {
                                                 DynamicAttId = tLIdynamicAtt.Id,
-                                                Result = addDynamicObject.dependency.result.ToString(),
+                                                Result = null,
                                             };
                                             _unitOfWork.DependencieRepository.AddWithHDynamic(UserId, TabelNameTLIdependency, tLIdependency,HistoryId);
                                             _unitOfWork.SaveChanges();

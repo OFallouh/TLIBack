@@ -40,6 +40,8 @@ namespace TLIS_Repository.Repositories
             List<DropDownListFilters> boardTypeFilters = _mapper.Map<List<DropDownListFilters>>(boardType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("boardTypeId", boardTypeFilters));
 
+
+
             var Suppliers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                 .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Supplier.ToString().ToLower() && !x.logisticalType.Disable &&
                     !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.MW.ToString().ToLower()).ToList();
@@ -63,6 +65,18 @@ namespace TLIS_Repository.Repositories
                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Constants.TablePartName.MW.ToString().ToLower()).ToList();
             List<DropDownListFilters> VendorsFilters = _mapper.Map<List<DropDownListFilters>>(Vendors);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Vendors", VendorsFilters));
+
+
+            var rfuTypeList = Enum.GetValues(typeof(RFUType))
+                        .Cast<RFUType>()
+                        .Select(e => new DropDownListFilters
+                        {
+                            Id = ((int)e),
+                            Value = e.ToString()
+                        })
+                        .ToList();
+
+            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("RFUType", rfuTypeList));
 
             return RelatedTables;
         }
