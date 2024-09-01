@@ -1830,12 +1830,6 @@ namespace TLIS_Service.Services
 
 
                     EditLogisticalItemH(userId,editCivilWithLegsLibrary.logisticalItems, CivilWithLegLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds, HistoryId);
-
-                    if (editCivilWithLegsLibrary.dynamicAttributes != null ? editCivilWithLegsLibrary.dynamicAttributes.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(editCivilWithLegsLibrary.dynamicAttributes, connectionString, TableNameEntity.Id, CivilWithLegLibraryEntites.Id,userId,HistoryId);
-                    }
-
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
