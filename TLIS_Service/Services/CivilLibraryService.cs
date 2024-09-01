@@ -1766,7 +1766,7 @@ namespace TLIS_Service.Services
                     {
                         foreach (var item in editCivilWithLegsLibrary.dynamicAttributes)
                         {
-                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CivilWithLegLibraryEntites.Id, HistoryId).Message;
+                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, CivilWithLegLibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
                                 return new Response<EditCivilWithLegsLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 

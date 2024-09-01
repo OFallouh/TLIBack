@@ -11809,6 +11809,7 @@ namespace TLIS_Service.Services
                         try
                         {
                             List<TLIdynamicAttLibValue> ListToAdd = new List<TLIdynamicAttLibValue>();
+                            List<TLIdynamicAttInstValue> ListToAddInst = new List<TLIdynamicAttInstValue>();
                             var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TabelName.ToLower()).Id;
                             if (TabelNameId != null)
                             {
@@ -11877,85 +11878,205 @@ namespace TLIS_Service.Services
                                     };
                                     _unitOfWork.AttributeViewManagmentRepository.AddWithHDynamic(UserId, TabelNameTLIattributeViewManagment, tLIattributeViewManagment, HistoryId);
                                     _unitOfWork.SaveChanges();
-                                    if (addDynamicObject.general.dataType == 1)
+                                    if (TabelName== "TLIcivilWithLegLibrary"
+                                          || TabelName== "TLIcivilWithoutLegLibrary"
+                                          || TabelName== "TLIcivilNonSteelLibrary"
+                                          || TabelName== "TLIsideArmLibrary"
+                                          || TabelName== "TLImwDishLibrary"
+                                          || TabelName== "TLImwBULibrary"
+                                          || TabelName== "TLImwRFULibrary"
+                                          || TabelName== "TLImwOtherLibrary"
+                                          || TabelName== "TLImwODULibrary"
+                                          || TabelName== "TLIradioAntennaLibrary"
+                                          || TabelName== "TLIradioOtherLibrary"
+                                          || TabelName== "TLIradioRRULibrary"
+                                          || TabelName== "TLIcabinetPowerLibrary"
+                                          || TabelName== "TLIcabinetTelecomLibrary"
+                                          || TabelName== "TLIgeneratorLibrary"
+                                          || TabelName== "TLIpowerLibrary"
+                                          || TabelName== "TLIsolarLibrary"
+                                          || TabelName== "TLIloadOtherLibrary")
                                     {
-                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
-
-
-                                        foreach (int RecordId in RecordsIds)
+                                        if (addDynamicObject.general.dataType == 1)
                                         {
-                                            ListToAdd.Add(new TLIdynamicAttLibValue
-                                            {
-                                                disable = false,
-                                                DynamicAttId = tLIdynamicAtt.Id,
-                                                InventoryId = RecordId,
-                                                tablesNamesId = TabelNameId,
-                                                ValueString = addDynamicObject.general.defualtValue.ToString()
-                                            });
-                                        }
+                                            var RecordsIds = GetLibraryRecordsIds(TabelName);
 
-                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
-                                    }
-                                    else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+
+                                            foreach (int RecordId in RecordsIds)
+                                            {
+                                                ListToAdd.Add(new TLIdynamicAttLibValue
+                                                {
+                                                    disable = false,
+                                                    DynamicAttId = tLIdynamicAtt.Id,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = TabelNameId,
+                                                    ValueString = addDynamicObject.general.defualtValue.ToString()
+                                                });
+                                            }
+
+                                            _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                            _unitOfWork.SaveChanges();
+                                        }
+                                        else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+                                        {
+
+                                            var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+                                            foreach (int RecordId in RecordsIds)
+                                            {
+                                                ListToAdd.Add(new TLIdynamicAttLibValue
+                                                {
+                                                    disable = false,
+                                                    DynamicAttId = tLIdynamicAtt.Id,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = TabelNameId,
+                                                    ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                });
+                                            }
+
+                                            _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                            _unitOfWork.SaveChanges();
+                                        }
+                                        else if (addDynamicObject.general.dataType == 25)
+                                        {
+                                            var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+                                            foreach (int RecordId in RecordsIds)
+                                            {
+                                                ListToAdd.Add(new TLIdynamicAttLibValue
+                                                {
+                                                    disable = false,
+                                                    DynamicAttId = tLIdynamicAtt.Id,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = TabelNameId,
+                                                    ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                });
+                                            }
+
+                                            _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                            _unitOfWork.SaveChanges();
+
+                                        }
+                                        else if (addDynamicObject.general.dataType == 24)
+                                        {
+                                            var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+
+                                            foreach (int RecordId in RecordsIds)
+                                            {
+                                                ListToAdd.Add(new TLIdynamicAttLibValue
+                                                {
+                                                    disable = false,
+                                                    DynamicAttId = tLIdynamicAtt.Id,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = TabelNameId,
+                                                    ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                });
+                                            }
+
+                                            _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                            _unitOfWork.SaveChanges();
+                                        }
+                                    }                                                             
+                                    if (TabelName == "TLIcivilWithLegs"
+                                        || TabelName == "TLIcivilWithoutLeg"
+                                        || TabelName == "TLIcivilNonSteel"
+                                        || TabelName == "TLIsideArm"
+                                        || TabelName == "TLImwDish"
+                                        || TabelName == "TLImwRFU"
+                                        || TabelName == "TLImwODU"
+                                        || TabelName == "TLImwBU"
+                                        || TabelName == "TLImwOther"
+                                        || TabelName == "TLIradioAntenna"
+                                        || TabelName == "TLIradioOther"
+                                        || TabelName == "TLIRadioRRU"
+                                        || TabelName == "TLIloadOther"
+                                        || TabelName == "TLIpower"
+                                        || TabelName == "TLIcabinet"
+                                        || TabelName == "TLIsolar"
+                                        || TabelName == "TLIsolar"
+                                        || TabelName == "TLIgenerator")
                                     {
-
-                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
-
-                                        foreach (int RecordId in RecordsIds)
+                                        if (addDynamicObject.general.dataType == 1)
                                         {
-                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                            var RecordsIds = GetInstallationRecordsIds(TabelName);
+
+
+                                            foreach (int RecordId in RecordsIds)
                                             {
-                                                disable = false,
-                                                DynamicAttId = tLIdynamicAtt.Id,
-                                                InventoryId = RecordId,
-                                                tablesNamesId = TabelNameId,
-                                                ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
-                                            });
+                                                ListToAddInst.Add(new TLIdynamicAttInstValue
+                                                {
+                                                    disable = false,
+                                                    DynamicAttId = tLIdynamicAtt.Id,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = TabelNameId,
+                                                    ValueString = addDynamicObject.general.defualtValue.ToString()
+                                                });
+                                            }
+
+                                            _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAddInst);
+                                            _unitOfWork.SaveChanges();
                                         }
-
-                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
-                                    }
-                                    else if (addDynamicObject.general.dataType == 25)
-                                    {
-                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
-
-                                        foreach (int RecordId in RecordsIds)
+                                        else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                         {
-                                            ListToAdd.Add(new TLIdynamicAttLibValue
+
+                                            var RecordsIds = GetInstallationRecordsIds(TabelName);
+
+                                            foreach (int RecordId in RecordsIds)
                                             {
-                                                disable = false,
-                                                DynamicAttId = tLIdynamicAtt.Id,
-                                                InventoryId = RecordId,
-                                                tablesNamesId = TabelNameId,
-                                                ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
-                                            });
+                                                ListToAddInst.Add(new TLIdynamicAttInstValue
+                                                {
+                                                    disable = false,
+                                                    DynamicAttId = tLIdynamicAtt.Id,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = TabelNameId,
+                                                    ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                });
+                                            }
+
+                                            _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAddInst);
+                                            _unitOfWork.SaveChanges();
                                         }
-
-                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
-
-                                    }
-                                    else if (addDynamicObject.general.dataType == 24)
-                                    {
-                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
-
-
-                                        foreach (int RecordId in RecordsIds)
+                                        else if (addDynamicObject.general.dataType == 25)
                                         {
-                                            ListToAdd.Add(new TLIdynamicAttLibValue
-                                            {
-                                                disable = false,
-                                                DynamicAttId = tLIdynamicAtt.Id,
-                                                InventoryId = RecordId,
-                                                tablesNamesId = TabelNameId,
-                                                ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
-                                            });
-                                        }
+                                            var RecordsIds = GetInstallationRecordsIds(TabelName);
 
-                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                        _unitOfWork.SaveChanges();
+                                            foreach (int RecordId in RecordsIds)
+                                            {
+                                                ListToAddInst.Add(new TLIdynamicAttInstValue
+                                                {
+                                                    disable = false,
+                                                    DynamicAttId = tLIdynamicAtt.Id,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = TabelNameId,
+                                                    ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                });
+                                            }
+
+                                            _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAddInst);
+                                            _unitOfWork.SaveChanges();
+
+                                        }
+                                        else if (addDynamicObject.general.dataType == 24)
+                                        {
+                                            var RecordsIds = GetInstallationRecordsIds(TabelName);
+
+
+                                            foreach (int RecordId in RecordsIds)
+                                            {
+                                                ListToAddInst.Add(new TLIdynamicAttInstValue
+                                                {
+                                                    disable = false,
+                                                    DynamicAttId = tLIdynamicAtt.Id,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = TabelNameId,
+                                                    ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                });
+                                            }
+
+                                            _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAddInst);
+                                            _unitOfWork.SaveChanges();
+                                        }
                                     }
                                 }
                                 if (addDynamicObject.type == 1)
@@ -11991,249 +12112,528 @@ namespace TLIS_Service.Services
                                         if (addDynamicObject.type == 1 && addDynamicObject.validation != null)
                                         {
                                             var TabelNameTLIvalidation = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIvalidation").Id;
-                                        
-                                            if (addDynamicObject.general.dataType == 1)
+                                            if (TabelName == "TLIcivilWithLegLibrary"
+                                             || TabelName == "TLIcivilWithoutLegLibrary"
+                                             || TabelName == "TLIcivilNonSteelLibrary"
+                                             || TabelName == "TLIsideArmLibrary"
+                                             || TabelName == "TLImwDishLibrary"
+                                             || TabelName == "TLImwBULibrary"
+                                             || TabelName == "TLImwRFULibrary"
+                                             || TabelName == "TLImwOtherLibrary"
+                                             || TabelName == "TLImwODULibrary"
+                                             || TabelName == "TLIradioAntennaLibrary"
+                                             || TabelName == "TLIradioOtherLibrary"
+                                             || TabelName == "TLIradioRRULibrary"
+                                             || TabelName == "TLIcabinetPowerLibrary"
+                                             || TabelName == "TLIcabinetTelecomLibrary"
+                                             || TabelName == "TLIgeneratorLibrary"
+                                             || TabelName == "TLIpowerLibrary"
+                                             || TabelName == "TLIsolarLibrary"
+                                             || TabelName == "TLIloadOtherLibrary")
                                             {
-                                                TLIvalidation tLIvalidation = new TLIvalidation()
+                                                if (addDynamicObject.general.dataType == 1)
                                                 {
-                                                    DynamicAttId = tLIdynamicAtt.Id,
-                                                    OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                    ValueString = addDynamicObject.validation.value.ToString(),
-                                                };
-                                                _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
-                                                _unitOfWork.SaveChanges();
-                                                bool result = false;
-
-                                                switch (addDynamicObject.validation.operation)
-                                                {
-                                                    case 1:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower() == addDynamicObject.validation.value.ToString().ToLower();
-                                                        break;
-
-                                                    case 2:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower() != addDynamicObject.validation.value.ToString().ToLower();
-                                                        break;
-
-                                                    case 7:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().Contains(addDynamicObject.validation.value.ToString().ToLower());
-                                                        break;
-
-                                                    case 8:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().StartsWith(addDynamicObject.validation.value.ToString().ToLower());
-                                                        break;
-
-                                                    case 9:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().EndsWith(addDynamicObject.validation.value.ToString().ToLower());
-                                                        break;
-                                                }
-
-                                                if (!result)
-                                                {
-                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
-                                                }
-                                                else
-                                                {
-                                                   var RecordsIds = GetLibraryRecordsIds(TabelName);
-                                                 
-
-                                                    foreach (int RecordId in RecordsIds)
+                                                    TLIvalidation tLIvalidation = new TLIvalidation()
                                                     {
-                                                        ListToAdd.Add(new TLIdynamicAttLibValue
-                                                        {
-                                                            disable = false,
-                                                            DynamicAttId = tLIdynamicAtt.Id,
-                                                            InventoryId = RecordId,
-                                                            tablesNamesId = TabelNameId,
-                                                            ValueString = addDynamicObject.general.defualtValue.ToString()
-                                                        });
+                                                        DynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
+                                                        ValueString = addDynamicObject.validation.value.ToString(),
+                                                    };
+                                                    _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
+                                                    _unitOfWork.SaveChanges();
+                                                    bool result = false;
+
+                                                    switch (addDynamicObject.validation.operation)
+                                                    {
+                                                        case 1:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower() == addDynamicObject.validation.value.ToString().ToLower();
+                                                            break;
+
+                                                        case 2:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower() != addDynamicObject.validation.value.ToString().ToLower();
+                                                            break;
+
+                                                        case 7:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().Contains(addDynamicObject.validation.value.ToString().ToLower());
+                                                            break;
+
+                                                        case 8:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().StartsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                            break;
+
+                                                        case 9:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().EndsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                            break;
                                                     }
 
-                                                    _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                                    _unitOfWork.SaveChanges();
-
-                                                   
-                                                }
-                                            }
-                                            else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
-                                            {
-                                                TLIvalidation tLIvalidation = new TLIvalidation()
-                                                {
-                                                    DynamicAttId = tLIdynamicAtt.Id,
-                                                    OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                    ValueDouble =double.Parse(addDynamicObject.validation.value.ToString()),
-                                                };
-                                                _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
-                                                _unitOfWork.SaveChanges();
-                                                bool result = false;
-
-                                                switch (addDynamicObject.validation.operation)
-                                                {
-                                                    case 1:
-                                                        result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
-                                                        break;
-
-                                                    case 2:
-                                                        result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
-                                                        break;
-
-                                                    case 3:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
-                                                        break;
-
-                                                    case 4:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
-                                                        break;
-
-                                                    case 5:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
-                                                        break;
-
-                                                    case 6:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
-                                                        break;
-                                                }
-
-                                                if (!result)
-                                                {
-                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
-                                                }
-                                                else
-                                                {
-                                                    var RecordsIds = GetLibraryRecordsIds(TabelName);
-                                                
-                                                    foreach (int RecordId in RecordsIds)
+                                                    if (!result)
                                                     {
-                                                        ListToAdd.Add(new TLIdynamicAttLibValue
+                                                        return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+
+                                                        foreach (int RecordId in RecordsIds)
                                                         {
-                                                            disable = false,
-                                                            DynamicAttId = tLIdynamicAtt.Id,
-                                                            InventoryId = RecordId,
-                                                            tablesNamesId = TabelNameId,
-                                                            ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
-                                                        });
+                                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                                            {
+                                                                disable = false,
+                                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                                InventoryId = RecordId,
+                                                                tablesNamesId = TabelNameId,
+                                                                ValueString = addDynamicObject.general.defualtValue.ToString()
+                                                            });
+                                                        }
+
+                                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                                        _unitOfWork.SaveChanges();
+
+
+                                                    }
+                                                }
+                                                else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+                                                {
+                                                    TLIvalidation tLIvalidation = new TLIvalidation()
+                                                    {
+                                                        DynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
+                                                        ValueDouble = double.Parse(addDynamicObject.validation.value.ToString()),
+                                                    };
+                                                    _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
+                                                    _unitOfWork.SaveChanges();
+                                                    bool result = false;
+
+                                                    switch (addDynamicObject.validation.operation)
+                                                    {
+                                                        case 1:
+                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 2:
+                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 3:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 4:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 5:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 6:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
                                                     }
 
-                                                    _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                                    _unitOfWork.SaveChanges();
-                                                    
-                                                }
-                                            }
-                                            else if (addDynamicObject.general.dataType == 25)
-                                            {
-                                                TLIvalidation tLIvalidation = new TLIvalidation()
-                                                {
-                                                    DynamicAttId = tLIdynamicAtt.Id,
-                                                    OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                    ValueDateTime = DateTime.Parse(addDynamicObject.validation.value.ToString()),
-                                                };
-                                                _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
-                                                _unitOfWork.SaveChanges();
-                                                bool result = false;
-
-                                                switch (addDynamicObject.validation.operation)
-                                                {
-                                                    case 1:
-                                                        result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
-                                                        break;
-
-                                                    case 2:
-                                                        result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
-                                                        break;
-
-                                                    case 3:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
-                                                        break;
-
-                                                    case 4:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
-                                                        break;
-
-                                                    case 5:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
-                                                        break;
-
-                                                    case 6:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
-                                                        break;
-                                                }
-
-                                                if (!result)
-                                                {
-                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
-                                                }
-                                                else
-                                                {
-                                                    var RecordsIds = GetLibraryRecordsIds(TabelName);
-                                                 
-                                                    foreach (int RecordId in RecordsIds)
+                                                    if (!result)
                                                     {
-                                                        ListToAdd.Add(new TLIdynamicAttLibValue
+                                                        return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+                                                        foreach (int RecordId in RecordsIds)
                                                         {
-                                                            disable = false,
-                                                            DynamicAttId = tLIdynamicAtt.Id,
-                                                            InventoryId = RecordId,
-                                                            tablesNamesId = TabelNameId,
-                                                            ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
-                                                        });
+                                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                                            {
+                                                                disable = false,
+                                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                                InventoryId = RecordId,
+                                                                tablesNamesId = TabelNameId,
+                                                                ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                            });
+                                                        }
+
+                                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                }
+                                                else if (addDynamicObject.general.dataType == 25)
+                                                {
+                                                    TLIvalidation tLIvalidation = new TLIvalidation()
+                                                    {
+                                                        DynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
+                                                        ValueDateTime = DateTime.Parse(addDynamicObject.validation.value.ToString()),
+                                                    };
+                                                    _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
+                                                    _unitOfWork.SaveChanges();
+                                                    bool result = false;
+
+                                                    switch (addDynamicObject.validation.operation)
+                                                    {
+                                                        case 1:
+                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 2:
+                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 3:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 4:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 5:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 6:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
                                                     }
 
-                                                    _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                                    _unitOfWork.SaveChanges();
-                                                   
-                                                }
-                                            }
-                                            else if (addDynamicObject.general.dataType == 24)
-                                            {
-                                                TLIvalidation tLIvalidation = new TLIvalidation()
-                                                {
-                                                    DynamicAttId = tLIdynamicAtt.Id,
-                                                    OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                    ValueBoolean = bool.Parse(addDynamicObject.validation.value.ToString()),
-                                                };
-                                                _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
-                                                _unitOfWork.SaveChanges();
-                                                bool result = false;
-
-                                                switch (addDynamicObject.validation.operation)
-                                                {
-                                                    case 1:
-                                                        result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
-                                                        break;
-
-                                                    case 2:
-                                                        result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
-                                                        break;
-
-
-                                                }
-
-                                                if (!result)
-                                                {
-                                                    return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
-                                                }
-                                                else
-                                                {
-                                                    var RecordsIds = GetLibraryRecordsIds(TabelName);
-                                            
-
-                                                    foreach (int RecordId in RecordsIds)
+                                                    if (!result)
                                                     {
-                                                        ListToAdd.Add(new TLIdynamicAttLibValue
+                                                        return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+                                                        foreach (int RecordId in RecordsIds)
                                                         {
-                                                            disable = false,
-                                                            DynamicAttId = tLIdynamicAtt.Id,
-                                                            InventoryId = RecordId,
-                                                            tablesNamesId = TabelNameId,
-                                                            ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
-                                                        });
+                                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                                            {
+                                                                disable = false,
+                                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                                InventoryId = RecordId,
+                                                                tablesNamesId = TabelNameId,
+                                                                ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                            });
+                                                        }
+
+                                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                }
+                                                else if (addDynamicObject.general.dataType == 24)
+                                                {
+                                                    TLIvalidation tLIvalidation = new TLIvalidation()
+                                                    {
+                                                        DynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
+                                                        ValueBoolean = bool.Parse(addDynamicObject.validation.value.ToString()),
+                                                    };
+                                                    _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
+                                                    _unitOfWork.SaveChanges();
+                                                    bool result = false;
+
+                                                    switch (addDynamicObject.validation.operation)
+                                                    {
+                                                        case 1:
+                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 2:
+                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            break;
+
+
                                                     }
 
-                                                    _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
-                                                    _unitOfWork.SaveChanges();
-                                                   
+                                                    if (!result)
+                                                    {
+                                                        return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
+
+
+                                                        foreach (int RecordId in RecordsIds)
+                                                        {
+                                                            ListToAdd.Add(new TLIdynamicAttLibValue
+                                                            {
+                                                                disable = false,
+                                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                                InventoryId = RecordId,
+                                                                tablesNamesId = TabelNameId,
+                                                                ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                            });
+                                                        }
+
+                                                        _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
                                                 }
                                             }
+                                            if (TabelName == "TLIcivilWithLegs"
+                                       || TabelName == "TLIcivilWithoutLeg"
+                                       || TabelName == "TLIcivilNonSteel"
+                                       || TabelName == "TLIsideArm"
+                                       || TabelName == "TLImwDish"
+                                       || TabelName == "TLImwRFU"
+                                       || TabelName == "TLImwODU"
+                                       || TabelName == "TLImwBU"
+                                       || TabelName == "TLImwOther"
+                                       || TabelName == "TLIradioAntenna"
+                                       || TabelName == "TLIradioOther"
+                                       || TabelName == "TLIRadioRRU"
+                                       || TabelName == "TLIloadOther"
+                                       || TabelName == "TLIpower"
+                                       || TabelName == "TLIcabinet"
+                                       || TabelName == "TLIsolar"
+                                       || TabelName == "TLIsolar"
+                                       || TabelName == "TLIgenerator")
+                                            {
+                                                if (addDynamicObject.general.dataType == 1)
+                                                {
+                                                    TLIvalidation tLIvalidation = new TLIvalidation()
+                                                    {
+                                                        DynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
+                                                        ValueString = addDynamicObject.validation.value.ToString(),
+                                                    };
+                                                    _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
+                                                    _unitOfWork.SaveChanges();
+                                                    bool result = false;
 
+                                                    switch (addDynamicObject.validation.operation)
+                                                    {
+                                                        case 1:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower() == addDynamicObject.validation.value.ToString().ToLower();
+                                                            break;
+
+                                                        case 2:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower() != addDynamicObject.validation.value.ToString().ToLower();
+                                                            break;
+
+                                                        case 7:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().Contains(addDynamicObject.validation.value.ToString().ToLower());
+                                                            break;
+
+                                                        case 8:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().StartsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                            break;
+
+                                                        case 9:
+                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().EndsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                            break;
+                                                    }
+
+                                                    if (!result)
+                                                    {
+                                                        return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        var RecordsIds = GetInstallationRecordsIds(TabelName);
+
+
+                                                        foreach (int RecordId in RecordsIds)
+                                                        {
+                                                            ListToAddInst.Add(new TLIdynamicAttInstValue
+                                                            {
+                                                                disable = false,
+                                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                                InventoryId = RecordId,
+                                                                tablesNamesId = TabelNameId,
+                                                                ValueString = addDynamicObject.general.defualtValue.ToString()
+                                                            });
+                                                        }
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAddInst);
+                                                        _unitOfWork.SaveChanges();
+
+
+                                                    }
+                                                }
+                                                else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+                                                {
+                                                    TLIvalidation tLIvalidation = new TLIvalidation()
+                                                    {
+                                                        DynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
+                                                        ValueDouble = double.Parse(addDynamicObject.validation.value.ToString()),
+                                                    };
+                                                    _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
+                                                    _unitOfWork.SaveChanges();
+                                                    bool result = false;
+
+                                                    switch (addDynamicObject.validation.operation)
+                                                    {
+                                                        case 1:
+                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 2:
+                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 3:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 4:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 5:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 6:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+                                                    }
+
+                                                    if (!result)
+                                                    {
+                                                        return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        var RecordsIds = GetInstallationRecordsIds(TabelName);
+
+                                                        foreach (int RecordId in RecordsIds)
+                                                        {
+                                                            ListToAddInst.Add(new TLIdynamicAttInstValue
+                                                            {
+                                                                disable = false,
+                                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                                InventoryId = RecordId,
+                                                                tablesNamesId = TabelNameId,
+                                                                ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                            });
+                                                        }
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAddInst);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                }
+                                                else if (addDynamicObject.general.dataType == 25)
+                                                {
+                                                    TLIvalidation tLIvalidation = new TLIvalidation()
+                                                    {
+                                                        DynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
+                                                        ValueDateTime = DateTime.Parse(addDynamicObject.validation.value.ToString()),
+                                                    };
+                                                    _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
+                                                    _unitOfWork.SaveChanges();
+                                                    bool result = false;
+
+                                                    switch (addDynamicObject.validation.operation)
+                                                    {
+                                                        case 1:
+                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 2:
+                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 3:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 4:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 5:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+
+                                                        case 6:
+                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            break;
+                                                    }
+
+                                                    if (!result)
+                                                    {
+                                                        return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        var RecordsIds = GetInstallationRecordsIds(TabelName);
+
+                                                        foreach (int RecordId in RecordsIds)
+                                                        {
+                                                            ListToAddInst.Add(new TLIdynamicAttInstValue
+                                                            {
+                                                                disable = false,
+                                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                                InventoryId = RecordId,
+                                                                tablesNamesId = TabelNameId,
+                                                                ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                            });
+                                                        }
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAddInst);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                }
+                                                else if (addDynamicObject.general.dataType == 24)
+                                                {
+                                                    TLIvalidation tLIvalidation = new TLIvalidation()
+                                                    {
+                                                        DynamicAttId = tLIdynamicAtt.Id,
+                                                        OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
+                                                        ValueBoolean = bool.Parse(addDynamicObject.validation.value.ToString()),
+                                                    };
+                                                    _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
+                                                    _unitOfWork.SaveChanges();
+                                                    bool result = false;
+
+                                                    switch (addDynamicObject.validation.operation)
+                                                    {
+                                                        case 1:
+                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            break;
+
+                                                        case 2:
+                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            break;
+
+
+                                                    }
+
+                                                    if (!result)
+                                                    {
+                                                        return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
+                                                    }
+                                                    else
+                                                    {
+                                                        var RecordsIds = GetInstallationRecordsIds(TabelName);
+
+
+                                                        foreach (int RecordId in RecordsIds)
+                                                        {
+                                                            ListToAddInst.Add(new TLIdynamicAttInstValue
+                                                            {
+                                                                disable = false,
+                                                                DynamicAttId = tLIdynamicAtt.Id,
+                                                                InventoryId = RecordId,
+                                                                tablesNamesId = TabelNameId,
+                                                                ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                            });
+                                                        }
+
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddRange(ListToAddInst);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                     else
@@ -12298,9 +12698,9 @@ namespace TLIS_Service.Services
                                             Type = 2
 
                                         };
-                                       var HistoryId= _unitOfWork.DynamicAttRepository.AddWithH(UserId,null,tLIdynamicAtt);
+                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);
                                         _unitOfWork.SaveChanges();
-                                      
+
                                         var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
                                         TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
                                         {
@@ -12317,2635 +12717,5297 @@ namespace TLIS_Service.Services
                                             DynamicAttId = tLIdynamicAtt.Id,
                                             Result = addDynamicObject.dependency.result.ToString(),
                                         };
-                                        _unitOfWork.DependencieRepository.AddWithHDynamic(UserId, TabelNameTLIdependency, tLIdependency,HistoryId);
+                                        _unitOfWork.DependencieRepository.AddWithHDynamic(UserId, TabelNameTLIdependency, tLIdependency, HistoryId);
                                         _unitOfWork.SaveChanges();
-                                        
-                                        bool overallResult = false; 
-                                        var RecordsIds = GetLibraryRecordsIds(TabelName);
-
-                                        foreach (var group in addDynamicObject.dependency.groups)
+                                        if (TabelName == "TLIcivilWithLegLibrary"
+                                          || TabelName == "TLIcivilWithoutLegLibrary"
+                                          || TabelName == "TLIcivilNonSteelLibrary"
+                                          || TabelName == "TLIsideArmLibrary"
+                                          || TabelName == "TLImwDishLibrary"
+                                          || TabelName == "TLImwBULibrary"
+                                          || TabelName == "TLImwRFULibrary"
+                                          || TabelName == "TLImwOtherLibrary"
+                                          || TabelName == "TLImwODULibrary"
+                                          || TabelName == "TLIradioAntennaLibrary"
+                                          || TabelName == "TLIradioOtherLibrary"
+                                          || TabelName == "TLIradioRRULibrary"
+                                          || TabelName == "TLIcabinetPowerLibrary"
+                                          || TabelName == "TLIcabinetTelecomLibrary"
+                                          || TabelName == "TLIgeneratorLibrary"
+                                          || TabelName == "TLIpowerLibrary"
+                                          || TabelName == "TLIsolarLibrary"
+                                          || TabelName == "TLIloadOtherLibrary")
                                         {
-                                            TLIrow row = new TLIrow();
-                                            _unitOfWork.RowRepository.Add(row);
-                                            _unitOfWork.SaveChanges();
+                                            bool overallResult = false;
+                                            var RecordsIds = GetLibraryRecordsIds(TabelName);
 
-                                            foreach (var rule in group)
-                                            {
-                                              
-                                                var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                    .GetWhereFirst(x => x.Tabel.ToLower() == TabelName.ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                                var TabelNameTLIrule = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIrule").Id;
-                                                if (AttributeActivated.DataType.ToLower() == "int")
-                                                {
-                                                    TLIrule tLIrule = new TLIrule()
-                                                    {
-                                                        attributeActivatedId = AttributeActivated.Id,
-                                                        dynamicAttId = tLIdynamicAtt.Id,
-                                                        OperationId = rule.Operation,
-                                                        OperationValueDouble = int.Parse(rule.Value.ToString()),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
-                                                    _unitOfWork.SaveChanges();
-                                                    TLIrowRule tLIrowRule = new TLIrowRule()
-                                                    {
-                                                        RuleId = tLIrule.Id,
-                                                        RowId = row.Id,
-                                                    };
-                                                    _unitOfWork.RowRuleRepository.Add(tLIrowRule);
-                                                    _unitOfWork.SaveChanges();
-
-                                                }
-                                                if (AttributeActivated.DataType.ToLower() == "double")
-                                                {
-                                                    TLIrule tLIrule = new TLIrule()
-                                                    {
-                                                        attributeActivatedId = AttributeActivated.Id,
-                                                        dynamicAttId = tLIdynamicAtt.Id,
-                                                        OperationId = rule.Operation,
-                                                        OperationValueDouble = double.Parse(rule.Value.ToString()),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
-                                                    _unitOfWork.SaveChanges();
-                                                    TLIrowRule tLIrowRule = new TLIrowRule()
-                                                    {
-                                                        RuleId = tLIrule.Id,
-                                                        RowId = row.Id,
-                                                    };
-                                                    _unitOfWork.RowRuleRepository.Add(tLIrowRule);
-                                                    _unitOfWork.SaveChanges();
-
-                                                }
-                                                if (AttributeActivated.DataType.ToLower() == "float")
-                                                {
-                                                    TLIrule tLIrule = new TLIrule()
-                                                    {
-                                                        attributeActivatedId = AttributeActivated.Id,
-                                                        dynamicAttId = tLIdynamicAtt.Id,
-                                                        OperationId = rule.Operation,
-                                                        OperationValueDouble = float.Parse(rule.Value.ToString()),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
-                                                    _unitOfWork.SaveChanges();
-                                                    TLIrowRule tLIrowRule = new TLIrowRule()
-                                                    {
-                                                        RuleId = tLIrule.Id,
-                                                        RowId = row.Id,
-                                                    };
-                                                    _unitOfWork.RowRuleRepository.Add(tLIrowRule);
-                                                    _unitOfWork.SaveChanges();
-
-                                                }
-                                                if (AttributeActivated.DataType.ToLower() == "string")
-                                                {
-                                                    TLIrule tLIrule = new TLIrule()
-                                                    {
-                                                        attributeActivatedId = AttributeActivated.Id,
-                                                        dynamicAttId = tLIdynamicAtt.Id,
-                                                        OperationId = rule.Operation,
-                                                        OperationValueString = rule.Value.ToString(),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
-                                                    _unitOfWork.SaveChanges();
-                                                    TLIrowRule tLIrowRule = new TLIrowRule()
-                                                    {
-                                                        RuleId = tLIrule.Id,
-                                                        RowId = row.Id,
-                                                    };
-                                                    _unitOfWork.RowRuleRepository.Add(tLIrowRule);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-                                                if (AttributeActivated.DataType.ToLower() == "bool")
-                                                {
-                                                    TLIrule tLIrule = new TLIrule()
-                                                    {
-                                                        attributeActivatedId = AttributeActivated.Id,
-                                                        dynamicAttId = tLIdynamicAtt.Id,
-                                                        OperationId = rule.Operation,
-                                                        OperationValueBoolean = bool.Parse(rule.Value.ToString()),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
-                                                    _unitOfWork.SaveChanges();
-                                                    TLIrowRule tLIrowRule = new TLIrowRule()
-                                                    {
-                                                        RuleId = tLIrule.Id,
-                                                        RowId = row.Id,
-                                                    };
-                                                    _unitOfWork.RowRuleRepository.Add(tLIrowRule);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-                                                if (AttributeActivated.DataType.ToLower() == "datetime")
-                                                {
-                                                    TLIrule tLIrule = new TLIrule()
-                                                    {
-                                                        attributeActivatedId = AttributeActivated.Id,
-                                                        dynamicAttId = tLIdynamicAtt.Id,
-                                                        OperationId = rule.Operation,
-                                                        OperationValueDateTime = DateTime.Parse(rule.Value.ToString()),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
-                                                    _unitOfWork.SaveChanges();
-                                                    TLIrowRule tLIrowRule = new TLIrowRule()
-                                                    {
-                                                        RuleId = tLIrule.Id,
-                                                        RowId = row.Id,
-                                                    };
-                                                    _unitOfWork.RowRuleRepository.Add(tLIrowRule);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-
-
-                                               
-                                            }
-                                        }
-                                        foreach (int RecordId in RecordsIds)
-                                        {
-                                          
                                             foreach (var group in addDynamicObject.dependency.groups)
                                             {
-                                              
-                                                bool groupResult = true;
+                                                TLIrow row = new TLIrow();
+                                                _unitOfWork.RowRepository.Add(row);
+                                                _unitOfWork.SaveChanges();
 
                                                 foreach (var rule in group)
                                                 {
-                                                    
-                                                    if (TabelName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower() )
+
+                                                    var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                        .GetWhereFirst(x => x.Tabel.ToLower() == TabelName.ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                    var TabelNameTLIrule = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIrule").Id;
+                                                    if (AttributeActivated.DataType.ToLower() == "int")
                                                     {
-                                                        var ColumName = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();                                                  
-                                                        bool result = false;
-                                                       
-                                                        switch (rule.Operation)
+                                                        TLIrule tLIrule = new TLIrule()
                                                         {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = int.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
 
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "double")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = double.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
 
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "float")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = float.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
 
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "string")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueString = rule.Value.ToString(),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "bool")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueBoolean = bool.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDateTime = DateTime.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
 
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
 
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
 
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
+                                                }
+                                            }
+                                            foreach (int RecordId in RecordsIds)
+                                            {
 
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
+                                                foreach (var group in addDynamicObject.dependency.groups)
+                                                {
+
+                                                    bool groupResult = true;
+
+                                                    foreach (var rule in group)
+                                                    {
+
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
 
                                                             groupResult = groupResult && result;
-                                                       
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
                                                         {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
+                                                            var ColumName = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
 
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
 
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
 
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
 
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
 
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
 
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwBULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwDishLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwRFULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_RFULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwODULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwOtherLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_OtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioAntennaLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioRRULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioOtherLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioOtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIpowerLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIloadOtherLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.LoadOtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetPowerLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CabinetPowerLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetTelecomLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CabinetTelecomLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIsolarLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.SolarLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIgeneratorLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.GeneratorLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilWithLegs.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilNonSteel.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIsideArm.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwBU.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_BURepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwDish.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwRFU.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_RFURepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwODU.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_ODURepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwOther.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.Mw_OtherRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioAntenna.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioAntennaRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioRRU.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioRRURepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioOther.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioOtherRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIloadOther.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.LoadOtherRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIpower.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.PowerRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetPower.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetTelecom.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIgenerator.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.GeneratorRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIsolar.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.SolarRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
                                                         }
 
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
+                                                        // If any rule fails, move to the next rule in the group
+                                                        if (!groupResult)
                                                         {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
+                                                            break; // Exit the rules loop and move to the next group
                                                         }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwBULibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwDishLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwRFULibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_RFULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwODULibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwOtherLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_OtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIradioAntennaLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIradioRRULibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIradioOtherLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.RadioOtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIpowerLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIloadOtherLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.LoadOtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcabinetPowerLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CabinetPowerLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcabinetTelecomLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CabinetTelecomLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIsolarLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.SolarLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIgeneratorLibrary.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.GeneratorLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcivilWithLegs.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcivilNonSteel.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIsideArm.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwBU.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_BURepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwDish.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwRFU.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_RFURepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwODU.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.MW_ODURepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLImwOther.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.Mw_OtherRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIradioAntenna.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.RadioAntennaRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIradioRRU.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.RadioRRURepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIradioOther.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.RadioOtherRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIloadOther.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.LoadOtherRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIpower.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.PowerRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcabinetPower.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIcabinetTelecom.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIgenerator.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.GeneratorRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
-                                                    }
-                                                    if (TabelName.ToLower() == TablesNames.TLIsolar.ToString().ToLower())
-                                                    {
-                                                        var ColumName = _unitOfWork.SolarRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                        var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                        var attributeNames = ColumName.GetType().GetProperties()
-                                                            .Where(x =>
-                                                                (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                 new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                 .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                .Contains(x.PropertyType)
-                                                            )
-                                                            .Select(x => x.Name)
-                                                            .ToList();
-
-                                                        var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                        var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                        var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                        var value = rule.Value?.ToString().Trim();
-                                                        bool result = false;
-                                                        switch (rule.Operation)
-                                                        {
-                                                            case 1:
-                                                                result = propertyValue == value;
-                                                                break;
-
-                                                            case 2:
-                                                                result = propertyValue != value;
-                                                                break;
-
-                                                            case 3:
-                                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 4:
-                                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 5:
-                                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                break;
-
-                                                            case 6:
-                                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                break;
-                                                            case 7:
-                                                                result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                break;
-
-                                                            case 8:
-                                                                result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                break;
-
-                                                            case 9:
-                                                                result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                break;
-                                                        }
-
-                                                        groupResult = groupResult && result;
-
-
                                                     }
 
-                                                    // If any rule fails, move to the next rule in the group
-                                                    if (!groupResult)
+                                                    // If the entire groupResult is true, set overallResult to true and break the RecordsIds loop
+                                                    if (groupResult)
                                                     {
-                                                        break; // Exit the rules loop and move to the next group
+                                                        overallResult = true;
+                                                        break; // Exit the groups loop and continue with the next RecordId
                                                     }
                                                 }
 
-                                                // If the entire groupResult is true, set overallResult to true and break the RecordsIds loop
-                                                if (groupResult)
+                                                // If the overallResult is true, exit the RecordsIds loop
+                                                if (overallResult)
                                                 {
-                                                    overallResult = true;
-                                                    break; // Exit the groups loop and continue with the next RecordId
-                                                }
-                                            }
-
-                                            // If the overallResult is true, exit the RecordsIds loop
-                                            if (overallResult)
-                                            {
-                                                var resultvalue = addDynamicObject.dependency.result?.ToString().Trim();
-                                                if (addDynamicObject.general.dataType == 1)
-                                                {
-                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                    var resultvalue = addDynamicObject.dependency.result?.ToString().Trim();
+                                                    if (addDynamicObject.general.dataType == 1)
                                                     {
-                                                        disable = false,
-                                                        DynamicAttId = tLIdynamicAtt.Id,
-                                                        InventoryId = RecordId,
-                                                        ValueString = resultvalue,
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-                                               else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
-                                                {
-                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueString = resultvalue,
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                                     {
-                                                        disable = false,
-                                                        DynamicAttId = tLIdynamicAtt.Id,
-                                                        InventoryId = RecordId,
-                                                        ValueDouble = Convert.ToDouble(resultvalue),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-                                                else if (addDynamicObject.general.dataType == 25)
-                                                {
-                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueDouble = Convert.ToDouble(resultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 25)
                                                     {
-                                                        disable = false,
-                                                        DynamicAttId = tLIdynamicAtt.Id,
-                                                        InventoryId = RecordId,
-                                                        ValueDateTime = Convert.ToDateTime(resultvalue),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-                                                else if (addDynamicObject.general.dataType == 24)
-                                                {
-                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueDateTime = Convert.ToDateTime(resultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 24)
                                                     {
-                                                        disable = false,
-                                                        DynamicAttId = tLIdynamicAtt.Id,
-                                                        InventoryId = RecordId,
-                                                        ValueBoolean = Convert.ToBoolean(resultvalue),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
-                                                    _unitOfWork.SaveChanges();
+                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueBoolean = Convert.ToBoolean(resultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
-                                                if (addDynamicObject.general.dataType == 1)
+                                                else
                                                 {
-                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                    var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
+                                                    if (addDynamicObject.general.dataType == 1)
                                                     {
-                                                        disable = false,
-                                                        DynamicAttId = tLIdynamicAtt.Id,
-                                                        InventoryId = RecordId,
-                                                        ValueString = defultvalue,
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-                                                else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
-                                                {
-                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueString = defultvalue,
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                                     {
-                                                        disable = false,
-                                                        DynamicAttId = tLIdynamicAtt.Id,
-                                                        InventoryId = RecordId,
-                                                        ValueDouble = Convert.ToDouble(defultvalue),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-                                                else if (addDynamicObject.general.dataType == 25)
-                                                {
-                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueDouble = Convert.ToDouble(defultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 25)
                                                     {
-                                                        disable = false,
-                                                        DynamicAttId = tLIdynamicAtt.Id,
-                                                        InventoryId = RecordId,
-                                                        ValueDateTime = Convert.ToDateTime(defultvalue),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
-                                                    _unitOfWork.SaveChanges();
-                                                }
-                                                else if (addDynamicObject.general.dataType == 24)
-                                                {
-                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueDateTime = Convert.ToDateTime(defultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 24)
                                                     {
-                                                        disable = false,
-                                                        DynamicAttId = tLIdynamicAtt.Id,
-                                                        InventoryId = RecordId,
-                                                        ValueBoolean = Convert.ToBoolean(defultvalue),
-                                                        tablesNamesId = TabelNameId,
-                                                    };
-                                                    _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
-                                                    _unitOfWork.SaveChanges();
+                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueBoolean = Convert.ToBoolean(defultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
                                                 }
                                             }
                                         }
+                                        if (TabelName == "TLIcivilWithLegs"
+                                        || TabelName == "TLIcivilWithoutLeg"
+                                        || TabelName == "TLIcivilNonSteel"
+                                        || TabelName == "TLIsideArm"
+                                        || TabelName == "TLImwDish"
+                                        || TabelName == "TLImwRFU"
+                                        || TabelName == "TLImwODU"
+                                        || TabelName == "TLImwBU"
+                                        || TabelName == "TLImwOther"
+                                        || TabelName == "TLIradioAntenna"
+                                        || TabelName == "TLIradioOther"
+                                        || TabelName == "TLIRadioRRU"
+                                        || TabelName == "TLIloadOther"
+                                        || TabelName == "TLIpower"
+                                        || TabelName == "TLIcabinet"
+                                        || TabelName == "TLIsolar"
+                                        || TabelName == "TLIsolar"
+                                        || TabelName == "TLIgenerator")
+                                        {
 
-                                       
+                                            bool overallResult = false;
+                                            var RecordsIds = GetInstallationRecordsIds(TabelName);
+
+                                            foreach (var group in addDynamicObject.dependency.groups)
+                                            {
+                                                TLIrow row = new TLIrow();
+                                                _unitOfWork.RowRepository.Add(row);
+                                                _unitOfWork.SaveChanges();
+
+                                                foreach (var rule in group)
+                                                {
+
+                                                    var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                        .GetWhereFirst(x => x.Tabel.ToLower() == TabelName.ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                    var TabelNameTLIrule = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIrule").Id;
+                                                    if (AttributeActivated.DataType.ToLower() == "int")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = int.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "double")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = double.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "float")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = float.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "string")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueString = rule.Value.ToString(),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "bool")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueBoolean = bool.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDateTime = DateTime.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+
+
+
+                                                }
+                                            }
+                                            foreach (int RecordId in RecordsIds)
+                                            {
+
+                                                foreach (var group in addDynamicObject.dependency.groups)
+                                                {
+
+                                                    bool groupResult = true;
+
+                                                    foreach (var rule in group)
+                                                    {
+
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilWithLegLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilWithoutLegLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilNonSteelLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIsideArmLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.SideArmLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwBULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_BULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwDishLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwRFULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_RFULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwODULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_ODULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwOtherLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_OtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioAntennaLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioAntennaLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioRRULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioRRULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioOtherLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioOtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIpowerLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.PowerLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIloadOtherLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.LoadOtherLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetPowerLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CabinetPowerLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetTelecomLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CabinetTelecomLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIsolarLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.SolarLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIgeneratorLibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.GeneratorLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilWithLegs.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilWithLegsRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilWithoutLeg.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilWithoutLegRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcivilNonSteel.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CivilNonSteelRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIsideArm.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwBU.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_BURepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwDish.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_DishRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwRFU.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_RFURepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwODU.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_ODURepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwOther.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.Mw_OtherRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioAntenna.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioAntennaRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioRRU.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioRRURepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIradioOther.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.RadioOtherRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIloadOther.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.LoadOtherRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIpower.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.PowerRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetPower.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetTelecom.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIgenerator.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.GeneratorRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLIsolar.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.SolarRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            switch (rule.Operation)
+                                                            {
+                                                                case 1:
+                                                                    result = propertyValue == value;
+                                                                    break;
+
+                                                                case 2:
+                                                                    result = propertyValue != value;
+                                                                    break;
+
+                                                                case 3:
+                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 4:
+                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 5:
+                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                    break;
+
+                                                                case 6:
+                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                    break;
+                                                                case 7:
+                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                    break;
+
+                                                                case 8:
+                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                    break;
+
+                                                                case 9:
+                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                    break;
+                                                            }
+
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+
+                                                        // If any rule fails, move to the next rule in the group
+                                                        if (!groupResult)
+                                                        {
+                                                            break; // Exit the rules loop and move to the next group
+                                                        }
+                                                    }
+
+                                                    // If the entire groupResult is true, set overallResult to true and break the RecordsIds loop
+                                                    if (groupResult)
+                                                    {
+                                                        overallResult = true;
+                                                        break; // Exit the groups loop and continue with the next RecordId
+                                                    }
+                                                }
+
+                                                // If the overallResult is true, exit the RecordsIds loop
+                                                if (overallResult)
+                                                {
+                                                    var resultvalue = addDynamicObject.dependency.result?.ToString().Trim();
+                                                    if (addDynamicObject.general.dataType == 1)
+                                                    {
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueString = resultvalue,
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+                                                    {
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueDouble = Convert.ToDouble(resultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 25)
+                                                    {
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueDateTime = Convert.ToDateTime(resultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 24)
+                                                    {
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueBoolean = Convert.ToBoolean(resultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
+                                                    if (addDynamicObject.general.dataType == 1)
+                                                    {
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueString = defultvalue,
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
+                                                    {
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueDouble = Convert.ToDouble(defultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 25)
+                                                    {
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueDateTime = Convert.ToDateTime(defultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                    else if (addDynamicObject.general.dataType == 24)
+                                                    {
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
+                                                        {
+                                                            disable = false,
+                                                            DynamicAttId = tLIdynamicAtt.Id,
+                                                            InventoryId = RecordId,
+                                                            ValueBoolean = Convert.ToBoolean(defultvalue),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.SaveChanges();
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 else if (addDynamicObject.type == 3)

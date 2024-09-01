@@ -36,6 +36,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using System.Reflection.Metadata;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Numerics;
 
 
 namespace TLIS_Service.Services
@@ -1286,19 +1287,7 @@ namespace TLIS_Service.Services
                         }
                         //check each property in datatable if match the database ex:if model in database is required the value in sheet shouldn't be null or empty
                         //if there is wrong insert or datatype then add it UnsavedRows
-                        string model_test = null;
-                        if (dt.Columns.Contains("Model"))
-                        {
-                            if (!String.IsNullOrEmpty(dt.Rows[j]["Model"].ToString()))
-                            {
-                                model_test = Convert.ToString(dt.Rows[j]["Model"]);
-                            }
-                            else
-                            {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Model can not to be null in the row {j + 2}"));
-                                goto ERROR;
-                            }
-                        }
+              
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
@@ -1485,6 +1474,7 @@ namespace TLIS_Service.Services
                         }
 
                         int structuretypeId_test = 0;
+                        string structuretypeName_test = null;
                         if (dt.Columns.Contains("structureTypeId"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["structureTypeId"].ToString()))
@@ -1495,16 +1485,34 @@ namespace TLIS_Service.Services
                                 if (structureType != null)
                                 {
                                     structuretypeId_test = Convert.ToInt32(structureType.Id);
+                                    structuretypeName_test = structureType.Value;
                                 }
                                 else
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"StructureTypeId  must to be null  in the row {j + 2}"));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"StructureTypeId can not to be null in the row {j + 2}"));
                                     goto ERROR;
                                 }
                             }
                         }
-                      
-
+                        string model_test = null;
+                        if (dt.Columns.Contains("Model"))
+                        {
+                            if (!string.IsNullOrEmpty(dt.Columns.Contains("Vendors").ToString()))
+                            {
+                                DropDownListFilters Vendortest = RelatedTables.FirstOrDefault(x =>
+                                                      x.Key == "Vendors").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Vendors"].ToString());
+                                if (Vendortest != null)
+                                {
+                                    model_test = Vendortest.Value + ' ' + prefix_test + ' ' + structuretypeName_test + ' ' + heightdesigned_test + "HE"; ;
+                                }
+                            }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Vendors can not to be null in the row {j + 2}"));
+                                goto ERROR;
+                            }
+                           
+                        }
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         //check if there are dynamic attributes
                         if (ActColumns > 0)
@@ -2326,19 +2334,7 @@ namespace TLIS_Service.Services
                             UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Model is already exist in the row {j + 2}"));
                             goto ERROR;
                         }
-                        string model_test = null;
-                        if (dt.Columns.Contains("Model"))
-                        {
-                            if (!String.IsNullOrEmpty(dt.Rows[j]["Model"].ToString()))
-                            {
-                                model_test = Convert.ToString(dt.Rows[j]["Model"]);
-                            }
-                            else
-                            {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Model can not to be null in the row {j + 2}"));
-                                goto ERROR;
-                            }
-                        }
+                       
 
                         string note_test = null;
                         if (dt.Columns.Contains("Note"))
@@ -2441,6 +2437,7 @@ namespace TLIS_Service.Services
                         }
 
                         int structureTypeId_test = 0;
+                        string structuretypeName_test = null;
                         if (dt.Columns.Contains("structureTypeId"))
                         {
                             DropDownListFilters structureType = RelatedTables.FirstOrDefault(x =>
@@ -2449,6 +2446,7 @@ namespace TLIS_Service.Services
                             if (structureType != null)
                             {
                                 structureTypeId_test = Convert.ToInt32(structureType.Id);
+                                structuretypeName_test = structureType.Value;
                             }
                             else
                             {
@@ -2458,6 +2456,7 @@ namespace TLIS_Service.Services
                         }
 
                         int CivilWithoutLegCategoryId_test = 0;
+                        string CivilCategoryName_test = null;
                         if (dt.Columns.Contains("CivilWithoutLegCategoryId"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["CivilWithoutLegCategoryId"].ToString()))
@@ -2467,6 +2466,7 @@ namespace TLIS_Service.Services
                                         x.Value == dt.Rows[j]["CivilWithoutLegCategoryId"].ToString());
                                 if (CivilWithoutLegCategory != null)
                                     CivilWithoutLegCategoryId_test = Convert.ToInt32(CivilWithoutLegCategory.Id);
+                                CivilCategoryName_test = CivilWithoutLegCategory.Value;
                             }
                             else
                             {
@@ -2494,6 +2494,25 @@ namespace TLIS_Service.Services
                             }
                         }
 
+                        string model_test = null;
+                        if (dt.Columns.Contains("Model"))
+                        {
+                            if (!string.IsNullOrEmpty(dt.Columns.Contains("Vendors").ToString()))
+                            {
+                                DropDownListFilters Vendortest = RelatedTables.FirstOrDefault(x =>
+                                                      x.Key == "Vendors").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Vendors"].ToString());
+                                if (Vendortest != null)
+                                {
+                                    model_test = CivilCategoryName_test + ' ' + Vendortest.Value + ' ' + Prefix_test + ' ' + structuretypeName_test + ' ' + heightdesigned_test + "HE"; ;
+                                }
+                            }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Vendors can not to be null in the row {j + 2}"));
+                                goto ERROR;
+                            }
+
+                        }
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)
                         {
@@ -2630,7 +2649,7 @@ namespace TLIS_Service.Services
                         maxloads.Add(maxloadm2_test != 0 ? maxloadm2_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
                         HeightBases.Add(HeightBase_test != 0 ? HeightBase_test : 0);
-                        Prefixes.Add(Prefix_test != null ? Prefix_test : "NA");
+                        Prefixes.Add(Prefix_test != null ? Prefix_test : null);
                         max_man_loads.Add(max_man_load_test != 0 ? max_man_load_test : 0);
                         structureTypeIds.Add(structureTypeId_test != 0 ? structureTypeId_test : 0);
 
@@ -2762,10 +2781,33 @@ namespace TLIS_Service.Services
                     };
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();
+                    var civilWithoutLegLibraryist = new List<TLIcivilWithoutLegLibrary>();
+
+                    for (int i = 0; i < models.Count; i++)
+                    {
+                        civilWithoutLegLibraryist.Add(new TLIcivilWithoutLegLibrary
+                        {
+                            Id = InsertedIds[i],
+                            Model = models[i],
+                            Note = notes[i],
+                            Height_Designed = HeightsDesigned[i],
+                            Max_Load = maxloads[i],
+                            SpaceLibrary = SpaceLibraries[i],
+                            HeightBase = HeightBases[i],
+                            Prefix = Prefixes[i],
+                            structureTypeId = structureTypeIds[i],
+                            CivilSteelSupportCategoryId = CivilSteelSupportCategoryIds[i],
+                            InstCivilwithoutLegsTypeId = InstCivilwithoutLegsTypeIds[i],
+                            CivilWithoutLegCategoryId = CivilWithoutLegCategoryIds[i],
+                            Manufactured_Max_Load = max_man_loads[i],
+                            WidthVariation = WidthVariations[i],
+                        });
+                    }
+
 
                     foreach (int recordId in InsertedIds)
                     {
-                        var RecordName = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == recordId);
+                        var RecordName = civilWithoutLegLibraryist.FirstOrDefault(x => x.Id == recordId);
                         if (RecordName != null)
                         {
                             var attributeNames = RecordName.GetType().GetProperties()
@@ -3000,12 +3042,13 @@ namespace TLIS_Service.Services
                     x.tablesNamesId == TableNameEntity.Id && !x.disable, x => x.DataType).ToList();
 
                 List<string> models = new List<string>();
+                List<string> Prefixs = new List<string>();
                 List<string> notes = new List<string>();
                 List<string> WidthVariations = new List<string>();
                 List<float> Heights = new List<float>();
                 List<float> SpaceLibraries = new List<float>();
                 List<float> Manufactured_Max_Loads = new List<float>();
-                List<Int32> VerticalMeasuredList = new List<Int32>();
+                List<Boolean> VerticalMeasuredList = new List<Boolean>();
                 List<Int32> civilNonSteelTypeIds = new List<Int32>();
                 List<float> NumberofBoltHolesList = new List<float>();
                 List<Tuple<int, string, List<dynamic>>> DynamicAtts = new List<Tuple<int, string, List<dynamic>>>();
@@ -3056,6 +3099,15 @@ namespace TLIS_Service.Services
                                 note_test = Convert.ToString(dt.Rows[j]["Note"]);
                             }
                         }
+
+                        string Prefix_test = null;
+                        if (dt.Columns.Contains("Prefix"))
+                        {
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["Prefix"].ToString()))
+                            {
+                                Prefix_test = Convert.ToString(dt.Rows[j]["Prefix"]);
+                            }
+                        }
                         string WidthVariation_test = null;
                         if (dt.Columns.Contains("WidthVariation"))
                         {
@@ -3097,10 +3149,10 @@ namespace TLIS_Service.Services
                                 goto ERROR;
                             }
                         }
-                        int verticalMeasured_test = 0;
+                        Boolean verticalMeasured_test = false;
                         if (dt.Columns.Contains("VerticalMeasured"))
                         {
-                            test = int.TryParse(dt.Rows[j]["VerticalMeasured"].ToString(), out verticalMeasured_test);
+                            test = Boolean.TryParse(dt.Rows[j]["VerticalMeasured"].ToString(), out verticalMeasured_test);
                             if (test == false)
                             {
                                 UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"VerticalMeasured Wrong Input DataType in the row {j + 2}"));
@@ -3266,11 +3318,12 @@ namespace TLIS_Service.Services
                             }
                         }
                         models.Add(model_test != null ? model_test : null);
+                        Prefixs.Add(Prefix_test != null ? Prefix_test : null);
                         notes.Add(note_test != null ? model_test : null);
                         WidthVariations.Add(WidthVariation_test != null ? WidthVariation_test :null);
                         Heights.Add(height_test != 0 ? height_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
-                        VerticalMeasuredList.Add(verticalMeasured_test != 0 ? verticalMeasured_test : 0);
+                        VerticalMeasuredList.Add(verticalMeasured_test);
                         civilNonSteelTypeIds.Add(civilNonSteelTypeId_test != 0 ? civilNonSteelTypeId_test : 0);
                         NumberofBoltHolesList.Add(NumberofBoltHoles_test != 0 ? NumberofBoltHoles_test : 0);
                         Manufactured_Max_Loads.Add(Manufactured_Max_Load_test != 0 ? Manufactured_Max_Load_test : 0);
@@ -3297,6 +3350,10 @@ namespace TLIS_Service.Services
                     Note.OracleDbType = OracleDbType.NVarchar2;
                     Note.Value = notes.ToArray();
 
+                    OracleParameter Prefix = new OracleParameter();
+                    Prefix.OracleDbType = OracleDbType.NVarchar2;
+                    Prefix.Value = Prefixs.ToArray();
+
                     OracleParameter Height = new OracleParameter();
                     Height.OracleDbType = OracleDbType.BinaryFloat;
                     Height.Value = Heights.ToArray();
@@ -3306,7 +3363,7 @@ namespace TLIS_Service.Services
                     SpaceLibrary.Value = SpaceLibraries.ToArray();
 
                     OracleParameter VerticalMeasured = new OracleParameter();
-                    VerticalMeasured.OracleDbType = OracleDbType.Int32;
+                    VerticalMeasured.OracleDbType = OracleDbType.Boolean;
                     VerticalMeasured.Value = VerticalMeasuredList.ToArray();
 
                     OracleParameter civilNonSteelTypeId = new OracleParameter();
@@ -3323,7 +3380,7 @@ namespace TLIS_Service.Services
 
                     // create command and set properties
                     OracleCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "INSERT INTO \"TLIcivilNonSteelLibrary\" (\"Model\", \"Note\", \"Hight\", \"SpaceLibrary\", \"VerticalMeasured\", \"civilNonSteelTypeId\",  \"NumberofBoltHoles\",\"Manufactured_Max_Load\",\"WidthVariation\") VALUES ( :1, :2, :3, :4, :5, :6, :7 ,:8 ,:9)";
+                    cmd.CommandText = "INSERT INTO \"TLIcivilNonSteelLibrary\" (\"Model\", \"Note\", \"Hight\", \"SpaceLibrary\", \"VerticalMeasured\", \"civilNonSteelTypeId\",  \"NumberofBoltHoles\",\"Manufactured_Max_Load\",\"WidthVariation\" ,\"Prefix\") VALUES ( :1, :2, :3, :4, :5, :6, :7 ,:8 ,:9 ,:10)";
                     cmd.ArrayBindCount = models.Count;
                     cmd.Parameters.Add(model);
                     cmd.Parameters.Add(Note);
@@ -3334,6 +3391,7 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(NumberofBoltHoles);
                     cmd.Parameters.Add(Manufactured_Max_LoadS);
                     cmd.Parameters.Add(WidthVariations);
+                    cmd.Parameters.Add(Prefix);
                     cmd.ExecuteNonQuery();
                     //connection.Close();
                     List<int> InsertedIds = new List<int>();
@@ -3374,10 +3432,31 @@ namespace TLIS_Service.Services
                     };
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();
+                    var civilNonSteelLibraryList = new List<TLIcivilNonSteelLibrary>();
+
+                    for (int i = 0; i < models.Count; i++)
+                    {
+                        civilNonSteelLibraryList.Add(new TLIcivilNonSteelLibrary
+                        {
+                            Id = InsertedIds[i],
+                            Model = models[i],
+                            Note = notes[i],
+                            Prefix = Prefixs[i],
+                            Hight = Heights[i],
+                            SpaceLibrary = SpaceLibraries[i],
+                            VerticalMeasured = VerticalMeasuredList[i],
+                            civilNonSteelTypeId = civilNonSteelTypeIds[i],
+                            NumberofBoltHoles = NumberofBoltHolesList[i],
+                            WidthVariation = WidthVariations[i],
+                            Manufactured_Max_Load = Manufactured_Max_Loads[i],
+                          
+                        });
+                    }
+
 
                     foreach (int recordId in InsertedIds)
                     {
-                        var RecordName = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == recordId);
+                        var RecordName = civilNonSteelLibraryList.FirstOrDefault(x => x.Id == recordId);
                         if (RecordName != null)
                         {
                             var attributeNames = RecordName.GetType().GetProperties()
@@ -6945,6 +7024,11 @@ namespace TLIS_Service.Services
                                 var RFUType= RelatedTables.Where(x => x.Key == "RFUType").Select(x => x.Value).FirstOrDefault().Where(x => x.Value == (dt.Rows[j]["RFUType"]).ToString()).FirstOrDefault();
                                 RFUType_test = Convert.ToInt32(RFUType.Id);
                             }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"RFUType can not to be null In The Row {j + 2}"));
+                                goto ERROR;
+                            }
                         }
                         int diversityTypeId_test = 0;
                         if (dt.Columns.Contains("diversityTypeId"))
@@ -6953,6 +7037,11 @@ namespace TLIS_Service.Services
                             {
                                 var diversityType = RelatedTables.Where(x => x.Key == "diversityTypeId").Select(x => x.Value).FirstOrDefault().Where(x => x.Value == (dt.Rows[j]["diversityTypeId"]).ToString()).FirstOrDefault();
                                 diversityTypeId_test = Convert.ToInt32(diversityType.Id);
+                            }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"diversityTypeId can not to be null In The Row {j + 2}"));
+                                goto ERROR;
                             }
                         }
 
@@ -6963,6 +7052,11 @@ namespace TLIS_Service.Services
                             {
                                 var TLIboardType = RelatedTables.Where(x => x.Key == "boardTypeId").Select(x => x.Value).FirstOrDefault().Where(x => x.Value == (dt.Rows[j]["boardTypeId"]).ToString()).FirstOrDefault();
                                 TLIboardTypeId_test = Convert.ToInt32(TLIboardType.Id);
+                            }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"boardTypeId can not to be null In The Row {j + 2}"));
+                                goto ERROR;
                             }
                         }
 
@@ -7584,11 +7678,32 @@ namespace TLIS_Service.Services
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                            if (test == false)
+                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
+                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
+                                if (test == false)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                if (length_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                if (width_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    spacelibrary_test = length_test * width_test;
+                                }
+
                             }
                         }
 
@@ -8029,7 +8144,7 @@ namespace TLIS_Service.Services
 
                 List<string> models = new List<string>();
                 List<string> frequencybands = new List<string>();
-                List<float?> weights = new List<float?>();
+                List<float> weights = new List<float>();
                 List<float> widths = new List<float>();
                 List<float> depths = new List<float>();
                 List<float> lengths = new List<float>();
@@ -8067,6 +8182,11 @@ namespace TLIS_Service.Services
                             {
                                 model_test = Convert.ToString(dt.Rows[j]["Model"]);
                             }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Model can not to be null In The Row {j + 2}"));
+                                goto ERROR;
+                            }
                         }
 
                         string frequencyband_test = null;
@@ -8078,7 +8198,6 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        float? weight_test = 0;
                         float weight_test_1 = 0;
 
                         if (dt.Columns.Contains("Weight"))
@@ -8086,11 +8205,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(dt.Rows[j]["Weight"].ToString()))
                             {
                                 test = float.TryParse(dt.Rows[j]["Weight"].ToString(), out weight_test_1);
-                                if (test == true)
-                                {
-                                    weight_test = weight_test_1;
-                                }
-                                else
+                                if(test ==false)
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Weight Wrong Input DataType In The Row {j + 2}"));
                                     goto ERROR;
@@ -8143,11 +8258,32 @@ namespace TLIS_Service.Services
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                            if (test == false)
+                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
+                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
+                                if (test == false)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                if (length_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                if (width_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    spacelibrary_test = length_test * width_test;
+                                }
+
                             }
                         }
 
@@ -8280,13 +8416,13 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        models.Add(model_test != null ? model_test : "NA");
-                        frequencybands.Add(frequencyband_test != null ? model_test : "NA");
-                        weights.Add(weight_test != 0 ? weight_test : 0);
+                        models.Add(model_test != null ? model_test : null);
+                        frequencybands.Add(frequencyband_test != null ? model_test : null);
+                        weights.Add(weight_test_1 != 0 ? weight_test_1 : 0);
                         widths.Add(width_test != 0 ? width_test : 0);
                         depths.Add(depth_test != 0 ? depth_test : 0);
                         lengths.Add(length_test != 0 ? length_test : 0);
-                        notes.Add(note_test != null ? note_test : "NA");
+                        notes.Add(note_test != null ? note_test : null);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
@@ -8666,11 +8802,32 @@ namespace TLIS_Service.Services
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                            if (test == false)
+                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
+                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
+                                if (test == false)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                if (length_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                if (width_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    spacelibrary_test = length_test * width_test;
+                                }
+
                             }
                         }
 
@@ -8806,12 +8963,12 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        models.Add(model_test != null ? model_test : "NA");
+                        models.Add(model_test != null ? model_test : null);
                         weights.Add(weight_test != 0 ? weight_test : 0);
                         widths.Add(width_test != 0 ? width_test : 0);
                         lengths.Add(length_test != 0 ? length_test : 0);
                         heights.Add(height_test != 0 ? height_test : 0);
-                        notes.Add(note_test != null ? note_test : "NA");
+                        notes.Add(note_test != null ? note_test : null);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
 
                         for (int f = 0; f < DynamicAttList.Count; f++)
@@ -9087,7 +9244,6 @@ namespace TLIS_Service.Services
                 List<string> bands = new List<string>();
                 List<float?> channelbandwidths = new List<float?>();
                 List<float?> weights = new List<float?>();
-                List<string> L_W_H_List = new List<string>();
                 List<float> lengths = new List<float>();
                 List<float> widths = new List<float>();
                 List<float> heights = new List<float>();
@@ -9125,6 +9281,11 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(dt.Rows[j]["Model"].ToString()))
                             {
                                 model_test = Convert.ToString(dt.Rows[j]["Model"]);
+                            }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Model can not to be null In The Row {j + 2}"));
+                                goto ERROR;
                             }
                         }
 
@@ -9214,11 +9375,32 @@ namespace TLIS_Service.Services
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                            if (test == false)
+                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
+                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
+                                if (test == false)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                if (length_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                if (width_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    spacelibrary_test = length_test * width_test;
+                                }
+
                             }
                         }
 
@@ -9351,16 +9533,15 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        models.Add(model_test != null ? model_test : "NA");
-                        types.Add(type_test != null ? type_test : "NA");
-                        bands.Add(band_test != null ? band_test : "NA");
+                        models.Add(model_test != null ? model_test : null);
+                        types.Add(type_test != null ? type_test : null);
+                        bands.Add(band_test != null ? band_test : null);
                         channelbandwidths.Add(channelbandwidth_test != 0 ? channelbandwidth_test : 0);
                         weights.Add(weight_test != 0 ? weight_test : 0);
-                        L_W_H_List.Add(l_w_h_test != null ? l_w_h_test : "NA");
                         lengths.Add(length_test != 0 ? length_test : 0);
                         widths.Add(width_test != 0 ? width_test : 0);
                         heights.Add(height_test != 0 ? height_test : 0);
-                        notes.Add(note_test != null ? note_test : "NA");
+                        notes.Add(note_test != null ? note_test : null);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
@@ -9399,9 +9580,7 @@ namespace TLIS_Service.Services
                     Weight.OracleDbType = OracleDbType.BinaryFloat;
                     Weight.Value = weights.ToArray();
 
-                    OracleParameter L_W_H_cm3 = new OracleParameter();
-                    L_W_H_cm3.OracleDbType = OracleDbType.NVarchar2;
-                    L_W_H_cm3.Value = L_W_H_List.ToArray();
+                  
 
                     OracleParameter Length = new OracleParameter();
                     Length.OracleDbType = OracleDbType.BinaryFloat;
@@ -9432,7 +9611,7 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(Band);
                     cmd.Parameters.Add(ChannelBandwidth);
                     cmd.Parameters.Add(Weight);
-                    cmd.Parameters.Add(L_W_H_cm3);
+                    cmd.Parameters.Add(new OracleParameter(":6", OracleDbType.NVarchar2) { Value = DBNull.Value });
                     cmd.Parameters.Add(Length);
                     cmd.Parameters.Add(Width);
                     cmd.Parameters.Add(Height);
@@ -9658,12 +9837,10 @@ namespace TLIS_Service.Services
                 List<float?> batteryweights = new List<float?>();
                 List<string> batterytypes = new List<string>();
                 List<string> BatteryDimension_W_D_H_List = new List<string>();
-                List<float> depths = new List<float>();
-                List<float> widths = new List<float>();
-                List<float> heights = new List<float>();
                 List<float> spaceLibraries = new List<float>();
                 List<int?> CabinetPowerTypeIds = new List<int?>();
                 List<float> SpaceLibraries = new List<float>();
+                List<int?> IntegratedWiths = new List<int?>();
                 List<Tuple<int, string, List<dynamic>>> DynamicAtts = new List<Tuple<int, string, List<dynamic>>>();
                 TLIdynamicAtt DA = new TLIdynamicAtt();
                 string ColName = null;
@@ -9792,52 +9969,43 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        float Depth_test = 0;
-
-                        if (dt.Columns.Contains("Depth"))
-                        {
-                            test = float.TryParse(dt.Rows[j]["Depth"].ToString(), out Depth_test);
-                            if (test == false)
-                            {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Depth Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
-                            }
-                        }
-
-                        float Width_test = 0;
-                        if (dt.Columns.Contains("Width"))
-                        {
-                            test = float.TryParse(dt.Rows[j]["Width"].ToString(), out Width_test);
-                            if (test == false)
-                            {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
-                            }
-                        }
-
-                        float Height_test = 0;
-                        if (dt.Columns.Contains("Height"))
-                        {
-                            test = float.TryParse(dt.Rows[j]["Height"].ToString(), out Height_test);
-                            if (test == false)
-                            {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Height Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
-                            }
-                        }
-
-
-                        float SpaceLibrary_test = 0;
+                        float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out SpaceLibrary_test);
-                            if (test == false)
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
+                                float spacelibrary_test1;
+                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test1);
+                                if (test == true)
+                                {
+                                    spacelibrary_test = spacelibrary_test1;
+                                }
+                                else if (test == true && spacelibrary_test1 == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary must to be bigger of zero{j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType in the row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary can not to be null and must to be bigger of zero{j + 2}"));
                                 goto ERROR;
                             }
                         }
-
+                        int? IntegratedWith_test = null;
+                        if (dt.Columns.Contains("IntegratedWith"))
+                        {
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["IntegratedWith"].ToString()))
+                            {
+                                var RFUType = RelatedTables.Where(x => x.Key == "IntegratedWith").Select(x => x.Value).FirstOrDefault().Where(x => x.Value == (dt.Rows[j]["IntegratedWith"]).ToString()).FirstOrDefault();
+                                IntegratedWith_test = Convert.ToInt32(RFUType.Id);
+                            }
+                        }
                         int? CabinetPowerTypeId_test = 0;
                         if (dt.Columns.Contains("CabinetPowerTypeId"))
                         {
@@ -9985,11 +10153,9 @@ namespace TLIS_Service.Services
                         batteryweights.Add(BatteryWeight_test != 0 ? BatteryWeight_test : 0);
                         batterytypes.Add(BatteryType_test != null ? BatteryType_test : "NA");
                         BatteryDimension_W_D_H_List.Add(BatteryDimension_W_D_H_test != null ? BatteryDimension_W_D_H_test : "NA");
-                        depths.Add(Depth_test != 0 ? Depth_test : 0);
-                        widths.Add(Width_test != 0 ? Width_test : 0);
-                        heights.Add(Height_test != 0 ? Height_test : 0);
+                        IntegratedWiths.Add(IntegratedWith_test != 0 ? IntegratedWith_test : null);
                         CabinetPowerTypeIds.Add(CabinetPowerTypeId_test != 0 ? CabinetPowerTypeId_test : 0);
-                        SpaceLibraries.Add(SpaceLibrary_test != 0 ? SpaceLibrary_test : 0);
+                        SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
                             //var h = DynamicAtts[f].Value;
@@ -10043,17 +10209,9 @@ namespace TLIS_Service.Services
                     SpaceLibrary.OracleDbType = OracleDbType.BinaryFloat;
                     SpaceLibrary.Value = SpaceLibraries.ToArray();
 
-                    OracleParameter Depth = new OracleParameter();
-                    Depth.OracleDbType = OracleDbType.BinaryFloat;
-                    Depth.Value = depths.ToArray();
-
-                    OracleParameter Width = new OracleParameter();
-                    Width.OracleDbType = OracleDbType.BinaryFloat;
-                    Width.Value = widths.ToArray();
-
-                    OracleParameter Height = new OracleParameter();
-                    Height.OracleDbType = OracleDbType.BinaryFloat;
-                    Height.Value = heights.ToArray();
+                    OracleParameter IntegratedWith = new OracleParameter();
+                    IntegratedWith.OracleDbType = OracleDbType.BinaryFloat;
+                    IntegratedWith.Value = IntegratedWiths.ToArray();
 
                     OracleParameter CabinetPowerTypeId = new OracleParameter();
                     CabinetPowerTypeId.OracleDbType = OracleDbType.Int32;
@@ -10071,9 +10229,7 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(BatteryWeight);
                     cmd.Parameters.Add(BatteryType);
                     cmd.Parameters.Add(BatteryDimension_W_D_H);
-                    cmd.Parameters.Add(Depth);
-                    cmd.Parameters.Add(Width);
-                    cmd.Parameters.Add(Height);
+                    cmd.Parameters.Add(IntegratedWith);
                     cmd.Parameters.Add(SpaceLibrary);
                     cmd.Parameters.Add(CabinetPowerTypeId);
                     cmd.ExecuteNonQuery();
@@ -10296,7 +10452,7 @@ namespace TLIS_Service.Services
                 List<float> widths = new List<float>();
                 List<float> depths = new List<float>();
                 List<float> heights = new List<float>();
-                List<int?> TelecomTypeIds = new List<int?>();
+                List<int> TelecomTypeIds = new List<int>();
                 List<float> SpaceLibraries = new List<float>();
                 List<Tuple<int, string, List<dynamic>>> DynamicAtts = new List<Tuple<int, string, List<dynamic>>>();
                 TLIdynamicAtt DA = new TLIdynamicAtt();
@@ -10402,7 +10558,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        int? TelecomTypeId_test = 0;
+                        int TelecomTypeId_test = 0;
                         if (dt.Columns.Contains("TelecomTypeId"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["TelecomTypeId"].ToString()))
@@ -10410,15 +10566,38 @@ namespace TLIS_Service.Services
                                 var TelecomType = RelatedTables.Where(x => x.Key == "TelecomTypeId").Select(x => x.Value).FirstOrDefault().Where(x => x.Value == (dt.Rows[j]["TelecomTypeId"]).ToString()).FirstOrDefault();
                                 TelecomTypeId_test = Convert.ToInt32(TelecomType.Id);
                             }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"TelecomTypeId must to be bigger of zero{j + 2}"));
+                                goto ERROR;
+                            }
                         }
 
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                            if (test == false)
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
+                                float spacelibrary_test1;
+                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test1);
+                                if (test == true)
+                                {
+                                    spacelibrary_test = spacelibrary_test1;
+                                }
+                                else if (test == true && spacelibrary_test1 == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary must to be bigger of zero{j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType in the row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary can not to be null and must to be bigger of zero{j + 2}"));
                                 goto ERROR;
                             }
                         }
@@ -10552,10 +10731,10 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        models.Add(model_test != null ? model_test : "NA");
+                        models.Add(model_test != null ? model_test : null);
                         maxweights.Add(MaxWeight_test != 0 ? MaxWeight_test : 0);
-                        LayoutCodes.Add(LayoutCode_test != null ? LayoutCode_test : "NA");
-                        Dimension_W_D_H_List.Add(Dimension_W_D_H_test != null ? Dimension_W_D_H_test : "NA");
+                        LayoutCodes.Add(LayoutCode_test != null ? LayoutCode_test : null);
+                        Dimension_W_D_H_List.Add(Dimension_W_D_H_test != null ? Dimension_W_D_H_test : null);
                         widths.Add(width_test != 0 ? width_test : 0);
                         depths.Add(depth_test != 0 ? depth_test : 0);
                         heights.Add(height_test != 0 ? height_test : 0);
@@ -10846,7 +11025,7 @@ namespace TLIS_Service.Services
                 List<string> LayoutCodes = new List<string>();
                 List<float> heights = new List<float>();
                 List<float> SpaceLibraries = new List<float>();
-                List<int?> CapacityIds = new List<int?>();
+                List<string> GeneratorCapaCitys = new List<string>();
                 List<Tuple<int, string, List<dynamic>>> DynamicAtts = new List<Tuple<int, string, List<dynamic>>>();
                 TLIdynamicAtt DA = new TLIdynamicAtt();
                 string ColName = null;
@@ -10931,6 +11110,15 @@ namespace TLIS_Service.Services
                             }
                         }
 
+                        string GeneratorCapaCity_test = null;
+                        if (dt.Columns.Contains("LayoutCode"))
+                        {
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["LayoutCode"].ToString()))
+                            {
+                                GeneratorCapaCity_test = Convert.ToString(dt.Rows[j]["LayoutCode"]);
+                            }
+                        }
+
                         float Height_test = 0;
                         if (dt.Columns.Contains("Height"))
                         {
@@ -10945,23 +11133,36 @@ namespace TLIS_Service.Services
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                            if (test == false)
+                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
+                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
+                                if (test == false)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                if (Length_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                if (Width_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    spacelibrary_test = Length_test * Width_test;
+                                }
+
                             }
                         }
 
-                        int? CapacityId_test = 0;
-                        if (dt.Columns.Contains("CapacityId"))
-                        {
-                            if (!String.IsNullOrEmpty(dt.Rows[j]["CapacityId"].ToString()))
-                            {
-                                var Capacity = RelatedTables.Where(x => x.Key == "CapacityId").Select(x => x.Value).FirstOrDefault().Where(x => x.Value == (dt.Rows[j]["CapacityId"]).ToString()).FirstOrDefault();
-                                CapacityId_test = Convert.ToInt32(Capacity.Id);
-                            }
-                        }
+                        
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)
@@ -11092,14 +11293,14 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
-                        models.Add(model_test != null ? model_test : "NA");
+                        models.Add(model_test != null ? model_test : null);
                         widths.Add(Width_test != 0 ? Width_test : 0);
                         weights.Add(Weight_test != 0 ? Weight_test : 0);
                         lengths.Add(Length_test != 0 ? Length_test : 0);
-                        LayoutCodes.Add(LayoutCode_test != null ? LayoutCode_test : "NA");
+                        LayoutCodes.Add(LayoutCode_test != null ? LayoutCode_test : null);
                         heights.Add(Height_test != 0 ? Height_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
-                        CapacityIds.Add(CapacityId_test != 0 ? CapacityId_test : 0);
+                        GeneratorCapaCitys.Add(GeneratorCapaCity_test != null ? GeneratorCapaCity_test : null);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
                             //var h = DynamicAtts[f].Value;
@@ -11145,13 +11346,13 @@ namespace TLIS_Service.Services
                     SpaceLibrary.OracleDbType = OracleDbType.BinaryFloat;
                     SpaceLibrary.Value = SpaceLibraries.ToArray();
 
-                    OracleParameter CapacityId = new OracleParameter();
-                    CapacityId.OracleDbType = OracleDbType.Int32;
-                    CapacityId.Value = CapacityIds.ToArray();
+                    OracleParameter GeneratorCapaCity = new OracleParameter();
+                    GeneratorCapaCity.OracleDbType = OracleDbType.Int32;
+                    GeneratorCapaCity.Value = GeneratorCapaCitys.ToArray();
 
                     // create command and set properties
                     OracleCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "INSERT INTO \"TLIgeneratorLibrary\" (\"Model\", \"Width\", \"Weight\", \"Length\", \"LayoutCode\", \"Height\", \"SpaceLibrary\", \"CapacityId\") VALUES ( :1, :2, :3, :4, :5, :6, :7, :8)";
+                    cmd.CommandText = "INSERT INTO \"TLIgeneratorLibrary\" (\"Model\", \"Width\", \"Weight\", \"Length\", \"LayoutCode\", \"Height\", \"SpaceLibrary\", \"CapacityId\", \"GeneratorCapaCity\") VALUES ( :1, :2, :3, :4, :5, :6, :7, :8 ,:9)";
                     cmd.ArrayBindCount = models.Count;
                     cmd.Parameters.Add(model);
                     cmd.Parameters.Add(Width);
@@ -11160,7 +11361,8 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(LayoutCode);
                     cmd.Parameters.Add(Height);
                     cmd.Parameters.Add(SpaceLibrary);
-                    cmd.Parameters.Add(CapacityId);
+                    cmd.Parameters.Add(new OracleParameter(":8", OracleDbType.Int32) { Value = DBNull.Value });
+                    cmd.Parameters.Add(GeneratorCapaCity);
                     cmd.ExecuteNonQuery();
                     //connection.Close();
                     List<int> InsertedIds = new List<int>();
@@ -11374,14 +11576,15 @@ namespace TLIS_Service.Services
                     x.tablesNamesId == TableNameEntity.Id && !x.disable, x => x.DataType).ToList();
 
                 List<string> models = new List<string>();
-                List<float?> weights = new List<float?>();
+                List<float> weights = new List<float>();
+                List<float> Lengths = new List<float>();
+                List<float> Widths = new List<float>();
                 List<string> TotaPanelsDimensions_List = new List<string>();
                 List<string> StructureDesigns = new List<string>();
                 List<string> LayoutCodes = new List<string>();
-                List<float?> HeightFromFront_List = new List<float?>();
-                List<float?> HeightFromBack_List = new List<float?>();
+                List<float> HeightFromFront_List = new List<float>();
+                List<float> HeightFromBack_List = new List<float>();
                 List<string> BasePlateDimensions = new List<string>();
-                List<int?> CapacityIds = new List<int?>();
                 List<float> SpaceLibraries = new List<float>();
                 List<Tuple<int, string, List<dynamic>>> DynamicAtts = new List<Tuple<int, string, List<dynamic>>>();
                 TLIdynamicAtt DA = new TLIdynamicAtt();
@@ -11416,7 +11619,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        float? Weight_test = 0;
+                        float Weight_test = 0;
                         if (dt.Columns.Contains("Weight"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["Weight"].ToString()))
@@ -11430,6 +11633,42 @@ namespace TLIS_Service.Services
                                 else
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Weight Wrong Input DataType In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                        }
+                        float Width_test = 0;
+                        if (dt.Columns.Contains("Width"))
+                        {
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["Width"].ToString()))
+                            {
+                                float Width_test_test_1;
+                                test = float.TryParse(dt.Rows[j]["Width"].ToString(), out Width_test_test_1);
+                                if (test == true)
+                                {
+                                    Width_test = Width_test_test_1;
+                                }
+                                else
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width Wrong Input DataType In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                        }
+                        float Length_test = 0;
+                        if (dt.Columns.Contains("Length"))
+                        {
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["Length"].ToString()))
+                            {
+                                float Length_test_1;
+                                test = float.TryParse(dt.Rows[j]["Length"].ToString(), out Length_test_1);
+                                if (test == true)
+                                {
+                                    Length_test = Length_test_1;
+                                }
+                                else
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Length Wrong Input DataType In The Row {j + 2}"));
                                     goto ERROR;
                                 }
                             }
@@ -11462,7 +11701,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        float? HeightFromFront_test = 0;
+                        float HeightFromFront_test = 0;
                         if (dt.Columns.Contains("HeightFromFront"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["HeightFromFront"].ToString()))
@@ -11482,7 +11721,7 @@ namespace TLIS_Service.Services
 
                         }
 
-                        float? HeightFromBack_test = 0;
+                        float HeightFromBack_test = 0;
                         if (dt.Columns.Contains("HeightFromBack"))
                         {
                             if (!String.IsNullOrEmpty(dt.Rows[j]["HeightFromBack"].ToString()))
@@ -11510,24 +11749,36 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        int? CapacityId_test = 0;
-                        if (dt.Columns.Contains("CapacityId"))
-                        {
-                            if (!String.IsNullOrEmpty(dt.Rows[j]["CapacityId"].ToString()))
-                            {
-                                var Capacity = RelatedTables.Where(x => x.Key == "CapacityId").Select(x => x.Value).FirstOrDefault().Where(x => x.Value == (dt.Rows[j]["CapacityId"]).ToString()).FirstOrDefault();
-                                CapacityId_test = Convert.ToInt32(Capacity.Id);
-                            }
-                        }
 
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                            if (test == false)
+                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                goto ERROR;
+                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
+                                if (test == false)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                if (Length_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                if (Width_test == 0)
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width can not to be null In The Row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    spacelibrary_test = Length_test * Width_test;
+                                }
+
                             }
                         }
 
@@ -11668,8 +11919,9 @@ namespace TLIS_Service.Services
                         HeightFromFront_List.Add(HeightFromFront_test != 0 ? HeightFromFront_test : 0);
                         HeightFromBack_List.Add(HeightFromBack_test != 0 ? HeightFromBack_test : 0);
                         BasePlateDimensions.Add(BasePlateDimension_test != null ? BasePlateDimension_test : "NA");
-                        CapacityIds.Add(CapacityId_test != 0 ? CapacityId_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
+                        Lengths.Add(Length_test != 0 ? Length_test : 0);
+                        Widths.Add(Width_test != 0 ? Width_test : 0);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
                             //var h = DynamicAtts[f].Value;
@@ -11723,13 +11975,17 @@ namespace TLIS_Service.Services
                     SpaceLibrary.OracleDbType = OracleDbType.BinaryFloat;
                     SpaceLibrary.Value = SpaceLibraries.ToArray();
 
-                    OracleParameter CapacityId = new OracleParameter();
-                    CapacityId.OracleDbType = OracleDbType.Int32;
-                    CapacityId.Value = CapacityIds.ToArray();
+                    OracleParameter Length = new OracleParameter();
+                    Length.OracleDbType = OracleDbType.Int32;
+                    Length.Value = Lengths.ToArray();
+
+                    OracleParameter Width = new OracleParameter();
+                    Width.OracleDbType = OracleDbType.Int32;
+                    Width.Value = Widths.ToArray();
 
                     // create command and set properties
                     OracleCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "INSERT INTO \"TLIsolarLibrary\" (\"Model\", \"Weight\", \"TotaPanelsDimensions\", \"StructureDesign\", \"LayoutCode\", \"HeightFromFront\", \"HeightFromBack\", \"BasePlateDimension\", \"SpaceLibrary\", \"CapacityId\") VALUES ( :1, :2, :3, :4, :5, :6, :7, :8, :9, :10)";
+                    cmd.CommandText = "INSERT INTO \"TLIsolarLibrary\" (\"Model\", \"Weight\", \"TotaPanelsDimensions\", \"StructureDesign\", \"LayoutCode\", \"HeightFromFront\", \"HeightFromBack\", \"BasePlateDimension\", \"SpaceLibrary\", \"CapacityId\", \"Length\", \"Width\") VALUES ( :1, :2, :3, :4, :5, :6, :7, :8, :9, :10 ,:11 ,:12)";
                     cmd.ArrayBindCount = models.Count;
                     cmd.Parameters.Add(model);
                     cmd.Parameters.Add(Weight);
@@ -11740,7 +11996,10 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(HeightFromBack);
                     cmd.Parameters.Add(BasePlateDimension);
                     cmd.Parameters.Add(SpaceLibrary);
-                    cmd.Parameters.Add(CapacityId);
+                    cmd.Parameters.Add(new OracleParameter(":10", OracleDbType.Int32) { Value = DBNull.Value });
+                    cmd.Parameters.Add(Width);
+                    cmd.Parameters.Add(Length);
+
                     cmd.ExecuteNonQuery();
                     //connection.Close();
                     List<int> InsertedIds = new List<int>();
@@ -11955,7 +12214,7 @@ namespace TLIS_Service.Services
 
                 List<string> models = new List<string>();
                 List<float> widths = new List<float>();
-                List<float?> weights = new List<float?>();
+                List<float> weights = new List<float>();
                 List<float> lengths = new List<float>();
                 List<float> heights = new List<float>();
                 List<float> spaceLibraries = new List<float>();
@@ -12187,13 +12446,13 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        models.Add(model_test != null ? model_test : "NA");
+                        models.Add(model_test != null ? model_test : null);
                         widths.Add(Width_test != 0 ? Width_test : 0);
                         weights.Add(Weight_test != 0 ? Weight_test : 0);
                         lengths.Add(Length_test != 0 ? Length_test : 0);
                         heights.Add(Height_test != 0 ? Height_test : 0);
                         spaceLibraries.Add(SpaceLibrary_test != 0 ? SpaceLibrary_test : 0);
-                        notes.Add(note_test != null ? note_test : "NA");
+                        notes.Add(note_test != null ? note_test : null);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
                             //var h = DynamicAtts[f].Value;
