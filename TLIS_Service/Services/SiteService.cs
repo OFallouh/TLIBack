@@ -77,6 +77,7 @@ using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using OfficeOpenXml;
 using ClosedXML.Excel;
+using static TLIS_Service.Helpers.Constants;
 
 
 
@@ -121,8 +122,20 @@ namespace TLIS_Service.Services
                             (int)Helpers.Constants.ApiReturnCode.fail);
 
                     TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
-                    _unitOfWork.SiteRepository.AddWithHInsatallation(UserId,null,NewSiteEntity,null);
-                    
+                    _unitOfWork.SiteRepository.Add(NewSiteEntity);
+
+                    var TabelNameId = _context.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsite");
+                    var addTablesHistory = new TLIhistory
+                    {
+                        HistoryTypeId = 1,
+                        RecordId = NewSiteEntity.SiteCode,
+                        TablesNameId = TabelNameId.Id,
+                        UserId = UserId,
+
+                    };
+                    _context.TLIhistory.Add(addTablesHistory);
+                    _context.SaveChanges();
+
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -1096,6 +1109,7 @@ namespace TLIS_Service.Services
                         Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode)?.RegionName ?? "", 
                         ReservedSpace = siteInfo.ReservedSpace,
                         RentedSpace = siteInfo.RentedSpace,
+                        SubArea= siteInfo.SubArea,
                     };
                 }
 

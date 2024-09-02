@@ -19,6 +19,7 @@ using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.BaseCivilWithLegsTypeDTOs;
 using TLIS_DAL.ViewModels.BaseTypeDTOs;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
@@ -9276,6 +9277,13 @@ namespace TLIS_Repository.Repositories
                         var DynamicLibValue = _context.TLIdynamicAttLibValue.FirstOrDefault(x => x.InventoryId == RecordId && x.DynamicAttId == DynamicAttributeId && x.tablesNamesId
                        == DynamicAttribute.tablesNames.Id && !x.disable);
 
+                        if(DynamicLibValue == null)
+                        {
+                            var Message = CheckDynamicValidationAndDependence(DynamicAttributeId, value, RecordId, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<AddDynamicObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        }
                         if (DynamicAttribute.Type == 0 || DynamicAttribute.Type == null)
                         {
                             if (DynamicAttribute.DataTypeId == 1)
@@ -15574,8 +15582,14 @@ namespace TLIS_Repository.Repositories
                         == DynamicAttribute.tablesNames.Id && !x.disable);
 
                         var DynamicLibValue = _context.TLIdynamicAttInstValue.FirstOrDefault(x => x.InventoryId == RecordId && x.DynamicAttId == DynamicAttributeId && x.tablesNamesId
-                       == DynamicAttribute.tablesNames.Id && !x.disable);
+                         == DynamicAttribute.tablesNames.Id && !x.disable);
+                        if(DynamicLibValue == null)
+                        {
+                            var Message = CheckDynamicValidationAndDependence(DynamicAttributeId, value, RecordId, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<AddDynamicObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                        }
                         if (DynamicAttribute.Type == 0 || DynamicAttribute.Type == null)
                         {
                             if (DynamicAttribute.DataTypeId == 1)

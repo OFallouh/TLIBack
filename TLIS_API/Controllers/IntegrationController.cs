@@ -33,7 +33,7 @@ namespace TLIS_API.Controllers
         }
 
 
-        [HttpPut("EditExtSystem/{id}")]
+        [HttpPost("EditExtSystem/{id}")]
         public IActionResult EditExtSystem(int id,EditExternalSysBinding req)
         {
             if(id!=req.Id)

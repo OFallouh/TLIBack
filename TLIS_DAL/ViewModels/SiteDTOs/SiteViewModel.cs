@@ -26,6 +26,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
 
 
         public string Area { get; set; }
+        public string SubArea { get; set; }
 
 
         public string Region { get; set; }
