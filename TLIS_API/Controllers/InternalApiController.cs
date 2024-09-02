@@ -4672,7 +4672,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutMastLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4683,7 +4683,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutMastLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
                 return Ok(response);
             }
             else
@@ -4713,7 +4713,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutCapsuleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4724,7 +4724,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutCapsuleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
                 return Ok(response);
             }
             else
@@ -4754,7 +4754,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutMonopleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4765,7 +4765,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutMonopleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
                 return Ok(response);
             }
             else
