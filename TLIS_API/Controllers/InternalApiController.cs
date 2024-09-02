@@ -6399,7 +6399,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("DismantleCivilWithLegsInstallationMast")]
+        [HttpPost("DismantleCivilWithLegsInstallation")]
         public IActionResult DismantleCivilWithLegsInstallationMast(string SiteCode, int CivilId, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -6547,7 +6547,7 @@ namespace TLIS_API.Controllers
 
         }
 
-        [HttpPost("DismantleCivilWithoutLegsInstallation")]
+        [HttpPost("DismantleCivilWithoutLegsInstallationMast")]
         public IActionResult DismantleCivilWithoutLegsInstallation(string SiteCode, int CivilId, int? TaskId)
         {
             try
