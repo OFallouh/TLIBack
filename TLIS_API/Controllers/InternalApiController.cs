@@ -45,6 +45,7 @@ using TLIS_DAL.ViewModels.MW_ODULibraryDTOs;
 using TLIS_DAL.ViewModels.Mw_OtherDTOs;
 using TLIS_DAL.ViewModels.MW_OtherLibraryDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
+using TLIS_DAL.ViewModels.OtherInSiteDTOs;
 using TLIS_DAL.ViewModels.RadioAntennaDTOs;
 using TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs;
 using TLIS_DAL.ViewModels.RadioOtherDTOs;
@@ -2323,7 +2324,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpGet("GetMWODUByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetMWODUByIdInstallation(int MW_ODU)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2366,7 +2367,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetMWDishByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetMWDishByIdInstallation(int MW_Dish)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2409,7 +2410,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetMWRFUByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetMWRFUByIdInstallation(int MW_RFU)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2452,7 +2453,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetMWOtherByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetMWOtherByIdInstallation(int mwOther)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2496,7 +2497,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpGet("GetAttForAddSolarInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddOtherInventoryInstallationObject))]
         public IActionResult GetAttForAddSolarInstallation(int SolarLibraryId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2539,7 +2540,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetAttForAddGeneratorInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddOtherInventoryInstallationObject))]
         public IActionResult GetAttForAddGeneratorInstallation(int GeneratorIdLibraryId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2705,7 +2706,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetSolarByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddOtherInventoryInstallationObject))]
         public IActionResult GetSolarByIdInstallation(int SolarId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2749,7 +2750,7 @@ namespace TLIS_API.Controllers
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetGeneratorByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddOtherInventoryInstallationObject))]
         public IActionResult GetGeneratorByIdInstallation(int GeneratorId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -4569,6 +4570,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetForAddCivilNonSteelLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddCivilNonSteelLibrary()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -4610,6 +4612,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetForAddCivilWithLegsLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddCivilWithLegsLibrary()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -4651,6 +4654,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetForAddCivilWithoutLegsMastLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddCivilWithoutLegsMastLibrary()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -4692,6 +4696,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetForAddCivilWithoutLegsCapsuleLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddCivilWithoutLegsCapsuleLibrary()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -4733,6 +4738,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetForAddCivilWithoutLegsMonopleLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddCivilWithoutLegsMonopleLibrary()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5887,8 +5893,8 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetCivilWithLegsByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [HttpGet("GetForAddCivilWithLegObject")]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
         public IActionResult GetCivilWithLegsByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5930,7 +5936,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetCivilWithoutLegsMastByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
         public IActionResult GetCivilWithoutLegsMastByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5971,7 +5977,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetCivilWithoutLegsMonopleByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
         public IActionResult GetCivilWithoutLegsMonopleByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -6012,7 +6018,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetCivilWithoutLegsCapsuleByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
         public IActionResult GetCivilWithoutLegsCapsuleByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -6053,7 +6059,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetCivilNonSteelByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
         public IActionResult GetCivilNonSteelByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
