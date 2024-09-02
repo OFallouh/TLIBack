@@ -6179,7 +6179,7 @@ namespace TLIS_Service.Services
                                         {
                                             var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                            if (item.allOtherInventoryInst.generator != null)
+                                            if (item.allOtherInventoryInst.generator != null && item.allOtherInventoryInst.generatorId != GeneratorId)
                                             {
                                                 SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6200,7 +6200,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != GeneratorId)
+                                            if (item.allOtherInventoryInst.cabinet != null )
                                             {
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6227,7 +6227,7 @@ namespace TLIS_Service.Services
                                     {
                                         var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                        if (item.allOtherInventoryInst.generator != null)
+                                        if (item.allOtherInventoryInst.generator != null && item.allOtherInventoryInst.generatorId != GeneratorId)
                                         {
                                             SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6248,7 +6248,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithoutLegOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != GeneratorId)
+                                        if (item.allOtherInventoryInst.cabinet != null)
                                         {
                                             SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6451,7 +6451,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.solar != null)
+                                            if (item.allOtherInventoryInst.solar != null && item.allOtherInventoryInst.solarId != SolarId)
                                             {
                                                 SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6461,7 +6461,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
-                                            if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != SolarId)
+                                            if (item.allOtherInventoryInst.cabinet != null )
                                             {
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6499,7 +6499,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithLegsOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.solar != null)
+                                        if (item.allOtherInventoryInst.solar != null && item.allOtherInventoryInst.solarId != SolarId)
                                         {
                                             SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6509,7 +6509,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithoutLegOption);
                                         }
 
-                                        if (item.allOtherInventoryInst.cabinet != null && item.allOtherInventoryInst.cabinet.Id != SolarId)
+                                        if (item.allOtherInventoryInst.cabinet != null )
                                         {
                                             SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                             {

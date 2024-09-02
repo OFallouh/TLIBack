@@ -999,7 +999,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddRadioRRUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioRRUInstallationObject))]
-        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUInstallationObject addRadioRRU, string SiteCode, int TaskId)
+        public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUInstallationObject addRadioRRU, string SiteCode, int? TaskId)
         {
             try
             {
@@ -1060,7 +1060,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddRadioOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(AddRadioOtherInstallationObject))]
-        public IActionResult AddRadioOtherInstallation([FromBody] AddRadioOtherInstallationObject addRadioOther, string SiteCode, int TaskId)
+        public IActionResult AddRadioOtherInstallation([FromBody] AddRadioOtherInstallationObject addRadioOther, string SiteCode, int? TaskId)
         {
             try
             {
@@ -1372,7 +1372,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddMWBUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWBUInstallationObject))]
-        public IActionResult AddMWBUInstallation([FromBody] AddMWBUInstallationObject AddMW_BUViewModel, string SiteCode, int TaskId)
+        public IActionResult AddMWBUInstallation([FromBody] AddMWBUInstallationObject AddMW_BUViewModel, string SiteCode, int? TaskId)
         {
             try
             {
@@ -1432,7 +1432,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMWODUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMwODUinstallationObject))]
-        public IActionResult AddMWODUInstallation([FromBody] AddMwODUinstallationObject AddMW_ODUViewModel, string SiteCode, int TaskId)
+        public IActionResult AddMWODUInstallation([FromBody] AddMwODUinstallationObject AddMW_ODUViewModel, string SiteCode, int? TaskId)
         {
             try
             {
@@ -1492,7 +1492,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMWDishInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWDishInstallationObject))]
-        public IActionResult AddMWDishInstallation([FromBody] AddMWDishInstallationObject AddMW_DishViewModel, string SiteCode, int TaskId)
+        public IActionResult AddMWDishInstallation([FromBody] AddMWDishInstallationObject AddMW_DishViewModel, string SiteCode, int? TaskId)
         {
             try
             {
@@ -1552,7 +1552,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddMWRFUInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWRFUInstallation))]
-        public IActionResult AddMWRFUInstallation([FromBody] AddMWRFUInstallation AddMW_RFUViewModel, string SiteCode, int TaskId)
+        public IActionResult AddMWRFUInstallation([FromBody] AddMWRFUInstallation AddMW_RFUViewModel, string SiteCode, int? TaskId)
         {
             try
             {
@@ -1613,7 +1613,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddMWOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(AddMWOtherInstallationObject))]
-        public IActionResult AddMWOtherInstallation([FromBody] AddMWOtherInstallationObject AddMw_OtherViewModel, string SiteCode, int TaskId)
+        public IActionResult AddMWOtherInstallation([FromBody] AddMWOtherInstallationObject AddMw_OtherViewModel, string SiteCode, int? TaskId)
         {
             try
             {
@@ -1673,7 +1673,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMWBUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWBUInstallationObject))]
-        public async Task<IActionResult> EditMWBUInstallation([FromBody] EditMWBUInstallationObject MW_BU, int TaskId)
+        public async Task<IActionResult> EditMWBUInstallation([FromBody] EditMWBUInstallationObject MW_BU, int? TaskId)
         {
             try
             {
@@ -1733,7 +1733,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMWDishInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWDishInstallationObject))]
-        public async Task<IActionResult> EditMWDishInstallation([FromBody] EditMWDishInstallationObject MW_Dish, int TaskId)
+        public async Task<IActionResult> EditMWDishInstallation([FromBody] EditMWDishInstallationObject MW_Dish, int? TaskId)
         {
             try
             {
@@ -1793,7 +1793,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMWODUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWODUInstallationObject))]
-        public async Task<IActionResult> EditMWODUInstallation([FromBody] EditMWODUInstallationObject MW_ODU, int TaskId)
+        public async Task<IActionResult> EditMWODUInstallation([FromBody] EditMWODUInstallationObject MW_ODU, int? TaskId)
         {
             try
             {
@@ -1853,7 +1853,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMWRFUInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWRFUInstallationObject))]
-        public async Task<IActionResult> EditMWRFUInstallation([FromBody] EditMWRFUInstallationObject MW_RFU, int TaskId)
+        public async Task<IActionResult> EditMWRFUInstallation([FromBody] EditMWRFUInstallationObject MW_RFU, int? TaskId)
         {
             try
             {
@@ -1913,7 +1913,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("EditMwOtherInstallation")]
         [ProducesResponseType(200, Type = typeof(EditMWOtherInstallationObject))]
-        public async Task<IActionResult> EditMwOtherInstallation([FromBody] EditMWOtherInstallationObject Mw_Other, int TaskId)
+        public async Task<IActionResult> EditMwOtherInstallation([FromBody] EditMWOtherInstallationObject Mw_Other, int? TaskId)
         {
             try
             {
@@ -1973,7 +1973,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMWBUInstallation")]
 
-        public IActionResult DismantleMWBUInstallation(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMWBUInstallation(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             try
             {
@@ -2024,7 +2024,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMWODUInstallation")]
 
-        public IActionResult DismantleMWODUInstallation(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMWODUInstallation(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             try
             {
@@ -2076,7 +2076,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("DismantleMWRFUInstallation")]
 
-        public IActionResult DismantleMWRFUInstallation(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMWRFUInstallation(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             try
             {
@@ -2127,7 +2127,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMWDishInstallation")]
 
-        public IActionResult DismantleMWDishInstallation(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMWDishInstallation(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             try
             {
@@ -2178,7 +2178,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("DismantleMWOtherInstallation")]
 
-        public IActionResult DismantleMWOtherInstallation(string sitecode, int LoadId, string LoadName, int TaskId)
+        public IActionResult DismantleMWOtherInstallation(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             try
             {
@@ -2228,7 +2228,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("DismantlesideArmInstallation")]
-        public IActionResult DismantlesideArmInstallation(string SiteCode, int sideArmId, int TaskId)
+        public IActionResult DismantlesideArmInstallation(string SiteCode, int sideArmId, int? TaskId)
         {
             try
             {
@@ -2584,7 +2584,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(AddSolarInstallationObject))]
-        public IActionResult AddSolarInstallation([FromBody] AddSolarInstallationObject addSolarViewModel, string SiteCode, int TaskId)
+        public IActionResult AddSolarInstallation([FromBody] AddSolarInstallationObject addSolarViewModel, string SiteCode, int? TaskId)
         {
             try
             {
@@ -2645,7 +2645,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(AddGeneratorInstallationObject))]
-        public IActionResult AddGeneratorInstallation([FromBody] AddGeneratorInstallationObject addGeneratorViewModel, string SiteCode, int TaskId)
+        public IActionResult AddGeneratorInstallation([FromBody] AddGeneratorInstallationObject addGeneratorViewModel, string SiteCode, int? TaskId)
         {
             try
             {
@@ -2793,7 +2793,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(EditSolarInstallationObject))]
-        public async Task<IActionResult> EditSolarInstallation([FromBody] EditSolarInstallationObject editSolarViewModel, int TaskId)
+        public async Task<IActionResult> EditSolarInstallation([FromBody] EditSolarInstallationObject editSolarViewModel, int? TaskId)
         {
             try
             {
@@ -2854,7 +2854,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(EditGeneratorInstallationObject))]
-        public async Task<IActionResult> EditGeneratorInstallation([FromBody] EditGeneratorInstallationObject editGeneratorViewModel, int TaskId)
+        public async Task<IActionResult> EditGeneratorInstallation([FromBody] EditGeneratorInstallationObject editGeneratorViewModel, int? TaskId)
         {
             try
             {
@@ -2914,7 +2914,7 @@ namespace TLIS_API.Controllers
         }
         //---------------------------------------------------------------------------------
         [HttpGet("DismantleOtherInventoryInstallation")]
-        public IActionResult DismantleOtherInventoryInstallation(string SiteCode, int OtherInventoryId, string OtherInventoryName, int TaskId)
+        public IActionResult DismantleOtherInventoryInstallation(string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId)
         {
             try
             {
@@ -3313,7 +3313,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddSideArmInstallation")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public async Task<IActionResult> AddSideArmInstallation([FromBody] SideArmViewDto sideArmViewDto, string SiteCode, int TaskId)
+        public async Task<IActionResult> AddSideArmInstallation([FromBody] SideArmViewDto sideArmViewDto, string SiteCode, int? TaskId)
         {
             try
             {
@@ -3373,7 +3373,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("UpdateSideArmInstallation")]
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
-        public async Task<IActionResult> UpdateSideArmInstallation([FromBody] EditSidearmInstallationObject SideArmViewModel, int TaskId)
+        public async Task<IActionResult> UpdateSideArmInstallation([FromBody] EditSidearmInstallationObject SideArmViewModel, int? TaskId)
         {
             try
             {
@@ -5583,7 +5583,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCivilWithLegsInstallation")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
-        public IActionResult AddCivilWithLegsInstallation([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode, int TaskId)
+        public IActionResult AddCivilWithLegsInstallation([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode, int? TaskId)
         {
             try
             {
@@ -5645,7 +5645,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddCivilWithoutLegsInstallationMast")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
-        public IActionResult AddCivilWithoutLegsInstallationMast([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId)
+        public IActionResult AddCivilWithoutLegsInstallationMast([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId)
         {
             try
             {
@@ -5706,7 +5706,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCivilWithoutLegsInstallationMonople")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
-        public IActionResult AddCivilWithoutLegsInstallationMonople([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId)
+        public IActionResult AddCivilWithoutLegsInstallationMonople([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId)
         {
             try
             {
@@ -5767,7 +5767,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AddCivilWithoutLegsInstallationCapsule")]
         [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
-        public IActionResult AddCivilWithoutLegsInstallationCapsule([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int TaskId)
+        public IActionResult AddCivilWithoutLegsInstallationCapsule([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId)
         {
             try
             {
@@ -5829,7 +5829,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("AddCivilNonSteelInstallation")]
         [ProducesResponseType(200, Type = typeof(AddCivilNonSteelObject))]
-        public IActionResult AddCivilNonSteelInstallation([FromBody] AddCivilNonSteelObject addCivilNonSteel, string SiteCode, int TaskId)
+        public IActionResult AddCivilNonSteelInstallation([FromBody] AddCivilNonSteelObject addCivilNonSteel, string SiteCode, int? TaskId)
         {
             try
             {
@@ -6097,7 +6097,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithLegsInstallation")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithLegsInstallationObject))]
-        public async Task<IActionResult> EditCivilWithLegsInstallation([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg, int TaskId)
+        public async Task<IActionResult> EditCivilWithLegsInstallation([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg, int? TaskId)
         {
             try
             {
@@ -6158,7 +6158,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithoutLegsInstallationCapsule")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
-        public async Task<IActionResult> EditCivilWithoutLegsInstallationCapsule([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int TaskId)
+        public async Task<IActionResult> EditCivilWithoutLegsInstallationCapsule([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int? TaskId)
         {
             try
             {
@@ -6219,7 +6219,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithoutLegsInstallationMast")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
-        public async Task<IActionResult> EditCivilWithoutLegsInstallationMast([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int TaskId)
+        public async Task<IActionResult> EditCivilWithoutLegsInstallationMast([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int? TaskId)
         {
             try
             {
@@ -6280,7 +6280,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilWithoutLegsInstallationMonople")]
         [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
-        public async Task<IActionResult> EditCivilWithoutLegsInstallationMonople([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int TaskId)
+        public async Task<IActionResult> EditCivilWithoutLegsInstallationMonople([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int? TaskId)
         {
             try
             {
@@ -6341,7 +6341,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("EditCivilNonSteelInstallation")]
         [ProducesResponseType(200, Type = typeof(EditCivilNonSteelInstallationObject))]
-        public async Task<IActionResult> EditCivilNonSteelInstallation([FromBody] EditCivilNonSteelInstallationObject CivilNonSteel, int TaskId)
+        public async Task<IActionResult> EditCivilNonSteelInstallation([FromBody] EditCivilNonSteelInstallationObject CivilNonSteel, int? TaskId)
         {
             try
             {

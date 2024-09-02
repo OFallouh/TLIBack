@@ -3433,7 +3433,7 @@ namespace TLIS_Service.Services
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithLegInst.SpaceInstallation;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilWithLegsEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueSite, SiteCode.Site,SiteCode.SiteCode);
+                                _unitOfWork.SiteRepository.UpdateWithHInstallationSite(userId, civilWithLegsEntity.Id, OldValueSite, SiteCode.Site,SiteCode.SiteCode);
                                 _dbContext.SaveChanges();
                             }
                         }
@@ -3442,7 +3442,7 @@ namespace TLIS_Service.Services
                            var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking()
                                 .FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower());
                             SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithLegInst.SpaceInstallation;
-                            _unitOfWork.SiteRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldSite, SiteCode.Site, SiteCode.SiteCode);
+                            _unitOfWork.SiteRepository.UpdateWithHInstallationSite(userId, civilWithLegsEntity.Id, OldSite, SiteCode.Site, SiteCode.SiteCode);
                             _dbContext.SaveChanges();
                         }
                         else if (SiteCode.ReservedSpace == false && editCivilWithLegsInstallationObject.civilSiteDate.ReservedSpace == true)
@@ -3873,7 +3873,7 @@ namespace TLIS_Service.Services
                                 var OldValueSite = _dbContext.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode == SiteCode.SiteCode);
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithoutLegInst.SpaceInstallation;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilWithoutLegsEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, OldValueSite, SiteCode.Site);
+                                _unitOfWork.SiteRepository.UpdateWithHInstallationSite(userId,null, OldValueSite, SiteCode.Site,SiteCode.SiteCode);
                                 _dbContext.SaveChanges();
                             }
                         }
@@ -3882,7 +3882,7 @@ namespace TLIS_Service.Services
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking()
                                  .FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower());
                             SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilWithoutLegInst.SpaceInstallation;
-                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, OldSite, SiteCode.Site);
+                            _unitOfWork.SiteRepository.UpdateWithHInstallationSite(userId,null, OldSite, SiteCode.Site,SiteCode.SiteCode);
                             _dbContext.SaveChanges();
                         }
                         else if (SiteCode.ReservedSpace == false && editCivilWithoutLegsInstallationObject.civilSiteDate.ReservedSpace == true)
@@ -4036,7 +4036,7 @@ namespace TLIS_Service.Services
                                 var tLIsite = OldValueSite;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilNonSteelInst.SpaceInstallation;
                                 SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace + civilNonSteelEntity.SpaceInstallation;
-                                _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, tLIsite, SiteCode.Site);
+                                _unitOfWork.SiteRepository.UpdateWithHInstallationSite(userId,null, tLIsite, SiteCode.Site,SiteCode.SiteCode);
                                 _dbContext.SaveChanges();
                             }
                         }
@@ -4045,7 +4045,7 @@ namespace TLIS_Service.Services
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking()
                                  .FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower());
                             SiteCode.Site.ReservedSpace = SiteCode.Site.ReservedSpace - CivilNonSteelInst.SpaceInstallation;
-                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(userId, OldSite, SiteCode.Site);
+                            _unitOfWork.SiteRepository.UpdateWithHInstallationSite(userId,null, OldSite, SiteCode.Site,SiteCode.SiteCode);
                             _dbContext.SaveChanges();
                         }
                         else if (SiteCode.ReservedSpace == false && editCivilNonSteelInstallationObject.civilSiteDate.ReservedSpace == true)
@@ -6924,7 +6924,7 @@ namespace TLIS_Service.Services
                                         {
                                             var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                            if (item.allCivilInst.civilWithLegs != null)
+                                            if (item.allCivilInst.civilWithLegs != null && item.allCivilInst.civilWithLegsId !=CivilInsId)
                                             {
                                                 SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6935,7 +6935,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
-                                            if (item.allCivilInst.civilWithoutLeg != null && item.allCivilInst.civilWithoutLeg.Id != CivilInsId)
+                                            if (item.allCivilInst.civilWithoutLeg != null)
                                             {
                                                 SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -6971,7 +6971,7 @@ namespace TLIS_Service.Services
                                     {
                                         var innerOptions = new List<SupportTypeImplementedViewModel>();
 
-                                        if (item.allCivilInst.civilWithLegs != null)
+                                        if (item.allCivilInst.civilWithLegs != null && item.allCivilInst.civilWithLegsId != CivilInsId)
                                         {
                                             SupportTypeImplementedViewModel civilWithLegsOption = new SupportTypeImplementedViewModel()
                                             {
@@ -6982,7 +6982,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithLegsOption);
                                         }
 
-                                        if (item.allCivilInst.civilWithoutLeg != null && item.allCivilInst.civilWithoutLeg.Id != CivilInsId)
+                                        if (item.allCivilInst.civilWithoutLeg != null )
                                         {
                                             SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                             {
@@ -7554,7 +7554,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithLegsOption);
                                             }
 
-                                            if (item.allCivilInst.civilWithoutLeg != null && item.allCivilInst.civilWithoutLeg.Id != CivilInsId)
+                                            if (item.allCivilInst.civilWithoutLeg != null)
                                             {
                                                 SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -7564,7 +7564,7 @@ namespace TLIS_Service.Services
                                                 innerOptions.Add(civilWithoutLegOption);
                                             }
 
-                                            if (item.allCivilInst.civilNonSteel != null)
+                                            if (item.allCivilInst.civilNonSteel != null && item.allCivilInst.civilNonSteelId != CivilInsId)
                                             {
                                                 SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                                 {
@@ -7601,7 +7601,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithLegsOption);
                                         }
 
-                                        if (item.allCivilInst.civilWithoutLeg != null && item.allCivilInst.civilWithoutLeg.Id != CivilInsId)
+                                        if (item.allCivilInst.civilWithoutLeg != null )
                                         {
                                             SupportTypeImplementedViewModel civilWithoutLegOption = new SupportTypeImplementedViewModel()
                                             {
@@ -7611,7 +7611,7 @@ namespace TLIS_Service.Services
                                             innerOptions.Add(civilWithoutLegOption);
                                         }
 
-                                        if (item.allCivilInst.civilNonSteel != null)
+                                        if (item.allCivilInst.civilNonSteel != null && item.allCivilInst.civilNonSteelId != CivilInsId)
                                         {
                                             SupportTypeImplementedViewModel civilNonSteelOption = new SupportTypeImplementedViewModel()
                                             {
