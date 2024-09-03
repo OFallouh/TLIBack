@@ -164,7 +164,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("GetLibraryforSpecificType")]
         [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
-        public IActionResult GetLibraryforSpecificType(string TableNameLibrary, [FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
+        public IActionResult GetLibraryforSpecificType(string TableNameLibrary)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -291,7 +291,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetAlOtherInventoryonSitebyType")]
         [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
-        public IActionResult GetAlOtherInventoryonSitebyType([Required] string OtherInventoryTypeName, [FromQuery] string SiteCode, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
+        public IActionResult GetAlOtherInventoryonSitebyType([Required] string OtherInventoryTypeName, [FromQuery] string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -375,7 +375,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetConfigurationTablesInstallation ")]
         [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
-        public IActionResult GetConfigurationTablesInstallation([FromQuery] string siteCode, [Required] string TableNameInstallation, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
+        public IActionResult GetConfigurationTablesInstallation([FromQuery] string siteCode, [Required] string TableNameInstallation)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
