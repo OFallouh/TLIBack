@@ -109,75 +109,153 @@ namespace TLIS_Repository.Repositories
                     .Where(d => !d.LibraryAtt && d.tablesNamesId == TableNameId && !d.disable)
                     .Include(d => d.DataType)
                     .ToList();
-
+                
                 foreach (var item in DynamicAtts)
                 {
+                  
                     if (item.DataType.Name.ToLower() == "bool")
                     {
-                        dynamicAtts.Add(new BaseInstAttViewDynamic()
+                        if(item.DefaultValue != null)
                         {
-                            Label = item.Key,
-                            Id=item.Id,
-                            Key = item.Key,
-                            Value = Convert.ToBoolean(item.DefaultValue),
-                            Desc = item?.Description ?? null,
-                            Required = item.Required,
-                            enable = !item.disable,
-                            DataType = item.DataType.Name,
-                            DataTypeId = item.DataTypeId
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = Convert.ToBoolean(item.DefaultValue),
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
 
-                        });
+                            });
+                        }
+                        if (item.DefaultValue == null)
+                        {
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = null,
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
+
+                            });
+                        }
+                     
                     }
                     else if (item.DataType.Name.ToLower() == "double")
                     {
-                            
-                        dynamicAtts.Add(new BaseInstAttViewDynamic()
+                        if (item.DefaultValue != null)
                         {
-                            Label = item.Key,
-                            Id = item.Id,
-                            Key = item.Key,
-                            Value = Convert.ToInt32(item.DefaultValue),
-                            Desc = item?.Description ?? null,
-                            Required = item.Required,
-                            enable = !item.disable,
-                            DataType = item.DataType.Name,
-                            DataTypeId = item.DataTypeId
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = Convert.ToInt32(item.DefaultValue),
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
 
-                        });
+                            });
+                        }
+                        if (item.DefaultValue == null)
+                        {
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = null,
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
+
+                            });
+                        }
+                       
                     }
                     else if (item.DataType.Name.ToLower() == "datetime")
                     {
-
-                        dynamicAtts.Add(new BaseInstAttViewDynamic()
+                        if (item.DefaultValue != null)
                         {
-                            Label = item.Key,
-                            Id = item.Id,
-                            Key = item.Key,
-                            Value = Convert.ToDateTime(item.DefaultValue),
-                            Desc = item?.Description ?? null,
-                            Required = item.Required,
-                            enable = !item.disable,
-                            DataType = item.DataType.Name,
-                            DataTypeId = item.DataTypeId
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = Convert.ToDateTime(item.DefaultValue),
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
 
-                        });
+                            });
+                        }
+                        if (item.DefaultValue == null)
+                        {
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = null,
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
+
+                            });
+                        }
+                       
                     }
                     else
                     {
-                        dynamicAtts.Add(new BaseInstAttViewDynamic()
+                        if (item.DefaultValue != null)
                         {
-                            Label = item.Key,
-                            Key = item.Key,
-                            Id = item.Id,
-                            Value = item.DefaultValue?.ToString(),
-                            Desc = item?.Description ?? null,
-                            Required = item.Required,
-                            enable = !item.disable,
-                            DataType = item.DataType.Name,
-                            DataTypeId = item.DataTypeId
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Key = item.Key,
+                                Id = item.Id,
+                                Value = item.DefaultValue.ToString(),
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
 
-                        });
-                    }
+                            });
+                        }
+                        if (item.DefaultValue != null)
+                        {
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Key = item.Key,
+                                Id = item.Id,
+                                Value = null,
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
+
+                            });
+                        }
+                     }
 
                 }
             }
@@ -191,69 +269,145 @@ namespace TLIS_Repository.Repositories
                 {
                     if (item.DataType.Name.ToLower() == "bool")
                     {
-                        dynamicAtts.Add(new BaseInstAttViewDynamic()
+                        if (item.DefaultValue != null)
                         {
-                            Label = item.Key,
-                            Id = item.Id,
-                            Key = item.Key,
-                            Value = Convert.ToBoolean(item.DefaultValue.ToLower()),
-                            Desc = item?.Description ?? null,
-                            Required = item.Required,
-                            enable = !item.disable,
-                            DataType = item.DataType.Name,
-                            DataTypeId = item.DataTypeId
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = Convert.ToBoolean(item.DefaultValue.ToLower()),
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
 
-                        });
+                            });
+                        }
+                        if (item.DefaultValue == null)
+                        {
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = null,
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
+
+                            });
+                        }
+                        
                     }
                     else if (item.DataType.Name.ToLower() == "double")
                     {
-
-                        dynamicAtts.Add(new BaseInstAttViewDynamic()
+                        if (item.DefaultValue != null)
                         {
-                            Label = item.Key,
-                            Id = item.Id,
-                            Key = item.Key,
-                            Value = Convert.ToInt32(item.DefaultValue),
-                            Desc = item?.Description ?? null,
-                            Required = item.Required,
-                            enable = !item.disable,
-                            DataType = item.DataType.Name,
-                            DataTypeId = item.DataTypeId
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = Convert.ToInt32(item.DefaultValue),
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
 
-                        });
+                            });
+                        }
+                        if (item.DefaultValue == null)
+                        {
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = null,
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
+
+                            });
+                        }
+                       
                     }
                     else if (item.DataType.Name.ToLower() == "datetime")
                     {
-
-                        dynamicAtts.Add(new BaseInstAttViewDynamic()
+                        if (item.DefaultValue != null)
                         {
-                            Label = item.Key,
-                            Id = item.Id,
-                            Key = item.Key,
-                            Value = Convert.ToDateTime(item.DefaultValue),
-                            Desc = item?.Description ?? null,
-                            Required = item.Required,
-                            enable = !item.disable,
-                            DataType = item.DataType.Name,
-                            DataTypeId = item.DataTypeId
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = Convert.ToDateTime(item.DefaultValue),
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
 
-                        });
+                            });
+                        }
+                        if (item.DefaultValue == null)
+                        {
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = null,
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
+
+                            });
+                        }
                     }
                     else
                     {
-                        dynamicAtts.Add(new BaseInstAttViewDynamic()
+                        if (item.DefaultValue != null)
                         {
-                            Label = item.Key,
-                            Id = item.Id,
-                            Key = item.Key,
-                            Value = item.DefaultValue.ToString(),
-                            Desc = item?.Description ?? null,
-                            Required = item.Required,
-                            enable = !item.disable,
-                            DataType = item.DataType.Name,
-                            DataTypeId = item.DataTypeId
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = item.DefaultValue.ToString(),
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
 
-                        });
+                            });
+                        }
+                        if (item.DefaultValue == null)
+                        {
+                            dynamicAtts.Add(new BaseInstAttViewDynamic()
+                            {
+                                Label = item.Key,
+                                Id = item.Id,
+                                Key = item.Key,
+                                Value = null,
+                                Desc = item?.Description ?? null,
+                                Required = item.Required,
+                                enable = !item.disable,
+                                DataType = item.DataType.Name,
+                                DataTypeId = item.DataTypeId
+
+                            });
+                        }
                     }
 
                 }

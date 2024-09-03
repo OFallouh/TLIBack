@@ -85,5 +85,6 @@ namespace TLIS_Repository.Base
         int AddWithHInternal(int? UserId, int? SecRecordId, TEntity AddObject);
         int AddWithHInsatallationInternal(int? UserId, int? SecRecordId, TEntity AddObject, string? SiteCode);
         int UpdateWithHInstallationInternal(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
+        int UpdateWithHInstallationInternalSite(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
     }
 }

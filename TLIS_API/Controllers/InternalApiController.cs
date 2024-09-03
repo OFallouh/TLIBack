@@ -6601,5 +6601,135 @@ namespace TLIS_API.Controllers
             }
 
         }
+
+        [HttpPost("GetRadioAntennaLibraryEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
+        public IActionResult GetRadioAntennaLibraryEnabledAtt()
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetRadioAntennaLibrariesEnabledAtt(connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetRadioAntennaLibrariesEnabledAtt(connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+        [HttpPost("GetRadioRRULibraryEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
+        public IActionResult GetRadioRRULibraryEnabledAtt()
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetMWBULibrariesEnabledAtt(connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetMWBULibrariesEnabledAtt(connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+        [HttpPost("GetRadioOtherLibraryEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
+        public IActionResult GetRadioOtherLibraryEnabledAtt()
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetMWBULibrariesEnabledAtt(connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetMWBULibrariesEnabledAtt(connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
     }
 }

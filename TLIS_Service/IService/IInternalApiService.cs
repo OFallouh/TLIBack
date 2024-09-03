@@ -241,6 +241,9 @@ namespace TLIS_Service.IService
         Response<GetForAddMWDishInstallationObject> AddMWRFUInstallation(object AddMWRFUInstallation, string TableName, string SiteCode, string ConnectionString, int? TaskId, int? UserId, string UserName);
         Response<AddDynamicObject> AddDynamicInternal(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int? UserId, int? CategoryId, string UserName);
         Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId, AddDynamicObject DynamicAttViewModel, int? UserId, string connectionString, string UserName);
+        Response<GetEnableAttribute> GetRadioOtherLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetRadioRRULibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetRadioAntennaLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
     }
 
 }
