@@ -210,7 +210,7 @@ namespace TLIS_Service.IService
         Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int GeneratorId, string TableName, int? UserId, string UserName);
         Response<GetEnableAttribute> GetSolarWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
         Response<GetEnableAttribute> GetGeneratorWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
-        Response<ObjectInstAttsForSideArm> GetSideArmById(int SideArmId, string TableName, int? UserId, string UserName);
+        Response<GetForAddLoadObject> GetSideArmByInternalId(int Id, string TableName, int? UserId, string UserName);
         Response<GetEnableAttribute> GetSideArmInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId, string UserName);
         Response<GetForAddCivilLoadObject> GetAttForAddSideArm(int LibraryId, int? UserId, string UserName);
         Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);

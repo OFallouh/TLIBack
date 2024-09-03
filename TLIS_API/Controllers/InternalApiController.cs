@@ -163,7 +163,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("GetLibraryforSpecificType")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetLibraryforSpecificType(string TableNameLibrary, [FromBody] CombineFilters CombineFilters, bool WithFilterData, [FromQuery] ParameterPagination parameterPagination)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -205,7 +205,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetAllSitesDetails")]
-        [ProducesResponseType(200, Type = typeof(List<SiteViewModel>))]
+        [ProducesResponseType(200, Type = typeof(List<SiteViewModelForGetAll>))]
         public IActionResult GetAllSitesDetails([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters, bool? isRefresh, bool? GetItemsCountOnEachSite)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -247,7 +247,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetAllLoadonSitebyPartandType")]
-        [ProducesResponseType(200, Type = typeof(Response<LoadsDto>))]
+        [ProducesResponseType(200, Type = typeof(Response<LoadsDtoInternal>))]
         public IActionResult GetAllLoadonSitebyPartandType([Required] String SiteCode, string PartName, string TypeName)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -290,7 +290,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetAlOtherInventoryonSitebyType")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetAlOtherInventoryonSitebyType([Required] string OtherInventoryTypeName, [FromQuery] string SiteCode, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -374,7 +374,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetConfigurationTablesInstallation ")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetConfigurationTablesInstallation([FromQuery] string siteCode, [Required] string TableNameInstallation, bool WithFilterData, [FromBody] CombineFilters CombineFilters, [FromQuery] ParameterPagination parameterPagination, string LibraryType)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -460,7 +460,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddDynamicAttributeLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddDynamicAttViewModel))]
         public IActionResult AddDynamicAttributeLibrary([FromBody] AddDynamicObject addDynamicObject, string TabelName, int? CategoryId)
         {
             if (ModelState.IsValid)
@@ -513,7 +512,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddDynamicAttributeInstallation")]
-        [ProducesResponseType(200, Type = typeof(List<AddDependencyInstViewModel>))]
         public IActionResult AddDynamicAttributeInstallation([FromBody] AddDynamicObject addDynamicObject, string TabelName, int? CategoryId)
         {
             if (ModelState.IsValid)
@@ -564,7 +562,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("EditDynamicAttLibraryAndInstallation")]
-        [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
         public async Task<IActionResult> EditDynamicAttLibraryAndInstallation(int DynamicAttributeId, [FromBody] AddDynamicObject dynamicAttViewModel)
         {
             if (ModelState.IsValid)
@@ -617,7 +614,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddRadioRRULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddRadioRRULibraryObject))]
         public IActionResult AddRadioRRULibrary(AddRadioRRULibraryObject addRadioRRU)
         {
             if (TryValidateModel(addRadioRRU, nameof(AddRadioRRULibraryObject)))
@@ -669,7 +665,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddRadioOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddRadioOtherLibraryObject))]
         public IActionResult AddRadioOtherLibrary(AddRadioOtherLibraryObject addRadioOther)
         {
             if (TryValidateModel(addRadioOther, nameof(AddRadioOtherLibraryObject)))
@@ -720,7 +715,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddRadioAntennaLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddRadioAntennaLibraryObject))]
         public IActionResult AddRadioAntennaLibrary(AddRadioAntennaLibraryObject addRadioAntenna)
         {
             if (TryValidateModel(addRadioAntenna, nameof(AddRadioAntennaLibraryObject)))
@@ -771,7 +765,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetForAddRadioLibrary")]
-        [ProducesResponseType(200, Type = typeof(List<AllAtributes>))]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilLibrarybject))]
         public IActionResult GetForAddRadioLibrary(string TableName)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -812,7 +806,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetAttForAddRadioAntennaInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddRadioAntennaInstallation(int LibId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -855,7 +849,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpGet("GetAttForAddRadioRRUInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddRadioRRUInstallation(int LibId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -898,7 +892,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpGet("GetAttForAddRadioOtherInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddRadioOtherInstallation(int LibId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -939,7 +933,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddRadioAntennaInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioAntennaInstallationObject))]
         public IActionResult AddRadioAntennaInstallation([FromBody] AddRadioAntennaInstallationObject addRadioAntenna, string SiteCode, int? TaskId)
         {
             try
@@ -999,7 +992,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddRadioRRUInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioRRUInstallationObject))]
         public IActionResult AddRadioRRUInstallation([FromBody] AddRadioRRUInstallationObject addRadioRRU, string SiteCode, int? TaskId)
         {
             try
@@ -1060,7 +1052,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("AddRadioOtherInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddRadioOtherInstallationObject))]
         public IActionResult AddRadioOtherInstallation([FromBody] AddRadioOtherInstallationObject addRadioOther, string SiteCode, int? TaskId)
         {
             try
@@ -1120,7 +1111,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetAttForAddMWBUInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddMWBUInstallation(int LibId, string SiteCode)
         {
             try
@@ -1172,7 +1163,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetAttForAddMWODUInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddMWODUInstallation(int LibId, string SiteCode)
         {
             try
@@ -1281,7 +1272,7 @@ namespace TLIS_API.Controllers
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetAttForAddMWRFUInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddMWRFUInstallation(int LibId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -1326,7 +1317,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetAttForAddMWOtherInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
         public IActionResult GetAttForAddMWOtherInstallation(int LibId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -1372,7 +1363,6 @@ namespace TLIS_API.Controllers
 
 
         [HttpPost("AddMWBUInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddMWBUInstallationObject))]
         public IActionResult AddMWBUInstallation([FromBody] AddMWBUInstallationObject AddMW_BUViewModel, string SiteCode, int? TaskId)
         {
             try
@@ -1432,7 +1422,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddMWODUInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddMwODUinstallationObject))]
         public IActionResult AddMWODUInstallation([FromBody] AddMwODUinstallationObject AddMW_ODUViewModel, string SiteCode, int? TaskId)
         {
             try
@@ -1492,7 +1481,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddMWDishInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddMWDishInstallationObject))]
         public IActionResult AddMWDishInstallation([FromBody] AddMWDishInstallationObject AddMW_DishViewModel, string SiteCode, int? TaskId)
         {
             try
@@ -1552,7 +1540,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddMWRFUInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddMWRFUInstallation))]
         public IActionResult AddMWRFUInstallation([FromBody] AddMWRFUInstallation AddMW_RFUViewModel, string SiteCode, int? TaskId)
         {
             try
@@ -1613,7 +1600,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("AddMWOtherInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddMWOtherInstallationObject))]
         public IActionResult AddMWOtherInstallation([FromBody] AddMWOtherInstallationObject AddMw_OtherViewModel, string SiteCode, int? TaskId)
         {
             try
@@ -1673,7 +1659,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("EditMWBUInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditMWBUInstallationObject))]
         public async Task<IActionResult> EditMWBUInstallation([FromBody] EditMWBUInstallationObject MW_BU, int? TaskId)
         {
             try
@@ -1733,7 +1718,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("EditMWDishInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditMWDishInstallationObject))]
         public async Task<IActionResult> EditMWDishInstallation([FromBody] EditMWDishInstallationObject MW_Dish, int? TaskId)
         {
             try
@@ -1793,7 +1777,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("EditMWODUInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditMWODUInstallationObject))]
         public async Task<IActionResult> EditMWODUInstallation([FromBody] EditMWODUInstallationObject MW_ODU, int? TaskId)
         {
             try
@@ -1853,7 +1836,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("EditMWRFUInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditMWRFUInstallationObject))]
         public async Task<IActionResult> EditMWRFUInstallation([FromBody] EditMWRFUInstallationObject MW_RFU, int? TaskId)
         {
             try
@@ -1913,7 +1895,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("EditMwOtherInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditMWOtherInstallationObject))]
         public async Task<IActionResult> EditMwOtherInstallation([FromBody] EditMWOtherInstallationObject Mw_Other, int? TaskId)
         {
             try
@@ -1973,7 +1954,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("DismantleMWBUInstallation")]
-
         public IActionResult DismantleMWBUInstallation(string sitecode, int LoadId, string LoadName, int? TaskId)
         {
             try
@@ -2279,7 +2259,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetMWBUByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMWBUByIdInstallation(int MW_BU)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2324,7 +2304,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpGet("GetMWODUByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMWODUByIdInstallation(int MW_ODU)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2367,7 +2347,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetMWDishByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMWDishByIdInstallation(int MW_Dish)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2410,7 +2390,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetMWRFUByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMWRFUByIdInstallation(int MW_RFU)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2453,7 +2433,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetMWOtherByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddMWDishInstallationObject))]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetMWOtherByIdInstallation(int mwOther)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -2584,7 +2564,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("AddSolarInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddSolarInstallationObject))]
         public IActionResult AddSolarInstallation([FromBody] AddSolarInstallationObject addSolarViewModel, string SiteCode, int? TaskId)
         {
             try
@@ -2645,7 +2624,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddGeneratorInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddGeneratorInstallationObject))]
         public IActionResult AddGeneratorInstallation([FromBody] AddGeneratorInstallationObject addGeneratorViewModel, string SiteCode, int? TaskId)
         {
             try
@@ -2793,7 +2771,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("EditSolarInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditSolarInstallationObject))]
         public async Task<IActionResult> EditSolarInstallation([FromBody] EditSolarInstallationObject editSolarViewModel, int? TaskId)
         {
             try
@@ -2854,7 +2831,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("EditGeneratorInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditGeneratorInstallationObject))]
         public async Task<IActionResult> EditGeneratorInstallation([FromBody] EditGeneratorInstallationObject editGeneratorViewModel, int? TaskId)
         {
             try
@@ -2966,7 +2942,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetSolarBySiteWithEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(GetEnableAttribute))]
         public IActionResult GetSolarBySiteWithEnabledAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3009,7 +2985,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetGeneratorBySiteWithEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(GetEnableAttribute))]
         public IActionResult GetGeneratorBySiteWithEnabledAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3051,7 +3027,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("GetMWDishOnSiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(GetEnableAttribute))]
         public IActionResult GetMWDishOnSiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3094,7 +3070,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetMWBUOnSiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(GetEnableAttribute))]
         public IActionResult GetMWBUOnSiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3137,7 +3113,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetMWODUOnSiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(GetEnableAttribute))]
         public IActionResult GetMWODUOnSiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3181,7 +3157,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetMWRFUOnSiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(GetEnableAttribute))]
         public IActionResult GetMWRFUOnSiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3224,7 +3200,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetMWOtherOnSiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(GetEnableAttribute))]
         public IActionResult GetMWOtherOnSiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3269,7 +3245,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetSideArmByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAttsForSideArm))]
+        [ProducesResponseType(200, Type = typeof(GetForAddLoadObject))]
         public IActionResult GetSideArmByIdInstallation(int SideId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3291,7 +3267,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSideArmById(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString(), userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetSideArmByInternalId(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString(), userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -3302,7 +3278,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSideArmById(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString(), null, username);
+                var response = _unitOfWorkService.InternalApiService.GetSideArmByInternalId(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString(), null, username);
                 return Ok(response);
             }
             else
@@ -3313,7 +3289,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddSideArmInstallation")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public async Task<IActionResult> AddSideArmInstallation([FromBody] SideArmViewDto sideArmViewDto, string SiteCode, int? TaskId)
         {
             try
@@ -3373,7 +3348,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("UpdateSideArmInstallation")]
-        [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public async Task<IActionResult> UpdateSideArmInstallation([FromBody] EditSidearmInstallationObject SideArmViewModel, int? TaskId)
         {
             try
@@ -3433,7 +3407,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetAttForAddSideArmInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilLoadObject))]
         public IActionResult GetAttForAddSideArmInstallation(int LibId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3476,7 +3450,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("getSideArmsBySiteWithEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<object>))]
+        [ProducesResponseType(200, Type = typeof(GetEnableAttribute))]
         public IActionResult getSideArmsBySiteWithEnabledAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3519,7 +3493,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetCivilNonSteelLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilNonSteelLibraryEnabledAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3562,7 +3536,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddCivilNonSteelLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelLibraryObject))]
         public IActionResult AddCivilNonSteelLibrary([FromBody] AddCivilNonSteelLibraryObject addCivilNonSteelLibraryViewModel)
         {
             try
@@ -3613,7 +3586,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("GetCivilWithoutLegMastLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithoutLegMastLibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3655,7 +3628,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("GetCivilWithoutLegMonopoleLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithoutLegMonopoleLibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3697,7 +3670,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("GetCivilWithoutLegCapsuleLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithoutLegCapsuleLibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3739,7 +3712,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("GetMWODULibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetMWODULibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3782,7 +3755,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetMWBULibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetMWBULibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3825,7 +3798,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetMWOtherLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetMWOtherLibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3868,7 +3841,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddSolarLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult AddSolarLibraryEnabledAtt([FromBody] AddSolarLibraryObject addSolarLibrary)
         {
             try
@@ -3928,7 +3900,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("GetGeneratorLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetGeneratorLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] bool WithFilterData, [FromQuery] ParameterPagination parameters)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -3971,7 +3943,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddGeneratorLibrary")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult AddGeneratorLibrary([FromBody] AddGeneratorLibraryObject addGeneratorLibrary)
         {
             try
@@ -4032,7 +4003,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("AddMW_RFULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMW_RFULibraryViewModel))]
         public IActionResult AddMW_RFULibrary([FromBody] AddMWRFULibraryObject addMW_RFULibraryViewModel)
         {
             try
@@ -4093,7 +4063,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("GetMWRFULibraries")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetMWRFULibraries()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -4136,7 +4106,6 @@ namespace TLIS_API.Controllers
             
         }
         [HttpPost("AddMWOtherLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMWOtherLibraryObject))]
         public IActionResult AddMWOtherLibrary([FromBody] AddMWOtherLibraryObject addMW_OtherLibraryViewModel)
         {
             try
@@ -4196,7 +4165,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddMWBULibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMWBULibraryObject))]
         public IActionResult AddMWBULibrary([FromBody] AddMWBULibraryObject addMW_BULibraryViewModel)
         {
             try
@@ -4256,7 +4224,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddMWDishLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddMWDishLibraryObject))]
         public IActionResult AddMWDishLibrary([FromBody] AddMWDishLibraryObject addMW_BULibraryViewModel)
         {
             try
@@ -4316,7 +4283,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("GetMWDishLibraries")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetMWDishLibraries()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -4780,7 +4747,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddMWODULibrary")]
-        [ProducesResponseType(200, Type = typeof(ADDMWODULibraryObject))]
         public IActionResult AddMWODULibrary([FromBody] ADDMWODULibraryObject addMW_ODULibraryViewModel)
         {
             try
@@ -4840,7 +4806,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddCivilWithoutLegLibraryCapsule")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
         public IActionResult AddCivilWithoutLegLibraryCapsule([FromBody] AddCivilWithoutLegsLibraryObject addCivilWithoutLegLibraryViewModel)
         {
             try
@@ -4900,7 +4865,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddCivilWithoutLegLibraryMonople")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
         public IActionResult AddCivilWithoutLegLibraryMonople([FromBody] AddCivilWithoutLegsLibraryObject addCivilWithoutLegLibraryViewModel)
         {
             try
@@ -4960,7 +4924,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddCivilWithoutLegLibraryMast")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegsLibraryObject))]
         public IActionResult AddCivilWithoutLegLibraryMast([FromBody] AddCivilWithoutLegsLibraryObject addCivilWithoutLegLibraryViewModel)
         {
             try
@@ -5020,7 +4983,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddCivilWithLegLibrary")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithLegsLibraryObject))]
         public IActionResult AddCivilWithLegLibrary([FromBody] AddCivilWithLegsLibraryObject CivilWithLegLibraryViewModel)
         {
             try
@@ -5080,7 +5042,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("GetCivilWithLegLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithLegLibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5123,7 +5085,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetSolarLibraryEnabledAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetSolarLibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5166,7 +5128,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetAttForAddCivilWithLegsInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
         public IActionResult GetAttForAddCivilWithLegsInstallation(int CivilLibraryId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5210,7 +5172,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("GetCivilWithLegsBySiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithLegsBySiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5252,7 +5214,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetCivilWithoutLegMastBySiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithoutLegMastBySiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5295,7 +5257,8 @@ namespace TLIS_API.Controllers
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegMonopoleBySiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
+        
         public IActionResult GetCivilWithoutLegMonopoleBySiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5338,7 +5301,7 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegCapsuleBySiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithoutLegCapsuleBySiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5380,7 +5343,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("GetCivilNonSteelBySiteWithEnableAtt")]
-        [ProducesResponseType(200, Type = typeof(Response<ReturnWithFilters<object>>))]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilNonSteelBySiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5422,7 +5385,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetForAddCivilWithOutLeg_CapsuleInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetForAddCivilWithOutLeg_CapsuleInstallation(int CivilLibraryId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5464,7 +5427,7 @@ namespace TLIS_API.Controllers
         }
         ///[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetForAddCivilWithOutLeg_MastInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetForAddCivilWithOutLeg_MastInstallation(int CivilLibraryId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5506,7 +5469,7 @@ namespace TLIS_API.Controllers
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetForAddCivilWithOutLeg_MonopleInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetForAddCivilWithOutLeg_MonopleInstallation(int CivilLibraryId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5547,7 +5510,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetAttForAddCivilNonSteelInstallation")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetAttForAddCivilNonSteelInstallation(int CivilLibraryId, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5588,7 +5551,6 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("AddCivilWithLegsInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithLegsViewModel))]
         public IActionResult AddCivilWithLegsInstallation([FromBody] AddCivilWithLegsViewModel addCivilWithLeg, string SiteCode, int? TaskId)
         {
             try
@@ -5650,7 +5612,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("AddCivilWithoutLegsInstallationMast")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
         public IActionResult AddCivilWithoutLegsInstallationMast([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId)
         {
             try
@@ -5711,7 +5672,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddCivilWithoutLegsInstallationMonople")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
         public IActionResult AddCivilWithoutLegsInstallationMonople([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId)
         {
             try
@@ -5772,7 +5732,6 @@ namespace TLIS_API.Controllers
 
         }
         [HttpPost("AddCivilWithoutLegsInstallationCapsule")]
-        [ProducesResponseType(200, Type = typeof(AddCivilWithoutLegViewModel))]
         public IActionResult AddCivilWithoutLegsInstallationCapsule([FromBody] AddCivilWithoutLegViewModel addCivilWithoutLeg, string SiteCode, int? TaskId)
         {
             try
@@ -5834,7 +5793,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("AddCivilNonSteelInstallation")]
-        [ProducesResponseType(200, Type = typeof(AddCivilNonSteelObject))]
         public IActionResult AddCivilNonSteelInstallation([FromBody] AddCivilNonSteelObject addCivilNonSteel, string SiteCode, int? TaskId)
         {
             try
@@ -5893,8 +5851,8 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetForAddCivilWithLegObject")]
-        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
+        [HttpGet("GetForAddCivilWithLegIntallation")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithLegObject>))]
         public IActionResult GetCivilWithLegsByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5936,7 +5894,7 @@ namespace TLIS_API.Controllers
 
         }
         [HttpGet("GetCivilWithoutLegsMastByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetCivilWithoutLegsMastByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -5977,7 +5935,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetCivilWithoutLegsMonopleByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetCivilWithoutLegsMonopleByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -6018,7 +5976,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetCivilWithoutLegsCapsuleByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetCivilWithoutLegsCapsuleByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -6059,7 +6017,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpGet("GetCivilNonSteelByIdInstallation")]
-        [ProducesResponseType(200, Type = typeof(GetForAddCivilWithLegObject))]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetCivilNonSteelByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -6102,7 +6060,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("EditCivilWithLegsInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditCivilWithLegsInstallationObject))]
         public async Task<IActionResult> EditCivilWithLegsInstallation([FromBody] EditCivilWithLegsInstallationObject CivilWithLeg, int? TaskId)
         {
             try
@@ -6163,7 +6120,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("EditCivilWithoutLegsInstallationCapsule")]
-        [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
         public async Task<IActionResult> EditCivilWithoutLegsInstallationCapsule([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int? TaskId)
         {
             try
@@ -6224,7 +6180,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("EditCivilWithoutLegsInstallationMast")]
-        [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
         public async Task<IActionResult> EditCivilWithoutLegsInstallationMast([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int? TaskId)
         {
             try
@@ -6285,7 +6240,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("EditCivilWithoutLegsInstallationMonople")]
-        [ProducesResponseType(200, Type = typeof(EditCivilWithoutLegsInstallationObject))]
         public async Task<IActionResult> EditCivilWithoutLegsInstallationMonople([FromBody] EditCivilWithoutLegsInstallationObject CivilWithoutLeg, int? TaskId)
         {
             try
@@ -6346,7 +6300,6 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("EditCivilNonSteelInstallation")]
-        [ProducesResponseType(200, Type = typeof(EditCivilNonSteelInstallationObject))]
         public async Task<IActionResult> EditCivilNonSteelInstallation([FromBody] EditCivilNonSteelInstallationObject CivilNonSteel, int? TaskId)
         {
             try
