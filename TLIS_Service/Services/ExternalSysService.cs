@@ -451,7 +451,7 @@ namespace TLIS_Service.Services
                 "https://localhost:44311/",
                 "https://localhost:44311/",
                 claims,
-                expires: DateTime.Now.AddMinutes(LifeTime), // Expiry from configuration
+                expires: DateTime.Now.AddDays(LifeTime), // Expiry from configuration
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

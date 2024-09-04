@@ -3412,8 +3412,6 @@ namespace TLIS_API.Controllers
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
-
-
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 
@@ -3494,7 +3492,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetCivilNonSteelLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
-        public IActionResult GetCivilNonSteelLibraryEnabledAtt([FromQuery] string? SiteCode)
+        public IActionResult GetCivilNonSteelLibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -5851,7 +5849,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetForAddCivilWithLegIntallation")]
+        [HttpGet("GetForAddCivilWithLegIntsallation")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithLegObject>))]
         public IActionResult GetCivilWithLegsByIdInstallation(int CivilId)
         {
