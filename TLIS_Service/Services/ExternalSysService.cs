@@ -37,6 +37,7 @@ using TLIS_DAL.Helper.Filters;
 using System.IO;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using Microsoft.Extensions.Configuration;
+using Nancy.Bootstrapper;
 namespace TLIS_Service.Services
 {
     internal class ExternalSysService : IexternalSysService
@@ -75,7 +76,7 @@ namespace TLIS_Service.Services
                     db.SaveChanges();
                     if (mod.IsToken == true)
                     {
-                        ext.Token = BuildToken(ext.Id, ext.UserName, secretKey);
+                        ext.Token = BuildToken(ext.Id, ext.UserName, secretKey, ext.LifeTime);
 
                     }
                     else
@@ -137,7 +138,7 @@ namespace TLIS_Service.Services
                     ext.IsActive = sys.IsActive;
                     if (mod.IsToken == true)
                     {
-                        ext.Token = BuildToken(mod.Id, mod.UserName, secretKey);
+                        ext.Token = BuildToken(mod.Id, mod.UserName, secretKey, mod.LifeTime);
 
                     }
                     else
@@ -308,7 +309,7 @@ namespace TLIS_Service.Services
 
             }
             var secretKey = _config["JWT:Key"];
-            system.Token = BuildToken(system.Id, system.UserName, secretKey);
+            system.Token = BuildToken(system.Id, system.UserName, secretKey, system.LifeTime);
             system.StartLife = DateTime.Now;
             system.EndLife = system.StartLife.AddDays(system.LifeTime);
 
@@ -435,7 +436,7 @@ namespace TLIS_Service.Services
             return sys;
         }
 
-        public string BuildToken(int userId, string userName, string secretKey)
+        public string BuildToken(int userId, string userName, string secretKey,int LifeTime)
         {
             List<Claim> claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()), // Use userId for Sub claim
@@ -450,7 +451,7 @@ namespace TLIS_Service.Services
                 "https://localhost:44311/",
                 "https://localhost:44311/",
                 claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToInt32(_config["expireToken"])), // Expiry from configuration
+                expires: DateTime.Now.AddMinutes(LifeTime), // Expiry from configuration
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
