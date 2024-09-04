@@ -244,6 +244,10 @@ namespace TLIS_Service.IService
         Response<GetEnableAttribute> GetRadioOtherLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
         Response<GetEnableAttribute> GetRadioRRULibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
         Response<GetEnableAttribute> GetRadioAntennaLibrariesEnabledAtt(string ConnectionString, int? UserId, string UserName);
+        Response<CivilLoads> GetRelationshipBetweenloads(int LoadId, string Loadname, string sitecode, int? UserId, string UserName);
+        Response<CheckLoadAndSideArmOnCivil> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType, int? UserId, string UserName);
+
+
     }
 
 }

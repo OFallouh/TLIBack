@@ -309,7 +309,7 @@ namespace TLIS_API.Controllers
         }
        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetRelationshipBetweenloads")]
-        [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
+        [ProducesResponseType(200, Type = typeof(CivilLoads))]
         public IActionResult GetRelationshipBetweenloads(int loadid, string Loadname,string SiteCode)
         {
             var response = _unitOfWorkService.CivilInstService.GetRelationshipBetweenloads(loadid, Loadname, SiteCode);
