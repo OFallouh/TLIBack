@@ -251,6 +251,7 @@ namespace TLIS_Service.IService
         Response<AddDynamicObject> GetDynamicLibraryById(int id, int? UserId, string UserName);
         Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId, int? UserId, string UserName);
         Response<ReturnWithFilters<DynamicAttViewModel>> GetDynamicAttsByTableName(List<FilterObjectList> filters, ParameterPagination parameters, string TableName, int? CategoryId, int? UserId, string UserName);
+        Response<CivilLoads> GetLoadsOnSideArm(int SideArmId, int? UserId, string UserName);
     }
 
 }
