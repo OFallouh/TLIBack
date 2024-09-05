@@ -8888,14 +8888,14 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    TLIdynamicAtt OldDynamicAttData = _dbContext.TLIdynamicAtt.Include(x => x.DataType).Include(x=>x.tablesNames).AsQueryable().AsNoTracking()
-                        .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttributeId);
-                    if (OldDynamicAttData != null)
+                    TLIdynamicAtt OldDynamicAttData = _dbContext.TLIdynamicAtt.Include(x => x.DataType).Include(x => x.tablesNames).AsQueryable().AsNoTracking()
+                       .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttributeId && !x.disable);
+                    if (OldDynamicAttData == null)
                         return new Response<AddDynamicObject>(true, null, null, $"This DynamicAttribute is not found", (int)Constants.ApiReturnCode.fail);
-                    var DynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == DynamicAttViewModel.general.name.ToLower());
-                    if(DynamicAttribute !=null)
+                    var DynamicAttribute = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(x => x.Key.ToLower() == DynamicAttViewModel.general.name.ToLower() && x.Id != DynamicAttributeId, x => x.tablesNames);
+                    if (DynamicAttribute != null)
                         return new Response<AddDynamicObject>(true, null, null, $"This Key {DynamicAttViewModel.general.name} is Already Exist in Table {DynamicAttribute.tablesNames.TableName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
-                    var NewDynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == DynamicAttributeId);
+                    var NewDynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == DynamicAttributeId && !x.disable);
                     NewDynamicAttribute.Key = DynamicAttViewModel.general.name;
                     NewDynamicAttribute.Description = DynamicAttViewModel.general.description;
                     _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAttData, NewDynamicAttribute);
