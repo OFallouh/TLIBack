@@ -284,7 +284,7 @@ namespace TLIS_API.Controllers.DynamicAtt
             return Ok(response);
 
         }
-        [HttpPost("GetDynamicLibraryById")]
+        [HttpPost("GetDynamicById")]
         [ProducesResponseType(200, Type = typeof(FirstStepAddDependencyViewModel))]
         public IActionResult GetDynamicLibraryById(int DynamicAttributeId)
         {

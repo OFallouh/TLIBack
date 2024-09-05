@@ -248,6 +248,9 @@ namespace TLIS_Service.IService
         Response<CheckLoadAndSideArmOnCivil> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType, int? UserId, string UserName);
 
         Response<GetForAddCivilLibrarybject> GetForAddOtherInventoryLibrary(string TableName, int? UserId, string UserName);
+        Response<AddDynamicObject> GetDynamicLibraryById(int id, int? UserId, string UserName);
+        Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId, int? UserId, string UserName);
+        Response<ReturnWithFilters<DynamicAttViewModel>> GetDynamicAttsByTableName(List<FilterObjectList> filters, ParameterPagination parameters, string TableName, int? CategoryId, int? UserId, string UserName);
     }
 
 }
