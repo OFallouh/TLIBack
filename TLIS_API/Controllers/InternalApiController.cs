@@ -6357,7 +6357,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("DismantleCivilWithLegsInstallation")]
-        public IActionResult DismantleCivilWithLegsInstallationMast(string SiteCode, int CivilId, int? TaskId)
+        public IActionResult DismantleCivilWithLegsInstallation(string SiteCode, int CivilId, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -6505,7 +6505,7 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("DismantleCivilWithoutLegsInstallationMast")]
-        public IActionResult DismantleCivilWithoutLegsInstallation(string SiteCode, int CivilId, int? TaskId)
+        public IActionResult DismantleCivilWithoutLegsInstallationMast(string SiteCode, int CivilId, int? TaskId)
         {
             try
             {
