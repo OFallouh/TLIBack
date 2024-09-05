@@ -128,7 +128,7 @@ namespace TLIS_API.Controllers.DynamicAtt
         }
         [HttpPost("EditDynamicAttribute")]
         [ProducesResponseType(200, Type = typeof(List<AddDynamicObject>))]
-        public IActionResult EditDynamicAttribute(int DynamicAttributeId,[FromBody] AddDynamicObject addDynamicObject)
+        public async Task<IActionResult> EditDynamicAttribute(int DynamicAttributeId,[FromBody] AddDynamicObject addDynamicObject)
         {
             if (ModelState.IsValid)
             {
@@ -151,7 +151,7 @@ namespace TLIS_API.Controllers.DynamicAtt
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var responceResult = _unitOfWorkService.DynamicAttService.EditDynamicAttribute(DynamicAttributeId, addDynamicObject, userId, ConnectionString);
+                var responceResult = await _unitOfWorkService.DynamicAttService.EditDynamicAttribute(DynamicAttributeId, addDynamicObject, userId, ConnectionString);
                 return Ok(responceResult);
             }
             else

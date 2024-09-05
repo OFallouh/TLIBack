@@ -247,7 +247,7 @@ namespace TLIS_Service.IService
         Response<CivilLoads> GetRelationshipBetweenloads(int LoadId, string Loadname, string sitecode, int? UserId, string UserName);
         Response<CheckLoadAndSideArmOnCivil> GetLoadsAndSideArmsForCivil(int CivilId, string CivilType, int? UserId, string UserName);
 
-
+        Response<GetForAddCivilLibrarybject> GetForAddOtherInventoryLibrary(string TableName, int? UserId, string UserName);
     }
 
 }

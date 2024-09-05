@@ -584,7 +584,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.EditDynamicAttribute(DynamicAttributeId, dynamicAttViewModel, userId, connectionString, null);
+                    var response =await _unitOfWorkService.InternalApiService.EditDynamicAttribute(DynamicAttributeId, dynamicAttViewModel, userId, connectionString, null);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -595,7 +595,7 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.EditDynamicAttribute(DynamicAttributeId, dynamicAttViewModel, null, connectionString, username);
+                    var response =await _unitOfWorkService.InternalApiService.EditDynamicAttribute(DynamicAttributeId, dynamicAttViewModel, null, connectionString, username);
                     return Ok(response);
                 }
                 else
@@ -3899,7 +3899,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("GetGeneratorLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
-        public IActionResult GetGeneratorLibraryEnabledAtt([FromBody] CombineFilters CombineFilters, [FromQuery] bool WithFilterData, [FromQuery] ParameterPagination parameters)
+        public IActionResult GetGeneratorLibraryEnabledAtt()
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -5851,7 +5851,7 @@ namespace TLIS_API.Controllers
         }
         [HttpGet("GetForAddCivilWithLegIntsallation")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithLegObject>))]
-        public IActionResult GetCivilWithLegsByIdInstallation(int CivilId)
+        public IActionResult GetForAddCivilWithLegIntsallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -6809,5 +6809,89 @@ namespace TLIS_API.Controllers
             }
            
         }
+        [HttpGet("GetForAddGeneratorLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddGeneratorLibrary()
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetForAddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetForAddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+          
+        }
+        [HttpGet("GetForAddSolarLibrary")]
+        [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
+        public IActionResult GetForAddSolarLibrary()
+
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetForAddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetForAddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+         
+        }
+
     }
 }

@@ -154,6 +154,25 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.ImportSiteDataService.MigrationFiles(File, ConnectionString);
             return Ok(response);
         }
+
+        [HttpPost("ImportGeneratorInstallation")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult ImportGeneratorInstallation()
+        {
+            var File = Request.Form.Files[0];
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.ImportSiteDataService.ImportGeneratorInstallation(File, ConnectionString);
+            return Ok(response);
+        }
+        [HttpPost("ImportSolarInstallation")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult ImportSolarInstallation()
+        {
+            var File = Request.Form.Files[0];
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.ImportSiteDataService.ImportSolarInstallation(File, ConnectionString);
+            return Ok(response);
+        }
     }
 }
 

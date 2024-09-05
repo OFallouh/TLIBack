@@ -22,7 +22,6 @@ namespace TLIS_DAL.ViewModels.RadioOtherDTOs
             public string? Notes { get; set; } = " ";
             public float HeightBase { get; set; } = 0;
             public float HeightLand { get; set; } = 0;
-            public TLIowner owner { get; set; }
             public int? ownerId { get; set; }
             public float CenterHigh { get; set; } = 0;
             public float HBA { get; set; } = 0;
