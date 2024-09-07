@@ -11850,7 +11850,9 @@ namespace TLIS_Service.Services
                                     }
 
                                 }
-                                else if (addDynamicObject.type == 0)
+                                var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
+                                var Validationvalue = addDynamicObject.validation.value?.ToString().Trim();
+                                if (addDynamicObject.type == 0)
                                 {
                                     TLIdynamicAtt tLIdynamicAtt = new TLIdynamicAtt()
                                     {
@@ -12079,7 +12081,7 @@ namespace TLIS_Service.Services
                                         }
                                     }
                                 }
-                                if (addDynamicObject.type == 1)
+                                else if (addDynamicObject.type == 1)
                                 {
                                     if (addDynamicObject.validation != null)
                                     {
@@ -12208,27 +12210,27 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            result = defultvalue == Validationvalue;
                                                             break;
 
                                                         case 2:
-                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            result = defultvalue != Validationvalue;
                                                             break;
 
                                                         case 3:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 4:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 5:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 6:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
                                                             break;
                                                     }
 
@@ -12272,27 +12274,27 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            result = defultvalue == addDynamicObject.validation.value;
                                                             break;
 
                                                         case 2:
-                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            result = defultvalue != addDynamicObject.validation.value;
                                                             break;
 
                                                         case 3:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 4:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 5:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 6:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
                                                             break;
                                                     }
 
@@ -12336,11 +12338,11 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            result = defultvalue == Validationvalue;
                                                             break;
 
                                                         case 2:
-                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            result = defultvalue != Validationvalue;
                                                             break;
 
 
@@ -12469,27 +12471,27 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            result = defultvalue == Validationvalue;
                                                             break;
 
                                                         case 2:
-                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            result = defultvalue!= Validationvalue;
                                                             break;
 
                                                         case 3:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 4:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 5:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 6:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
                                                             break;
                                                     }
 
@@ -12533,27 +12535,27 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            result = defultvalue == Validationvalue;
                                                             break;
 
                                                         case 2:
-                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            result = defultvalue != Validationvalue;
                                                             break;
 
                                                         case 3:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 4:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 5:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
                                                             break;
 
                                                         case 6:
-                                                            result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                            result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
                                                             break;
                                                     }
 
@@ -12597,11 +12599,11 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                            result = defultvalue == Validationvalue;
                                                             break;
 
                                                         case 2:
-                                                            result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                            result = defultvalue != Validationvalue;
                                                             break;
 
 
@@ -15307,7 +15309,6 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
                                                     if (addDynamicObject.general.dataType == 1)
                                                     {
                                                         TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
@@ -17952,7 +17953,6 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
                                                     if (addDynamicObject.general.dataType == 1)
                                                     {
                                                         TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
@@ -18043,7 +18043,7 @@ namespace TLIS_Service.Services
                                         if (addDynamicObject.validation != null)
                                         {
                                             var TabelNameTLIvalidation = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIvalidation").Id;
-
+                                          
                                             if (addDynamicObject.general.dataType == 1)
                                             {
                                                 TLIvalidation tLIvalidation = new TLIvalidation()
@@ -18100,27 +18100,27 @@ namespace TLIS_Service.Services
                                                 switch (addDynamicObject.validation.operation)
                                                 {
                                                     case 1:
-                                                        result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                        result = defultvalue == Validationvalue;
                                                         break;
 
                                                     case 2:
-                                                        result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                        result = defultvalue != Validationvalue;
                                                         break;
 
                                                     case 3:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                        result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
                                                         break;
 
                                                     case 4:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                        result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
                                                         break;
 
                                                     case 5:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                        result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
                                                         break;
 
                                                     case 6:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                        result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
                                                         break;
                                                 }
 
@@ -18145,27 +18145,27 @@ namespace TLIS_Service.Services
                                                 switch (addDynamicObject.validation.operation)
                                                 {
                                                     case 1:
-                                                        result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                        result = defultvalue == Validationvalue;
                                                         break;
 
                                                     case 2:
-                                                        result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                        result = defultvalue != Validationvalue;
                                                         break;
 
                                                     case 3:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) < Convert.ToDecimal(addDynamicObject.validation.value);
+                                                        result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
                                                         break;
 
                                                     case 4:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) > Convert.ToDecimal(addDynamicObject.validation.value);
+                                                        result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
                                                         break;
 
                                                     case 5:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) <= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                        result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
                                                         break;
 
                                                     case 6:
-                                                        result = Convert.ToDecimal(addDynamicObject.general.defualtValue) >= Convert.ToDecimal(addDynamicObject.validation.value);
+                                                        result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
                                                         break;
                                                 }
 
@@ -18190,11 +18190,11 @@ namespace TLIS_Service.Services
                                                 switch (addDynamicObject.validation.operation)
                                                 {
                                                     case 1:
-                                                        result = addDynamicObject.general.defualtValue == addDynamicObject.validation.value;
+                                                        result = defultvalue == Validationvalue;
                                                         break;
 
                                                     case 2:
-                                                        result = addDynamicObject.general.defualtValue != addDynamicObject.validation.value;
+                                                        result = defultvalue != Validationvalue;
                                                         break;
 
 
