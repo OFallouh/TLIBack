@@ -3290,7 +3290,7 @@ namespace TLIS_Repository.Repositories
                                     result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
                                     if (!result)
                                     {
-                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -3322,7 +3322,7 @@ namespace TLIS_Repository.Repositories
                                     result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
                                     if (!result)
                                     {
-                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -3354,7 +3354,7 @@ namespace TLIS_Repository.Repositories
                                     result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
                                     if (!result)
                                     {
-                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -3386,7 +3386,7 @@ namespace TLIS_Repository.Repositories
                                     result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
                                     if (!result)
                                     {
-                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -3418,7 +3418,7 @@ namespace TLIS_Repository.Repositories
                                     result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
                                     if (!result)
                                     {
-                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -3450,7 +3450,7 @@ namespace TLIS_Repository.Repositories
                                     result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
                                     if (!result)
                                     {
-                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -3493,7 +3493,7 @@ namespace TLIS_Repository.Repositories
                                     result = bool.Parse(Comporsevalue) == Validation.ValueBoolean;
                                     if (!result)
                                     {
-                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueBoolean} must be equle {Validation.ValueBoolean}  ", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -3524,7 +3524,7 @@ namespace TLIS_Repository.Repositories
                                     result = Convert.ToBoolean(Comporsevalue) != Validation.ValueBoolean;
                                     if (!result)
                                     {
-                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueBoolean} must not equle {Validation.ValueBoolean}", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     else
                                     {
@@ -8868,7 +8868,7 @@ namespace TLIS_Repository.Repositories
                                         result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
@@ -8900,7 +8900,7 @@ namespace TLIS_Repository.Repositories
                                         result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
@@ -8932,7 +8932,7 @@ namespace TLIS_Repository.Repositories
                                         result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
@@ -8964,7 +8964,7 @@ namespace TLIS_Repository.Repositories
                                         result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
@@ -8996,7 +8996,7 @@ namespace TLIS_Repository.Repositories
                                         result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
@@ -9028,7 +9028,7 @@ namespace TLIS_Repository.Repositories
                                         result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
@@ -9071,7 +9071,7 @@ namespace TLIS_Repository.Repositories
                                         result = bool.Parse(Comporsevalue) == Validation.ValueBoolean;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueBoolean} must be equle {Validation.ValueBoolean}  ", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
@@ -9102,7 +9102,7 @@ namespace TLIS_Repository.Repositories
                                         result = Convert.ToBoolean(Comporsevalue) != Validation.ValueBoolean;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueBoolean} must not equle {Validation.ValueBoolean}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {

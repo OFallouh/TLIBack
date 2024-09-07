@@ -3368,8 +3368,9 @@ namespace TLIS_Service.Services
                     SpaceLibrary.Value = SpaceLibraries.ToArray();
 
                     OracleParameter VerticalMeasured = new OracleParameter();
-                    VerticalMeasured.OracleDbType = OracleDbType.Boolean;
-                    VerticalMeasured.Value = VerticalMeasuredList.ToArray();
+                    VerticalMeasured.OracleDbType = OracleDbType.Int32; 
+                    VerticalMeasured.Value = VerticalMeasuredList.Select(v => v ? 1 : 0).ToArray();
+
 
                     OracleParameter civilNonSteelTypeId = new OracleParameter();
                     civilNonSteelTypeId.OracleDbType = OracleDbType.Int32;
@@ -3442,65 +3443,66 @@ namespace TLIS_Service.Services
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();
                     var civilNonSteelLibraryList = new List<TLIcivilNonSteelLibrary>();
-
-                    for (int i = 0; i < models.Count; i++)
+                    if (InsertedIds.Count > 0)
                     {
-                        civilNonSteelLibraryList.Add(new TLIcivilNonSteelLibrary
+                        for (int i = 0; i < models.Count; i++)
                         {
-                            Id = InsertedIds[i],
-                            Model = models[i],
-                            Note = notes[i],
-                            Prefix = Prefixs[i],
-                            Hight = Heights[i],
-                            SpaceLibrary = SpaceLibraries[i],
-                            VerticalMeasured = VerticalMeasuredList[i],
-                            civilNonSteelTypeId = civilNonSteelTypeIds[i],
-                            NumberofBoltHoles = NumberofBoltHolesList[i],
-                            WidthVariation = WidthVariations[i],
-                            Manufactured_Max_Load = Manufactured_Max_Loads[i],
-                          
-                        });
-                    }
-
-
-                    foreach (int recordId in InsertedIds)
-                    {
-                        var RecordName = civilNonSteelLibraryList.FirstOrDefault(x => x.Id == recordId);
-                        if (RecordName != null)
-                        {
-                            var attributeNames = RecordName.GetType().GetProperties()
-                                .Where(x =>
-                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                        new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                        .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                    .Contains(x.PropertyType)
-                                )
-                                .ToList();
-
-                            foreach (var propertyInfo in attributeNames)
+                            civilNonSteelLibraryList.Add(new TLIcivilNonSteelLibrary
                             {
+                                Id = InsertedIds[i],
+                                Model = models[i],
+                                Note = notes[i],
+                                Prefix = Prefixs[i],
+                                Hight = Heights[i],
+                                SpaceLibrary = SpaceLibraries[i],
+                                VerticalMeasured = VerticalMeasuredList[i],
+                                civilNonSteelTypeId = civilNonSteelTypeIds[i],
+                                NumberofBoltHoles = NumberofBoltHolesList[i],
+                                WidthVariation = WidthVariations[i],
+                                Manufactured_Max_Load = Manufactured_Max_Loads[i],
 
-                                var propertyName = propertyInfo.Name;
+                            });
+                        }
 
-                                var propertyValue = propertyInfo.GetValue(RecordName)?.ToString().Trim();
 
-                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                        foreach (int recordId in InsertedIds)
+                        {
+                            var RecordName = civilNonSteelLibraryList.FirstOrDefault(x => x.Id == recordId);
+                            if (RecordName != null)
+                            {
+                                var attributeNames = RecordName.GetType().GetProperties()
+                                    .Where(x =>
+                                        (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                            new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                            .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                        || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                        .Contains(x.PropertyType)
+                                    )
+                                    .ToList();
+
+                                foreach (var propertyInfo in attributeNames)
                                 {
-                                    HistoryId = tLIhistory.Id,
-                                    TablesNameId = TableNameEntity.Id,
-                                    RecordId = recordId.ToString(),
-                                    AttributeName = propertyName,
-                                    NewValue = propertyValue
-                                };
+
+                                    var propertyName = propertyInfo.Name;
+
+                                    var propertyValue = propertyInfo.GetValue(RecordName)?.ToString().Trim();
+
+                                    TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                    {
+                                        HistoryId = tLIhistory.Id,
+                                        TablesNameId = TableNameEntity.Id,
+                                        RecordId = recordId.ToString(),
+                                        AttributeName = propertyName,
+                                        NewValue = propertyValue
+                                    };
 
 
-                                _dbContext.TLIhistoryDet.Add(tLIhistoryDet);
+                                    _dbContext.TLIhistoryDet.Add(tLIhistoryDet);
+                                }
                             }
                         }
+                        _dbContext.SaveChanges();
                     }
-                    _dbContext.SaveChanges();
-
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         for (int k = 0; k < DynamicAtt.Item3.Count; k++)
