@@ -23096,7 +23096,7 @@ namespace TLIS_Service.Services
                         catch (NullReferenceException)
                         {
                             System.IO.File.Delete(FilePath);
-                            return new Response<string>("The worksheet 'Generator' is missing.");
+                            throw new Exception("The worksheet 'Generator' is missing.");
                         }
                         int GeneratorColumns = GeneratorSheet.Dimension.End.Column;
 
@@ -23739,7 +23739,7 @@ namespace TLIS_Service.Services
                         catch (NullReferenceException)
                         {
                             System.IO.File.Delete(FilePath);
-                            return new Response<string>("The worksheet 'Solar' is missing.");
+                            throw new Exception("The worksheet 'Solar' is missing.");
                         }
                         int SolarColumns = SolarSheet.Dimension.End.Column;
 

@@ -583,6 +583,39 @@ namespace TLIS_API.Controllers
             return File(bytes, contentType, Path.GetFileName(fullPath));
 
         }
+        //[ServiceFilter(typeof(WorkFlowMiddleware))]
+        [HttpPost("EditSiteDetalis")]
+        [ProducesResponseType(200, Type = typeof(List<object>))]
+        public async Task<IActionResult> EditSiteDetalis([FromBody]SiteDetailsObject siteDetailsObject, int? TaskId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
 
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.SiteService.EditSiteDetalis(siteDetailsObject,TaskId, userId);
+            return Ok(response);
+        }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetSiteDetails")]
+        public IActionResult GetSiteDetails(string SiteCode)
+        {
+            var response = _unitOfWorkService.SiteService.GetSiteDetails(SiteCode);
+            return Ok(response);
+        }
     }
 }

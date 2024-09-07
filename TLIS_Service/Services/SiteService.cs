@@ -228,6 +228,140 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public Response<SiteDetailsObject> EditSiteDetalis(SiteDetailsObject siteDetailsObject, int? TaskId, int UserId)
+        {
+            using (TransactionScope transaction = new TransactionScope())
+            {
+                try
+                {
+                    var OldSiteSelected = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
+                    var SiteSelected = _context.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
+                    if(SiteSelected != null)
+                    {
+                        var planTypeValues = siteDetailsObject.PlanType.Select(pt => ((int)pt).ToString());
+                        SiteSelected.PlanType = string.Join(",", planTypeValues);
+
+                        foreach (var item in siteDetailsObject.PlanType)
+                        {
+                            if(item == Enums.PlanType.CollectData)
+                            {
+                                SiteSelected.PlanStatusCollectData= (int?)siteDetailsObject.CollectData.PlanStatus;
+                                SiteSelected.pendingTypeCollectData= (int?)siteDetailsObject.CollectData.PendingType;
+                                SiteSelected.MWValidationRemarkCollectData= siteDetailsObject.CollectData.MwValidationRemark;
+                                SiteSelected.MWValidationStatusCollectDate= (int?)siteDetailsObject.CollectData.MwValidationStatus;
+                                SiteSelected.RadioVStatusCollectData= (int?)siteDetailsObject.CollectData.RadioValidationStatus;
+                                SiteSelected.RadioVRemarkCollectData= siteDetailsObject.CollectData.RadioValidationRemark;
+                                SiteSelected.PowerVStatusCollectData= (int?)siteDetailsObject.CollectData.PowerValidationStatus;
+                                SiteSelected.PowerVRemarkCollectData= siteDetailsObject.CollectData.PowerValidationRemark;
+                            }
+                            else if (item == Enums.PlanType.MWMD)
+                            {
+                                SiteSelected.MdTypeMWMd = (int?)siteDetailsObject.MWMd.MdType;
+                                SiteSelected.DescriptionMWMd = siteDetailsObject.MWMd.Description;
+                                SiteSelected.PlanStatusMWMd = (int?)siteDetailsObject.MWMd.PlanStatus;
+                                SiteSelected.pendingTypeMWMd = (int?)siteDetailsObject.MWMd.PendingType;
+                                SiteSelected.MWValidationStatusMWMd = (int?)siteDetailsObject.MWMd.MwValidationStatus;
+                                SiteSelected.MWValidationRemarkMWMd = siteDetailsObject.MWMd.MwValidationRemark;
+                            }
+                            else if (item == Enums.PlanType.RadioMD) 
+                            {
+                                SiteSelected.MdTypeRadioMd = (int?)siteDetailsObject.RadioMd.MdType;
+                                SiteSelected.DescriptionRadioMd = siteDetailsObject.RadioMd.Description;
+                                SiteSelected.PlanStatusRadioMd = (int?)siteDetailsObject.RadioMd.PlanStatus;
+                                SiteSelected.pendingTypeRadioMd = (int?)siteDetailsObject.RadioMd.PendingType;
+                                SiteSelected.RadioVStatusRadioMd = (int?)siteDetailsObject.RadioMd.RadioValidationStatus;
+                                SiteSelected.RadioVRemarkRadioMd = siteDetailsObject.RadioMd.RadioValidationRemark;
+                            }
+                            else if (item == Enums.PlanType.PowerMD)
+                            {
+                                SiteSelected.MdTypePowerMd = (int?)siteDetailsObject.PowerMd.MdType;
+                                SiteSelected.DescriptionPowerMd = siteDetailsObject.PowerMd.Description;
+                                SiteSelected.PlanStatusPowerMd = (int?)siteDetailsObject.PowerMd.PlanStatus;
+                                SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
+                                SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
+                                SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
+                            }
+                            _unitOfWork.SiteRepository.UpdateSiteWithHistory(UserId, OldSiteSelected, SiteSelected);
+                            _unitOfWork.SaveChanges();
+                        }
+                           
+                    }
+                    else
+                    {
+                        return new Response<SiteDetailsObject>(true, null, null, "This Site Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    transaction.Complete();
+                    return new Response<SiteDetailsObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                catch (Exception err)
+                {
+                    return new Response<SiteDetailsObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+        public Response<SiteDetailsObject> GetSiteDetails(string siteCode)
+        {
+            try
+            {
+                var siteSelected = _context.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() == siteCode.ToLower());
+
+                if (siteSelected == null)
+                    return new Response<SiteDetailsObject>(true, null, null, "This Site Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                var siteDetailsObject = new SiteDetailsObject
+                {
+                    SiteCode = siteSelected.SiteCode,
+                    PlanType = siteSelected.PlanType.Split(',').Select(pt => (Enums.PlanType)Enum.Parse(typeof(Enums.PlanType), pt)).ToList(),
+                    CollectData = new CollectData
+                    {
+                        PlanStatus = siteSelected.PlanStatusCollectData.HasValue ? (Enums.CollectionDataPlanStatus?)siteSelected.PlanStatusCollectData : null,
+                        PendingType = siteSelected.pendingTypeCollectData.HasValue ? (Enums.CollectionDataPendingType?)siteSelected.pendingTypeCollectData : null,
+                        MwValidationStatus = siteSelected.MWValidationStatusCollectDate.HasValue ? (Enums.ValidationStatus?)siteSelected.MWValidationStatusCollectDate : null,
+                        MwValidationRemark = siteSelected.MWValidationRemarkCollectData,
+                        RadioValidationStatus = siteSelected.RadioVStatusCollectData.HasValue ? (Enums.RadioValidationStatus?)siteSelected.RadioVStatusCollectData : null,
+                        RadioValidationRemark = siteSelected.RadioVRemarkCollectData,
+                        PowerValidationStatus = siteSelected.PowerVStatusCollectData.HasValue ? (Enums.ValidationStatus?)siteSelected.PowerVStatusCollectData : null,
+                        PowerValidationRemark = siteSelected.PowerVRemarkCollectData
+                    },
+                    MWMd = new MWMd
+                    {
+                        MdType = siteSelected.MdTypeMWMd.HasValue ? (Enums.MDType?)siteSelected.MdTypeMWMd : null,
+                        Description = siteSelected.DescriptionMWMd,
+                        PlanStatus = siteSelected.PlanStatusMWMd.HasValue ? (Enums.MWMDPlanStatus?)siteSelected.PlanStatusMWMd : null,
+                        PendingType = siteSelected.pendingTypeMWMd.HasValue ? (Enums.MWMDPendingType?)siteSelected.pendingTypeMWMd : null,
+                        MwValidationStatus = siteSelected.MWValidationStatusMWMd.HasValue ? (Enums.MWValidationStatus?)siteSelected.MWValidationStatusMWMd : null,
+                        MwValidationRemark = siteSelected.MWValidationRemarkMWMd
+                    },
+                    RadioMd = new RadioMd
+                    {
+                        MdType = siteSelected.MdTypeRadioMd.HasValue ? (Enums.MDType?)siteSelected.MdTypeRadioMd : null,
+                        Description = siteSelected.DescriptionRadioMd,
+                        PlanStatus = siteSelected.PlanStatusRadioMd.HasValue ? (Enums.OtherMDPlanStatus?)siteSelected.PlanStatusRadioMd : null,
+                        PendingType = siteSelected.pendingTypeRadioMd.HasValue ? (Enums.OtherMDPendingType?)siteSelected.pendingTypeRadioMd : null,
+                        RadioValidationStatus = siteSelected.RadioVStatusRadioMd.HasValue ? (Enums.OtherValidationStatus?)siteSelected.RadioVStatusRadioMd : null,
+                        RadioValidationRemark = siteSelected.RadioVRemarkRadioMd
+                    },
+                    PowerMd = new PowerMd
+                    {
+                        MdType = siteSelected.MdTypePowerMd.HasValue ? (Enums.MDType?)siteSelected.MdTypePowerMd : null,
+                        Description = siteSelected.DescriptionPowerMd,
+                        PlanStatus = siteSelected.PlanStatusPowerMd.HasValue ? (Enums.OtherMDPlanStatus?)siteSelected.PlanStatusPowerMd : null,
+                        PendingType = siteSelected.pendingTypePowerMd.HasValue ? (Enums.OtherMDPendingType?)siteSelected.pendingTypePowerMd : null,
+                        PowerValidationStatus = siteSelected.PowerVStatusPowerMd.HasValue ? (Enums.OtherValidationStatus?)siteSelected.PowerVStatusPowerMd : null,
+                        PowerValidationRemark = siteSelected.PowerVRemarkPowerMd
+                    }
+                };
+
+                return new Response<SiteDetailsObject>(true, siteDetailsObject, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+                return new Response<SiteDetailsObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+
+
         public Response<List<AreaViewModel>> GetAllAreasForSiteOperation()
         {
             try

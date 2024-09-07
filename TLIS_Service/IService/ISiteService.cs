@@ -82,5 +82,8 @@ namespace TLIS_Service.IService
         Response<ItemsOnSite> GetItemsOnSite(string SiteCode);
         Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination( bool? GetItemsCountOnEachSite);
         Response<string> GetConfigurationTables(string SiteCode, string TableNameInstallation, int? CategoryId, string ConnectionString);
+        Response<SiteDetailsObject> GetSiteDetails(string siteCode);
+        Response<SiteDetailsObject> EditSiteDetalis(SiteDetailsObject siteDetailsObject, int? TaskId, int UserId);
+
     }
 }

@@ -11,4 +11,5 @@ namespace TLIS_DAL.Helper.Enums
         Update = 2,
         Delete = 3
     }
+    
 }

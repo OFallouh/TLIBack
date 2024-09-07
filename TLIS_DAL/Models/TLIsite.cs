@@ -34,10 +34,39 @@ namespace TLIS_DAL.Models
         public string RegionCode { get; set; }
         public string STATUS_DATE { get; set; }
         public string CREATE_DATE { get; set; }
-
         public TLIregion Region { get; set; }
         public int AreaId { get; set; }
         public TLIarea Area { get; set; }
+
+
+
+        public int? PlanStatusCollectData { get; set; }
+        public int? PlanStatusMWMd { get; set; }
+        public int? PlanStatusPowerMd { get; set; }
+        public int? PlanStatusRadioMd { get; set; }
+        public string PlanType { get; set; }
+        public int? pendingTypeCollectData { get; set; }
+        public int? pendingTypeMWMd { get; set; }
+        public int? pendingTypePowerMd { get; set; }
+        public int? pendingTypeRadioMd { get; set; }
+        public int? MWValidationStatusCollectDate { get; set; }
+        public int? MWValidationStatusMWMd { get; set; }
+        public string MWValidationRemarkCollectData { get; set; }
+        public string MWValidationRemarkMWMd { get; set; }
+        public int? RadioVStatusCollectData { get; set; }
+        public int? RadioVStatusRadioMd { get; set; }
+        public string RadioVRemarkCollectData { get; set; }
+        public string RadioVRemarkRadioMd{ get; set; }
+        public int? PowerVStatusCollectData { get; set; }
+        public int? PowerVStatusPowerMd { get; set; }
+        public string PowerVRemarkPowerMd { get; set; }
+        public string PowerVRemarkCollectData { get; set; }
+        public int? MdTypePowerMd { get; set; }
+        public int? MdTypeMWMd { get; set; }
+        public int? MdTypeRadioMd { get; set; }
+        public string DescriptionRadioMd { get; set; }
+        public string DescriptionPowerMd { get; set; }
+        public string DescriptionMWMd { get; set; }
         public IEnumerable<TLIcivilSiteDate> CivilSiteDate { get; set; }
         public IEnumerable<TLIotherInSite> OthersInSite { get; set; }
         public IEnumerable<TLIcivilSupportDistance> civilSupportDistances { get; set; }
