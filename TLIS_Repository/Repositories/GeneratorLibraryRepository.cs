@@ -27,9 +27,9 @@ namespace TLIS_Repository.Repositories
         public List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables()
         {
             List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables = new List<KeyValuePair<string, List<DropDownListFilters>>>();
-            var Capacities = _context.TLIcapacity.AsNoTracking().Where(x => !x.Delete && !x.Disable).ToList();
-            List<DropDownListFilters> CapacityFilters = _mapper.Map<List<DropDownListFilters>>(Capacities);
-            RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("CapacityId", CapacityFilters));
+            //var Capacities = _context.TLIcapacity.AsNoTracking().Where(x => !x.Delete && !x.Disable).ToList();
+            //List<DropDownListFilters> CapacityFilters = _mapper.Map<List<DropDownListFilters>>(Capacities);
+            //RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("CapacityId", CapacityFilters));
 
             var Suppliers = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
                 .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Constants.TLIlogisticalType.Supplier.ToString().ToLower() && !x.logisticalType.Disable &&

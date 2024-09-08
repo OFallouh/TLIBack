@@ -117,7 +117,7 @@ namespace TLIS_Service.Services
                         //Cells[1, j] number 1 refer to first row and j refer to column
                         worksheet.Cells[1, j].Value = TableNameAtt;
                         //if peoperty have id that's mean that the property is foreign key and should the user take value from list from database
-                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") || TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") || TableNameAtt.Contains("Vendors")|| TableNameAtt.Contains("RFUType"))
+                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") || TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") || TableNameAtt.Contains("Vendors")|| TableNameAtt.Contains("RFUType") || TableNameAtt.Contains("IntegratedWith"))
                         {
                             //check if table that the foreign key refer to have values in database
                             //if (RelatedTables.Find(x => x.Key == TableNameAtt).Value.Count > 0)
@@ -7596,7 +7596,7 @@ namespace TLIS_Service.Services
                     size.Value = sizes.ToArray();
 
                     OracleParameter tx_parity = new OracleParameter();
-                    tx_parity.OracleDbType = OracleDbType.Boolean;
+                    tx_parity.OracleDbType = OracleDbType.Int32;
                     tx_parity.Value = tx_parities.Select(v => v ? 1 : 0).ToArray();
 
                     OracleParameter frequency_band = new OracleParameter();
@@ -8284,6 +8284,7 @@ namespace TLIS_Service.Services
                         Types.Add(Type_test != null ? Type_test : null);
                         BandWidths.Add(BandWidths_test != null ? BandWidths_test : null);
                         ChannelBandWidths.Add(ChannelBandWidths_test != null ? ChannelBandWidths_test : null);
+                        Heights.Add(Height_test != 0 ? Height_test : 0);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
                             //var h = DynamicAtts[f].Value;
@@ -8349,9 +8350,13 @@ namespace TLIS_Service.Services
                     ChannelBandWidthS.OracleDbType = OracleDbType.NVarchar2;
                     ChannelBandWidthS.Value = ChannelBandWidths.ToArray();
 
+                    OracleParameter HeightsS = new OracleParameter();
+                    HeightsS.OracleDbType = OracleDbType.BinaryFloat;
+                    HeightsS.Value = Heights.ToArray();
+
                     // create command and set properties
                     OracleCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "INSERT INTO \"TLIpowerLibrary\" (\"Model\", \"Note\", \"Weight\", \"width\", \"Length\", \"Depth\", \"SpaceLibrary\",\"Size\",\"FrequencyRange\",\"Type\",\"L_W_H\",\"ChannelBandWidth\",\"BandWidth\") VALUES ( :1, :2, :3, :4, :5, :6, :7,:8 ,:9 ,:9 ,:10 ,:11 ,:12)";
+                    cmd.CommandText = "INSERT INTO \"TLIpowerLibrary\" (\"Model\", \"Note\", \"Weight\", \"width\", \"Length\", \"Depth\", \"SpaceLibrary\",\"Size\",\"FrequencyRange\",\"Type\",\"L_W_H\",\"ChannelBandWidth\",\"BandWidth\",\"Height\") VALUES ( :1, :2, :3, :4, :5, :6, :7,:8 ,:9 ,:9 ,:10 ,:11 ,:12,:13)";
                     cmd.ArrayBindCount = models.Count;
                     cmd.Parameters.Add(model);
                     cmd.Parameters.Add(note);
@@ -8363,8 +8368,10 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(Size);
                     cmd.Parameters.Add(FrequencyRangeS);
                     cmd.Parameters.Add(TypeS);
-                    cmd.Parameters.Add(BandWidthS);
+                    cmd.Parameters.Add(new OracleParameter(":10", OracleDbType.NVarchar2) { Value = DBNull.Value });
                     cmd.Parameters.Add(ChannelBandWidthS);
+                    cmd.Parameters.Add(BandWidthS);
+                    cmd.Parameters.Add(HeightsS);
 
                     cmd.ExecuteNonQuery();
                     //connection.Close();
@@ -10029,7 +10036,6 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        string l_w_h_test = Convert.ToString(dt.Rows[j]["L_W_H_cm3"]);
                         float length_test = 0;
                         if (dt.Columns.Contains("Length"))
                         {
@@ -10244,6 +10250,7 @@ namespace TLIS_Service.Services
                         heights.Add(Depth_test != 0 ? Depth_test : 0);
                         notes.Add(note_test != null ? note_test : null);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
+                        Depths.Add(Depth_test != 0 ? Depth_test : 0);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
                             //var h = DynamicAtts[f].Value;
@@ -11739,9 +11746,6 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(MaxWeight);
                     cmd.Parameters.Add(LayoutCode);
                     cmd.Parameters.Add(Dimension_W_D_H);
-                    cmd.Parameters.Add(Width);
-                    cmd.Parameters.Add(Depth);
-                    cmd.Parameters.Add(Height);
                     cmd.Parameters.Add(SpaceLibrary);
                     cmd.Parameters.Add(TelecomTypeId);
                     cmd.ExecuteNonQuery();
