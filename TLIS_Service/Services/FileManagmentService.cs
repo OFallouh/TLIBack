@@ -117,7 +117,7 @@ namespace TLIS_Service.Services
                         //Cells[1, j] number 1 refer to first row and j refer to column
                         worksheet.Cells[1, j].Value = TableNameAtt;
                         //if peoperty have id that's mean that the property is foreign key and should the user take value from list from database
-                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") || TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") || TableNameAtt.Contains("Vendors"))
+                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") || TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") || TableNameAtt.Contains("Vendors")|| TableNameAtt.Contains("RFUType"))
                         {
                             //check if table that the foreign key refer to have values in database
                             //if (RelatedTables.Find(x => x.Key == TableNameAtt).Value.Count > 0)
@@ -2182,7 +2182,7 @@ namespace TLIS_Service.Services
                                    || TabelName.TableName == "TLIpowerLibrary" || TabelName.TableName == "TLIcabinetPowerLibrary" || TabelName.TableName == "TLIcabinetTelecomLibrary"
                                    || TabelName.TableName == "TLIgeneratorLibrary")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Suppliers can not to be null in the row {j + 2}"));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Vendors can not to be null in the row {j + 2}"));
                                     goto ERROR;
                                 }
                                 else
@@ -3378,15 +3378,15 @@ namespace TLIS_Service.Services
 
                     OracleParameter NumberofBoltHoles = new OracleParameter();
                     NumberofBoltHoles.OracleDbType = OracleDbType.BinaryFloat;
-                    NumberofBoltHoles.Value = SpaceLibraries.ToArray();
+                    NumberofBoltHoles.Value = NumberofBoltHolesList.ToArray();
 
                     OracleParameter Manufactured_Max_LoadS = new OracleParameter();
                     Manufactured_Max_LoadS.OracleDbType = OracleDbType.BinaryFloat;
                     Manufactured_Max_LoadS.Value = Manufactured_Max_Loads.ToArray();
 
-                    OracleParameter WidthVariation = new OracleParameter();
-                    WidthVariation.OracleDbType = OracleDbType.NVarchar2;
-                    WidthVariation.Value = WidthVariations.ToArray();
+                    OracleParameter WidthVariationS = new OracleParameter();
+                    WidthVariationS.OracleDbType = OracleDbType.NVarchar2;
+                    WidthVariationS.Value = WidthVariations.ToArray();
 
                     // create command and set properties
                     OracleCommand cmd = connection.CreateCommand();
@@ -3400,9 +3400,17 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(civilNonSteelTypeId);
                     cmd.Parameters.Add(NumberofBoltHoles);
                     cmd.Parameters.Add(Manufactured_Max_LoadS);
-                    cmd.Parameters.Add(WidthVariation);
+                    cmd.Parameters.Add(WidthVariationS);
                     cmd.Parameters.Add(Prefix);
-                    cmd.ExecuteNonQuery();
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        Console.WriteLine("Data inserted successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error inserting data: {ex.Message}");
+                    }
                     //connection.Close();
                     List<int> InsertedIds = new List<int>();
                     if (LastId != null)
@@ -7262,7 +7270,7 @@ namespace TLIS_Service.Services
                             test = Boolean.TryParse(dt.Rows[j]["tx_parity"].ToString(), out tx_parity_test);
                             if (test == false)
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"tx_parity Wrong Input DataType In The Row {j + 2}"));
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"tx_parity Wrong Input DataType In The Row {j + 2} must to be true or false"));
                                 goto ERROR;
                             }
                         }
@@ -7589,7 +7597,7 @@ namespace TLIS_Service.Services
 
                     OracleParameter tx_parity = new OracleParameter();
                     tx_parity.OracleDbType = OracleDbType.Boolean;
-                    tx_parity.Value = tx_parities.ToArray();
+                    tx_parity.Value = tx_parities.Select(v => v ? 1 : 0).ToArray();
 
                     OracleParameter frequency_band = new OracleParameter();
                     frequency_band.OracleDbType = OracleDbType.NVarchar2;
