@@ -46,7 +46,8 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("CivilWithoutLegCategoryId", CivilWithoutlegCategoryFilters));
 
 
-            var StructureType = _context.TLIstructureType.AsNoTracking().Where(x => !x.Deleted && !x.Disable).ToList();
+            var StructureType = _context.TLIstructureType.AsNoTracking().Where(x => !x.Deleted && !x.Disable
+             && x.Name.ToLower() != "square" && x.Name.ToLower() != "triangular").ToList();
             List<DropDownListFilters> StructureTypeFilters = _mapper.Map<List<DropDownListFilters>>(StructureType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("structureTypeId", StructureTypeFilters));
 

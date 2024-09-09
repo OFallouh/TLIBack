@@ -41,7 +41,8 @@ namespace TLIS_Repository.Repositories
             List<DropDownListFilters> sectionsLegTypeFilters = _mapper.Map<List<DropDownListFilters>>(sectionsLegType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("sectionsLegTypeId", sectionsLegTypeFilters));
 
-            var structureType = _context.TLIstructureType.AsNoTracking().Where(x => !x.Deleted && !x.Disable).ToList();
+            var structureType = _context.TLIstructureType.AsNoTracking().Where(x => !x.Deleted && !x.Disable 
+            && x.Name.ToLower()!= "located" &&x.Name.ToLower() != "anchored").ToList();
             List<DropDownListFilters> structureTypeFilters = _mapper.Map<List<DropDownListFilters>>(structureType);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("structureTypeId", structureTypeFilters));
 
