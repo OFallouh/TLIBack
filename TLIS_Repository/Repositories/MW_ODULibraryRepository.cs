@@ -65,7 +65,7 @@ namespace TLIS_Repository.Repositories
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Contractors", ContractorsFilters));
 
             var Conultants = _context.TLIlogistical.AsNoTracking().Include(x => x.logisticalType).Include(x => x.tablePartName)
-               .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Helpers.Constants.TLIlogisticalType.Conultant.ToString().ToLower() && !x.logisticalType.Disable &&
+               .Where(x => x.Active && !x.Deleted && x.logisticalType.Name.ToLower() == Helpers.Constants.TLIlogisticalType.Consultant.ToString().ToLower() && !x.logisticalType.Disable &&
                    !x.logisticalType.Deleted && x.tablePartName.PartName.ToLower() == Helpers.Constants.TablePartName.CivilSupport.ToString().ToLower()).ToList();
             List<DropDownListFilters> ConultantsFilters = _mapper.Map<List<DropDownListFilters>>(Conultants);
             RelatedTables.Add(new KeyValuePair<string, List<DropDownListFilters>>("Conultants", ConultantsFilters));

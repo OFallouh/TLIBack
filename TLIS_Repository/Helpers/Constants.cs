@@ -24,7 +24,7 @@ namespace TLIS_Repository.Helpers
             Supplier,
             Manufacturer,
             Contractor,
-            Conultant
+            Consultant
         }
         public enum TLIhistoryType
         {
