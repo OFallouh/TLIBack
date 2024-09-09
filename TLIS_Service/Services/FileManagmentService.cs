@@ -117,7 +117,7 @@ namespace TLIS_Service.Services
                         //Cells[1, j] number 1 refer to first row and j refer to column
                         worksheet.Cells[1, j].Value = TableNameAtt;
                         //if peoperty have id that's mean that the property is foreign key and should the user take value from list from database
-                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") || TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") || TableNameAtt.Contains("Vendors")|| TableNameAtt.Contains("RFUType") || TableNameAtt.Contains("IntegratedWith"))
+                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") || TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") || TableNameAtt.Contains("Vendors")|| TableNameAtt.Contains("RFUType") || TableNameAtt.Contains("IntegratedWith") || TableNameAtt.Contains("Contractors") || TableNameAtt.Contains("Conultants"))
                         {
                             //check if table that the foreign key refer to have values in database
                             //if (RelatedTables.Find(x => x.Key == TableNameAtt).Value.Count > 0)
@@ -10859,7 +10859,7 @@ namespace TLIS_Service.Services
 
                                 if (!test)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"PowerIntegrated: Wrong Input DataType in Row {j + 2}"));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"PowerIntegrated: Wrong Input DataType in Row {j + 2} must to be true or false"));
                                     goto ERROR;
                                 }
                                 else
@@ -11006,7 +11006,7 @@ namespace TLIS_Service.Services
                         batteryweights.Add(BatteryWeight_test != 0 ? BatteryWeight_test : 0);
                         batterytypes.Add(BatteryType_test != null ? BatteryType_test : "NA");
                         BatteryDimension_W_D_H_List.Add(BatteryDimension_W_D_H_test != null ? BatteryDimension_W_D_H_test : "NA");
-                        IntegratedWiths.Add(IntegratedWith_test != 0 ? IntegratedWith_test : null);
+                        IntegratedWiths.Add(IntegratedWith_test != null ? IntegratedWith_test : null);
                         CabinetPowerTypeIds.Add(CabinetPowerTypeId_test != 0 ? CabinetPowerTypeId_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
                         PowerIntegrateds.Add(PowerIntegrated_test);
@@ -11064,7 +11064,7 @@ namespace TLIS_Service.Services
                     SpaceLibrary.Value = SpaceLibraries.ToArray();
 
                     OracleParameter IntegratedWith = new OracleParameter();
-                    IntegratedWith.OracleDbType = OracleDbType.BinaryFloat;
+                    IntegratedWith.OracleDbType = OracleDbType.Int32;
                     IntegratedWith.Value = IntegratedWiths.ToArray();
 
                     OracleParameter CabinetPowerTypeId = new OracleParameter();
@@ -11073,7 +11073,7 @@ namespace TLIS_Service.Services
 
                     OracleParameter PowerIntegrated = new OracleParameter();
                     PowerIntegrated.OracleDbType = OracleDbType.Int32;
-                    PowerIntegrated.Value = PowerIntegrateds.ToArray();
+                    PowerIntegrated.Value = PowerIntegrateds.Select(v => v ? 1 : 0).ToArray();
 
                     // create command and set properties
                     OracleCommand cmd = connection.CreateCommand();
@@ -11087,7 +11087,6 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(BatteryWeight);
                     cmd.Parameters.Add(BatteryType);
                     cmd.Parameters.Add(BatteryDimension_W_D_H);
-                    cmd.Parameters.Add(IntegratedWith);
                     cmd.Parameters.Add(SpaceLibrary);
                     cmd.Parameters.Add(CabinetPowerTypeId);
                     cmd.Parameters.Add(IntegratedWith);
@@ -14175,7 +14174,7 @@ namespace TLIS_Service.Services
                 if (SiteCode != null)
                 {
 
-                    var AttachFiles = _unitOfWork.AttachedFilesRepository.GetWhere(x => x.SiteCode.ToLower() == SiteCode.ToLower() && x.tablesNamesId == TableNameEntity.Id).ToList();
+                    var AttachFiles = _unitOfWork.AttachedFilesRepository.GetWhere(x => x.SiteCode.ToLower() == SiteCode.ToLower() && x.tablesNamesId == TableNameEntity.Id && x.RecordId==RecordId).ToList();
                     var AttachFileViewModels = _mapper.Map<List<AttachedFilesViewModel>>(AttachFiles).ToList();
                     int Count = AttachFiles.Count();
                     return new Response<IEnumerable<AttachedFilesViewModel>>(true, AttachFileViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
