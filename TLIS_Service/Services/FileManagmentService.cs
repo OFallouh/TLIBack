@@ -1230,7 +1230,7 @@ namespace TLIS_Service.Services
             {
                 RecordId = new List<int>();
                 //Get list of models for each record 
-                List<string> Models = _dbContext.MV_CIVIL_WITHLEG_LIBRARY_VIEW.Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted).Where(x=>!x.Deleted).Select(x => x.Model).ToList();
                 //get last id for table i deal with in the database
                 TLIcivilWithLegLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIcivilWithLegLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -2293,7 +2293,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
 
                 TLIcivilWithoutLegLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIcivilWithoutLegLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -3038,7 +3038,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_CIVIL_NONSTEEL_LIBRARY_VIEW.Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_CIVIL_NONSTEEL_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
 
                 TLIcivilNonSteelLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIcivilNonSteelLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -3700,7 +3700,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_LOAD_OTHER_LIBRARY_VIEW.Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_LOAD_OTHER_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
 
                 TLIloadOtherLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIloadOtherLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -4319,7 +4319,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_MWBU_LIBRARY_VIEW.Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_MWBU_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
 
                 TLImwBULibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLImwBULibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -5067,7 +5067,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_MWDISH_LIBRARY_VIEW.Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_MWDISH_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
 
                 TLImwDishLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLImwDishLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
