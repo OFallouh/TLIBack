@@ -43,6 +43,7 @@ using TLIS_DAL;
 using Nancy.Extensions;
 using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
+using TLIS_DAL.ViewModels.PowerLibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -1981,17 +1982,6 @@ namespace TLIS_Service.Services
                               
                              radioAntennaLibrary.SpaceLibrary = radioAntennaLibrary.Length * radioAntennaLibrary.Width;
                                 
-                            
-                            //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
                             var CheckModel = db.MV_RADIO_ANTENNA_LIBRARY_VIEW
                                 .FirstOrDefault(
                                 x => x.Model.ToLower() == radioAntennaLibrary.Model .ToLower()
@@ -2002,16 +1992,19 @@ namespace TLIS_Service.Services
 
                            var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.AddWithH(UserId,null, radioAntennaLibrary);
                             _unitOfWork.SaveChanges();
+                            if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
+                            {
+                                foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, radioAntennaLibrary.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                        return new Response<AddRadioAntennaLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                }
+                            }
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = RadioLibraryViewModel.LogisticalItems;
                             AddLogisticalItemWithCivilH(UserId,LogisticalItemIds, radioAntennaLibrary, TableNameEntity.Id, HistoryId);
-
-                            if (RadioLibraryViewModel.DynamicAttributes.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioAntennaLibrary.Id, connectionString,HistoryId);
-                            }
-                           
                           
                             transaction.Complete();
                             tran.Commit();
@@ -2177,18 +2170,7 @@ namespace TLIS_Service.Services
                             }
                                 
                              radioOtherLibrary.SpaceLibrary = radioOtherLibrary.Length * radioOtherLibrary.Width;
-                                
-                            
-                            //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
+                                                         
                             var CheckModel = db.MV_RADIO_OTHER_LIBRARY_VIEW
                                 .FirstOrDefault(
                                 x => x.Model.ToLower() == radioOtherLibrary.Model.ToLower()
@@ -2199,15 +2181,20 @@ namespace TLIS_Service.Services
 
                            var HistoryId= _unitOfWork.RadioOtherLibraryRepository.AddWithH(UserId,null, radioOtherLibrary);
                             _unitOfWork.SaveChanges();
+                            if (addRadioOtherLibraryObject.DynamicAttributes != null ? addRadioOtherLibraryObject.DynamicAttributes.Count > 0 : false)
+                            {
+                                foreach (var item in addRadioOtherLibraryObject.DynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, radioOtherLibrary.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                        return new Response<AddRadioOtherLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                }
+                            }
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = addRadioOtherLibraryObject.LogisticalItems;
                             AddLogisticalItemWithCivilH(UserId, LogisticalItemIds, radioOtherLibrary, TableNameEntity.Id, HistoryId);
 
-                            if (addRadioOtherLibraryObject.DynamicAttributes.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, addRadioOtherLibraryObject.DynamicAttributes, TableNameEntity.Id, radioOtherLibrary.Id, connectionString, HistoryId);
-                            }
                           
                             transaction.Complete();
                             tran.Commit();
@@ -2254,16 +2241,6 @@ namespace TLIS_Service.Services
                             {
                                 radioRRULibrary.SpaceLibrary = radioRRULibrary.Length * radioRRULibrary.Width;
                             }
-                            
-                            //string CheckDependencyValidation = CheckDependencyValidationForRadioTypes(RadioLibraryViewModel, TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            //    return new Response<AddRadioAntennaLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
 
                             var CheckModel = db.MV_RADIO_RRU_LIBRARY_VIEW
                                    .FirstOrDefault(
@@ -2274,17 +2251,21 @@ namespace TLIS_Service.Services
 
                            var HistoryId= _unitOfWork.RadioRRULibraryRepository.AddWithH(UserId,null, radioRRULibrary);
                             _unitOfWork.SaveChanges();
+                            if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
+                            {
+                                foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, radioRRULibrary.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                        return new Response<AddRadioRRULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                }
+                            }
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = RadioLibraryViewModel.LogisticalItems;
                             AddLogisticalItemWithCivilH(UserId, LogisticalItemIds, radioRRULibrary, TableNameEntity.Id,HistoryId);
 
-                            if (RadioLibraryViewModel.DynamicAttributes.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, RadioLibraryViewModel.DynamicAttributes, TableNameEntity.Id, radioRRULibrary.Id, connectionString, HistoryId);
-                            }
-                       
-
+                          
                             transaction.Complete();
                             tran.Commit();
 
@@ -3590,19 +3571,17 @@ namespace TLIS_Service.Services
                         radioAntennaLibrary.Deleted = OldRadioAntenna.Deleted;
                         var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntenna, radioAntennaLibrary);
                         await _unitOfWork.SaveChangesAsync();
-                        //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
-                        //if (!string.IsNullOrEmpty(CheckDependency))
-                        //{
-                        //    return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)Helpers.Constants.ApiReturnCode.fail);
-                        //}
+                    if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
+                    {
+                        foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                        {
+                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioAntennaLibrary.Id, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<EditRadioAntennaLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                        //string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
-                        //if (!string.IsNullOrEmpty(CheckValidation))
-                        //{
-                        //    return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                        //}
-
-                        dynamic LogisticalItemIds = new ExpandoObject();
+                        }
+                    }
+                    dynamic LogisticalItemIds = new ExpandoObject();
                         LogisticalItemIds = RadioLibraryViewModel;
 
                         AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
@@ -3661,11 +3640,7 @@ namespace TLIS_Service.Services
 
                     EditLogisticalItemH(UserId, RadioLibraryViewModel.LogisticalItems, radioAntennaLibrary, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
 
-                    if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(RadioLibraryViewModel.DynamicAttributes, connectionString ,TableNameEntity.Id, radioAntennaLibrary.Id, UserId, HistoryId);
-                    }
-
+                 
                     await _unitOfWork.SaveChangesAsync();
 
                     transaction.Complete();
@@ -4073,18 +4048,16 @@ namespace TLIS_Service.Services
                     radioOtherLibrary.Deleted = OldRadioOther.Deleted;
                    var HistoryId= _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId,null, OldRadioOther, radioOtherLibrary);
                     await _unitOfWork.SaveChangesAsync();
-                    //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
-                    //if (!string.IsNullOrEmpty(CheckDependency))
-                    //{
-                    //    return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
+                    if (editRadioOtherLibraryObject.DynamicAttributes != null ? editRadioOtherLibraryObject.DynamicAttributes.Count > 0 : false)
+                    {
+                        foreach (var item in editRadioOtherLibraryObject.DynamicAttributes)
+                        {
+                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOtherLibrary.Id, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<EditRadioOtherLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    //string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
-                    //if (!string.IsNullOrEmpty(CheckValidation))
-                    //{
-                    //    return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
-
+                        }
+                    }
                     dynamic LogisticalItemIds = new ExpandoObject();
                     LogisticalItemIds = editRadioOtherLibraryObject;
 
@@ -4143,12 +4116,6 @@ namespace TLIS_Service.Services
 
 
                     EditLogisticalItemsH(UserId, editRadioOtherLibraryObject.LogisticalItems, radioOtherLibrary, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
-
-                    if (editRadioOtherLibraryObject.DynamicAttributes != null ? editRadioOtherLibraryObject.DynamicAttributes.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(editRadioOtherLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, radioOtherLibrary.Id, UserId,HistoryId);
-                    }
-
                     await _unitOfWork.SaveChangesAsync();
 
                     transaction.Complete();
@@ -4925,17 +4892,16 @@ namespace TLIS_Service.Services
                     radioRRULibrary.Deleted = OldRadioRRU.Deleted;
                     var HistoryId= _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId,null, OldRadioRRU, radioRRULibrary);
                     await _unitOfWork.SaveChangesAsync();
-                    //string CheckDependency = CheckDependencyValidationEditApiVersion(RadioLibraryViewModel, TableName);
-                    //if (!string.IsNullOrEmpty(CheckDependency))
-                    //{
-                    //    return new Response<AllItemAttributes>(true, null, null, CheckDependency, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
+                    if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
+                    {
+                        foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                        {
+                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioRRULibrary.Id, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<EditRadioRRULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    //string CheckValidation = CheckGeneralValidationFunctionEditApiVersion(RadioLibraryViewModel.DynamicAttributes, TableNameEntity.TableName);
-                    //if (!string.IsNullOrEmpty(CheckValidation))
-                    //{
-                    //    return new Response<AllItemAttributes>(true, null, null, CheckValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
+                        }
+                    }
 
                     dynamic LogisticalItemIds = new ExpandoObject();
                     LogisticalItemIds = RadioLibraryViewModel;
@@ -4996,11 +4962,7 @@ namespace TLIS_Service.Services
 
                     EditLogisticalItemH(UserId, RadioLibraryViewModel.LogisticalItems, radioRRULibrary, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
 
-                    if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(RadioLibraryViewModel.DynamicAttributes, connectionString, TableNameEntity.Id, radioRRULibrary.Id, UserId,HistoryId);
-                    }
-
+                  
                     await _unitOfWork.SaveChangesAsync();
 
                     transaction.Complete();

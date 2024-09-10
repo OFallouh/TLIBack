@@ -610,6 +610,77 @@ namespace TLIS_Repository.Base
 
             return HistoryId;
         }
+        public virtual int AddWithHSite(int? UserId, int? SecRecordId, TEntity AddObject)
+        {
+            int HistoryId = 0;
+
+            // Add the new entity to the context
+            dataTable.Add(AddObject);
+            _context.SaveChanges();
+
+            if (UserId == null) return HistoryId;
+
+
+            var entityTableNameModel = _context.TLItablesNames
+                .FirstOrDefault(x => x.TableName.ToLower() == AddObject.GetType().Name.ToLower());
+            if (entityTableNameModel == null) return HistoryId;
+
+
+            var historyTypeId = _context.TLIhistoryType
+                .FirstOrDefault(x => x.Name.ToLower() == Helpers.Constants.TLIhistoryType.Add.ToString().ToLower())?.Id ?? 0;
+            if (historyTypeId == 0) return HistoryId;
+
+
+            var entityId = (int)AddObject.GetType().GetProperty("SiteCode")?.GetValue(AddObject);
+            var entityIdString = entityId.ToString();
+
+
+            var addTablesHistory = new TLIhistory
+            {
+                HistoryTypeId = historyTypeId,
+                SiteCode = entityIdString,
+                RecordId= entityIdString,
+                TablesNameId = entityTableNameModel.Id,
+                UserId = UserId.Value
+            };
+            _context.TLIhistory.Add(addTablesHistory);
+            _context.SaveChanges();
+            HistoryId = addTablesHistory.Id;
+
+            var attributes = AddObject.GetType().GetProperties()
+                .Where(x => x.PropertyType.IsGenericType
+                ? x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)
+                    && new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                    .Contains(x.PropertyType.GetGenericArguments()[0])
+                : new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                    .Contains(x.PropertyType))
+                .ToList();
+
+            var listOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+            var recordId = SecRecordId?.ToString() ?? entityIdString;
+
+            foreach (var attribute in attributes)
+            {
+                var newAttributeValue = attribute.GetValue(AddObject, null);
+                var historyDetails = new TLIhistoryDet
+                {
+                    TablesNameId = entityTableNameModel.Id,
+                    RecordId = recordId,
+                    HistoryId = addTablesHistory.Id,
+                    AttributeName = attribute.Name,
+                    NewValue = newAttributeValue?.ToString(),
+                    AttributeType = AttributeType.Static
+                };
+
+                listOfHistoryDetailsToAdd.Add(historyDetails);
+            }
+
+
+            _context.TLIhistoryDet.AddRange(listOfHistoryDetailsToAdd);
+            _context.SaveChanges();
+
+            return HistoryId;
+        }
         public virtual int AddWithHInternal(int? UserId, int? SecRecordId, TEntity AddObject)
         {
             int HistoryId = 0;

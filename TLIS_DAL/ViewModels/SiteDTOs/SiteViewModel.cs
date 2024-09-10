@@ -24,11 +24,8 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
 
         public string CityName { get; set; }
 
-
         public string Area { get; set; }
         public string SubArea { get; set; }
-
-
         public string Region { get; set; }
 
         public double RentedSpace { get; set; }

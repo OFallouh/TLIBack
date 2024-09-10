@@ -1047,6 +1047,7 @@ namespace TLIS_Service.Services
 
 
                             DishLoad.Dismantle = true;
+                            DishLoad.allLoadInst.mwDish.DishName = DishLoad.allLoadInst.mwDish.DishName + DateTime.Now;
                             var OldDishLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                   .AsNoTracking().FirstOrDefault(x => x.Id == DishLoad.Id);
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -1064,6 +1065,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldDishLoad, DishLoad);
+                            _unitOfWork.MW_DishRepository.Update(DishLoad.allLoadInst.mwDish);
                             _unitOfWork.SaveChanges();
 
                             if (DishLoad.ReservedSpace == true)
@@ -1101,6 +1103,7 @@ namespace TLIS_Service.Services
                         if (ODULoad != null)
                         {
                             ODULoad.Dismantle = true;
+                            ODULoad.allLoadInst.mwODU.Name = ODULoad.allLoadInst.mwODU.Name + DateTime.Now;
 
                             var OldODULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == ODULoad.Id);
@@ -1119,6 +1122,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldODULoad, ODULoad);
+                            _unitOfWork.MW_ODURepository.Update(ODULoad.allLoadInst.mwODU);
                             _unitOfWork.SaveChanges();
 
                             if (ODULoad.ReservedSpace == true)
@@ -1168,6 +1172,7 @@ namespace TLIS_Service.Services
                             }
 
                             RadioRRULoad.Dismantle = true;
+                            RadioRRULoad.allLoadInst.radioRRU.Name = RadioRRULoad.allLoadInst.radioRRU.Name + DateTime.Now;
                             var OldORadioRRULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RadioRRULoad.Id);
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -1185,6 +1190,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldORadioRRULoad, RadioRRULoad);
+                            _unitOfWork.RadioRRURepository.Update(RadioRRULoad.allLoadInst.radioRRU);
                             _unitOfWork.SaveChanges();
 
                             if (RadioRRULoad.ReservedSpace == true)
@@ -1223,6 +1229,7 @@ namespace TLIS_Service.Services
                         if (PowerLoad != null)
                         {
                             PowerLoad.Dismantle = true;
+                            PowerLoad.allLoadInst.power.Name = PowerLoad.allLoadInst.power.Name + DateTime.Now;
 
                             var OldOPowerLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == PowerLoad.Id);
@@ -1241,6 +1248,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldOPowerLoad, PowerLoad);
+                            _unitOfWork.PowerRepository.Update(PowerLoad.allLoadInst.power);
                             _unitOfWork.SaveChanges();
 
                             if (PowerLoad.ReservedSpace == true)
@@ -1278,7 +1286,7 @@ namespace TLIS_Service.Services
                         if (OtherLoad != null)
                         {
                             OtherLoad.Dismantle = true;
-
+                            OtherLoad.allLoadInst.loadOther.Name = OtherLoad.allLoadInst.loadOther.Name + DateTime.Now;
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == OtherLoad.Id);
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -1296,6 +1304,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldOtherLoad, OtherLoad);
+                            _unitOfWork.LoadOtherRepository.Update(OtherLoad.allLoadInst.loadOther);
                             _unitOfWork.SaveChanges();
 
                             if (OtherLoad.ReservedSpace == true)
@@ -1363,7 +1372,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                             }
                             RadioAntennaLoad.Dismantle = true;
-
+                            RadioAntennaLoad.allLoadInst.radioAntenna.Name = RadioAntennaLoad.allLoadInst.radioAntenna.Name + DateTime.Now;
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RadioAntennaLoad.Id);
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -1381,6 +1390,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldOtherLoad, RadioAntennaLoad);
+                            _unitOfWork.RadioAntennaRepository.Update(RadioAntennaLoad.allLoadInst.radioAntenna);
                             _unitOfWork.SaveChanges();
 
                             if (RadioAntennaLoad.ReservedSpace == true)
@@ -1439,6 +1449,7 @@ namespace TLIS_Service.Services
                                 return new Response<bool>(true, false, null, "can not dismantle this MWBU because found loaed on it", (int)ApiReturnCode.fail);
 
                             MWBULoad.Dismantle = true;
+                            MWBULoad.allLoadInst.mwBU.Name = MWBULoad.allLoadInst.mwBU.Name + DateTime.Now;
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWBULoad.Id);
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -1456,8 +1467,8 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldOtherLoad, MWBULoad);
+                            _unitOfWork.MW_BURepository.Update(MWBULoad.allLoadInst.mwBU);
                             _unitOfWork.SaveChanges();
-
 
                             if (MWBULoad.ReservedSpace == true)
                             {
@@ -1494,7 +1505,7 @@ namespace TLIS_Service.Services
                         if (MWRFULoad != null)
                         {
                             MWRFULoad.Dismantle = true;
-
+                            MWRFULoad.allLoadInst.mwRFU.Name = MWRFULoad.allLoadInst.mwRFU.Name + DateTime.Now;
                             var OldMWRFULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWRFULoad.Id);
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -1512,6 +1523,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldMWRFULoad, MWRFULoad);
+                            _unitOfWork.MW_RFURepository.Update(MWRFULoad.allLoadInst.mwRFU);
                             _unitOfWork.SaveChanges();
 
 
@@ -1550,7 +1562,7 @@ namespace TLIS_Service.Services
                         if (MWOtherLoad != null)
                         {
                             MWOtherLoad.Dismantle = true;
-
+                            MWOtherLoad.allLoadInst.mwOther.Name = MWOtherLoad.allLoadInst.mwOther.Name + DateTime.Now;
                             var OldMWOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWOtherLoad.Id);
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -1568,6 +1580,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldMWOtherLoad, MWOtherLoad);
+                            _unitOfWork.Mw_OtherRepository.Update(MWOtherLoad.allLoadInst.mwOther);
                             _unitOfWork.SaveChanges();
 
                             if (MWOtherLoad.ReservedSpace == true)
@@ -1605,7 +1618,7 @@ namespace TLIS_Service.Services
                         if (RdioOtherLoad != null)
                         {
                             RdioOtherLoad.Dismantle = true;
-
+                            RdioOtherLoad.allLoadInst.radioOther.Name = RdioOtherLoad.allLoadInst.radioOther.Name + DateTime.Now;
                             var OldRdioOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RdioOtherLoad.Id);
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -1623,6 +1636,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                             _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldRdioOtherLoad, RdioOtherLoad);
+                            _unitOfWork.RadioOtherRepository.Update(RdioOtherLoad.allLoadInst.radioOther);
                             _unitOfWork.SaveChanges();
 
                             if (RdioOtherLoad.ReservedSpace == true)

@@ -8895,6 +8895,9 @@ namespace TLIS_Service.Services
                     var DynamicAttribute = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(x => x.Key.ToLower() == DynamicAttViewModel.general.name.ToLower() && x.Id != DynamicAttributeId, x => x.tablesNames);
                     if (DynamicAttribute != null)
                         return new Response<AddDynamicObject>(true, null, null, $"This Key {DynamicAttViewModel.general.name} is Already Exist in Table {DynamicAttribute.tablesNames.TableName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
+                    if (DynamicAttViewModel.general.defualtValue == null)
+                        return new Response<AddDynamicObject>(true, null, null, "The default can not to be null.", (int)Constants.ApiReturnCode.fail);
+
                     var NewDynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == DynamicAttributeId && !x.disable);
                     NewDynamicAttribute.Key = DynamicAttViewModel.general.name;
                     NewDynamicAttribute.Description = DynamicAttViewModel.general.description;
@@ -11820,6 +11823,9 @@ namespace TLIS_Service.Services
                                 double double_Test = 0;
                                 DateTime datetime_Test = DateTime.Now;
                                 Boolean boolean_Test = false;
+                                if(addDynamicObject.general.defualtValue == null)
+                                    return new Response<AddDynamicObject>(true, null, null, "The default can not to be null.", (int)Constants.ApiReturnCode.fail);
+
                                 if (addDynamicObject.general.dataType== 21 || addDynamicObject.general.dataType == 22)
                                 {
                                     var DefultVale = double.TryParse(addDynamicObject.general.defualtValue.ToString(), out double_Test);
@@ -11850,16 +11856,16 @@ namespace TLIS_Service.Services
                                     }
 
                                 }
-                                var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
-                                var Validationvalue = addDynamicObject.validation.value?.ToString().Trim();
+                                
                                 if (addDynamicObject.type == 0)
                                 {
+                                    var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
                                     TLIdynamicAtt tLIdynamicAtt = new TLIdynamicAtt()
                                     {
                                         Key = addDynamicObject.general.name,
                                         Description = addDynamicObject.general.description,
                                         Required = addDynamicObject.general.isRequired,
-                                        DefaultValue = addDynamicObject.general.defualtValue.ToString(),
+                                        DefaultValue = defultvalue.ToString(),
                                         DataTypeId = addDynamicObject.general.dataType,
                                         tablesNamesId = TabelNameId,
                                         disable = false,
@@ -11912,7 +11918,7 @@ namespace TLIS_Service.Services
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     InventoryId = RecordId,
                                                     tablesNamesId = TabelNameId,
-                                                    ValueString = addDynamicObject.general.defualtValue.ToString()
+                                                    ValueString = defultvalue
                                                 });
                                             }
 
@@ -11932,7 +11938,7 @@ namespace TLIS_Service.Services
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     InventoryId = RecordId,
                                                     tablesNamesId = TabelNameId,
-                                                    ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                    ValueDouble = double.Parse(defultvalue),
                                                 });
                                             }
 
@@ -11951,7 +11957,7 @@ namespace TLIS_Service.Services
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     InventoryId = RecordId,
                                                     tablesNamesId = TabelNameId,
-                                                    ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                    ValueDateTime = DateTime.Parse(defultvalue),
                                                 });
                                             }
 
@@ -11972,7 +11978,7 @@ namespace TLIS_Service.Services
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     InventoryId = RecordId,
                                                     tablesNamesId = TabelNameId,
-                                                    ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                    ValueBoolean = bool.Parse(defultvalue),
                                                 });
                                             }
 
@@ -12012,7 +12018,7 @@ namespace TLIS_Service.Services
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     InventoryId = RecordId,
                                                     tablesNamesId = TabelNameId,
-                                                    ValueString = addDynamicObject.general.defualtValue.ToString()
+                                                    ValueString = defultvalue
                                                 });
                                             }
 
@@ -12032,7 +12038,7 @@ namespace TLIS_Service.Services
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     InventoryId = RecordId,
                                                     tablesNamesId = TabelNameId,
-                                                    ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                    ValueDouble = double.Parse(defultvalue),
                                                 });
                                             }
 
@@ -12051,7 +12057,7 @@ namespace TLIS_Service.Services
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     InventoryId = RecordId,
                                                     tablesNamesId = TabelNameId,
-                                                    ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                    ValueDateTime = DateTime.Parse(defultvalue),
                                                 });
                                             }
 
@@ -12072,7 +12078,7 @@ namespace TLIS_Service.Services
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     InventoryId = RecordId,
                                                     tablesNamesId = TabelNameId,
-                                                    ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                    ValueBoolean = bool.Parse(defultvalue),
                                                 });
                                             }
 
@@ -12085,6 +12091,8 @@ namespace TLIS_Service.Services
                                 {
                                     if (addDynamicObject.validation != null)
                                     {
+                                        var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
+                                        var Validationvalue = addDynamicObject.validation.value?.ToString().Trim();
                                         TLIdynamicAtt tLIdynamicAtt = new TLIdynamicAtt()
                                         {
                                             Key = addDynamicObject.general.name,
@@ -12139,7 +12147,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                        ValueString = addDynamicObject.validation.value.ToString(),
+                                                        ValueString = Validationvalue,
                                                     };
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -12148,23 +12156,23 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower() == addDynamicObject.validation.value.ToString().ToLower();
+                                                            result = defultvalue.ToLower() == Validationvalue.ToLower();
                                                             break;
 
                                                         case 2:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower() != addDynamicObject.validation.value.ToString().ToLower();
+                                                            result = defultvalue.ToLower() != Validationvalue.ToLower();
                                                             break;
 
                                                         case 7:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().Contains(addDynamicObject.validation.value.ToString().ToLower());
+                                                            result = defultvalue.ToLower().Contains(Validationvalue.ToLower());
                                                             break;
 
                                                         case 8:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().StartsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                            result = defultvalue.ToLower().StartsWith(Validationvalue.ToLower());
                                                             break;
 
                                                         case 9:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().EndsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                            result = defultvalue.ToLower().EndsWith(Validationvalue.ToLower());
                                                             break;
                                                     }
 
@@ -12185,7 +12193,7 @@ namespace TLIS_Service.Services
                                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                                 InventoryId = RecordId,
                                                                 tablesNamesId = TabelNameId,
-                                                                ValueString = addDynamicObject.general.defualtValue.ToString()
+                                                                ValueString = defultvalue
                                                             });
                                                         }
 
@@ -12201,7 +12209,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                        ValueDouble = double.Parse(addDynamicObject.validation.value.ToString()),
+                                                        ValueDouble = double.Parse(Validationvalue),
                                                     };
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -12250,7 +12258,7 @@ namespace TLIS_Service.Services
                                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                                 InventoryId = RecordId,
                                                                 tablesNamesId = TabelNameId,
-                                                                ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                                ValueDouble = double.Parse(defultvalue),
                                                             });
                                                         }
 
@@ -12265,7 +12273,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                        ValueDateTime = DateTime.Parse(addDynamicObject.validation.value.ToString()),
+                                                        ValueDateTime = DateTime.Parse(Validationvalue),
                                                     };
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -12274,11 +12282,11 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = defultvalue == addDynamicObject.validation.value;
+                                                            result = defultvalue == Validationvalue;
                                                             break;
 
                                                         case 2:
-                                                            result = defultvalue != addDynamicObject.validation.value;
+                                                            result = defultvalue != Validationvalue;
                                                             break;
 
                                                         case 3:
@@ -12314,7 +12322,7 @@ namespace TLIS_Service.Services
                                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                                 InventoryId = RecordId,
                                                                 tablesNamesId = TabelNameId,
-                                                                ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                                ValueDateTime = DateTime.Parse(defultvalue),
                                                             });
                                                         }
 
@@ -12329,7 +12337,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                        ValueBoolean = bool.Parse(addDynamicObject.validation.value.ToString()),
+                                                        ValueBoolean = bool.Parse(Validationvalue),
                                                     };
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -12365,7 +12373,7 @@ namespace TLIS_Service.Services
                                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                                 InventoryId = RecordId,
                                                                 tablesNamesId = TabelNameId,
-                                                                ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                                ValueBoolean = bool.Parse(defultvalue),
                                                             });
                                                         }
 
@@ -12400,7 +12408,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                        ValueString = addDynamicObject.validation.value.ToString(),
+                                                        ValueString = Validationvalue,
                                                     };
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -12409,23 +12417,23 @@ namespace TLIS_Service.Services
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower() == addDynamicObject.validation.value.ToString().ToLower();
+                                                            result = defultvalue.ToLower() == Validationvalue.ToLower();
                                                             break;
 
                                                         case 2:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower() != addDynamicObject.validation.value.ToString().ToLower();
+                                                            result = defultvalue.ToLower() != Validationvalue.ToLower();
                                                             break;
 
                                                         case 7:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().Contains(addDynamicObject.validation.value.ToString().ToLower());
+                                                            result = defultvalue.ToLower().Contains(Validationvalue.ToLower());
                                                             break;
 
                                                         case 8:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().StartsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                            result = defultvalue.ToLower().StartsWith(Validationvalue.ToLower());
                                                             break;
 
                                                         case 9:
-                                                            result = addDynamicObject.general.defualtValue.ToString().ToLower().EndsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                            result = defultvalue.ToLower().EndsWith(Validationvalue.ToLower());
                                                             break;
                                                     }
 
@@ -12446,7 +12454,7 @@ namespace TLIS_Service.Services
                                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                                 InventoryId = RecordId,
                                                                 tablesNamesId = TabelNameId,
-                                                                ValueString = addDynamicObject.general.defualtValue.ToString()
+                                                                ValueString = defultvalue
                                                             });
                                                         }
 
@@ -12462,7 +12470,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                        ValueDouble = double.Parse(addDynamicObject.validation.value.ToString()),
+                                                        ValueDouble = double.Parse(Validationvalue),
                                                     };
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -12511,7 +12519,7 @@ namespace TLIS_Service.Services
                                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                                 InventoryId = RecordId,
                                                                 tablesNamesId = TabelNameId,
-                                                                ValueDouble = double.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                                ValueDouble = double.Parse(defultvalue),
                                                             });
                                                         }
 
@@ -12526,7 +12534,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                        ValueDateTime = DateTime.Parse(addDynamicObject.validation.value.ToString()),
+                                                        ValueDateTime = DateTime.Parse(Validationvalue),
                                                     };
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -12575,7 +12583,7 @@ namespace TLIS_Service.Services
                                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                                 InventoryId = RecordId,
                                                                 tablesNamesId = TabelNameId,
-                                                                ValueDateTime = DateTime.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                                ValueDateTime = DateTime.Parse(defultvalue),
                                                             });
                                                         }
 
@@ -12590,7 +12598,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         DynamicAttId = tLIdynamicAtt.Id,
                                                         OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                        ValueBoolean = bool.Parse(addDynamicObject.validation.value.ToString()),
+                                                        ValueBoolean = bool.Parse(Validationvalue),
                                                     };
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
@@ -12626,7 +12634,7 @@ namespace TLIS_Service.Services
                                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                                 InventoryId = RecordId,
                                                                 tablesNamesId = TabelNameId,
-                                                                ValueBoolean = bool.Parse(addDynamicObject.general.defualtValue.ToString()),
+                                                                ValueBoolean = bool.Parse(defultvalue),
                                                             });
                                                         }
 
@@ -12649,6 +12657,7 @@ namespace TLIS_Service.Services
                                 {
                                     if (addDynamicObject.dependency != null)
                                     {
+                                        var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
                                         if (addDynamicObject.dependency.result.ToString() != null)
                                         {
                                             if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
@@ -18014,6 +18023,8 @@ namespace TLIS_Service.Services
                                 {
                                     if (addDynamicObject.validation != null && addDynamicObject.dependency != null)
                                     {
+                                        var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
+                                        var Validationvalue = addDynamicObject.validation.value?.ToString().Trim();
                                         TLIdynamicAtt tLIdynamicAtt = new TLIdynamicAtt()
                                         {
                                             Key = addDynamicObject.general.name,
@@ -18050,7 +18061,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                    ValueString = addDynamicObject.validation.value.ToString(),
+                                                    ValueString = Validationvalue,
                                                 };
                                                 _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                 _unitOfWork.SaveChanges();
@@ -18059,23 +18070,23 @@ namespace TLIS_Service.Services
                                                 switch (addDynamicObject.validation.operation)
                                                 {
                                                     case 1:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower() == addDynamicObject.validation.value.ToString().ToLower();
+                                                        result = defultvalue.ToLower() ==Validationvalue.ToLower();
                                                         break;
 
                                                     case 2:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower() != addDynamicObject.validation.value.ToString().ToLower();
+                                                        result = defultvalue.ToLower() !=Validationvalue.ToLower();
                                                         break;
 
                                                     case 7:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().Contains(addDynamicObject.validation.value.ToString().ToLower());
+                                                        result = defultvalue.ToLower().Contains(Validationvalue.ToLower());
                                                         break;
 
                                                     case 8:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().StartsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                        result = defultvalue.ToLower().StartsWith(Validationvalue.ToLower());
                                                         break;
 
                                                     case 9:
-                                                        result = addDynamicObject.general.defualtValue.ToString().ToLower().EndsWith(addDynamicObject.validation.value.ToString().ToLower());
+                                                        result = defultvalue.ToLower().EndsWith(Validationvalue.ToLower());
                                                         break;
                                                 }
 
@@ -18091,7 +18102,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                    ValueDouble = double.Parse(addDynamicObject.validation.value.ToString()),
+                                                    ValueDouble = double.Parse(Validationvalue),
                                                 };
                                                 _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                 _unitOfWork.SaveChanges();
@@ -18136,7 +18147,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                    ValueDateTime = DateTime.Parse(addDynamicObject.validation.value.ToString()),
+                                                    ValueDateTime = DateTime.Parse(Validationvalue),
                                                 };
                                                 _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                 _unitOfWork.SaveChanges();
@@ -18181,7 +18192,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     DynamicAttId = tLIdynamicAtt.Id,
                                                     OperationId = Convert.ToInt32(addDynamicObject.validation.operation),
-                                                    ValueBoolean = bool.Parse(addDynamicObject.validation.value.ToString()),
+                                                    ValueBoolean = bool.Parse(Validationvalue),
                                                 };
                                                 _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                 _unitOfWork.SaveChanges();

@@ -5675,6 +5675,7 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.solarId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Solar.Dismantle = true;
+                            Solar.allOtherInventoryInst.solar.Name = Solar.allOtherInventoryInst.solar.Name + DateTime.Now;
 
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
@@ -5691,6 +5692,7 @@ namespace TLIS_Service.Services
                             
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
                             _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldSolar, Solar);
+                            _unitOfWork.SolarRepository.Update(Solar.allOtherInventoryInst.solar);
                             _unitOfWork.SaveChanges();
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Solar.SiteCode.ToLower());
                             Solar.Site.ReservedSpace = Solar.Site.ReservedSpace - Solar.allOtherInventoryInst.solar.SpaceInstallation;
@@ -5713,7 +5715,7 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.solarId == OtherInventoryId
                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Solar.Dismantle = true;
-
+                            Solar.allOtherInventoryInst.solar.Name = Solar.allOtherInventoryInst.solar.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -5729,6 +5731,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
                             _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldSolar, Solar);
+                            _unitOfWork.SolarRepository.Update(Solar.allOtherInventoryInst.solar);
                             _unitOfWork.SaveChanges();
                          
                             var ReferenceSolar = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
@@ -5756,6 +5759,7 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Generator.Dismantle = true;
+                            Generator.allOtherInventoryInst.generator.Name = Generator.allOtherInventoryInst.generator.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -5771,6 +5775,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
                             _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldGenerator, Generator);
+                            _unitOfWork.GeneratorRepository.Update(Generator.allOtherInventoryInst.generator);
                             _unitOfWork.SaveChanges();
                          
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Generator.SiteCode.ToLower());
@@ -5794,7 +5799,7 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.generatorId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Generator.Dismantle = true;
-
+                            Generator.allOtherInventoryInst.generator.Name = Generator.allOtherInventoryInst.generator.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -5810,6 +5815,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
                             _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldGenerator, Generator);
+                            _unitOfWork.GeneratorRepository.Update(Generator.allOtherInventoryInst.generator);
                             _unitOfWork.SaveChanges();
                           
                             var ReferenceSolar = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
@@ -5841,7 +5847,7 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Cabinet.Dismantle = true;
-
+                            Cabinet.allOtherInventoryInst.cabinet.Name = Cabinet.allOtherInventoryInst.cabinet.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -5857,6 +5863,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
                             _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldCabinet, Cabinet);
+                            _unitOfWork.CabinetRepository.Update(Cabinet.allOtherInventoryInst.cabinet);
                             _unitOfWork.SaveChanges();
                           
                             var OldSite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == Cabinet.SiteCode.ToLower());
@@ -5880,6 +5887,7 @@ namespace TLIS_Service.Services
                                 .Include(x => x.Site).FirstOrDefault(x => x.allOtherInventoryInst.cabinetId == OtherInventoryId
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Cabinet.Dismantle = true;
+                            Cabinet.allOtherInventoryInst.cabinet.Name = Cabinet.allOtherInventoryInst.cabinet.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -5895,9 +5903,9 @@ namespace TLIS_Service.Services
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
                             _unitOfWork.OtherInSiteRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIotherInSite, OldCabinet, Cabinet);
+                            _unitOfWork.CabinetRepository.Update(Cabinet.allOtherInventoryInst.cabinet);
                             _unitOfWork.SaveChanges();
-                            _unitOfWork.OtherInSiteRepository.UpdateWithHistory(UserId, OldCabinet, Cabinet);
-                            _unitOfWork.SaveChanges();
+                       
                             var ReferenceSolar = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
                             == Cabinet.allOtherInventoryInstId);
                             foreach (var item in ReferenceSolar)

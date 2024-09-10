@@ -51,6 +51,7 @@ using TLIS_DAL.ViewModels.CabinetPowerTypeDTOs;
 using TLIS_DAL.ViewModels.TelecomTypeDTOs;
 using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
+using TLIS_DAL.ViewModels.RadioOtherLibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -2932,19 +2933,18 @@ namespace TLIS_Service.Services
                     GeneratorLibraryEntites.Deleted = GeneratorLegLib.Deleted;
 
                     var HistoryId = _unitOfWork.GeneratorLibraryRepository.UpdateWithH(userId,null, GeneratorLegLib, GeneratorLibraryEntites);
+                    _unitOfWork.SaveChanges();
+                    if (editGeneratorLibraryObject.DynamicAttributes != null ? editGeneratorLibraryObject.DynamicAttributes.Count > 0 : false)
+                    {
+                        foreach (var item in editGeneratorLibraryObject.DynamicAttributes)
+                        {
+                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, GeneratorLibraryEntites.Id, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<EditGeneratorLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                        }
+                    }
 
-                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
-                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
-
-                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
-                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
 
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
 
@@ -3002,11 +3002,6 @@ namespace TLIS_Service.Services
 
                     EditLogisticalItemH(userId, editGeneratorLibraryObject.LogisticalItems, GeneratorLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
 
-                    if (editGeneratorLibraryObject.DynamicAttributes != null ? editGeneratorLibraryObject.DynamicAttributes.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(editGeneratorLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, GeneratorLibraryEntites.Id, userId, HistoryId);
-                    }
-
                     await _unitOfWork.SaveChangesAsync();
 
 
@@ -3062,19 +3057,17 @@ namespace TLIS_Service.Services
                     SolarLibraryEntites.Deleted = SolarLegLib.Deleted;
 
                     var HistoryId = _unitOfWork.SolarLibraryRepository.UpdateWithH(userId,null, SolarLegLib, SolarLibraryEntites);
+                    _unitOfWork.SaveChanges();
+                    if (editSolarLibraryObject.DynamicAttributes != null ? editSolarLibraryObject.DynamicAttributes.Count > 0 : false)
+                    {
+                        foreach (var item in editSolarLibraryObject.DynamicAttributes)
+                        {
+                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, SolarLibraryEntites.Id, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<EditSolarLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
-
-                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
-                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
-
-                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
-                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
+                        }
+                    }
 
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
 
@@ -3132,11 +3125,7 @@ namespace TLIS_Service.Services
 
                     EditLogisticalItemHSolar(userId, editSolarLibraryObject.LogisticalItems, SolarLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
 
-                    if (editSolarLibraryObject.DynamicAttributes != null ? editSolarLibraryObject.DynamicAttributes.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(editSolarLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, SolarLibraryEntites.Id, userId,HistoryId);
-                    }
-
+                    
                     await _unitOfWork.SaveChangesAsync();
 
 
@@ -3553,19 +3542,18 @@ namespace TLIS_Service.Services
                     CabinetPowerLibraryEntites.Deleted = CabinetPowerLegLib.Deleted;
 
                     var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.UpdateWithH(userId,null, CabinetPowerLegLib, CabinetPowerLibraryEntites);
+                    _unitOfWork.SaveChanges();
 
+                    if (editCabinetPowerLibraryObject.DynamicAttributes != null ? editCabinetPowerLibraryObject.DynamicAttributes.Count > 0 : false)
+                    {
+                        foreach (var item in editCabinetPowerLibraryObject.DynamicAttributes)
+                        {
+                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, CabinetPowerLibraryEntites.Id, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<EditCabinetPowerLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
-                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
-
-                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
-                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
+                        }
+                    }
 
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
 
@@ -3622,11 +3610,6 @@ namespace TLIS_Service.Services
 
 
                     EditLogisticalItemH(userId, editCabinetPowerLibraryObject.LogisticalItems, CabinetPowerLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds, HistoryId);
-
-                    if (editCabinetPowerLibraryObject.DynamicAttributes != null ? editCabinetPowerLibraryObject.DynamicAttributes.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(editCabinetPowerLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, CabinetPowerLibraryEntites.Id, userId, HistoryId);
-                    }
 
                     await _unitOfWork.SaveChangesAsync();
 
@@ -4398,19 +4381,18 @@ namespace TLIS_Service.Services
                     CabinetTelecomLibraryEntites.Deleted = CabinetTelecomLegLib.Deleted;
 
                     var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithH(userId,null, CabinetTelecomLegLib, CabinetTelecomLibraryEntites);
+                    _unitOfWork.SaveChanges();
 
+                    if (editCabinetTelecomLibraryObject.DynamicAttributes != null ? editCabinetTelecomLibraryObject.DynamicAttributes.Count > 0 : false)
+                    {
+                        foreach (var item in editCabinetTelecomLibraryObject.DynamicAttributes)
+                        {
+                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, CabinetTelecomLibraryEntites.Id, HistoryId).Message;
+                            if (Message != "Success")
+                                return new Response<EditCabinetTelecomLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    //string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditApiVersions(editCivilWithLegsLibrary, TableName);
-                    //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
-
-                    //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersions(editCivilWithLegsLibrary.dynamicAttributes, TableNameEntity.TableName);
-                    //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                    //{
-                    //    return new Response<EditCivilWithLegsLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                    //}
+                        }
+                    }
 
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
 
@@ -4468,10 +4450,6 @@ namespace TLIS_Service.Services
 
                     EditLogisticalItemH(userId, editCabinetTelecomLibraryObject.LogisticalItems, CabinetTelecomLibraryEntites, TableNameEntity.Id, OldLogisticalItemIds,HistoryId);
 
-                    if (editCabinetTelecomLibraryObject.DynamicAttributes != null ? editCabinetTelecomLibraryObject.DynamicAttributes.Count > 0 : false)
-                    {
-                        _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(editCabinetTelecomLibraryObject.DynamicAttributes, connectionString, TableNameEntity.Id, CabinetTelecomLibraryEntites.Id, userId, HistoryId);
-                    }
 
                     await _unitOfWork.SaveChangesAsync();
 
@@ -8101,16 +8079,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddGeneratorLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                             GeneratorLibraryEntity.SpaceLibrary = GeneratorLibraryEntity.Length * GeneratorLibraryEntity.Width;
-                            //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                            var CheckModel = db.MV_GENERATOR_LIBRARY_VIEW
+                             var CheckModel = db.MV_GENERATOR_LIBRARY_VIEW
                                .FirstOrDefault(x => x.Model != null &&
                                 x.Model.ToLower() == GeneratorLibraryEntity.Model.ToLower()
                                 && !x.Deleted);
@@ -8122,17 +8091,20 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.GeneratorLibraryRepository.AddWithH(UserId,null, GeneratorLibraryEntity);
                             _unitOfWork.SaveChanges();
+                            if (addGeneratorLibraryObject.DynamicAttributes != null ? addGeneratorLibraryObject.DynamicAttributes.Count > 0 : false)
+                            {
+                                foreach (var item in addGeneratorLibraryObject.DynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, GeneratorLibraryEntity.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                        return new Response<AddGeneratorLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                }
+                            }
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = addGeneratorLibraryObject.LogisticalItems;
 
                             AddLogisticalItemWithCivilH(UserId, LogisticalItemIds, GeneratorLibraryEntity, TableNameEntity.Id, HistoryId);
-
-                            if (addGeneratorLibraryObject.DynamicAttributes.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, addGeneratorLibraryObject.DynamicAttributes, TableNameEntity.Id, GeneratorLibraryEntity.Id, connectionString, HistoryId);
-                            }
-                       
 
                             transaction.Complete();
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
@@ -8170,16 +8142,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddSolarLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                             SolarLibraryEntity.SpaceLibrary = SolarLibraryEntity.Length * SolarLibraryEntity.Width;
-                            //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                            var CheckModel = db.MV_SOLAR_LIBRARY_VIEW
+                             var CheckModel = db.MV_SOLAR_LIBRARY_VIEW
                               .FirstOrDefault(x => x.Model != null &&
                                x.Model.ToLower() == SolarLibraryEntity.Model.ToLower()
                                && !x.Deleted);
@@ -8190,18 +8153,21 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.SolarLibraryRepository.AddWithH(UserId,null, SolarLibraryEntity);
                             _unitOfWork.SaveChanges();
+                            if (addSolarLibraryObject.DynamicAttributes != null ? addSolarLibraryObject.DynamicAttributes.Count > 0 : false)
+                            {
+                                foreach (var item in addSolarLibraryObject.DynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, SolarLibraryEntity.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                        return new Response<AddSolarLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                }
+                            }
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = addSolarLibraryObject.LogisticalItems;
 
                             AddLogisticalItemWithCivilH(UserId, LogisticalItemIds, SolarLibraryEntity, TableNameEntity.Id, HistoryId);
-
-                            if (addSolarLibraryObject.DynamicAttributes.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, addSolarLibraryObject.DynamicAttributes, TableNameEntity.Id, SolarLibraryEntity.Id, connectionString, HistoryId);
-                            }
-                          
-
+                
                             transaction.Complete();
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             return new Response<AddSolarLibraryObject>();
@@ -8235,15 +8201,6 @@ namespace TLIS_Service.Services
                                  return new Response<AddCabinetPowerLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                                 
                             }
-                            //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
                             var CheckModel = db.MV_CABINET_POWER_LIBRARY_VIEW
                               .FirstOrDefault(x => x.Model != null &&
                                x.Model.ToLower() == CabinetPowerLibraryEntity.Model.ToLower()
@@ -8256,18 +8213,22 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.AddWithH(UserId,null, CabinetPowerLibraryEntity);
                             _unitOfWork.SaveChanges();
+                            if (addCabinetPowerLibraryObject.DynamicAttributes != null ? addCabinetPowerLibraryObject.DynamicAttributes.Count > 0 : false)
+                            {
+                                foreach (var item in addCabinetPowerLibraryObject.DynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CabinetPowerLibraryEntity.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                        return new Response<AddCabinetPowerLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                }
+                            }
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = addCabinetPowerLibraryObject.LogisticalItems;
 
                             AddLogisticalItemWithCivilH(UserId, LogisticalItemIds, CabinetPowerLibraryEntity, TableNameEntity.Id, HistoryId);
 
-                            if (addCabinetPowerLibraryObject.DynamicAttributes.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, addCabinetPowerLibraryObject.DynamicAttributes, TableNameEntity.Id, CabinetPowerLibraryEntity.Id, connectionString, HistoryId);
-                            }
-                          
-
+                         
                             transaction.Complete();
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                             return new Response<AddCabinetPowerLibraryObject>();
@@ -8423,16 +8384,7 @@ namespace TLIS_Service.Services
                                  return new Response<AddCabinetTelecomLibraryObject>(false, null, null, "SpaceLibrary must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                                
                             }
-                            //string CheckDependencyValidation = CheckDependencyValidationForMWTypes(addMWDishLibraryObject, TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addMWDishLibraryObject.dynamicAttribute, TableNameEntity.TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            //    return new Response<AddMWDishLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                            var CheckModel = db.MV_CABINET_TELECOM_LIBRARY_VIEW
+                           var CheckModel = db.MV_CABINET_TELECOM_LIBRARY_VIEW
                               .FirstOrDefault(x => x.Model != null &&
                                x.Model.ToLower() == CabinetPowerLibraryEntity.Model.ToLower()
                                && !x.Deleted);
@@ -8444,18 +8396,20 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.AddWithH(UserId,null, CabinetPowerLibraryEntity);
                             _unitOfWork.SaveChanges();
+                            if (addCabinetTelecomLibraryObject.DynamicAttributes != null ? addCabinetTelecomLibraryObject.DynamicAttributes.Count > 0 : false)
+                            {
+                                foreach (var item in addCabinetTelecomLibraryObject.DynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CabinetPowerLibraryEntity.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                        return new Response<AddCabinetTelecomLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
+                                }
+                            }
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = addCabinetTelecomLibraryObject.LogisticalItems;
 
                             AddLogisticalItemWithCivilH(UserId, LogisticalItemIds, CabinetPowerLibraryEntity, TableNameEntity.Id,HistoryId);
-
-                            if (addCabinetTelecomLibraryObject.DynamicAttributes.Count > 0)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId, addCabinetTelecomLibraryObject.DynamicAttributes, TableNameEntity.Id, CabinetPowerLibraryEntity.Id, connectionString,HistoryId);
-                            }
-                          
-
 
                             transaction.Complete();
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));

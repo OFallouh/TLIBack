@@ -11808,6 +11808,7 @@ namespace TLIS_Service.Services
                         if (civilSiteDate != null)
                         {
                             civilSiteDate.Dismantle = true;
+                            allcivil.civilWithLegs.Name = allcivil.civilWithLegs.Name + DateTime.Now;
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilWithLegs.SpaceInstallation;
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -11825,7 +11826,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
                             _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(UserId,HistroryId,TabelTLIcivilSiteDate, OldValueSiteReservedSpace, civilSiteDate);
-               
+                            _unitOfWork.CivilWithLegsRepository.Update(allcivil.civilWithLegs);
                             var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
                             foreach (var tLIcivilLoads in allcivilload)
                             {
@@ -11856,6 +11857,7 @@ namespace TLIS_Service.Services
                         {
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
+                            allcivil.civilWithLegs.Name = allcivil.civilWithLegs.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -11871,7 +11873,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
                             _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(UserId,HistroryId,TabelTLIcivilSiteDate, OldValueSiteNotReservedSpace, civilSiteDate1);
-            
+                            _unitOfWork.CivilWithLegsRepository.Update(allcivil.civilWithLegs);
                             var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
                             foreach (var tLIcivilLoads in allcivilload)
                             {
@@ -11951,6 +11953,7 @@ namespace TLIS_Service.Services
                         if (civilSiteDate != null)
                         {
                             civilSiteDate.Dismantle = true;
+                            allcivil.civilWithoutLeg.Name = allcivil.civilWithoutLeg.Name + DateTime.Now;
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilWithoutLeg.SpaceInstallation;
                             TLIhistory AddTablesHistory = new TLIhistory
@@ -11968,7 +11971,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
                             _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(UserId,HistroryId, TabelTLIcivilSiteDate, OldValueSiteReservedSpace, civilSiteDate);
-                    
+                            _unitOfWork.CivilWithoutLegRepository.Update(allcivil.civilWithoutLeg);
                             var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
                             foreach (var tLIcivilLoads in allcivilload)
                             {
@@ -11999,6 +12002,7 @@ namespace TLIS_Service.Services
                         {
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
+                            allcivil.civilWithoutLeg.Name = allcivil.civilWithoutLeg.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -12014,7 +12018,7 @@ namespace TLIS_Service.Services
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
                             _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(UserId,HistroryId, TabelTLIcivilSiteDate, OldValueSiteNotReservedSpace, civilSiteDate1);
-                     
+                            _unitOfWork.CivilWithoutLegRepository.Update(allcivil.civilWithoutLeg);
                             var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
                             foreach (var tLIcivilLoads in allcivilload)
                             {
@@ -12096,6 +12100,7 @@ namespace TLIS_Service.Services
                             civilSiteDate.Dismantle = true;
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilNonSteel.SpaceInstallation;
+                            allcivil.civilNonSteel.Name = allcivil.civilNonSteel.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x=>x.Name== "Delete").Id,
@@ -12111,7 +12116,7 @@ namespace TLIS_Service.Services
                        
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
                             _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(UserId,HistroryId, TabelTLIcivilSiteDate, OldValueSiteReservedSpace, civilSiteDate);
-  
+                            _unitOfWork.CivilNonSteelRepository.Update(allcivil.civilNonSteel);  
                             var allcivilload = _dbContext.TLIcivilLoads.Where(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.Dismantle == false).ToList();
                             foreach (var tLIcivilLoads in allcivilload)
                             {
@@ -12140,6 +12145,7 @@ namespace TLIS_Service.Services
                         {
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
+                            allcivil.civilNonSteel.Name = allcivil.civilNonSteel.Name + DateTime.Now;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
                                 HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -12154,6 +12160,7 @@ namespace TLIS_Service.Services
                             var HistroryId = AddTablesHistory.Id;
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
                             _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(UserId,HistroryId, TabelTLIcivilSiteDate, OldValueSiteNotReservedSpace, civilSiteDate1);
+                            _unitOfWork.CivilNonSteelRepository.Update(allcivil.civilNonSteel);
                             var ReferenceCivil = _unitOfWork.CivilSupportDistanceRepository.GetWhere(x => x.ReferenceCivilId == CivilId);
                             foreach (var item in ReferenceCivil)
                             {

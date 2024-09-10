@@ -2795,9 +2795,9 @@ namespace TLIS_Repository.Repositories
                     }
                     if (DynamicAttribute.Type == 0 || DynamicAttribute.Type == null)
                     {
+                        var Comporsevalue = value.ToString().Trim();
                         if (DynamicAttribute.DataTypeId == 1)
                         {
-                            var Comporsevalue = value.ToString().Trim();
                             TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
                             {
                                 ValueString = Comporsevalue,
@@ -2825,8 +2825,6 @@ namespace TLIS_Repository.Repositories
                         }
                         if (DynamicAttribute.DataTypeId == 21 || DynamicAttribute.DataTypeId == 22)
                         {
-
-                            var Comporsevalue = value.ToString().Trim();
                             TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
                             {
                                 ValueDouble = Convert.ToDouble(Comporsevalue),
@@ -2852,7 +2850,6 @@ namespace TLIS_Repository.Repositories
                         }
                         if (DynamicAttribute.DataTypeId == 25)
                         {
-                            var Comporsevalue = value.ToString().Trim();
                             TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
                             {
                                 ValueDateTime = Convert.ToDateTime(Comporsevalue),
@@ -2877,7 +2874,7 @@ namespace TLIS_Repository.Repositories
                         }
                         if (DynamicAttribute.DataTypeId == 24)
                         {
-                            var Comporsevalue = value.ToString().Trim();
+                       
                             TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
                             {
                                 ValueBoolean = Convert.ToBoolean(Comporsevalue),
@@ -2904,7 +2901,7 @@ namespace TLIS_Repository.Repositories
                     if (DynamicAttribute.Type == 1)
                     {
                         var Validation = _context.TLIvalidation.FirstOrDefault(x => x.DynamicAttId == DynamicAttributeId);
-
+                       
                         if (DynamicAttribute.DataTypeId == 1)
                         {
                             bool result = false;

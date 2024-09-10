@@ -315,6 +315,7 @@ namespace TLIS_Service.Services
                     {
                            
                         SideArm.Dismantle = true;
+                        SideArm.sideArm.Name = SideArm.sideArm.Name + DateTime.Now;
                         TLIhistory AddTablesHistory = new TLIhistory
                         {
                             HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
@@ -330,7 +331,7 @@ namespace TLIS_Service.Services
                         
                         var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
                         _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistroryId, TabelTLIcivilLoads, OldSideArm, SideArm);
-                        _unitOfWork.SaveChanges();
+                        _unitOfWork.SideArmRepository.Update(SideArm.sideArm);
                     }
                     else
                     {

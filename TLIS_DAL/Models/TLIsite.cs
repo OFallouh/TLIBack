@@ -38,8 +38,6 @@ namespace TLIS_DAL.Models
         public int AreaId { get; set; }
         public TLIarea Area { get; set; }
 
-
-
         public int? PlanStatusCollectData { get; set; }
         public int? PlanStatusMWMd { get; set; }
         public int? PlanStatusPowerMd { get; set; }

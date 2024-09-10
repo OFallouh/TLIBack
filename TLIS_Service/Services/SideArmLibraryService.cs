@@ -163,28 +163,23 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                               return new Response<AddSideArmLibraryObject>(false, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             
-                            //string CheckDependencyValidation = CheckDependencyValidationForSideArm(addSideArmLibraryViewModel);
-
-                            //if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            //    return new Response<AddSideArmLibraryObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-
-                            //string CheckGeneralValidation = CheckGeneralValidationFunctionLib(addSideArmLibraryViewModel.dynamicAttribute, TableNameEntity.TableName);
-
-                            //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            //    return new Response<AddSideArmLibraryObject>(true, null, null, CheckGeneralValidation, (int)ApiReturnCode.fail);
-
                             var HistoryId=_unitOfWork.SideArmLibraryRepository.AddWithH(UserId,null, tLIsideArmLibrary);
                             _unitOfWork.SaveChanges();
 
+                            if (addSideArmLibraryViewModel.dynamicAttributes != null ? addSideArmLibraryViewModel.dynamicAttributes.Count > 0 : false)
+                            {
+                                foreach (var item in addSideArmLibraryViewModel.dynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, tLIsideArmLibrary.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                        return new Response<AddSideArmLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                }
+                            }
                             dynamic LogisticalItemIds = new ExpandoObject();
                             LogisticalItemIds = addSideArmLibraryViewModel.LogisticalItems;
 
                             AddLogisticalItemWithCivilH(UserId,LogisticalItemIds, tLIsideArmLibrary, TableNameEntity.Id,HistoryId);
-                            
-                            if (addSideArmLibraryViewModel.dynamicAttributes !=null)
-                            {
-                                _unitOfWork.DynamicAttLibRepository.AddDynamicLibraryAtt(UserId,addSideArmLibraryViewModel.dynamicAttributes, TableNameEntity.Id, tLIsideArmLibrary.Id,connectionString, HistoryId);
-                            }
                             transaction.Complete();
                             tran.Commit();
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
@@ -1003,17 +998,17 @@ namespace TLIS_Service.Services
                 tLIsideArmLibrary.Active = SidArm.Active;
                 tLIsideArmLibrary.Deleted = SidArm.Deleted;
                 var HistoryId=_unitOfWork.SideArmLibraryRepository.UpdateWithH(UserId,null, SidArm, tLIsideArmLibrary);
-                //string CheckDependency = CheckDependencyValidationEditApiVersion(editSideArmLibraryViewModel);
-                //if (!string.IsNullOrEmpty(CheckDependency))
-                //{
-                //    return new Response<EditSideArmLibraryObject>(true, null, null, CheckDependency, (int)Helpers.Constants.ApiReturnCode.fail);
-                //}
 
-                //string CheckGeneralValidation = CheckGeneralValidationFunctionEditApiVersion(editSideArmLibraryViewModel.dynamicAttributes, TableNames.TableName);
-                //if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                //{
-                //    return new Response<EditSideArmLibraryObject>(true, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                //}
+                if (editSideArmLibraryViewModel.dynamicAttributes != null ? editSideArmLibraryViewModel.dynamicAttributes.Count > 0 : false)
+                {
+                    foreach (var item in editSideArmLibraryViewModel.dynamicAttributes)
+                    {
+                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, tLIsideArmLibrary.Id, HistoryId).Message;
+                        if (Message != "Success")
+                            return new Response<EditSideArmLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    }
+                }
 
                 LogisticalObject OldLogisticalItemIds = new LogisticalObject();
 
@@ -1086,10 +1081,6 @@ namespace TLIS_Service.Services
 
                 EditLogisticalItemsH(UserId, editSideArmLibraryViewModel.logisticalItems, tLIsideArmLibrary, TableNames.Id, OldLogisticalItemIds, HistoryId);
                 
-                if (editSideArmLibraryViewModel.dynamicAttributes.Count > 0)
-                {
-                    _unitOfWork.DynamicAttLibRepository.UpdateDynamicLibAttsWithH(editSideArmLibraryViewModel.dynamicAttributes,connectionString, TableNames.Id, tLIsideArmLibrary.Id, UserId,HistoryId);
-                }
                 await _unitOfWork.SaveChangesAsync();
                 Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                 return new Response<EditSideArmLibraryObject>();
