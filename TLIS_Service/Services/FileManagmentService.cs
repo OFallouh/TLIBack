@@ -12133,11 +12133,11 @@ namespace TLIS_Service.Services
                         }
 
                         string GeneratorCapaCity_test = null;
-                        if (dt.Columns.Contains("LayoutCode"))
+                        if (dt.Columns.Contains("GeneratorCapaCity"))
                         {
-                            if (!String.IsNullOrEmpty(dt.Rows[j]["LayoutCode"].ToString()))
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["GeneratorCapaCity"].ToString()))
                             {
-                                GeneratorCapaCity_test = Convert.ToString(dt.Rows[j]["LayoutCode"]);
+                                GeneratorCapaCity_test = Convert.ToString(dt.Rows[j]["GeneratorCapaCity"]);
                             }
                         }
 

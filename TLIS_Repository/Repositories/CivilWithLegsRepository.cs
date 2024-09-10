@@ -2031,7 +2031,9 @@ namespace TLIS_Repository.Repositories
                 x.SITECODE.ToLower() == SiteCode.ToLower() &&
                 x.WITHLEG_ID == CivilwithLegId &&
                 x.WITHOUTLEG_ID == CivilWithoutLegId &&
-                x.NONSTEEL_ID == CivilNonSteelId
+                x.NONSTEEL_ID == CivilNonSteelId && x.FIRST_LEG_ID == FirstLegId
+                && x.SECOND_LEG_ID == SecondLegId && x.FIRST_SIDEARM_ID == FirstSideArmId
+                && x.SECOND_SIDEARM_ID == SecondSideArmId
             );
             var cc = Check.ToList();
             if (FirstLegId != null)
