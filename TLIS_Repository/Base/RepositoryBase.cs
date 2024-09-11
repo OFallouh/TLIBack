@@ -631,15 +631,15 @@ namespace TLIS_Repository.Base
             if (historyTypeId == 0) return HistoryId;
 
 
-            var entityId = (int)AddObject.GetType().GetProperty("SiteCode")?.GetValue(AddObject);
-            var entityIdString = entityId.ToString();
+            var entityId = (string)AddObject.GetType().GetProperty("SiteCode")?.GetValue(AddObject);
+   
 
 
             var addTablesHistory = new TLIhistory
             {
                 HistoryTypeId = historyTypeId,
-                SiteCode = entityIdString,
-                RecordId= entityIdString,
+                SiteCode = entityId,
+                RecordId= entityId,
                 TablesNameId = entityTableNameModel.Id,
                 UserId = UserId.Value
             };
@@ -657,7 +657,7 @@ namespace TLIS_Repository.Base
                 .ToList();
 
             var listOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
-            var recordId = SecRecordId?.ToString() ?? entityIdString;
+            var recordId = SecRecordId?.ToString() ?? entityId;
 
             foreach (var attribute in attributes)
             {

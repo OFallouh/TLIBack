@@ -29237,7 +29237,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                             Config.Add(baseInstAttViews);
 
                         }
-                        if (MWODU.sideArmId != 0 && MWODU.sideArmId != null && MWODU.allLoadInst.mwODU.OduInstallationTypeId == 1)
+                        else if (MWODU.sideArmId != 0 && MWODU.sideArmId != null && MWODU.allLoadInst.mwODU.OduInstallationTypeId == 1)
                         {
                             BaseInstAttViews baseInstAttViews = new BaseInstAttViews
                             {

@@ -37,6 +37,7 @@ using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using System.Reflection.Metadata;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Numerics;
+using DocumentFormat.OpenXml.Bibliography;
 
 
 namespace TLIS_Service.Services
@@ -226,7 +227,7 @@ namespace TLIS_Service.Services
         //                int Columns = sheet.Dimension.End.Column;
         //                int ActColumns = 0;
         //                for (int i = 1; i <= Columns; i++)
-        //                {
+        //                {ب
         //                    var ColName = sheet.Cells[1, i].Value.ToString();
         //                    if ((ActivatedAtts.Where(x => x == ColName).FirstOrDefault()) == null)
         //                    {
@@ -13988,14 +13989,15 @@ namespace TLIS_Service.Services
         //Fourth SiteCode to add it to file name if i deal with site
         //Fifth RecordId to add it to file name
         //Sixth TableName to specify the table i deal with
-        public Response<string> AttachFile(IFormFile file, int documenttypeId, string Model, string Name, string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset)
+        public Response<string> AttachFile(int UserId,IFormFile file, int documenttypeId, string Model, string Name, string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset)
         {
             try
             {
                 string OldValueOfTableName = TableName;
                 if (TableName.ToLower() == "TLIcabinetPower".ToLower() || TableName.ToLower() == "TLIcabinetTelecom".ToLower())
                     TableName = "TLIcabinet";
-
+                 TLIattachedFiles LastId = _serviceProvider.GetService<ApplicationDbContext>().
+                   TLIattachedFiles.OrderByDescending(a => a.Id).FirstOrDefault();
                 // Set list of image types to check later if attach file is image or not
                 List<string> ImgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
 
@@ -14112,6 +14114,47 @@ namespace TLIS_Service.Services
                 cmd.ExecuteNonQuery();
                 connectionString.Close();
                 //  AddHistoryForUnAttached(attachedFiles.Id, "Add", "TLIattachedFiles");
+                var TabelNameId= _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattachedFiles").Id;
+                int newRecordId = 0;
+                if (LastId != null)
+                {
+                    OracleCommand InventoryCmd = connectionString.CreateCommand();
+                    InventoryCmd.CommandType = CommandType.Text;
+                    InventoryCmd.CommandText = $"Select \"Id\" From \"TLIattachedFiles\" where \"TLIattachedFiles\".\"Id\" > {LastId.Id}";
+                    OracleDataReader Reader = InventoryCmd.ExecuteReader();
+                    if (Reader.HasRows)
+                    {
+                        while (Reader.Read())
+                        {
+                            newRecordId=Reader.GetInt32(0);
+                        }
+                    }
+                }
+                else
+                {
+                    OracleCommand InventoryCmd = connectionString.CreateCommand();
+                    InventoryCmd.CommandType = CommandType.Text;
+                    InventoryCmd.CommandText = $"Select \"Id\" From \"TLIattachedFiles\"";
+                    OracleDataReader Reader = InventoryCmd.ExecuteReader();
+                    if (Reader.HasRows)
+                    {
+                        while (Reader.Read())
+                        {
+                            newRecordId = Reader.GetInt32(0);
+                        }
+                    }
+                }
+                TLIhistory tLIhistory = new TLIhistory()
+                {
+                    RecordId= newRecordId.ToString(),
+                    TablesNameId= TabelNameId,
+                    HistoryTypeId=1,
+                    UserId= UserId,
+                    SiteCode= SiteCode
+
+                };
+                _dbContext.TLIhistory.Add(tLIhistory);
+                _dbContext.SaveChanges();
                 return new Response<string>(true, FilePath, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)

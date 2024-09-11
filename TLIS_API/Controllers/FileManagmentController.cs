@@ -140,8 +140,25 @@ namespace TLIS_API.Controllers
 
             var File = Request.Form.Files[0];
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            var response = _unitOfWorkService.FileManagmentService.AttachFile(File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset);
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset);
 
             if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
                 return BadRequest(response);
@@ -166,8 +183,25 @@ namespace TLIS_API.Controllers
 
             var File = Request.Form.Files[0];
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
 
-            var response = _unitOfWorkService.FileManagmentService.AttachFile(File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset);
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.FileManagmentService.AttachFile(userId,File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset);
 
             if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
                 return BadRequest(response);
