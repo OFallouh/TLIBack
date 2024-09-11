@@ -3484,7 +3484,7 @@ namespace TLIS_Service.Services
                         {
                             var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);
                             var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId.Id);
-                           if(OldValuecivilsupportdistance.ReferenceCivilId != editCivilWithLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
+                           if(OldValuecivilsupportdistance?.ReferenceCivilId != editCivilWithLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
                             {
                                 var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
                                  editCivilWithLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithLegsInstallationObject.civilSupportDistance.Distance
@@ -3927,7 +3927,7 @@ namespace TLIS_Service.Services
                           
                             var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);
                             var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId.Id);
-                            if (OldValuecivilsupportdistance.ReferenceCivilId != editCivilWithoutLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
+                            if (OldValuecivilsupportdistance?.ReferenceCivilId != editCivilWithoutLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
                             {
                                 var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
                                   editCivilWithoutLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithoutLegsInstallationObject.civilSupportDistance.Distance
@@ -4091,7 +4091,7 @@ namespace TLIS_Service.Services
                         var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);
                         var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId.Id);
 
-                        if (OldValuecivilsupportdistance.ReferenceCivilId != editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId)
+                        if (OldValuecivilsupportdistance?.ReferenceCivilId != editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId)
                         {
                                 var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
                                       editCivilNonSteelInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilNonSteelInstallationObject.civilSupportDistance.Distance
@@ -4106,7 +4106,7 @@ namespace TLIS_Service.Services
                             }
                          civilsupportdistance.Azimuth = editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth;
                         civilsupportdistance.Distance = editCivilNonSteelInstallationObject.civilSupportDistance.Distance;
-                        civilsupportdistance.ReferenceCivilId = editCivilNonSteelInstallationObject.civilSupportDistance.ReferenceCivilId;
+                        civilsupportdistance.ReferenceCivilId = editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId;
                        var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
                         _unitOfWork.CivilSupportDistanceRepository.UpdateWithHLogic(userId,HistoryId, TabelTLIcivilSupportDistance, OldValuecivilsupportdistance, civilsupportdistance);
                         _unitOfWork.SaveChanges();
