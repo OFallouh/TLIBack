@@ -14112,7 +14112,7 @@ namespace TLIS_Service.Services
 
                 connectionString.Open();
                 cmd.ExecuteNonQuery();
-                connectionString.Close();
+  
                 //  AddHistoryForUnAttached(attachedFiles.Id, "Add", "TLIattachedFiles");
                 var TabelNameId= _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattachedFiles").Id;
                 int newRecordId = 0;
@@ -14155,6 +14155,7 @@ namespace TLIS_Service.Services
                 };
                 _dbContext.TLIhistory.Add(tLIhistory);
                 _dbContext.SaveChanges();
+                connectionString.Close();
                 return new Response<string>(true, FilePath, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -3484,26 +3485,42 @@ namespace TLIS_Service.Services
                         {
                             var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);
                             var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId.Id);
-                           if(OldValuecivilsupportdistance?.ReferenceCivilId != editCivilWithLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
+                            if (OldValuecivilsupportdistance != null)
                             {
-                                var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
-                                 editCivilWithLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithLegsInstallationObject.civilSupportDistance.Distance
-                                 && x.Azimuth == editCivilWithLegsInstallationObject.civilSupportDistance.Azimuth
-                                 , x => x.CivilInst).Select(x=>x.ReferenceCivilId).ToList();
-                                var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
-                                == x.allCivilInstId )&& !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
-                                if (CivilSiteDate.Count > 0)
+                                if (OldValuecivilsupportdistance?.ReferenceCivilId != editCivilWithLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
                                 {
-                                    return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
+                                     editCivilWithLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithLegsInstallationObject.civilSupportDistance.Distance
+                                     && x.Azimuth == editCivilWithLegsInstallationObject.civilSupportDistance.Azimuth
+                                     , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
+                                    var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                                    == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
+                                    if (CivilSiteDate.Count > 0)
+                                    {
+                                        return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
                                 }
+                         
+                                civilsupportdistance.Azimuth = editCivilWithLegsInstallationObject.civilSupportDistance.Azimuth;
+                                civilsupportdistance.Distance = editCivilWithLegsInstallationObject.civilSupportDistance.Distance;
+                                civilsupportdistance.ReferenceCivilId = editCivilWithLegsInstallationObject.civilSupportDistance?.ReferenceCivilId;
+                                var TabelNameTLIcivilSupportDistance = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilSupportDistance").Id;
+                                _unitOfWork.CivilSupportDistanceRepository.UpdateWithHLogic(userId, HistoryId, TabelNameTLIcivilSupportDistance, OldValuecivilsupportdistance, civilsupportdistance);
+                                _unitOfWork.SaveChanges();
                             }
-                            
-                            civilsupportdistance.Azimuth = editCivilWithLegsInstallationObject.civilSupportDistance.Azimuth;
-                            civilsupportdistance.Distance = editCivilWithLegsInstallationObject.civilSupportDistance.Distance;
-                            civilsupportdistance.ReferenceCivilId = editCivilWithLegsInstallationObject.civilSupportDistance?.ReferenceCivilId;
-                            var TabelNameTLIcivilSupportDistance = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIcivilSupportDistance").Id;
-                            _unitOfWork.CivilSupportDistanceRepository.UpdateWithHLogic(userId, HistoryId, TabelNameTLIcivilSupportDistance, OldValuecivilsupportdistance, civilsupportdistance);
-                            _unitOfWork.SaveChanges();
+                            else
+                            {
+                                TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
+                                civilSupportDistance.Distance = editCivilWithLegsInstallationObject.civilSupportDistance.Distance;
+                                civilSupportDistance.Azimuth = editCivilWithLegsInstallationObject.civilSupportDistance.Azimuth;
+                                civilSupportDistance.SiteCode = SiteCode.SiteCode;
+                                civilSupportDistance.ReferenceCivilId = editCivilWithLegsInstallationObject.civilSupportDistance?.ReferenceCivilId;
+                                civilSupportDistance.CivilInstId = allcivilinstId.Id;
+                                var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
+                                _unitOfWork.CivilSupportDistanceRepository.AddWithHDynamic(userId, TabelTLIcivilSupportDistance, civilSupportDistance, HistoryId);
+                                _unitOfWork.SaveChanges();
+                            }
+                                
                         }
                         var oldLegs = _unitOfWork.LegRepository.GetAllAsQueryable()
                          .AsNoTracking()
@@ -3927,25 +3944,41 @@ namespace TLIS_Service.Services
                           
                             var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);
                             var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId.Id);
-                            if (OldValuecivilsupportdistance?.ReferenceCivilId != editCivilWithoutLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
+                            if (OldValuecivilsupportdistance !=null)
                             {
-                                var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
-                                  editCivilWithoutLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithoutLegsInstallationObject.civilSupportDistance.Distance
-                                  && x.Azimuth == editCivilWithoutLegsInstallationObject.civilSupportDistance.Azimuth
-                                  , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
-                                var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
-                                == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
-                                if (CivilSiteDate.Count > 0)
+                                if (OldValuecivilsupportdistance?.ReferenceCivilId != editCivilWithoutLegsInstallationObject.civilSupportDistance?.ReferenceCivilId)
                                 {
-                                    return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
+                                      editCivilWithoutLegsInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilWithoutLegsInstallationObject.civilSupportDistance.Distance
+                                      && x.Azimuth == editCivilWithoutLegsInstallationObject.civilSupportDistance.Azimuth
+                                      , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
+                                    var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                                    == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
+                                    if (CivilSiteDate.Count > 0)
+                                    {
+                                        return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
                                 }
+                                civilsupportdistance.Azimuth = editCivilWithoutLegsInstallationObject.civilSupportDistance.Azimuth;
+                                civilsupportdistance.Distance = editCivilWithoutLegsInstallationObject.civilSupportDistance.Distance;
+                                civilsupportdistance.ReferenceCivilId = editCivilWithoutLegsInstallationObject.civilSupportDistance?.ReferenceCivilId;
+                                var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
+                                _unitOfWork.CivilSupportDistanceRepository.UpdateWithHLogic(userId, HistoryId, TabelTLIcivilSupportDistance, OldValuecivilsupportdistance, civilsupportdistance);
+                                _unitOfWork.SaveChanges();
                             }
-                            civilsupportdistance.Azimuth = editCivilWithoutLegsInstallationObject.civilSupportDistance.Azimuth;
-                            civilsupportdistance.Distance = editCivilWithoutLegsInstallationObject.civilSupportDistance.Distance;
-                            civilsupportdistance.ReferenceCivilId = editCivilWithoutLegsInstallationObject.civilSupportDistance?.ReferenceCivilId;
-                            var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
-                            _unitOfWork.CivilSupportDistanceRepository.UpdateWithHLogic(userId,HistoryId, TabelTLIcivilSupportDistance, OldValuecivilsupportdistance, civilsupportdistance);
-                            _unitOfWork.SaveChanges();
+                            else
+                            {
+                                TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
+                                civilSupportDistance.Distance = editCivilWithoutLegsInstallationObject.civilSupportDistance.Distance;
+                                civilSupportDistance.Azimuth = editCivilWithoutLegsInstallationObject.civilSupportDistance.Azimuth;
+                                civilSupportDistance.SiteCode = SiteCode.SiteCode;
+                                civilSupportDistance.ReferenceCivilId = editCivilWithoutLegsInstallationObject.civilSupportDistance?.ReferenceCivilId;
+                                civilSupportDistance.CivilInstId = allcivilinstId.Id;
+                                var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
+                                _unitOfWork.CivilSupportDistanceRepository.AddWithHDynamic(userId, TabelTLIcivilSupportDistance, civilSupportDistance, HistoryId);
+                                _unitOfWork.SaveChanges();
+                                 
+                            }
                         }
                         if (editCivilWithoutLegsInstallationObject.dynamicAttribute.Count > 0)
                         {
@@ -4086,31 +4119,46 @@ namespace TLIS_Service.Services
                     //////////////UpdateCivilSupportDistance/////////////////////////////////
 
                     var allcivilinstId = _unitOfWork.AllCivilInstRepository.GetWhereFirst(x => x.civilNonSteelId == civilNonSteelEntity.Id);
-                    if (allcivilinstId != null)
-                    {
-                        var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);
-                        var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId.Id);
-
-                        if (OldValuecivilsupportdistance?.ReferenceCivilId != editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId)
+                        if (allcivilinstId != null)
                         {
-                                var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
-                                      editCivilNonSteelInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilNonSteelInstallationObject.civilSupportDistance.Distance
-                                      && x.Azimuth == editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth
-                                      , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
-                                var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
-                                == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
-                                if (CivilSiteDate.Count > 0)
+                            var OldValuecivilsupportdistance = _dbContext.TLIcivilSupportDistance.AsNoTracking().FirstOrDefault(x => x.CivilInstId == allcivilinstId.Id);
+                            var civilsupportdistance = _unitOfWork.CivilSupportDistanceRepository.GetWhereFirst(x => x.CivilInstId == allcivilinstId.Id);
+                            if (OldValuecivilsupportdistance !=null)
+                            {
+                                if (OldValuecivilsupportdistance?.ReferenceCivilId != editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId)
                                 {
-                                    return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
+                                          editCivilNonSteelInstallationObject.civilSupportDistance.ReferenceCivilId && x.Distance == editCivilNonSteelInstallationObject.civilSupportDistance.Distance
+                                          && x.Azimuth == editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth
+                                          , x => x.CivilInst).Select(x => x.ReferenceCivilId).ToList();
+                                    var CivilSiteDate = _unitOfWork.CivilSiteDateRepository.GetWhere(x => CivilReference.Any(y => y
+                                    == x.allCivilInstId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.SiteCode.ToLower()).ToList();
+                                    if (CivilSiteDate.Count > 0)
+                                    {
+                                        return new Response<ObjectInstAtts>(false, null, null, "can not select the civil reference on same distance and azimuth because found other civil reference in same place", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
                                 }
+                                civilsupportdistance.Azimuth = editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth;
+                                civilsupportdistance.Distance = editCivilNonSteelInstallationObject.civilSupportDistance.Distance;
+                                civilsupportdistance.ReferenceCivilId = editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId;
+                                var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
+                                _unitOfWork.CivilSupportDistanceRepository.UpdateWithHLogic(userId, HistoryId, TabelTLIcivilSupportDistance, OldValuecivilsupportdistance, civilsupportdistance);
+                                _unitOfWork.SaveChanges();
                             }
-                         civilsupportdistance.Azimuth = editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth;
-                        civilsupportdistance.Distance = editCivilNonSteelInstallationObject.civilSupportDistance.Distance;
-                        civilsupportdistance.ReferenceCivilId = editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId;
-                       var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
-                        _unitOfWork.CivilSupportDistanceRepository.UpdateWithHLogic(userId,HistoryId, TabelTLIcivilSupportDistance, OldValuecivilsupportdistance, civilsupportdistance);
-                        _unitOfWork.SaveChanges();
-                    }
+                            else
+                            {
+                                TLIcivilSupportDistance civilSupportDistance = new TLIcivilSupportDistance();
+                                civilSupportDistance.Distance = editCivilNonSteelInstallationObject.civilSupportDistance.Distance;
+                                civilSupportDistance.Azimuth = editCivilNonSteelInstallationObject.civilSupportDistance.Azimuth;
+                                civilSupportDistance.SiteCode = SiteCode.SiteCode;
+                                civilSupportDistance.ReferenceCivilId = editCivilNonSteelInstallationObject.civilSupportDistance?.ReferenceCivilId;
+                                civilSupportDistance.CivilInstId = allcivilinstId.Id;
+                                var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
+                                _unitOfWork.CivilSupportDistanceRepository.AddWithHDynamic(userId, TabelTLIcivilSupportDistance, civilSupportDistance, HistoryId);
+                                _unitOfWork.SaveChanges();
+
+                            }
+                        }
                    
 
                     if (editCivilNonSteelInstallationObject.dynamicAttribute.Count > 0)
