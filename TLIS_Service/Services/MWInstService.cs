@@ -13904,7 +13904,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
 
                                                 else
                                                 {
-                                                    TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == mwBUInst.legId);
+                                                    TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
                                                         mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + mwBU.Height + "HE";
@@ -14032,7 +14032,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
 
                                                 else
                                                 {
-                                                    TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == mwBUInst.legId);
+                                                    TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
                                                         mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + mwBU.Height + "HE";
@@ -14149,7 +14149,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
 
                                                 else
                                                 {
-                                                    TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == mwBUInst.legId);
+                                                    TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
                                                         mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + mwBU.Height + "HE";
@@ -14277,7 +14277,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
 
                                                 else
                                                 {
-                                                    TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == mwBUInst.legId);
+                                                    TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
                                                         mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + mwBU.Height + "HE";
