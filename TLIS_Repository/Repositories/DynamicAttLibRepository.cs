@@ -526,7 +526,7 @@ namespace TLIS_Repository.Repositories
                 }
                 else
                 {
-                    NewDynamicLibraryValue.Value = null;
+                    NewDynamicLibraryValue.Value = DynamicAtt.DefaultValue;
                 }
 
                 dynamicAttLibViewModels.Add(NewDynamicLibraryValue);
