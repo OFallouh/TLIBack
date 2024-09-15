@@ -8889,7 +8889,7 @@ namespace TLIS_Service.Services
                 try
                 {
                     TLIdynamicAtt OldDynamicAttData = _dbContext.TLIdynamicAtt.Include(x => x.DataType).Include(x => x.tablesNames).AsQueryable().AsNoTracking()
-                       .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttributeId && !x.disable);
+                       .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttributeId );
                     if (OldDynamicAttData == null)
                         return new Response<AddDynamicObject>(true, null, null, $"This DynamicAttribute is not found", (int)Constants.ApiReturnCode.fail);
                     var DynamicAttribute = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(x => x.Key.ToLower() == DynamicAttViewModel.general.name.ToLower() && x.Id != DynamicAttributeId, x => x.tablesNames);
@@ -8898,7 +8898,7 @@ namespace TLIS_Service.Services
                     if (DynamicAttViewModel.general.defualtValue == null)
                         return new Response<AddDynamicObject>(true, null, null, "The default can not to be null.", (int)Constants.ApiReturnCode.fail);
 
-                    var NewDynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == DynamicAttributeId && !x.disable);
+                    var NewDynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == DynamicAttributeId );
                     NewDynamicAttribute.Key = DynamicAttViewModel.general.name;
                     NewDynamicAttribute.Description = DynamicAttViewModel.general.description;
                     _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAttData, NewDynamicAttribute);
@@ -11871,7 +11871,7 @@ namespace TLIS_Service.Services
                                         disable = false,
                                         LibraryAtt = true,
                                         CivilWithoutLegCategoryId = CategoryId,
-                                        Type = 3
+                                        Type = 0
 
                                     };
                                     var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);

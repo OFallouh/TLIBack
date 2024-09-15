@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Text;
@@ -123,11 +124,18 @@ namespace TLIS_API.Controllers
         }
 
         [HttpPost("ExportErrorLog")]
-        public IActionResult ExportErrorLog()
+        public async Task<ActionResult> ExportErrorLog()
         {
 
             var response = _unitOfWorkService.ExternalSysService.GetListErrorLogExport();
-            return Ok(response);
+            var fullPath = response.Data;
+            var bytes = await System.IO.File.ReadAllBytesAsync(fullPath);
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(fullPath, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return File(bytes, contentType, Path.GetFileName(fullPath));
         }
     }
 }
