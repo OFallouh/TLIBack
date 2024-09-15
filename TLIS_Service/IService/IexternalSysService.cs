@@ -18,11 +18,12 @@ namespace TLIS_Service.IService
         Response<bool> DisableExternalSys(int id);
         Response<bool> DeleteExternalSys(int id);
         Response<string> EditExternalSys(EditExternalSysBinding mod);
-        Response<List<GetAllExternalSysDto>> GetAllExternalSys(string systemName, ParameterPagination parameter);
+        Response<List<GetAllExternalSysDto>> GetAllExternalSys();
         Response<GetAllExternalSysDto> GetByIdExternalSys(int id);
         Response<List<IntegrationViewModel>> GetAllIntegrationAPI();
         Response<string> RegenerateToken(int id);
         Response<List<TLIintegrationAccessLog>> GetListErrorLog(ClxFilter f);
+        Response<string> GetListErrorLogExport();
 
     }
 }

@@ -63,10 +63,10 @@ namespace TLIS_API.Controllers
 
 
         [HttpPost("GetallExtSystem")]
-        public IActionResult GetallExtSystem(string systemName,[FromBody] ParameterPagination parameter)
+        public IActionResult GetallExtSystem()
         {
 
-            var response = _unitOfWorkService.ExternalSysService.GetAllExternalSys(systemName, parameter);
+            var response = _unitOfWorkService.ExternalSysService.GetAllExternalSys();
             return Ok(response);
         }
 
@@ -119,6 +119,14 @@ namespace TLIS_API.Controllers
         {
 
             var response = _unitOfWorkService.ExternalSysService.GetAllExternalPermission();
+            return Ok(response);
+        }
+
+        [HttpPost("ExportErrorLog")]
+        public IActionResult ExportErrorLog()
+        {
+
+            var response = _unitOfWorkService.ExternalSysService.GetListErrorLogExport();
             return Ok(response);
         }
     }

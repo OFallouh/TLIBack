@@ -91,7 +91,7 @@ namespace TLIS_API.Middleware.ActionFilters
                                 TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
                                 db.TLIintegrationAccessLog.Add(log);
                                 db.SaveChanges();
-                                context.Result = new UnauthorizedObjectResult("UserName Or Password is invalid,Please Contact to administrator. ");
+                                context.Result = new UnauthorizedObjectResult("External System does not have permission on the Api.");
                                 return;
 
 
@@ -101,7 +101,7 @@ namespace TLIS_API.Middleware.ActionFilters
                                 TLIintegrationAccessLog log = new TLIintegrationAccessLog(item.SysName, item.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
                                 db.TLIintegrationAccessLog.Add(log);
                                 db.SaveChanges();
-                                context.Result = new UnauthorizedObjectResult("This System Not have Permission,Please Contact to administrator.. ");
+                                context.Result = new UnauthorizedObjectResult("External System does not have permission on any Api. ");
                                 return;
 
 
@@ -130,7 +130,7 @@ namespace TLIS_API.Middleware.ActionFilters
                 }
                 else
                 {
-                    context.Result = new UnauthorizedObjectResult("This System Not have Permission,Please Contact to administrator.. ");
+                    context.Result = new UnauthorizedObjectResult("This External System Not Found,Please Contact to administrator.. ");
                     return;
 
                 }
@@ -236,7 +236,7 @@ namespace TLIS_API.Middleware.ActionFilters
                                 TLIintegrationAccessLog log = new TLIintegrationAccessLog(extSys.SysName, extSys.UserName, clientIPAddress, "Access denied from IP:" + clientIPAddress);
                                 db.TLIintegrationAccessLog.Add(log);
                                 db.SaveChanges();
-                                context.Result = new UnauthorizedObjectResult("Token is invalid,Please Contact to administrator. ");
+                                context.Result = new UnauthorizedObjectResult("External System does not have permission on the api,Please Contact to administrator. ");
                                 return;
 
 
@@ -258,7 +258,7 @@ namespace TLIS_API.Middleware.ActionFilters
                             TLIintegrationAccessLog log = new TLIintegrationAccessLog("NA", "NA", clientIPAddress,"External System not found");
                             db.TLIintegrationAccessLog.Add(log);
                             db.SaveChanges();
-                            context.Result = new UnauthorizedObjectResult("Token is invalid,Please Contact to administrator. ");
+                            context.Result = new UnauthorizedObjectResult("This External System Not Found,Please Contact to administrator. ");
                             return;
                         }
                     }

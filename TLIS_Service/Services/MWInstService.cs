@@ -1027,31 +1027,58 @@ namespace TLIS_Service.Services
 
                                 if (CheckName != null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"The name {mwRFU.Name} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
-
-                                if (MWBU.allCivilInst.civilWithLegs?.CurrentLoads == null)
+                                if (MWBU.allCivilInst.civilWithLegsId != null)
                                 {
-                                    MWBU.allCivilInst.civilWithLegs.CurrentLoads = 0;
-                                }
-                                var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == MWBU.allCivilInst.civilWithLegsId);
-
-                                if (OldVcivilinfo != null)
-                                {
-
-                                    var EquivalentSpace = mwRFU.SpaceInstallation * (mwRFU.CenterHigh / (float)MWBU.allCivilInst.civilWithLegs.HeightBase);
-
-                                    MWBU.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
-                                    mwRFU.EquivalentSpace = EquivalentSpace;
-                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(MWBU.allCivilInst).Message;
-
-                                    if (Message != "Success")
+                                    if (MWBU.allCivilInst.civilWithLegs?.CurrentLoads == null)
                                     {
-                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                        MWBU.allCivilInst.civilWithLegs.CurrentLoads = 0;
                                     }
-                                    _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, MWBU.allCivilInst.civilWithLegs);
+                                    var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == MWBU.allCivilInst.civilWithLegsId);
 
-                                    _unitOfWork.SaveChanges();
+                                    if (OldVcivilinfo != null)
+                                    {
+
+                                        var EquivalentSpace = mwRFU.SpaceInstallation * (mwRFU.CenterHigh / (float)MWBU.allCivilInst.civilWithLegs.HeightBase);
+
+                                        MWBU.allCivilInst.civilWithLegs.CurrentLoads += EquivalentSpace;
+                                        mwRFU.EquivalentSpace = EquivalentSpace;
+                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(MWBU.allCivilInst).Message;
+
+                                        if (Message != "Success")
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                        }
+                                        _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, MWBU.allCivilInst.civilWithLegs);
+
+                                        _unitOfWork.SaveChanges();
+                                    }
                                 }
+                                else if (MWBU.allCivilInst.civilWithoutLegId != null)
+                                {
+                                    if (MWBU.allCivilInst.civilWithoutLeg?.CurrentLoads == null)
+                                    {
+                                        MWBU.allCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                                    }
+                                    var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == MWBU.allCivilInst.civilWithoutLegId);
 
+                                    if (OldVcivilinfo != null)
+                                    {
+
+                                        var EquivalentSpace = mwRFU.SpaceInstallation * (mwRFU.CenterHigh / (float)MWBU.allCivilInst.civilWithoutLeg.HeightBase);
+
+                                        MWBU.allCivilInst.civilWithoutLeg.CurrentLoads += EquivalentSpace;
+                                        mwRFU.EquivalentSpace = EquivalentSpace;
+                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckAvailableSpaceOnCivils(MWBU.allCivilInst).Message;
+
+                                        if (Message != "Success")
+                                        {
+                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)ApiReturnCode.fail);
+                                        }
+                                        _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, MWBU.allCivilInst.civilWithoutLeg);
+
+                                        _unitOfWork.SaveChanges();
+                                    }
+                                }
                                 TLImwPort tLImwPort = new TLImwPort()
                                 {
                                     MwBUId = AddmwRFU.installationConfig.PortMWBUId,
@@ -5329,6 +5356,7 @@ namespace TLIS_Service.Services
                     propertyNamesStatic.Add("LEG_NAME");
                     propertyNamesStatic.Add("SideArmSec_Id");
                     propertyNamesStatic.Add("SideArmSec_Name");
+                    propertyNamesStatic.Add("PORTCASCADE");
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)
@@ -13846,6 +13874,21 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                         _unitOfWork.SaveChanges();
                                                         mwBU.PortCascadeId = portCascuded.Id;
                                                     }
+                                                    else
+                                                    {
+                                                        TLImwPort tLImwPort = new TLImwPort()
+                                                        {
+                                                            MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                            MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                            Port_Type = 1,
+                                                            Port_Name = "CascededBU"
+
+                                                        };
+                                                        _unitOfWork.MW_PortRepository.Add(tLImwPort);
+                                                        _unitOfWork.SaveChanges();
+
+                                                        mwBU.PortCascadeId = tLImwPort.Id;
+                                                    }
 
                                                 }
 
@@ -14482,6 +14525,21 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                         _unitOfWork.SaveChanges();
                                                         mwBU.PortCascadeId = portCascuded.Id;
                                                     }
+                                                    else
+                                                    {
+                                                        TLImwPort tLImwPort = new TLImwPort()
+                                                        {
+                                                            MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                            MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                            Port_Type = 1,
+                                                            Port_Name = "CascededBU"
+
+                                                        };
+                                                        _unitOfWork.MW_PortRepository.Add(tLImwPort);
+                                                        _unitOfWork.SaveChanges();
+
+                                                        mwBU.PortCascadeId = tLImwPort.Id;
+                                                    }
 
                                                 }
 
@@ -14551,6 +14609,21 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                         _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
                                                         _unitOfWork.SaveChanges();
                                                         mwBU.PortCascadeId = portCascuded.Id;
+                                                    }
+                                                    else
+                                                    {
+                                                        TLImwPort tLImwPort = new TLImwPort()
+                                                        {
+                                                            MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                            MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                            Port_Type = 1,
+                                                            Port_Name = "CascededBU"
+
+                                                        };
+                                                        _unitOfWork.MW_PortRepository.Add(tLImwPort);
+                                                        _unitOfWork.SaveChanges();
+
+                                                        mwBU.PortCascadeId = tLImwPort.Id;
                                                     }
 
                                                 }
@@ -15250,6 +15323,21 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                     _unitOfWork.MW_PortRepository.UpdateWithHistory(UserId, oldportCascuded, portCascuded);
                                                     _unitOfWork.SaveChanges();
                                                     mwBU.PortCascadeId = portCascuded.Id;
+                                                }
+                                                else
+                                                {
+                                                    TLImwPort tLImwPort = new TLImwPort()
+                                                    {
+                                                        MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                        MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                        Port_Type = 1,
+                                                        Port_Name = "CascededBU"
+
+                                                    };
+                                                    _unitOfWork.MW_PortRepository.Add(tLImwPort);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    mwBU.PortCascadeId = tLImwPort.Id;
                                                 }
 
                                             }
@@ -16024,7 +16112,21 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                                     _unitOfWork.SaveChanges();
                                                     mwBU.PortCascadeId = portCascuded.Id;
                                                 }
+                                                else
+                                                {
+                                                    TLImwPort tLImwPort = new TLImwPort()
+                                                    {
+                                                        MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
+                                                        MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                        Port_Type = 1,
+                                                        Port_Name = "CascededBU"
 
+                                                    };
+                                                    _unitOfWork.MW_PortRepository.Add(tLImwPort);
+                                                    _unitOfWork.SaveChanges();
+
+                                                    mwBU.PortCascadeId = tLImwPort.Id;
+                                                }
                                             }
 
                                         }

@@ -38,6 +38,7 @@ using System.IO;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using Microsoft.Extensions.Configuration;
 using Nancy.Bootstrapper;
+using ClosedXML.Excel;
 namespace TLIS_Service.Services
 {
     internal class ExternalSysService : IexternalSysService
@@ -241,7 +242,7 @@ namespace TLIS_Service.Services
 
         }
 
-        public Response<List<GetAllExternalSysDto>> GetAllExternalSys(string systemName, ParameterPagination parameter)
+        public Response<List<GetAllExternalSysDto>> GetAllExternalSys()
         {
 
             var data = db.TLIexternalSys.Where(x => x.IsDeleted == false).Include(x => x.TLIexternalSysPermissions).ThenInclude(y => y.TLIinternalApi).AsQueryable();
@@ -267,19 +268,6 @@ namespace TLIS_Service.Services
                         ApiLabel = x.TLIinternalApi.Label
                     }).ToList() : null
                 }).ToList();
-
-
-                if (!string.IsNullOrEmpty(systemName))
-                {
-                    response = response.Where(x => x.SysName.ToLower().StartsWith(systemName.ToLower())).ToList();
-
-                }
-
-
-                if (parameter != null)
-                {
-                    response = response.Skip((parameter.PageNumber - 1) * parameter.PageSize).Take(parameter.PageSize).ToList();
-                }
 
 
                 return new Response<List<GetAllExternalSysDto>>(true, response.ToList(), null, null, (int)Helpers.Constants.ApiReturnCode.success, data.ToList().Count());
@@ -358,6 +346,81 @@ namespace TLIS_Service.Services
             result = result.Skip((f.PageIndex - 1) * f.PageSize).Take(f.PageSize).ToList();
             return new Response<List<TLIintegrationAccessLog>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
 
+        }
+
+        public Response<string> GetListErrorLogExport()
+        {
+            List<TLIintegrationAccessLog> result = new List<TLIintegrationAccessLog>();
+            string excelFilePath = null;
+            var logs = db.TLIintegrationAccessLog.AsQueryable();
+            int count = logs.Count();
+            result = logs.ToList();
+            excelFilePath = ExportToExcel(result, "All Errors in internalApi");
+            return new Response<string>(true, excelFilePath, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
+
+        }
+
+        public string ExportToExcel(List<TLIintegrationAccessLog> data, string tableName)
+        {
+            var folderPath = _config["StoreFiles"];
+            string downloadFolder = Path.Combine(folderPath, "GenerateFiles");
+
+            if (!Directory.Exists(downloadFolder))
+            {
+                Directory.CreateDirectory(downloadFolder);
+            }
+
+            var filePath = Path.Combine(downloadFolder, tableName + ".xlsx");
+
+            // Check if the file exists, and delete it if it does
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Sheet1");
+
+                if (data.Any())
+                {
+                    // Add headers with formatted names (adding spaces before capital letters)
+                    var headers = typeof(TLIintegrationAccessLog).GetProperties()
+                        .Select(prop => FormatHeader(prop.Name))
+                        .ToList();
+
+                    for (int i = 0; i < headers.Count; i++)
+                    {
+                        worksheet.Cell(1, i + 1).Value = headers[i];
+                    }
+
+                    // Add data rows
+                    int row = 2;
+                    foreach (var item in data)
+                    {
+                        for (int col = 0; col < headers.Count; col++)
+                        {
+                            var value = typeof(TLIintegrationAccessLog).GetProperty(headers[col].Replace(" ", "")).GetValue(item)?.ToString() ?? string.Empty;
+                            worksheet.Cell(row, col + 1).Value = value;
+                        }
+                        row++;
+                    }
+                }
+                else
+                {
+                    worksheet.Cell(1, 1).Value = "No data available to export.";
+                }
+
+                workbook.SaveAs(filePath);
+            }
+
+            return filePath;
+        }
+
+        // Method to add spaces before capital letters
+        private string FormatHeader(string header)
+        {
+            return string.Concat(header.Select((x, i) => i > 0 && char.IsUpper(x) ? " " + x : x.ToString()));
         }
 
 

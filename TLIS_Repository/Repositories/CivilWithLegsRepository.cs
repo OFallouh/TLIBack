@@ -6112,7 +6112,7 @@ namespace TLIS_Repository.Repositories
                                 .ToList();
 
 
-                            dependencyObject.result = dependency.Result;
+                         
                             dependencyObject.groups = groupedRules;
 
 

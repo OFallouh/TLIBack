@@ -12658,7 +12658,10 @@ namespace TLIS_Service.Services
             }
 
             var filePath = Path.Combine(downloadFolder, TableName + ".xlsx");
-
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
             using (var workbook = new XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add("Sheet1");
