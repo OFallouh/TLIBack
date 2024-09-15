@@ -1341,7 +1341,8 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<TLImwRFU, EditMW_RFUViewModel>().ReverseMap();
             CreateMap<TLIdynamicAtt, DynamicAttLibViewModel>()
-                .ForMember(x => x.DataType, x => x.MapFrom(f => f.DataType.Name));
+                .ForMember(x => x.DataType, x => x.MapFrom(f => f.DataType.Name))
+                .ForMember(x => x.Value, x => x.MapFrom(f => f.DefaultValue));
             CreateMap<TLIdynamicAtt, DynaminAttInstViewModel>()
                 .ForMember(x => x.DataType, x => x.MapFrom(f => f.DataType.Name));
             CreateMap<TLIdataType, ConfigurationAttsViewModel>().ReverseMap();
