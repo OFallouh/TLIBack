@@ -148,6 +148,7 @@ namespace TLIS_Service.Services
                     //loop on each dynamic attribute in dynamic attributes list
                     foreach (var TableNameDynamicAtt in TableNameDynamicAtts)
                     {
+                   
                         //j refer to column after last column of activated attributes 
                         //fill dynamic attributes
                         worksheet.Cells[1, j].Value = TableNameDynamicAtt.Key;
@@ -187,7 +188,13 @@ namespace TLIS_Service.Services
                             validation.Formula2.Value = new DateTime(2050, 01, 01, 12, 0, 0);
                             validation.AllowBlank = true;
 
+                            worksheet.Cells[2, j].Value = TableNameDynamicAtt.Value;
 
+
+                        }
+                        else
+                        {
+                            worksheet.Cells[2, j].Value = TableNameDynamicAtt.Value;
                         }
                         j++;
                     }
