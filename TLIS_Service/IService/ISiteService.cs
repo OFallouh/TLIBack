@@ -33,7 +33,7 @@ namespace TLIS_Service.IService
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
         Response<List<RecalculatSpaceOnSite>> RecalculateSite();
-        List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString);
+        List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string ConnectionString, string sitecode, string encodedFilter,int? Cause);
         Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int? TaskId,int UserId);
         Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId, int UserId);
         Response<List<AreaViewModel>> GetAllAreasForSiteOperation();
@@ -84,6 +84,6 @@ namespace TLIS_Service.IService
         Response<string> GetConfigurationTables(string SiteCode, string TableNameInstallation, int? CategoryId, string ConnectionString);
         Response<SiteDetailsObject> GetSiteDetails(string siteCode);
         Response<SiteDetailsObject> EditSiteDetalis(SiteDetailsObject siteDetailsObject, int? TaskId, int UserId);
-
+        List<dynamic> GetHistory(string TabelName, int? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString);
     }
 }

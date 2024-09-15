@@ -281,12 +281,21 @@ namespace TLIS_API.Controllers
             }
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("ExecuteStoredProcedureAndQueryDynamicView")]
+        [HttpGet("GetAllViews")]
         [ProducesResponseType(200, Type = typeof(List<dynamic>))]
-        public IActionResult ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName)
+        public IActionResult GetAllViews(string sitecode, string encodedFilter,int? Case)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.SiteService.ExecuteStoredProcedureAndQueryDynamicView( storedProcedureName, dynamicViewName, ConnectionString);
+            var response = _unitOfWorkService.SiteService.ExecuteStoredProcedureAndQueryDynamicView(ConnectionString, sitecode, encodedFilter, Case);
+            return Ok(response);
+        }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetHistory")]
+        [ProducesResponseType(200, Type = typeof(List<dynamic>))]
+        public IActionResult GetHistory(string TabelName, int? BaseId, string SiteCode, int? UserId, int? ExternalSysId)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SiteService.GetHistory(TabelName, BaseId, SiteCode, UserId, ExternalSysId, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

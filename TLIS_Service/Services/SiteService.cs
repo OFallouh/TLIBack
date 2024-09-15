@@ -94,7 +94,7 @@ namespace TLIS_Service.Services
         public static List<TLIsite> _MySites;
         IServiceProvider Services;
         private readonly IConfiguration _configuration;
-        public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper,IServiceProvider serviceو, IConfiguration configuration)
+        public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper, IServiceProvider serviceو, IConfiguration configuration)
         {
             _context = context;
             _unitOfWork = unitOfWork;
@@ -102,7 +102,7 @@ namespace TLIS_Service.Services
             _mapper = mapper;
             _configuration = configuration;
         }
-        public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel,int? TaskId,int UserId)
+        public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int? TaskId, int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -122,7 +122,7 @@ namespace TLIS_Service.Services
                             (int)Helpers.Constants.ApiReturnCode.fail);
 
                     TLIsite NewSiteEntity = _mapper.Map<TLIsite>(AddSiteViewModel);
-                    _unitOfWork.SiteRepository.AddWithHSite(UserId,null,NewSiteEntity);
+                    _unitOfWork.SiteRepository.AddWithHSite(UserId, null, NewSiteEntity);
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -132,11 +132,11 @@ namespace TLIS_Service.Services
                             var AreaName = _context.TLIarea.FirstOrDefault(x => x.Id == NewSiteEntity.AreaId)?.AreaName;
                             EditTicketInfoBinding editTicketInfoBinding = new EditTicketInfoBinding()
                             {
-                                TaskId= TaskId,
-                                SiteCode= NewSiteEntity.SiteCode,
-                                RegionName= NewSiteEntity.RegionCode,
-                                CityName= NewSiteEntity.Zone,
-                                AreaName= AreaName
+                                TaskId = TaskId,
+                                SiteCode = NewSiteEntity.SiteCode,
+                                RegionName = NewSiteEntity.RegionCode,
+                                CityName = NewSiteEntity.Zone,
+                                AreaName = AreaName
 
                             };
                             var SubmitTicketInfo = _unitOfWork.SiteRepository.EditTicketInfoByTLI(editTicketInfoBinding);
@@ -166,24 +166,24 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId,int UserId)
+        public Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId, int UserId)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
-                    var CheckSiteName = _context.TLIsite.FirstOrDefault(x => x.SiteName == EditSiteViewModel.SiteName 
+                    var CheckSiteName = _context.TLIsite.FirstOrDefault(x => x.SiteName == EditSiteViewModel.SiteName
                     && x.SiteCode != EditSiteViewModel.SiteCode);
-                   
+
                     if (CheckSiteName != null)
                     {
                         return new Response<EditSiteViewModel>(true, null, null, $"This site name {EditSiteViewModel.SiteName} is already exist",
                             (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                     var OldSiteInfo = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
-                        (x=>x.SiteCode == EditSiteViewModel.SiteCode);
+                        (x => x.SiteCode == EditSiteViewModel.SiteCode);
                     TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
-                    _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId,null,OldSiteInfo, Site, EditSiteViewModel.SiteCode);
+                    _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteInfo, Site, EditSiteViewModel.SiteCode);
 
                     _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
                     _MySites.Add(Site);
@@ -223,23 +223,23 @@ namespace TLIS_Service.Services
                 {
                     var OldSiteSelected = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
                     var SiteSelected = _context.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
-                    if(SiteSelected != null)
+                    if (SiteSelected != null)
                     {
                         var planTypeValues = siteDetailsObject.PlanType.Select(pt => ((int)pt).ToString());
                         SiteSelected.PlanType = string.Join(",", planTypeValues);
 
                         foreach (var item in siteDetailsObject.PlanType)
                         {
-                            if(item == Enums.PlanType.CollectData)
+                            if (item == Enums.PlanType.CollectData)
                             {
-                                SiteSelected.PlanStatusCollectData= (int?)siteDetailsObject.CollectData.PlanStatus;
-                                SiteSelected.pendingTypeCollectData= (int?)siteDetailsObject.CollectData.PendingType;
-                                SiteSelected.MWValidationRemarkCollectData= siteDetailsObject.CollectData.MwValidationRemark;
-                                SiteSelected.MWValidationStatusCollectDate= (int?)siteDetailsObject.CollectData.MwValidationStatus;
-                                SiteSelected.RadioVStatusCollectData= (int?)siteDetailsObject.CollectData.RadioValidationStatus;
-                                SiteSelected.RadioVRemarkCollectData= siteDetailsObject.CollectData.RadioValidationRemark;
-                                SiteSelected.PowerVStatusCollectData= (int?)siteDetailsObject.CollectData.PowerValidationStatus;
-                                SiteSelected.PowerVRemarkCollectData= siteDetailsObject.CollectData.PowerValidationRemark;
+                                SiteSelected.PlanStatusCollectData = (int?)siteDetailsObject.CollectData.PlanStatus;
+                                SiteSelected.pendingTypeCollectData = (int?)siteDetailsObject.CollectData.PendingType;
+                                SiteSelected.MWValidationRemarkCollectData = siteDetailsObject.CollectData.MwValidationRemark;
+                                SiteSelected.MWValidationStatusCollectDate = (int?)siteDetailsObject.CollectData.MwValidationStatus;
+                                SiteSelected.RadioVStatusCollectData = (int?)siteDetailsObject.CollectData.RadioValidationStatus;
+                                SiteSelected.RadioVRemarkCollectData = siteDetailsObject.CollectData.RadioValidationRemark;
+                                SiteSelected.PowerVStatusCollectData = (int?)siteDetailsObject.CollectData.PowerValidationStatus;
+                                SiteSelected.PowerVRemarkCollectData = siteDetailsObject.CollectData.PowerValidationRemark;
                             }
                             else if (item == Enums.PlanType.MWMD)
                             {
@@ -250,7 +250,7 @@ namespace TLIS_Service.Services
                                 SiteSelected.MWValidationStatusMWMd = (int?)siteDetailsObject.MWMd.MwValidationStatus;
                                 SiteSelected.MWValidationRemarkMWMd = siteDetailsObject.MWMd.MwValidationRemark;
                             }
-                            else if (item == Enums.PlanType.RadioMD) 
+                            else if (item == Enums.PlanType.RadioMD)
                             {
                                 SiteSelected.MdTypeRadioMd = (int?)siteDetailsObject.RadioMd.MdType;
                                 SiteSelected.DescriptionRadioMd = siteDetailsObject.RadioMd.Description;
@@ -268,11 +268,11 @@ namespace TLIS_Service.Services
                                 SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
                                 SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
                             }
-                            _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId,null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode);
+                            _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode);
                             _unitOfWork.SaveChanges();
 
                         }
-                           
+
                     }
                     else
                     {
@@ -653,11 +653,11 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName,ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null)
         {
             string[] ErrorMessagesWhenReturning = null;
 
-           StartAgainWithRefresh:
+        StartAgainWithRefresh:
             try
             {
                 if (UserId == null)
@@ -909,10 +909,10 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
-        public Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination (bool? GetItemsCountOnEachSite)
+        public Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination(bool? GetItemsCountOnEachSite)
         {
             string[] ErrorMessagesWhenReturning = null;
-           bool isRefresh = true;
+            bool isRefresh = true;
         StartAgainWithRefresh:
             try
             {
@@ -937,60 +937,60 @@ namespace TLIS_Service.Services
                 List<string> AllUsedSites = UsedSitesInOtherInventories.Distinct().ToList();
 
 
-               
-                    IEnumerable<SiteDTO> SitesViewModels;
 
-                    if (isRefresh != null ? isRefresh : false)
+                IEnumerable<SiteDTO> SitesViewModels;
+
+                if (isRefresh != null ? isRefresh : false)
+                {
+                    _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
+                            .Include(x => x.siteStatus).ToList();
+
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteDTO>>(_MySites);
+                }
+                else
+                {
+                    _MySites.Count();
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteDTO>>(_MySites);
+                }
+
+                List<SiteDTO> ListForOutPutOnly = new List<SiteDTO>();
+
+                foreach (SiteDTO SitesViewModel in SitesViewModels)
+                {
+                    string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
+                        .LocationType;
+
+                    if (!string.IsNullOrEmpty(LocationTypeInModel))
                     {
-                        _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
-                                .Include(x => x.siteStatus).ToList();
+                        TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
 
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteDTO>>(_MySites);
+                        ListForOutPutOnly.Add(new SiteDTO()
+                        {
+                            SiteCode = SitesViewModel.SiteCode,
+
+                            SiteName = SitesViewModel.SiteName,
+
+                            isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+
+                        });
                     }
                     else
                     {
-                        _MySites.Count();
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteDTO>>(_MySites);
-                    }
-         
-                    List<SiteDTO> ListForOutPutOnly = new List<SiteDTO>();
-
-                    foreach (SiteDTO SitesViewModel in SitesViewModels)
-                    {
-                        string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
-                            .LocationType;
-
-                        if (!string.IsNullOrEmpty(LocationTypeInModel))
+                        ListForOutPutOnly.Add(new SiteDTO()
                         {
-                            TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
+                            SiteCode = SitesViewModel.SiteCode,
 
-                            ListForOutPutOnly.Add(new SiteDTO()
-                            {
-                                SiteCode = SitesViewModel.SiteCode,
-                              
-                                SiteName = SitesViewModel.SiteName,
-                               
-                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
-                          
-                            });
-                        }
-                        else
-                        {
-                            ListForOutPutOnly.Add(new SiteDTO()
-                            {
-                                SiteCode = SitesViewModel.SiteCode,
-                               
-                                SiteName = SitesViewModel.SiteName,
-                               
-                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
-                           
-                            });
-                        }
+                            SiteName = SitesViewModel.SiteName,
+
+                            isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+
+                        });
                     }
-
-                    return new Response<IEnumerable<SiteDTO>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
-            
+
+                return new Response<IEnumerable<SiteDTO>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+
             catch (Exception)
             {
                 isRefresh = true;
@@ -1078,14 +1078,14 @@ namespace TLIS_Service.Services
                     }
                 }
 
-                return new Response<IEnumerable<SiteViewModel>>(true, sitesViewModels,   null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+                return new Response<IEnumerable<SiteViewModel>>(true, sitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
             catch (Exception err)
             {
 
                 return new Response<IEnumerable<SiteViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
-           
+
         }
         public List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow()
         {
@@ -1244,18 +1244,18 @@ namespace TLIS_Service.Services
                     siteViewModel = new SiteViewModel()
                     {
                         SiteCode = siteInfo.SiteCode,
-                        SiteName = siteInfo.SiteName ?? "", 
-                        Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId)?.Name ?? "", 
+                        SiteName = siteInfo.SiteName ?? "",
+                        Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId)?.Name ?? "",
                         LocationHieght = siteInfo.LocationHieght,
                         Longitude = siteInfo.Longitude,
-                        LocationType = _context.TLIlocationType.FirstOrDefault(x => x.Id == Convert.ToInt64(siteInfo.LocationType))?.Name ?? "", 
+                        LocationType = _context.TLIlocationType.FirstOrDefault(x => x.Id == Convert.ToInt64(siteInfo.LocationType))?.Name ?? "",
                         Latitude = siteInfo.Latitude,
                         CityName = siteInfo.Zone,
-                        Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId)?.AreaName ?? "", 
-                        Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode)?.RegionName ?? "", 
+                        Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId)?.AreaName ?? "",
+                        Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode)?.RegionName ?? "",
                         ReservedSpace = siteInfo.ReservedSpace,
                         RentedSpace = siteInfo.RentedSpace,
-                        SubArea= siteInfo.SubArea,
+                        SubArea = siteInfo.SubArea,
                     };
                 }
 
@@ -1266,7 +1266,7 @@ namespace TLIS_Service.Services
                 return new Response<SiteViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public async Task<Response<bool>> EditSitesMainSpaces(float RentedSpace, float ReservedSpace, string SiteCode,int UserId)
+        public async Task<Response<bool>> EditSitesMainSpaces(float RentedSpace, float ReservedSpace, string SiteCode, int UserId)
         {
             try
             {
@@ -1274,8 +1274,8 @@ namespace TLIS_Service.Services
                 TLIsite Oldsite = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower());
                 if (ReservedSpace != site.ReservedSpace)
                     return new Response<bool>(false, true, null, "You cannot modify the value of reservedspace ", (int)Helpers.Constants.ApiReturnCode.fail);
-                
-                if(site.RentedSpace < site.ReservedSpace)
+
+                if (site.RentedSpace < site.ReservedSpace)
                     return new Response<bool>(false, true, null, "RentedSpace can not be smaller of ReservedSpace", (int)Helpers.Constants.ApiReturnCode.fail);
 
                 else
@@ -1285,7 +1285,7 @@ namespace TLIS_Service.Services
                     TLIsite OldSiteData = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SiteCode.ToLower());
                     _MySites.Remove(OldSiteData);
                     _MySites.Add(site);
-                    _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId,null, Oldsite, site, SiteCode);
+                    _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, Oldsite, site, SiteCode);
                     _unitOfWork.SaveChanges();
                 }
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -7993,14 +7993,14 @@ namespace TLIS_Service.Services
             OutPut.SideArmCount = UsedSitesInLoads.Count(x => x.sideArmId != null && x.sideArm.Draft == false);
 
 
-          IQueryable <TLIallCivilInst> UsedSitesInCivils = _unitOfWork.CivilSiteDateRepository
-            .GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower()
-                && !x.Dismantle && x.allCivilInst.Draft == false, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel,
-                x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
-                x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory)
-            .Select(x => x.allCivilInst)
-            .AsQueryable();
+            IQueryable<TLIallCivilInst> UsedSitesInCivils = _unitOfWork.CivilSiteDateRepository
+              .GetWhereAndInclude(x => x.SiteCode.ToLower() == SiteCode.ToLower()
+                  && !x.Dismantle && x.allCivilInst.Draft == false, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                  x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel,
+                  x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib,
+                  x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib.CivilWithoutLegCategory)
+              .Select(x => x.allCivilInst)
+              .AsQueryable();
 
             int xxx = UsedSitesInCivils.Count();
             OutPut.SteelWithLegsCount = UsedSitesInCivils.Count(x => x.civilWithLegsId != null);
@@ -8032,36 +8032,227 @@ namespace TLIS_Service.Services
             return new Response<ItemsOnSite>(true, OutPut, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
         private readonly string _connectionString;
-        public List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string storedProcedureName, string dynamicViewName, string ConnectionString)
+        public List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string ConnectionString, string sitecode, string encodedFilter,int? operationCounter)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 connection.Open();
 
-                // Query Dynamic View
-                string sqlQuery = $"{dynamicViewName}";
-                using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
-                {
-                    using (OracleDataReader reader = queryCommand.ExecuteReader())
-                    {
-                        List<dynamic> result = new List<dynamic>();
+                List<dynamic> result = new List<dynamic>();
 
+                switch (operationCounter)
+                {
+                    case 1:
+                     
+                        string sqlQuery1 = @"select sum(WITHLEGS) WITHLEGS, sum(MAST) MAST, sum(MONOPOLE) MONOPOLE, 
+                                  sum(CAPSULE) CAPSULE, sum(NONSTEEL) NONSTEEL, sum(SIDEARM) SIDEARM, 
+                                  sum(MWDISH) MWDISH, sum(MWODU) MWODU, sum(MWBU) MWBU, sum(MWRFU) MWRFU, 
+                                  sum(MWOTHER) MWOTHER, sum(RADIO_ANTENNA) RADIO_ANTENNA, sum(RADIO_RRU) RADIO_RRU, 
+                                  sum(RADIO_OTHER) RADIO_OTHER, sum(POWER) POWER, sum(LOAD_OTHER) LOAD_OTHER, 
+                                  sum(GENERATOR) GENERATOR, sum(SOLAR) SOLAR, sum(CABINET_POWER) CABINET_POWER, 
+                                  sum(CABINET_TELECOM) CABINET_TELECOM 
+                                  from COUNT_SITE";
+                        using (OracleCommand queryCommand1 = new OracleCommand(sqlQuery1, connection))
+                        {
+                            using (OracleDataReader reader1 = queryCommand1.ExecuteReader())
+                            {
+                                while (reader1.Read())
+                                {
+                                    dynamic dynamicResult = new ExpandoObject();
+                                    var properties = (IDictionary<string, object>)dynamicResult;
+
+                                    for (int i = 0; i < reader1.FieldCount; i++)
+                                    {
+                                        properties[reader1.GetName(i)] = reader1[i];
+                                    }
+
+                                    result.Add(dynamicResult);
+                                }
+                            }
+                        }
+                        break;
+
+                    case 2:
+                       
+                        string sqlQuery2 = @"select sitecode, sitename, 
+                                      case when WITHLEGS = 0 and SIDEARM = 0 and RADIO_RRU = 0 and RADIO_ANTENNA = 0 
+                                           and POWER = 0 and NONSTEEL = 0 and MWODU = 0 and MWDISH = 0 
+                                           and MONOPOLE = 0 and MAST = 0 and GENERATOR = 0 and CAPSULE = 0 
+                                           then 0 else 1 end as isused 
+                                      from count_site";
+                        using (OracleCommand queryCommand2 = new OracleCommand(sqlQuery2, connection))
+                        {
+                            using (OracleDataReader reader2 = queryCommand2.ExecuteReader())
+                            {
+                                while (reader2.Read())
+                                {
+                                    dynamic dynamicResult = new ExpandoObject();
+                                    var properties = (IDictionary<string, object>)dynamicResult;
+
+                                    for (int i = 0; i < reader2.FieldCount; i++)
+                                    {
+                                        properties[reader2.GetName(i)] = reader2[i];
+                                    }
+
+                                    result.Add(dynamicResult);
+                                }
+                            }
+                        }
+                        break;
+
+                    case 3:
+                     
+                        string sqlQuery3 = @"select * from count_site where sitecode = :sitecode";
+                        using (OracleCommand queryCommand3 = new OracleCommand(sqlQuery3, connection))
+                        {
+                            queryCommand3.Parameters.Add(new OracleParameter("sitecode", sitecode));
+
+                            using (OracleDataReader reader3 = queryCommand3.ExecuteReader())
+                            {
+                                while (reader3.Read())
+                                {
+                                    dynamic dynamicResult = new ExpandoObject();
+                                    var properties = (IDictionary<string, object>)dynamicResult;
+
+                                    for (int i = 0; i < reader3.FieldCount; i++)
+                                    {
+                                        properties[reader3.GetName(i)] = reader3[i];
+                                    }
+
+                                    result.Add(dynamicResult);
+                                }
+                            }
+                        }
+                        break;
+
+                    case 4:
+                     
+                        string sqlQuery4 = @"select * 
+                                     from TREE_SITES
+                                     where lower(SITENAME) like '%' || :encodedFilter || '%' 
+                                     or lower(SITECODE) like '%' || :encodedFilter || '%' 
+                                     or lower(WITHLEG_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(FIRST_LEG_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(WITHOUTLEG_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(NONSTEEL_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(FIRST_SIDEARM_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(MWDISH_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(MWODU_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(RADIO_RRU_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(RADIO_ANTENNA_NAME) like '%' || :encodedFilter || '%' 
+                                     or lower(POWER_NAME) like '%' || :encodedFilter || '%'";
+                        using (OracleCommand queryCommand4 = new OracleCommand(sqlQuery4, connection))
+                        {
+                            queryCommand4.Parameters.Add(new OracleParameter("encodedFilter", encodedFilter.ToLower()));
+
+                            using (OracleDataReader reader4 = queryCommand4.ExecuteReader())
+                            {
+                                while (reader4.Read())
+                                {
+                                    dynamic dynamicResult = new ExpandoObject();
+                                    var properties = (IDictionary<string, object>)dynamicResult;
+
+                                    for (int i = 0; i < reader4.FieldCount; i++)
+                                    {
+                                        properties[reader4.GetName(i)] = reader4[i];
+                                    }
+
+                                    result.Add(dynamicResult);
+                                }
+                            }
+                        }
+                        break;
+
+                    case 5:
+                     
+                        string sqlQuery5 = @"select * from TREE_SITES where sitecode = :sitecode";
+                        using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery5, connection))
+                        {
+                            queryCommand5.Parameters.Add(new OracleParameter("sitecode", sitecode));
+
+                            using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
+                            {
+                                while (reader5.Read())
+                                {
+                                    dynamic dynamicResult = new ExpandoObject();
+                                    var properties = (IDictionary<string, object>)dynamicResult;
+
+                                    for (int i = 0; i < reader5.FieldCount; i++)
+                                    {
+                                        properties[reader5.GetName(i)] = reader5[i];
+                                    }
+
+                                    result.Add(dynamicResult);
+                                }
+                            }
+                        }
+                        break;
+                }
+
+                return result;
+            }
+        }
+
+        public List<dynamic> GetHistory(string TabelName, int? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                connection.Open();
+
+                List<dynamic> result = new List<dynamic>();
+
+                string sqlQuery = "SELECT * FROM history_view WHERE 1=1"; 
+
+          
+                if (TabelName != null && BaseId != null)
+                {
+                    sqlQuery += " AND BASE_TABLE = :TabelName AND BASE_RECORD_ID = :BaseId";
+                }
+          
+                else if (TabelName != null && TabelName.ToLower() == "tlisite" && SiteCode != null)
+                {
+                    sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
+                }
+   
+                if (UserId != null)
+                {
+                    sqlQuery += " AND USER_ID = :UserId";
+                }
+       
+                if (ExternalSysId != null)
+                {
+                    sqlQuery += " AND SYS_ID = :ExternalSysId";
+                }
+             
+                else if (TabelName != null && TabelName.ToLower() != "tlisite" && SiteCode != null)
+                {
+                    sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
+                }
+
+                using (var command = new OracleCommand(sqlQuery, connection))
+                {
+                    
+                    if (TabelName != null) command.Parameters.Add(new OracleParameter("TabelName", TabelName));
+                    if (BaseId != null) command.Parameters.Add(new OracleParameter("BaseId", BaseId));
+                    if (SiteCode != null) command.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
+                    if (UserId != null) command.Parameters.Add(new OracleParameter("UserId", UserId));
+                    if (ExternalSysId != null) command.Parameters.Add(new OracleParameter("ExternalSysId", ExternalSysId));
+
+                    using (var reader = command.ExecuteReader())
+                    {
                         while (reader.Read())
                         {
-                            dynamic dynamicResult = new ExpandoObject();
-                            var properties = (IDictionary<string, object>)dynamicResult;
-
+                            dynamic row = new ExpandoObject();
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
-                                properties[reader.GetName(i)] = reader[i];
+                                ((IDictionary<string, object>)row).Add(reader.GetName(i), reader[i]);
                             }
-
-                            result.Add(dynamicResult);
+                            result.Add(row);
                         }
-
-                        return result;
                     }
                 }
+
+                return result;
             }
         }
 
