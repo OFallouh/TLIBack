@@ -81,6 +81,26 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Castle.Components.DictionaryAdapter.Xml;
+using TLIS_DAL.ViewModels.SectionsLegTypeDTOs;
+using TLIS_DAL.ViewModels.StructureTypeDTOs;
+using TLIS_DAL.ViewModels.SupportTypeDesignedDTOs;
+using TLIS_DAL.ViewModels.CivilSteelSupportCategoryDTOs;
+using TLIS_DAL.ViewModels.CivilWithoutLegCategoryDTOs;
+using TLIS_DAL.ViewModels.DiversityTypeDTOs;
+using TLIS_DAL.ViewModels.BoardTypeDTOs;
+using TLIS_DAL.ViewModels.AsTypeDTOs;
+using TLIS_DAL.ViewModels.PolarityTypeDTOs;
+using TLIS_DAL.ViewModels.ParityDTOs;
+using TLIS_DAL.ViewModels.TelecomTypeDTOs;
+using TLIS_DAL.ViewModels.CabinetPowerTypeDTOs;
+using TLIS_DAL.ViewModels.LocationTypeDTOs;
+using TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs;
+using TLIS_DAL.ViewModels.SupportTypeImplementedDTOs;
+using TLIS_DAL.ViewModels.ItemConnectToDTOs;
+using TLIS_DAL.ViewModels.PolarityOnLocationDTOs;
+using TLIS_DAL.ViewModels.RepeaterTypeDTOs;
+using TLIS_DAL.ViewModels.RenewableCabinetTypeDTOs;
+using TLIS_DAL.ViewModels.BaseGeneratorTypeDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -8396,13 +8416,268 @@ namespace TLIS_Service.Services
                 GetForAddDynamicAttribute attributes = new GetForAddDynamicAttribute();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TabelName.ToLower());
                 var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TabelName, null, null);
-                attributes.AttributesActivated = ListAttributesActivated;
+        
                 if (IsLibrary == true)
                 {
+                    if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TabelName)
+                    {
+                        ListAttributesActivated
+                       .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                       .ToList()
+                       .Select(FKitem =>
+                       {
+                           if (FKitem.Label.ToLower() == "sectionslegtype_name")
+                               FKitem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                           else if (FKitem.Label.ToLower() == "structuretype_name")
+                               FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type == 1).ToList());
+                           else if (FKitem.Label.ToLower() == "supporttypedesigned_name")
+                               FKitem.Options = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                           return FKitem;
+                       })
+                       .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    else if (Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == TabelName)
+                    {
+                        ListAttributesActivated
+                           .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                           .ToList()
+                          .Select(item =>
+                          {
+                              if (item.DataType.ToLower() == "list" && item.Label?.ToLower() == "civilnonsteeltype_name")
+                                  item.Options = _mapper.Map<List<CivilNonSteelTypeViewModel>>(
+                                      _dbContext.TLIcivilNonSteelType.Where(x => !x.Disable && !x.Deleted).ToList());
+                              return item;
+                          })
+                     .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
+                    else if (Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == TabelName)
+                    {
+                        ListAttributesActivated
+                           .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                           .ToList()
+                           .Select(FKitem =>
+                           {
+                               if (FKitem.Label.ToLower() == "structuretype_name")
+                                   FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable && x.Type == 2).ToList());
+                               else if (FKitem.Label.ToLower() == "installationcivilwithoutlegstype_name")
+                                   FKitem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                               else if (FKitem.Label.ToLower() == "civilwithoutlegcategory_name")
+                                   FKitem.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
+                               else if (FKitem.Label.ToLower() == "civilsteelsupportcategory_name")
+                                   FKitem.Options = _mapper.Map<List<CivilSteelSupportCategoryViewModel>>(_dbContext.TLIcivilSteelSupportCategory.ToList());
+
+                               return FKitem;
+                           })
+               .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
+                    else if (Helpers.Constants.LoadSubType.TLImwBULibrary.ToString() == TabelName)
+                    {
+                        ListAttributesActivated
+                           .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                           .ToList()
+                           .Select(FKitem =>
+                           {
+                               if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                               {
+                                   switch (FKitem.Label.ToLower())
+                                   {
+                                       case "diversitytype_name":
+                                           FKitem.Options = _unitOfWork.DiversityTypeRepository
+                                               .GetWhere(x => !x.Deleted && !x.Disable)
+                                               .Select(x => _mapper.Map<DiversityTypeViewModel>(x))
+                                               .ToList();
+                                           break;
+
+                                   }
+                               }
+                               return FKitem;
+                           }).ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
+                    else if (Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString() == TabelName)
+                    {
+                        ListAttributesActivated
+                           .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                           .ToList()
+                           .Select(FKitem =>
+                           {
+                               if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                               {
+                                   switch (FKitem.Label.ToLower())
+                                   {
+                                       case "diversitytype_name":
+                                           FKitem.Options = _unitOfWork.DiversityTypeRepository
+                                               .GetWhere(x => !x.Deleted && !x.Disable)
+                                               .Select(x => _mapper.Map<DiversityTypeViewModel>(x))
+                                               .ToList();
+                                           break;
+                                       case "boardtype_name":
+                                           FKitem.Options = _unitOfWork.BoardTypeRepository
+                                               .GetWhere(x => !x.Deleted && !x.Disable)
+                                               .Select(x => _mapper.Map<BoardTypeViewModel>(x))
+                                               .ToList();
+                                           break;
+                                       case "rfutype":
+                                           List<EnumOutPut> IntegratedWithitem = new List<EnumOutPut>
+                             {
+                                    new EnumOutPut { Id = (int)RFUType.Compact, Name = RFUType.Compact.ToString() },
+                                    new EnumOutPut { Id = (int)RFUType.Traditional, Name = RFUType.Traditional.ToString() },
+
+                             };
+                                           FKitem.Options = IntegratedWithitem;
+                                           break;
+                                       default:
+                                           break;
+
+
+                                   }
+                               }
+                               return FKitem;
+                           }).ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
+                    else if (Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString() == TabelName)
+                    {
+                        ListAttributesActivated
+                           .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                           .ToList()
+                            .Select(FKitem =>
+                            {
+                                if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                                {
+                                    switch (FKitem.Label.ToLower())
+                                    {
+                                        case "polaritytype_name":
+                                            FKitem.Options = _unitOfWork.PolarityTypeRepository
+                                                .GetWhere(x => !x.Delete && !x.Disable)
+                                                .Select(x => _mapper.Map<PolarityTypeViewModel>(x))
+                                                .ToList();
+                                            break;
+                                        case "astype_name":
+                                            FKitem.Options = _unitOfWork.AsTypeRepository
+                                                .GetWhere(x => !x.Delete && !x.Disable)
+                                                .Select(x => _mapper.Map<AsTypeViewModel>(x))
+                                                .ToList();
+                                            break;
+                                    }
+                                }
+                                return FKitem;
+                            }).ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
+                    else if (Helpers.Constants.LoadSubType.TLImwODULibrary.ToString() == TabelName)
+                    {
+                        ListAttributesActivated
+                           .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                           .ToList()
+                            .Select(FKitem =>
+                            {
+                                if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                                {
+                                    switch (FKitem.Desc.ToLower())
+                                    {
+                                        case "parity_name":
+                                            FKitem.Options = _unitOfWork.ParityRepository
+                                                .GetWhere(x => !x.Delete && !x.Disable)
+                                                .Select(x => _mapper.Map<ParityViewModel>(x))
+                                                .ToList();
+                                            break;
+                                    }
+                                }
+                                return FKitem;
+                            }).ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
+                    else if (Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                           {
+                                { "telecomtype_name", () => _mapper.Map<List<TelecomTypeViewModel>>(_unitOfWork.TelecomTypeRepository
+                                 .GetWhere(x => !x.Deleted && !x.Disable).ToList())},
+
+                           };
+                        ListAttributesActivated = ListAttributesActivated
+                           .Select(FKitem =>
+                           {
+                               if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                               {
+                                   FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                               }
+                               else
+                               {
+                                   FKitem.Options = new object[0];
+                               }
+                               return FKitem;
+                           })
+                           .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
+                    else if (Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                     {
+                        { "cabinetpowertype_name", () => _mapper.Map<List<CabinetPowerTypeViewModel>>(_unitOfWork.CabinetPowerTypeRepository
+                         .GetWhere(x => !x.Delete && !x.Disable).ToList())},
+                         { "integratedwith", () => {
+                            List<EnumOutPut> integratedwith = new List<EnumOutPut>
+                            {
+                                new EnumOutPut { Id = (int)IntegratedWith.Solar, Name = IntegratedWith.Solar.ToString() },
+                                new EnumOutPut { Id = (int)IntegratedWith.Wind, Name = IntegratedWith.Wind.ToString() }
+                            };
+                            return integratedwith;
+                        }},
+
+                    };
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+                                if (FKitem.Key.ToLower() == "integratedwith".ToLower())
+                                {
+                                    List<EnumOutPut> integratedwith = new List<EnumOutPut>();
+                                    integratedwith.Add(new EnumOutPut
+                                    {
+                                        Id = (int)IntegratedWith.Solar,
+                                        Name = IntegratedWith.Solar.ToString()
+                                    });
+                                    integratedwith.Add(new EnumOutPut
+                                    {
+                                        Id = (int)IntegratedWith.Wind,
+                                        Name = IntegratedWith.Wind.ToString()
+                                    });
+
+                                    FKitem.Options = integratedwith;
+
+                                }
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
                    .GetDynamicLibAtt(TableNameEntity.Id, CategoryId)
                    .Select(DynamicAttribute =>
                    {
+                      
                        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
                        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
                        {
@@ -8539,12 +8814,361 @@ namespace TLIS_Service.Services
                     attributes.Operation = baseInstAttView;
                 }
                 else
-                {
+                {                
+                    if (Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == TabelName)
+                    {
+                        var sectionsLegTypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "sectionslegtype_name");
+                        if (sectionsLegTypeItem != null)
+                        {
+                            sectionsLegTypeItem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                          
+                        }
 
+                        var structureTypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "structuretype_name");
+                        if (structureTypeItem != null)
+                        {
+                            structureTypeItem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                       
+                        }
+
+                        var supportTypeDesignedItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "supporttypedesigned_name");
+                        if (supportTypeDesignedItem != null)
+                        {
+                            supportTypeDesignedItem.Options = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                         
+                        }
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TabelName)
+                    {
+                        var structuretype_name = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "structuretype_name");
+                        if (structuretype_name != null)
+                        {
+                            structuretype_name.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                         
+                        }
+                        var instcivilwithoutlegstype_name = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "instcivilwithoutlegstype_name");
+                        if (instcivilwithoutlegstype_name != null)
+                        {
+                            instcivilwithoutlegstype_name.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                         
+                        }
+                        var civilwithoutlegcategory_name = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "civilwithoutlegcategory_name");
+                        if (civilwithoutlegcategory_name != null)
+                        {
+                            civilwithoutlegcategory_name.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
+                      
+                        }
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                        {
+                            { "locationtype_name", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                            { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                            { "supporttypeimplemented_name", () => _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                        };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.LoadSubType.TLIradioAntenna.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                        {
+                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                        };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.LoadSubType.TLIradioRRU.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                    };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.LoadSubType.TLIradioOther.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                    };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.LoadSubType.TLImwBU.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                        { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                    };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.LoadSubType.TLImwDish.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                        {
+                            { "polarityonlocation_name", () => _mapper.Map<List<PolarityOnLocationViewModel>>(_unitOfWork.PolarityOnLocationRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList())},
+                            { "repeatertype_name", () => _mapper.Map<List<RepeaterTypeViewModel>>(_unitOfWork.RepeaterTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                            { "itemconnectto_name", () => _mapper.Map<List<ItemConnectToViewModel>>(_unitOfWork.ItemConnectToRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                            { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                        };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.LoadSubType.TLImwRFU.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                        {
+                            { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                        };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.LoadSubType.TLImwODU.ToString() == TabelName)
+                    {
+                        
+                            Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                            {
+                                { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                            };
+
+                            ListAttributesActivated = ListAttributesActivated
+                                .Select(FKitem =>
+                                {
+                                    if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                    {
+                                        FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                    }
+                                    else
+                                    {
+                                        FKitem.Options = new object[0];
+                                    }
+
+                                    return FKitem;
+                                })
+                                .ToList();
+                            attributes.AttributesActivated = ListAttributesActivated;
+                       
+                    }
+                    if (Helpers.Constants.LoadSubType.TLIpower.ToString() == TabelName)
+                    {
+
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                        {
+                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                        };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.OtherInventoryType.TLIcabinetPower.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                        { "renewablecabinettype_name", () => _mapper.Map<List<RenewableCabinetTypeViewModel>>(_unitOfWork.RenewableCabinetTypeRepository.GetWhereAndInclude(x => !x.Deleted &&
+                        !x.Disable).ToList())},
+
+                    };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+
+                    }
+                    if (Helpers.Constants.OtherInventoryType.TLIcabinetTelecom.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                        { "renewablecabinettype_name", () => _mapper.Map<List<RenewableCabinetTypeViewModel>>(_unitOfWork.RenewableCabinetTypeRepository.GetWhereAndInclude(x => !x.Deleted &&
+                        !x.Disable).ToList())},
+
+                    };
+
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
+                    if (Helpers.Constants.OtherInventoryType.TLIgenerator.ToString() == TabelName)
+                    {
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                        {
+                            { "basegeneratortype_name", () => _mapper.Map<List<BaseGeneratorTypeViewModel>>(_unitOfWork.BaseGeneratorTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList())},
+
+                        };
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+                    }
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                    .GetDynamicInstAttInst(TableNameEntity.Id, CategoryId);
-
-
+                   .GetDynamicInstAttInst(TableNameEntity.Id, CategoryId);
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
                     List<OwnerViewModel> ownerViewModels = new List<OwnerViewModel>();
                     List<OwnerViewModel> ownerViewModels2 = new List<OwnerViewModel>();
