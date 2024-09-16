@@ -3630,43 +3630,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -3695,43 +3701,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -3760,44 +3772,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -3825,44 +3844,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -3890,44 +3916,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -3955,43 +3988,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -4020,44 +4059,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4085,44 +4131,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4150,44 +4203,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4215,44 +4275,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4280,44 +4347,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4345,44 +4419,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4410,44 +4491,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4475,44 +4563,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4540,44 +4635,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4605,44 +4707,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4670,43 +4779,50 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -4735,44 +4851,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4800,43 +4923,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -4865,44 +4994,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4930,44 +5066,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -4995,8 +5138,9 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
+                                        {
+                                            switch (rule.Operation)
                                         {
                                             case 1:
                                                 result = propertyValue == valuerule;
@@ -5033,8 +5177,13 @@ namespace TLIS_Repository.Repositories
                                                 result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
                                                 break;
                                         }
+                                    }
+                                        else
+                                        {
+                                            result = false;
+                                        }
 
-                                        groupResult = groupResult && result;
+                                    groupResult = groupResult && result;
 
                                     }
                                     if (DynamicAttribute.tablesNames.TableName.ToLower() == TablesNames.TLImwBU.ToString().ToLower())
@@ -5060,7 +5209,8 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
+                                    if (propertyValue != null && valuerule != null)
+                                    {
                                         switch (rule.Operation)
                                         {
                                             case 1:
@@ -5098,8 +5248,14 @@ namespace TLIS_Repository.Repositories
                                                 result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
                                                 break;
                                         }
+                                    }
+                                    else
+                                    {
+                                        result = false;
+                                    }
 
-                                        groupResult = groupResult && result;
+
+                                    groupResult = groupResult && result;
 
                                     }
                                     if (DynamicAttribute.tablesNames.TableName.ToLower() == TablesNames.TLImwRFU.ToString().ToLower())
@@ -5125,43 +5281,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -5190,44 +5352,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5255,44 +5424,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5320,44 +5496,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5385,44 +5568,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5450,44 +5640,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5515,44 +5712,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5580,44 +5784,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5645,43 +5856,50 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -5710,44 +5928,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5775,44 +6000,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5840,44 +6072,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -5905,44 +6144,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6148,43 +6394,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -6213,43 +6465,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -6278,44 +6536,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6343,44 +6608,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6408,44 +6680,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6473,43 +6752,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -6538,44 +6823,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6603,44 +6895,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6668,44 +6967,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6733,44 +7039,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6798,44 +7111,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6863,44 +7183,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6928,44 +7255,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -6993,44 +7327,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7058,44 +7399,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7123,44 +7471,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7188,43 +7543,50 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -7253,44 +7615,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7318,43 +7687,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -7383,44 +7758,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7448,44 +7830,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7513,43 +7902,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -7578,44 +7973,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7643,43 +8045,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -7708,44 +8116,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7773,44 +8188,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7838,44 +8260,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7903,44 +8332,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -7968,44 +8404,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -8033,44 +8476,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -8098,44 +8548,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -8163,43 +8620,50 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -8228,44 +8692,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -8293,44 +8764,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -8358,44 +8836,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -8423,44 +8908,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10012,43 +10504,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -10077,43 +10575,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -10142,44 +10646,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10207,44 +10718,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10272,44 +10790,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10337,43 +10862,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -10402,44 +10933,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10467,44 +11005,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10532,44 +11077,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10597,44 +11149,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10662,44 +11221,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10727,44 +11293,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10792,44 +11365,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10857,44 +11437,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10922,44 +11509,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -10987,44 +11581,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11052,43 +11653,50 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -11117,44 +11725,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11182,43 +11797,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -11247,44 +11868,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11312,44 +11940,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11377,43 +12012,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -11442,44 +12083,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11507,43 +12155,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -11572,44 +12226,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11637,44 +12298,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11702,44 +12370,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11767,44 +12442,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11832,44 +12514,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11897,44 +12586,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -11962,44 +12658,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -12027,43 +12730,50 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -12092,44 +12802,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -12157,44 +12874,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -12222,44 +12946,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -12287,44 +13018,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -12582,43 +13320,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -12647,43 +13391,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -12712,44 +13462,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -12777,44 +13534,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -12842,44 +13606,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -12907,43 +13678,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -12972,44 +13749,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13037,44 +13821,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13102,44 +13893,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13167,44 +13965,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13232,44 +14037,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13297,44 +14109,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13362,44 +14181,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13427,44 +14253,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13492,44 +14325,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13557,44 +14397,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13622,43 +14469,50 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -13687,44 +14541,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13752,43 +14613,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -13817,44 +14684,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13882,44 +14756,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -13947,43 +14828,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -14012,44 +14899,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14077,43 +14971,49 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -14142,44 +15042,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14207,44 +15114,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14272,44 +15186,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14337,44 +15258,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14402,44 +15330,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14467,44 +15402,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14532,44 +15474,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14597,43 +15546,50 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            result = false;
                                         }
 
                                         groupResult = groupResult && result;
@@ -14662,44 +15618,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14727,44 +15690,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14792,44 +15762,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
@@ -14857,44 +15834,51 @@ namespace TLIS_Repository.Repositories
                                         var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                         var valuerule = rule.Value?.ToString().Trim();
                                         bool result = false;
-
-                                        switch (rule.Operation)
+                                        if (propertyValue != null && valuerule != null)
                                         {
-                                            case 1:
-                                                result = propertyValue == valuerule;
-                                                break;
+                                            switch (rule.Operation)
+                                            {
+                                                case 1:
+                                                    result = propertyValue == valuerule;
+                                                    break;
 
-                                            case 2:
-                                                result = propertyValue != valuerule;
-                                                break;
+                                                case 2:
+                                                    result = propertyValue != valuerule;
+                                                    break;
 
-                                            case 3:
-                                                result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 3:
+                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 4:
-                                                result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 4:
+                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 5:
-                                                result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
-                                                break;
+                                                case 5:
+                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(valuerule);
+                                                    break;
 
-                                            case 6:
-                                                result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
-                                                break;
-                                            case 7:
-                                                result = propertyValue.ToLower().Contains(valuerule.ToLower());
-                                                break;
+                                                case 6:
+                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(valuerule);
+                                                    break;
+                                                case 7:
+                                                    result = propertyValue.ToLower().Contains(valuerule.ToLower());
+                                                    break;
 
-                                            case 8:
-                                                result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
-                                                break;
+                                                case 8:
+                                                    result = propertyValue.ToLower().StartsWith(valuerule.ToLower());
+                                                    break;
 
-                                            case 9:
-                                                result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
-                                                break;
+                                                case 9:
+                                                    result = propertyValue.ToLower().EndsWith(valuerule.ToLower());
+                                                    break;
+                                            }
                                         }
+                                        else
+                                        {
+                                            result = false;
+                                        }
+
 
                                         groupResult = groupResult && result;
 
