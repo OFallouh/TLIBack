@@ -8806,11 +8806,19 @@ namespace TLIS_Service.Services
                         DataType = "DateTime",
                         DataTypeId = 25,
                     };
+                    BaseInstAttViews baseInstAttViews6 = new BaseInstAttViews()
+                    {
+                        Key = "List",
+                        Value = ownerViewModels3,
+                        DataType = "List",
+                        DataTypeId = 26,
+                    };
                     baseInstAttView.Add(baseInstAttViews1);
                     baseInstAttView.Add(baseInstAttViews2);
                     baseInstAttView.Add(baseInstAttViews3);
                     baseInstAttView.Add(baseInstAttViews4);
                     baseInstAttView.Add(baseInstAttViews5);
+                    baseInstAttView.Add(baseInstAttViews6);
                     attributes.Operation = baseInstAttView;
                 }
                 else
@@ -9270,11 +9278,19 @@ namespace TLIS_Service.Services
                         DataType = "DateTime",
                         DataTypeId = 25,
                     };
+                    BaseInstAttViews baseInstAttViews6 = new BaseInstAttViews()
+                    {
+                        Key = "List",
+                        Value = ownerViewModels3,
+                        DataType = "List",
+                        DataTypeId = 26,
+                    };
                     baseInstAttView.Add(baseInstAttViews1);
                     baseInstAttView.Add(baseInstAttViews2);
                     baseInstAttView.Add(baseInstAttViews3);
                     baseInstAttView.Add(baseInstAttViews4);
                     baseInstAttView.Add(baseInstAttViews5);
+                    baseInstAttView.Add(baseInstAttViews6);
                     attributes.Operation = baseInstAttView;
                 }
                 return new Response<GetForAddDynamicAttribute>(true, attributes, null, null, (int)Constants.ApiReturnCode.success);
@@ -12902,31 +12918,32 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
                                                     bool result = false;
-
+                                                    DateTime defultDateTime = DateTime.Parse(defultvalue);
+                                                    DateTime validationDateTime = DateTime.Parse(Validationvalue);
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = defultvalue == Validationvalue;
+                                                            result = defultDateTime == validationDateTime;
                                                             break;
 
                                                         case 2:
-                                                            result = defultvalue != Validationvalue;
+                                                            result = defultDateTime != validationDateTime;
                                                             break;
 
                                                         case 3:
-                                                            result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
+                                                            result = defultDateTime < validationDateTime;
                                                             break;
 
                                                         case 4:
-                                                            result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
+                                                            result = defultDateTime > validationDateTime;
                                                             break;
 
                                                         case 5:
-                                                            result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
+                                                            result = defultDateTime <= validationDateTime;
                                                             break;
 
                                                         case 6:
-                                                            result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
+                                                            result = defultDateTime >= validationDateTime;
                                                             break;
                                                     }
 
@@ -13164,30 +13181,32 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     bool result = false;
 
+                                                    DateTime defultDateTime = DateTime.Parse(defultvalue);
+                                                    DateTime validationDateTime = DateTime.Parse(Validationvalue);
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
-                                                            result = defultvalue == Validationvalue;
+                                                            result = defultDateTime == validationDateTime;
                                                             break;
 
                                                         case 2:
-                                                            result = defultvalue != Validationvalue;
+                                                            result = defultDateTime != validationDateTime;
                                                             break;
 
                                                         case 3:
-                                                            result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
+                                                            result = defultDateTime < validationDateTime;
                                                             break;
 
                                                         case 4:
-                                                            result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
+                                                            result = defultDateTime > validationDateTime;
                                                             break;
 
                                                         case 5:
-                                                            result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
+                                                            result = defultDateTime <= validationDateTime;
                                                             break;
 
                                                         case 6:
-                                                            result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
+                                                            result = defultDateTime >= validationDateTime;
                                                             break;
                                                     }
 
@@ -13511,8 +13530,27 @@ namespace TLIS_Service.Services
                                                         _unitOfWork.RowRuleRepository.Add(tLIrowRule);
                                                         _unitOfWork.SaveChanges();
                                                     }
+                                                    if (AttributeActivated.DataType.ToLower() == "list")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = int.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
 
-
+                                                    }
 
                                                 }
                                             }
@@ -13550,6 +13588,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -13621,6 +13695,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
 
@@ -13693,6 +13803,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -13764,6 +13910,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                         
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -13836,6 +14019,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -13908,78 +14127,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
-                                                            if (propertyValue != null && value != null)
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
                                                             {
-                                                                switch (rule.Operation)
-                                                            {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
 
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
 
-                                                                case 3:
-                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                    break;
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
 
-                                                                case 4:
-                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                    break;
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
 
-                                                                case 5:
-                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                    break;
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
 
-                                                                case 6:
-                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                    break;
-                                                                case 7:
-                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                    break;
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
 
-                                                                case 8:
-                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                    break;
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
 
-                                                                case 9:
-                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                    break;
+                                                                    }
+                                                                }
                                                             }
-                                                            }
-                                                            else
-                                                            {
-                                                                result = false;
-                                                            }
-
-                                                            groupResult = groupResult && result;
-
-
-                                                        }
-                                                        if (TabelName.ToLower() == TablesNames.TLImwRFULibrary.ToString().ToLower())
-                                                        {
-                                                            var ColumName = _unitOfWork.MW_RFULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
-                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
-                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
-
-                                                            var attributeNames = ColumName.GetType().GetProperties()
-                                                                .Where(x =>
-                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
-                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
-                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
-                                                                    .Contains(x.PropertyType)
-                                                                )
-                                                                .Select(x => x.Name)
-                                                                .ToList();
-
-                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
-
-                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
-                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                            var value = rule.Value?.ToString().Trim();
-                                                            bool result = false;
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14020,13 +14203,122 @@ namespace TLIS_Service.Services
                                                                         break;
                                                                 }
                                                             }
-                                                        
-                                                        else
-                                                        {
-                                                            result = false;
-                                                        }
+                                                            else
+                                                            {
+                                                                result = false;
+                                                            }
 
-                                                        groupResult = groupResult && result;
+                                                            groupResult = groupResult && result;
+
+
+                                                        }
+                                                        if (TabelName.ToLower() == TablesNames.TLImwRFULibrary.ToString().ToLower())
+                                                        {
+                                                            var ColumName = _unitOfWork.MW_RFULibraryRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                            var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                            var attributeNames = ColumName.GetType().GetProperties()
+                                                                .Where(x =>
+                                                                    (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                     new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                     .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                    || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                    .Contains(x.PropertyType)
+                                                                )
+                                                                .Select(x => x.Name)
+                                                                .ToList();
+
+                                                            var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                            var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                            var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                     
+                                                            if (propertyValue != null && value != null)
+                                                            {
+                                                                switch (rule.Operation)
+                                                                {
+                                                                    case 1:
+                                                                        result = propertyValue == value;
+                                                                        break;
+
+                                                                    case 2:
+                                                                        result = propertyValue != value;
+                                                                        break;
+
+                                                                    case 3:
+                                                                        result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                        break;
+
+                                                                    case 4:
+                                                                        result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                        break;
+
+                                                                    case 5:
+                                                                        result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                        break;
+
+                                                                    case 6:
+                                                                        result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                        break;
+                                                                    case 7:
+                                                                        result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                        break;
+
+                                                                    case 8:
+                                                                        result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                        break;
+
+                                                                    case 9:
+                                                                        result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                        break;
+                                                                }
+                                                            }
+
+                                                            else
+                                                            {
+                                                                result = false;
+                                                            }
+
+                                                            groupResult = groupResult && result;
 
 
                                                         }
@@ -14053,6 +14345,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                          
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14125,6 +14454,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14197,6 +14562,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14269,6 +14670,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                         
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14341,6 +14779,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14413,6 +14887,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                       
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14485,6 +14996,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                      
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14557,6 +15105,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14629,6 +15213,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14701,6 +15321,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14773,6 +15429,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14844,6 +15536,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14888,7 +15616,7 @@ namespace TLIS_Service.Services
                                                             {
                                                                 result = false;
                                                             }
-                                                        groupResult = groupResult && result;
+                                                            groupResult = groupResult && result;
 
 
                                                         }
@@ -14915,50 +15643,86 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
-                                                        if (propertyValue != null && value != null)
-                                                        {
-                                                            switch (rule.Operation)
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
                                                             {
-                                                                case 1:
-                                                                    result = propertyValue == value;
-                                                                    break;
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
 
-                                                                case 2:
-                                                                    result = propertyValue != value;
-                                                                    break;
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
 
-                                                                case 3:
-                                                                    result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
-                                                                    break;
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
 
-                                                                case 4:
-                                                                    result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
-                                                                    break;
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
 
-                                                                case 5:
-                                                                    result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
-                                                                    break;
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
 
-                                                                case 6:
-                                                                    result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
-                                                                    break;
-                                                                case 7:
-                                                                    result = propertyValue.ToLower().Contains(value.ToLower());
-                                                                    break;
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
 
-                                                                case 8:
-                                                                    result = propertyValue.ToLower().StartsWith(value.ToLower());
-                                                                    break;
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
 
-                                                                case 9:
-                                                                    result = propertyValue.ToLower().EndsWith(value.ToLower());
-                                                                    break;
+                                                                    }
+                                                                }
                                                             }
-                                                        }
-                                                        else
-                                                        {
-                                                            result = false;
-                                                        }
+                                                            if (propertyValue != null && value != null)
+                                                            {
+                                                                switch (rule.Operation)
+                                                                {
+                                                                    case 1:
+                                                                        result = propertyValue == value;
+                                                                        break;
+
+                                                                    case 2:
+                                                                        result = propertyValue != value;
+                                                                        break;
+
+                                                                    case 3:
+                                                                        result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                        break;
+
+                                                                    case 4:
+                                                                        result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                        break;
+
+                                                                    case 5:
+                                                                        result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                        break;
+
+                                                                    case 6:
+                                                                        result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                        break;
+                                                                    case 7:
+                                                                        result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                        break;
+
+                                                                    case 8:
+                                                                        result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                        break;
+
+                                                                    case 9:
+                                                                        result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                        break;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                result = false;
+                                                            }
 
                                                             groupResult = groupResult && result;
 
@@ -14987,6 +15751,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15059,6 +15859,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15131,6 +15967,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15176,7 +16048,7 @@ namespace TLIS_Service.Services
                                                                 result = false;
                                                             }
 
-                                                        groupResult = groupResult && result;
+                                                            groupResult = groupResult && result;
 
 
                                                         }
@@ -15203,6 +16075,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15274,6 +16182,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15346,6 +16290,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15417,6 +16397,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15489,6 +16505,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15561,6 +16613,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15633,6 +16721,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15705,6 +16829,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15775,8 +16935,45 @@ namespace TLIS_Service.Services
 
                                                             var propertyInfo = ColumName.GetType().GetProperty(attributeName);
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
-                                                            var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            var value = rule.Value?.ToString().Trim();
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                      
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15849,6 +17046,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15921,6 +17154,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15993,6 +17262,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16065,6 +17370,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16402,7 +17743,27 @@ namespace TLIS_Service.Services
                                                         _unitOfWork.RowRuleRepository.Add(tLIrowRule);
                                                         _unitOfWork.SaveChanges();
                                                     }
+                                                    if (AttributeActivated.DataType.ToLower() == "list")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = int.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
 
+                                                    }
 
 
                                                 }
@@ -16441,6 +17802,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result =defultDateTime >= validationDateTime;
+                                                                            break;
+                                                                       
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16512,6 +17909,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
 
@@ -16584,6 +18017,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16655,6 +18124,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                      
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16727,6 +18233,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16799,6 +18341,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16871,6 +18450,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                  
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16944,6 +18560,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                    
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17016,6 +18669,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17088,6 +18777,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17160,6 +18885,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17232,6 +18994,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17304,6 +19102,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17376,6 +19211,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                          
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17448,6 +19320,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17520,6 +19428,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17592,6 +19536,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17664,6 +19644,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17735,6 +19751,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17806,6 +19858,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17878,6 +19966,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17950,6 +20074,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18022,6 +20182,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18094,6 +20290,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18165,6 +20397,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18237,6 +20505,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18308,6 +20612,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18380,6 +20720,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18452,6 +20828,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18524,6 +20936,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18596,6 +21044,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18668,6 +21152,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                  
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18740,6 +21261,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18812,6 +21369,43 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                    
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18884,6 +21478,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18956,6 +21586,42 @@ namespace TLIS_Service.Services
                                                             var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
                                                             var value = rule.Value?.ToString().Trim();
                                                             bool result = false;
+                                                            if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                            {
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                    DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = defultDateTime == validationDateTime;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = defultDateTime != validationDateTime;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = defultDateTime < validationDateTime;
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = defultDateTime > validationDateTime;
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = defultDateTime <= validationDateTime;
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = defultDateTime >= validationDateTime;
+                                                                            break;
+
+                                                                    }
+                                                                }
+                                                            }
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -19270,33 +21936,35 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                 _unitOfWork.SaveChanges();
                                                 bool result = false;
-
+                                                DateTime defultDateTime = DateTime.Parse(defultvalue);
+                                                DateTime validationDateTime = DateTime.Parse(Validationvalue);
                                                 switch (addDynamicObject.validation.operation)
                                                 {
                                                     case 1:
-                                                        result = defultvalue == Validationvalue;
+                                                        result = defultDateTime == validationDateTime;
                                                         break;
 
                                                     case 2:
-                                                        result = defultvalue != Validationvalue;
+                                                        result = defultDateTime != validationDateTime;
                                                         break;
 
                                                     case 3:
-                                                        result = Convert.ToDecimal(defultvalue) < Convert.ToDecimal(Validationvalue);
+                                                        result = defultDateTime < validationDateTime;
                                                         break;
 
                                                     case 4:
-                                                        result = Convert.ToDecimal(defultvalue) > Convert.ToDecimal(Validationvalue);
+                                                        result = defultDateTime > validationDateTime;
                                                         break;
 
                                                     case 5:
-                                                        result = Convert.ToDecimal(defultvalue) <= Convert.ToDecimal(Validationvalue);
+                                                        result = defultDateTime <= validationDateTime;
                                                         break;
 
                                                     case 6:
-                                                        result = Convert.ToDecimal(defultvalue) >= Convert.ToDecimal(Validationvalue);
+                                                        result = defultDateTime >= validationDateTime;
                                                         break;
                                                 }
+
 
                                                 if (!result)
                                                 {
@@ -19483,13 +22151,32 @@ namespace TLIS_Service.Services
                                                         _unitOfWork.RowRuleRepository.Add(tLIrowRule);
                                                         _unitOfWork.SaveChanges();
                                                     }
-
+                                                    if (AttributeActivated.DataType.ToLower() == "list")
+                                                    {
+                                                        TLIrule tLIrule = new TLIrule()
+                                                        {
+                                                            attributeActivatedId = AttributeActivated.Id,
+                                                            dynamicAttId = tLIdynamicAtt.Id,
+                                                            OperationId = rule.Operation,
+                                                            OperationValueDouble = int.Parse(rule.Value.ToString()),
+                                                            tablesNamesId = TabelNameId,
+                                                        };
+                                                        _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
+                                                        _unitOfWork.SaveChanges();
+                                                        TLIrowRule tLIrowRule = new TLIrowRule()
+                                                        {
+                                                            RuleId = tLIrule.Id,
+                                                            RowId = row.Id,
+                                                        };
+                                                        _unitOfWork.RowRuleRepository.Add(tLIrowRule);
+                                                        _unitOfWork.SaveChanges();
 
                                                     }
+
                                                 }
                                             }
+                                        }
                                             
-                                        
                                     }
                                     else
                                     {

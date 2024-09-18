@@ -300,7 +300,7 @@ namespace TLIS_Service.Services
             {
                 try
                 {
-                    var SideArm = _dbContext.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == sideArmId &&
+                    var SideArm = _dbContext.TLIcivilLoads.Include(x=>x.sideArm).FirstOrDefault(x => x.sideArmId == sideArmId &&
                     x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId == null);
 
                     var LoadONSideArm = _dbContext.TLIcivilLoads.FirstOrDefault(x => x.sideArmId == sideArmId &&
