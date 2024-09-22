@@ -101,6 +101,14 @@ using TLIS_DAL.ViewModels.PolarityOnLocationDTOs;
 using TLIS_DAL.ViewModels.RepeaterTypeDTOs;
 using TLIS_DAL.ViewModels.RenewableCabinetTypeDTOs;
 using TLIS_DAL.ViewModels.BaseGeneratorTypeDTOs;
+using System.Xml.Linq;
+using System.Runtime.InteropServices;
+using TLIS_DAL.ViewModels.SubTypeDTOs;
+using TLIS_DAL.ViewModels.BaseCivilWithLegsTypeDTOs;
+using TLIS_DAL.ViewModels.BaseTypeDTOs;
+using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
+using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
+
 
 namespace TLIS_Service.Services
 {
@@ -8416,7 +8424,7 @@ namespace TLIS_Service.Services
                 GetForAddDynamicAttribute attributes = new GetForAddDynamicAttribute();
                 var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TabelName.ToLower());
                 var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd(TabelName, null, null);
-        
+
                 if (IsLibrary == true)
                 {
                     if (Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == TabelName)
@@ -8677,7 +8685,7 @@ namespace TLIS_Service.Services
                    .GetDynamicLibAtt(TableNameEntity.Id, CategoryId)
                    .Select(DynamicAttribute =>
                    {
-                      
+
                        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
                        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
                        {
@@ -8822,50 +8830,190 @@ namespace TLIS_Service.Services
                     attributes.Operation = baseInstAttView;
                 }
                 else
-                {                
+                {
                     if (Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == TabelName)
                     {
-                        var sectionsLegTypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "sectionslegtype_name");
+                        var sectionsLegTypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                         if (sectionsLegTypeItem != null)
                         {
-                            sectionsLegTypeItem.Options = _mapper.Map<List<SectionsLegTypeViewModel>>(_unitOfWork.SectionsLegTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                          
+                            sectionsLegTypeItem.Options = _mapper.Map<List<LocationTypeViewModel>>(
+                                _unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                            );
                         }
 
-                        var structureTypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "structuretype_name");
-                        if (structureTypeItem != null)
+                        var baseTypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "basetype_name");
+                        if (baseTypeItem != null)
                         {
-                            structureTypeItem.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                       
+                            baseTypeItem.Options = _mapper.Map<List<BaseTypeViewModel>>(
+                                _unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                            );
                         }
 
-                        var supportTypeDesignedItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "supporttypedesigned_name");
-                        if (supportTypeDesignedItem != null)
+                        var ownerItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
+                        if (ownerItem != null)
                         {
-                            supportTypeDesignedItem.Options = _mapper.Map<List<SupportTypeDesignedViewModel>>(_unitOfWork.SupportTypeDesignedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                         
+                            ownerItem.Options = _mapper.Map<List<OwnerViewModel>>(
+                                _unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                            );
                         }
+
+                        var baseCivilWithLegsTypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "basecivilwithlegtype_name");
+                        if (baseCivilWithLegsTypeItem != null)
+                        {
+                            baseCivilWithLegsTypeItem.Options = _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(
+                                _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                            );
+                        }
+
+                        var guyLineTypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "guylinetype_name");
+                        if (guyLineTypeItem != null)
+                        {
+                            guyLineTypeItem.Options = _mapper.Map<List<GuyLineTypeViewModel>>(
+                                _unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                            );
+                        }
+
+                        var supportTypeImplementedItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "supporttypeimplemented_name");
+                        if (supportTypeImplementedItem != null)
+                        {
+                            supportTypeImplementedItem.Options = _mapper.Map<List<SupportTypeImplementedViewModel>>(
+                                _unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                            );
+                        }
+
+                        var enforcementCategoryItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "enforcmentcategory_name");
+                        if (enforcementCategoryItem != null)
+                        {
+                            enforcementCategoryItem.Options = _mapper.Map<List<EnforcmentCategoryViewModel>>(
+                                _unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                            );
+                        }
+
+
+                        var BasePlateShapeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "BasePlateShape".ToLower());
+                        if (BasePlateShapeItem != null)
+                        {
+                            List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)BasePlateShape.Circular,
+                                Name = BasePlateShape.Circular.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)BasePlateShape.Rectangular,
+                                Name = BasePlateShape.Rectangular.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)BasePlateShape.Square,
+                                Name = BasePlateShape.Square.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)BasePlateShape.NotMeasurable,
+                                Name = BasePlateShape.NotMeasurable.ToString()
+                            });
+
+                            BasePlateShapeItem.Options = BasePlateShapes;
+
+                        }
+                        var structuretypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "structuretype".ToLower());
+                        if (structuretypeItem != null)
+                        {
+                            List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)StructureTypeCompatibleWithDesign.Yes,
+                                Name = StructureTypeCompatibleWithDesign.Yes.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)StructureTypeCompatibleWithDesign.No,
+                                Name = StructureTypeCompatibleWithDesign.No.ToString()
+                            });
+
+
+                            structuretypeItem.Options = BasePlateShapes;
+
+                        }
+                        var sectionslegtypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "sectionslegtype".ToLower());
+                        if (sectionslegtypeItem != null)
+                        {
+                            List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)SectionsLegTypeCompatibleWithDesign.Yes,
+                                Name = SectionsLegTypeCompatibleWithDesign.Yes.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)SectionsLegTypeCompatibleWithDesign.No,
+                                Name = SectionsLegTypeCompatibleWithDesign.No.ToString()
+                            });
+
+
+                            sectionslegtypeItem.Options = BasePlateShapes;
+
+                        }
+
                         attributes.AttributesActivated = ListAttributesActivated;
                     }
                     if (Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == TabelName)
                     {
-                        var structuretype_name = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "structuretype_name");
+                        var structuretype_name = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                         if (structuretype_name != null)
                         {
-                            structuretype_name.Options = _mapper.Map<List<StructureTypeViewModel>>(_unitOfWork.StructureTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                         
+                            structuretype_name.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
                         }
-                        var instcivilwithoutlegstype_name = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "instcivilwithoutlegstype_name");
+                        var instcivilwithoutlegstype_name = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "subtype_name");
                         if (instcivilwithoutlegstype_name != null)
                         {
-                            instcivilwithoutlegstype_name.Options = _mapper.Map<List<InstCivilwithoutLegsTypeViewModel>>(_unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                         
+                            instcivilwithoutlegstype_name.Options = _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+
                         }
-                        var civilwithoutlegcategory_name = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "civilwithoutlegcategory_name");
-                        if (civilwithoutlegcategory_name != null)
+                        var equipmentslocationItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "equipmentslocation".ToLower());
+                        if (equipmentslocationItem != null)
                         {
-                            civilwithoutlegcategory_name.Options = _mapper.Map<List<CivilWithoutLegCategoryViewModel>>(_unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => !x.disable).ToList());
-                      
+                            List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)EquipmentsLocation.Body,
+                                Name = EquipmentsLocation.Body.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)EquipmentsLocation.Platform,
+                                Name = EquipmentsLocation.Platform.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)EquipmentsLocation.Together,
+                                Name = EquipmentsLocation.Together.ToString()
+                            });
+
+                            equipmentslocationItem.Options = BasePlateShapes;
+
+                        }
+                        var ladderstepsItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "laddersteps".ToLower());
+                        if (ladderstepsItem != null)
+                        {
+                            List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)LadderSteps.Ladder,
+                                Name = LadderSteps.Ladder.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)LadderSteps.Steps,
+                                Name = LadderSteps.Steps.ToString()
+                            });
+
+
+                            ladderstepsItem.Options = BasePlateShapes;
+
                         }
                         attributes.AttributesActivated = ListAttributesActivated;
                     }
@@ -9048,39 +9196,12 @@ namespace TLIS_Service.Services
                     }
                     if (Helpers.Constants.LoadSubType.TLImwODU.ToString() == TabelName)
                     {
-                        
-                            Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                             {
                                 { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
 
                             };
-
-                            ListAttributesActivated = ListAttributesActivated
-                                .Select(FKitem =>
-                                {
-                                    if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
-                                    {
-                                        FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
-                                    }
-                                    else
-                                    {
-                                        FKitem.Options = new object[0];
-                                    }
-
-                                    return FKitem;
-                                })
-                                .ToList();
-                            attributes.AttributesActivated = ListAttributesActivated;
-                       
-                    }
-                    if (Helpers.Constants.LoadSubType.TLIpower.ToString() == TabelName)
-                    {
-
-                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
-                        {
-                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
-
-                        };
 
                         ListAttributesActivated = ListAttributesActivated
                             .Select(FKitem =>
@@ -9097,6 +9218,52 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
+                        attributes.AttributesActivated = ListAttributesActivated;
+
+                    }
+                    if (Helpers.Constants.LoadSubType.TLIpower.ToString() == TabelName)
+                    {
+
+                        Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                        {
+                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                        };
+                       
+                        ListAttributesActivated = ListAttributesActivated
+                            .Select(FKitem =>
+                            {
+                                if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                                {
+                                    FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                                }
+                                else
+                                {
+                                    FKitem.Options = new object[0];
+                                }
+
+                                return FKitem;
+                            })
+                            .ToList();
+                        var sectionslegtypeItem = ListAttributesActivated.FirstOrDefault(item => item.Label.ToLower() == "sectionslegtype".ToLower());
+                        if (sectionslegtypeItem != null)
+                        {
+                            List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)SectionsLegTypeCompatibleWithDesign.Yes,
+                                Name = SectionsLegTypeCompatibleWithDesign.Yes.ToString()
+                            });
+                            BasePlateShapes.Add(new EnumOutPut
+                            {
+                                Id = (int)SectionsLegTypeCompatibleWithDesign.No,
+                                Name = SectionsLegTypeCompatibleWithDesign.No.ToString()
+                            });
+
+
+                            sectionslegtypeItem.Options = BasePlateShapes;
+
+                        }
                         attributes.AttributesActivated = ListAttributesActivated;
                     }
                     if (Helpers.Constants.OtherInventoryType.TLIcabinetPower.ToString() == TabelName)
@@ -9522,14 +9689,14 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId,AddDynamicObject DynamicAttViewModel,int UserId, string connectionString)
+        public async Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId, AddDynamicObject DynamicAttViewModel, int UserId, string connectionString)
         {
             using (TransactionScope transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
                     TLIdynamicAtt OldDynamicAttData = _dbContext.TLIdynamicAtt.Include(x => x.DataType).Include(x => x.tablesNames).AsQueryable().AsNoTracking()
-                       .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttributeId );
+                       .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttributeId);
                     if (OldDynamicAttData == null)
                         return new Response<AddDynamicObject>(true, null, null, $"This DynamicAttribute is not found", (int)Constants.ApiReturnCode.fail);
                     var DynamicAttribute = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(x => x.Key.ToLower() == DynamicAttViewModel.general.name.ToLower() && x.Id != DynamicAttributeId, x => x.tablesNames);
@@ -9538,7 +9705,7 @@ namespace TLIS_Service.Services
                     if (DynamicAttViewModel.general.defualtValue == null)
                         return new Response<AddDynamicObject>(true, null, null, "The default can not to be null.", (int)Constants.ApiReturnCode.fail);
 
-                    var NewDynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == DynamicAttributeId );
+                    var NewDynamicAttribute = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == DynamicAttributeId);
                     NewDynamicAttribute.Key = DynamicAttViewModel.general.name;
                     NewDynamicAttribute.Description = DynamicAttViewModel.general.description;
                     _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAttData, NewDynamicAttribute);
@@ -12439,7 +12606,7 @@ namespace TLIS_Service.Services
             return new Response<DynamicAttViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
         }
 
-        public Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString,string TabelName,int UserId, int? CategoryId )
+        public Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int UserId, int? CategoryId)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -12457,24 +12624,24 @@ namespace TLIS_Service.Services
                             if (TabelNameId != null)
                             {
                                 var EditabelViewManagment = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x => x.TLItablesNames1Id == TabelNameId && x.CivilWithoutLegCategoryId == CategoryId).Id;
-                                var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower() && x.tablesNames.TableName.ToLower()== TabelName.ToLower());
-                                if(DynamicKey !=null)
+                                var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower() && x.tablesNames.TableName.ToLower() == TabelName.ToLower());
+                                if (DynamicKey != null)
                                     return new Response<AddDynamicObject>(true, null, null, $"This Key {addDynamicObject.general.name} is Already Exist in Table {TabelName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
                                 double double_Test = 0;
                                 DateTime datetime_Test = DateTime.Now;
                                 Boolean boolean_Test = false;
-                                if(addDynamicObject.general.defualtValue == null)
+                                if (addDynamicObject.general.defualtValue == null)
                                     return new Response<AddDynamicObject>(true, null, null, "The default can not to be null.", (int)Constants.ApiReturnCode.fail);
 
-                                if (addDynamicObject.general.dataType== 21 || addDynamicObject.general.dataType == 22)
+                                if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                 {
                                     var DefultVale = double.TryParse(addDynamicObject.general.defualtValue.ToString(), out double_Test);
                                     if (DefultVale == false)
                                     {
-                                        
+
                                         return new Response<AddDynamicObject>(true, null, null, "The default value not the same type as the dynamic attribute.", (int)Constants.ApiReturnCode.fail);
                                     }
-                                   
+
                                 }
                                 else if (addDynamicObject.general.dataType == 25)
                                 {
@@ -12496,7 +12663,7 @@ namespace TLIS_Service.Services
                                     }
 
                                 }
-                                
+
                                 if (addDynamicObject.type == 0)
                                 {
                                     var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
@@ -12526,24 +12693,24 @@ namespace TLIS_Service.Services
                                     };
                                     _unitOfWork.AttributeViewManagmentRepository.AddWithHDynamic(UserId, TabelNameTLIattributeViewManagment, tLIattributeViewManagment, HistoryId);
                                     _unitOfWork.SaveChanges();
-                                    if (TabelName== "TLIcivilWithLegLibrary"
-                                          || TabelName== "TLIcivilWithoutLegLibrary"
-                                          || TabelName== "TLIcivilNonSteelLibrary"
-                                          || TabelName== "TLIsideArmLibrary"
-                                          || TabelName== "TLImwDishLibrary"
-                                          || TabelName== "TLImwBULibrary"
-                                          || TabelName== "TLImwRFULibrary"
-                                          || TabelName== "TLImwOtherLibrary"
-                                          || TabelName== "TLImwODULibrary"
-                                          || TabelName== "TLIradioAntennaLibrary"
-                                          || TabelName== "TLIradioOtherLibrary"
-                                          || TabelName== "TLIradioRRULibrary"
-                                          || TabelName== "TLIcabinetPowerLibrary"
-                                          || TabelName== "TLIcabinetTelecomLibrary"
-                                          || TabelName== "TLIgeneratorLibrary"
-                                          || TabelName== "TLIpowerLibrary"
-                                          || TabelName== "TLIsolarLibrary"
-                                          || TabelName== "TLIloadOtherLibrary")
+                                    if (TabelName == "TLIcivilWithLegLibrary"
+                                          || TabelName == "TLIcivilWithoutLegLibrary"
+                                          || TabelName == "TLIcivilNonSteelLibrary"
+                                          || TabelName == "TLIsideArmLibrary"
+                                          || TabelName == "TLImwDishLibrary"
+                                          || TabelName == "TLImwBULibrary"
+                                          || TabelName == "TLImwRFULibrary"
+                                          || TabelName == "TLImwOtherLibrary"
+                                          || TabelName == "TLImwODULibrary"
+                                          || TabelName == "TLIradioAntennaLibrary"
+                                          || TabelName == "TLIradioOtherLibrary"
+                                          || TabelName == "TLIradioRRULibrary"
+                                          || TabelName == "TLIcabinetPowerLibrary"
+                                          || TabelName == "TLIcabinetTelecomLibrary"
+                                          || TabelName == "TLIgeneratorLibrary"
+                                          || TabelName == "TLIpowerLibrary"
+                                          || TabelName == "TLIsolarLibrary"
+                                          || TabelName == "TLIloadOtherLibrary")
                                     {
                                         if (addDynamicObject.general.dataType == 1)
                                         {
@@ -12625,7 +12792,7 @@ namespace TLIS_Service.Services
                                             _unitOfWork.DynamicAttLibRepository.AddRange(ListToAdd);
                                             _unitOfWork.SaveChanges();
                                         }
-                                    }                                                             
+                                    }
                                     if (TabelName == "TLIcivilWithLegs"
                                         || TabelName == "TLIcivilWithoutLeg"
                                         || TabelName == "TLIcivilNonSteel"
@@ -12742,22 +12909,22 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
-                                            LibraryAtt=true,
+                                            LibraryAtt = true,
                                             CivilWithoutLegCategoryId = CategoryId,
-                                            Type=1
+                                            Type = 1
 
                                         };
-                                       var HistoryId= _unitOfWork.DynamicAttRepository.AddWithH(UserId,null,tLIdynamicAtt);
+                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);
                                         _unitOfWork.SaveChanges();
-                                        var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName== "TLIattributeViewManagment").Id;
+                                        var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
                                         TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
                                         {
                                             DynamicAttId = tLIdynamicAtt.Id,
                                             EditableManagmentViewId = EditabelViewManagment,
-                                            AttributeActivatedId=null,
+                                            AttributeActivatedId = null,
                                             Enable = true
                                         };
-                                        _unitOfWork.AttributeViewManagmentRepository.AddWithHDynamic(UserId, TabelNameTLIattributeViewManagment, tLIattributeViewManagment,HistoryId);
+                                        _unitOfWork.AttributeViewManagmentRepository.AddWithHDynamic(UserId, TabelNameTLIattributeViewManagment, tLIattributeViewManagment, HistoryId);
                                         _unitOfWork.SaveChanges();
                                         if (addDynamicObject.type == 1 && addDynamicObject.validation != null)
                                         {
@@ -13124,7 +13291,7 @@ namespace TLIS_Service.Services
                                                             break;
 
                                                         case 2:
-                                                            result = defultvalue!= Validationvalue;
+                                                            result = defultvalue != Validationvalue;
                                                             break;
 
                                                         case 3:
@@ -13946,7 +14113,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                         
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14271,7 +14438,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                     
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14381,7 +14548,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                          
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14706,7 +14873,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                         
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -14923,7 +15090,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                       
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -15032,7 +15199,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                      
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -16973,7 +17140,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                      
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -17832,9 +17999,9 @@ namespace TLIS_Service.Services
                                                                             break;
 
                                                                         case 6:
-                                                                            result =defultDateTime >= validationDateTime;
+                                                                            result = defultDateTime >= validationDateTime;
                                                                             break;
-                                                                       
+
                                                                     }
                                                                 }
                                                             }
@@ -18160,7 +18327,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                      
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18377,7 +18544,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                        
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18486,7 +18653,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                  
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18596,7 +18763,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                    
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -18921,7 +19088,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                        
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -19138,7 +19305,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                        
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -19247,7 +19414,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                          
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -21188,7 +21355,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                  
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -21405,7 +21572,7 @@ namespace TLIS_Service.Services
                                                                     }
                                                                 }
                                                             }
-                                                    
+
                                                             if (propertyValue != null && value != null)
                                                             {
                                                                 switch (rule.Operation)
@@ -21823,7 +21990,7 @@ namespace TLIS_Service.Services
                                             Type = 3
 
                                         };
-                                        var HistoryId =_unitOfWork.DynamicAttRepository.AddWithH(UserId,null,tLIdynamicAtt);
+                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);
                                         _unitOfWork.SaveChanges();
                                         var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
                                         TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
@@ -21838,7 +22005,7 @@ namespace TLIS_Service.Services
                                         if (addDynamicObject.validation != null)
                                         {
                                             var TabelNameTLIvalidation = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIvalidation").Id;
-                                          
+
                                             if (addDynamicObject.general.dataType == 1)
                                             {
                                                 TLIvalidation tLIvalidation = new TLIvalidation()
@@ -21854,11 +22021,11 @@ namespace TLIS_Service.Services
                                                 switch (addDynamicObject.validation.operation)
                                                 {
                                                     case 1:
-                                                        result = defultvalue.ToLower() ==Validationvalue.ToLower();
+                                                        result = defultvalue.ToLower() == Validationvalue.ToLower();
                                                         break;
 
                                                     case 2:
-                                                        result = defultvalue.ToLower() !=Validationvalue.ToLower();
+                                                        result = defultvalue.ToLower() != Validationvalue.ToLower();
                                                         break;
 
                                                     case 7:
@@ -21878,7 +22045,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
                                                 }
-                                               
+
                                             }
                                             else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                             {
@@ -21923,7 +22090,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
                                                 }
-                                                
+
                                             }
                                             else if (addDynamicObject.general.dataType == 25)
                                             {
@@ -21970,7 +22137,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
                                                 }
-                                                
+
                                             }
                                             else if (addDynamicObject.general.dataType == 24)
                                             {
@@ -22001,20 +22168,20 @@ namespace TLIS_Service.Services
                                                 {
                                                     return new Response<AddDynamicObject>(true, null, null, "The default value does not meet the validation criteria.", (int)Constants.ApiReturnCode.fail);
                                                 }
-                                               
+
                                             }
 
                                         }
                                         if (addDynamicObject.dependency != null)
                                         {
-                                            
+
                                             var TabelNameTLIdependency = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIdependency").Id;
                                             TLIdependency tLIdependency = new TLIdependency()
                                             {
                                                 DynamicAttId = tLIdynamicAtt.Id,
                                                 Result = null,
                                             };
-                                            _unitOfWork.DependencieRepository.AddWithHDynamic(UserId, TabelNameTLIdependency, tLIdependency,HistoryId);
+                                            _unitOfWork.DependencieRepository.AddWithHDynamic(UserId, TabelNameTLIdependency, tLIdependency, HistoryId);
                                             _unitOfWork.SaveChanges();
 
                                             foreach (var group in addDynamicObject.dependency.groups)
@@ -22024,7 +22191,7 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
                                                 foreach (var rule in group)
                                                 {
-                                                   
+
                                                     var AttributeActivated = _unitOfWork.AttributeActivatedRepository
                                                         .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
                                                     var TabelNameTLIrule = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIrule").Id;
@@ -22176,7 +22343,7 @@ namespace TLIS_Service.Services
                                                 }
                                             }
                                         }
-                                            
+
                                     }
                                     else
                                     {
@@ -22185,7 +22352,7 @@ namespace TLIS_Service.Services
 
 
                                 }
-                              
+
                             }
                             else
                             {
@@ -22208,7 +22375,7 @@ namespace TLIS_Service.Services
         {
             try
             {
-                // البحث عن العنصر باستخدام المعرف (ID)
+
                 var dynamicAtt = _unitOfWork.DynamicAttRepository.GetByID(id);
 
                 if (dynamicAtt == null)
@@ -22216,7 +22383,7 @@ namespace TLIS_Service.Services
                     return new Response<AddDynamicObject>(true, null, null, "Dynamic attribute not found", (int)Constants.ApiReturnCode.fail);
                 }
 
-                // إنشاء كائن AddDynamicObject لاسترجاع البيانات
+
                 var addDynamicObject = new AddDynamicObject()
                 {
                     general = new GeneralObject()
@@ -22239,8 +22406,6 @@ namespace TLIS_Service.Services
                 return new Response<AddDynamicObject>(true, null, null, ex.Message, (int)Constants.ApiReturnCode.fail);
             }
         }
-
-        // دالة لاسترجاع معلومات التحقق (Validation) بناءً على المعرف (ID) ونوع البيانات (DataTypeId)
         private ValidationObject GetValidation(int dynamicAttId, int? dataTypeId)
         {
             var validation = _unitOfWork.ValidationRepository.GetWhereFirst(v => v.DynamicAttId == dynamicAttId);
@@ -22265,37 +22430,245 @@ namespace TLIS_Service.Services
         }
         private DependencyObject GetDependency(int dynamicAttId)
         {
-            var dependency = _unitOfWork.DependencieRepository.GetWhereFirst(d => d.DynamicAttId == dynamicAttId);
+           
+            var dependency = _unitOfWork.DependencieRepository.GetIncludeWhereFirst(
+                d => d.DynamicAttId == dynamicAttId,
+                x => x.DynamicAtt,
+                x => x.DynamicAtt.tablesNames
+            );
 
             if (dependency != null)
             {
 
-                var RowRules = _unitOfWork.RowRuleRepository.GetWhereAndInclude(
+                var rowRules = _unitOfWork.RowRuleRepository.GetWhereAndInclude(
                     x => x.Rule.dynamicAttId == dynamicAttId,
                     x => x.Rule,
                     x => x.Row,
-                    x => x.Rule.attributeActivated).ToList();
+                    x => x.Rule.attributeActivated
+                ).ToList();
 
-  
                 var groups = new List<List<GroupObject>>();
 
-    
-                var groupedRules = RowRules
-                    .GroupBy(rule => rule.RowId) 
-                    .Select(group => group.Select(rule => {
+             
+                var groupedRules = rowRules
+                    .GroupBy(rule => rule.RowId)
+                    .Select(group => group.Select(rule =>
+                    {
+           
                         var attribute = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(a => a.Id == rule.Rule.attributeActivatedId);
-                        var Type = attribute.DataType;
+                        var type = attribute.DataType.ToLower();
+
+                        object value = type switch
+                        {
+                            "string" => rule.Rule.OperationValueString,
+                            "int" or "double" or "float" => rule.Rule.OperationValueDouble,
+                            "datetime" => rule.Rule.OperationValueString, 
+                            "bool" => rule.Rule.OperationValueString,
+                            _ => null
+                        };
+
+                        if (type == "list")
+                        {
+                            value = attribute.Label.ToLower() switch
+                            {
+                                _ when Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "sectionslegtype_name" => _unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "supporttypedesigned_name" => _unitOfWork.SupportTypeDesignedRepository.GetWhere(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "civilnonsteeltype_name" => _unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "installationcivilwithoutlegstype_name" => _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "civilwithoutlegcategory_name" => _unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "civilsteelsupportcategory_name" => _unitOfWork.CivilSteelSupportCategoryRepository.GetWhere(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.LoadSubType.TLImwBULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "boardtype_name" => _unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "rfutype" => new List<EnumOutPut>
+                                    {
+                                new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = RFUType.Compact.ToString() },
+                                new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = RFUType.Traditional.ToString() }
+                                    },
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "polaritytype_name" => _unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "astype_name" => _unitOfWork.AsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.LoadSubType.TLImwODULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "parity_name" => _unitOfWork.ParityRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "telecomtype_name" => _unitOfWork.TelecomTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "cabinetpowertype_name" => _unitOfWork.CabinetPowerTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "integratedwith" => new List<EnumOutPut>
+                                    {
+                                new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = IntegratedWith.Solar.ToString() },
+                                new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = IntegratedWith.Wind.ToString() }
+                                    },
+                                    _ => value
+                                },
+                                _ when Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "basetype_name" => _unitOfWork.BaseTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "basecivilwithlegtype_name" => _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "guylinetype_name" => _unitOfWork.GuyLineTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "enforcmentcategory_name" => _unitOfWork.EnforcmentCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "baseplateshape" => new List<EnumOutPut>
+                                    {
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = BasePlateShape.Circular.ToString() },
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = BasePlateShape.Rectangular.ToString() },
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = BasePlateShape.Square.ToString() },
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = BasePlateShape.NotMeasurable.ToString() }
+                                    },
+                                    "structuretype" => new List<EnumOutPut>
+                                    {
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = StructureTypeCompatibleWithDesign.Yes.ToString() },
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = StructureTypeCompatibleWithDesign.No.ToString() }
+                                    },
+                                   "sectionslegtype" => new List<EnumOutPut>
+                                    {
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = SectionsLegTypeCompatibleWithDesign.Yes.ToString() },
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = SectionsLegTypeCompatibleWithDesign.No.ToString() }
+                                    },  
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString()  == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "subtype_name" => _unitOfWork.SubTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "equipmentslocation" => new List<EnumOutPut>
+                                    {
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = EquipmentsLocation.Body.ToString() },
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = EquipmentsLocation.Platform.ToString() },
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = EquipmentsLocation.Together.ToString() }
+                                    },
+                                   "laddersteps" => new List<EnumOutPut>
+                                    {
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = LadderSteps.Ladder.ToString() },
+                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = LadderSteps.Steps.ToString() }
+                                    },
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.LoadSubType.TLIradioAntenna.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.LoadSubType.TLIradioRRU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.LoadSubType.TLIradioOther.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.LoadSubType.TLImwBU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.LoadSubType.TLImwDish.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "polarityonlocation_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "repeatertype_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "itemconnectto_name" => _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.LoadSubType.TLImwRFU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.LoadSubType.TLImwODU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.LoadSubType.TLIpower.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.OtherInventoryType.TLIcabinetPower.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.OtherInventoryType.TLIcabinetTelecom.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+
+                                _ when Helpers.Constants.OtherInventoryType.TLIgenerator.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                {
+                                    "basegeneratortype_name" => _unitOfWork.BaseGeneratorTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    _ => value
+                                },
+                                _ => value
+                            };
+                        }
+
                         return new GroupObject
                         {
-                            ColumnName = attribute.Key,
+                            ColumnName = attribute.Label,
                             Operation = rule.Rule.OperationId,
-                            Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
-                                    Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
-                                     Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                      Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : null
+                            Value = value
                         };
                     }).ToList())
                     .ToList();
+
 
                 return new DependencyObject()
                 {
@@ -22306,9 +22679,8 @@ namespace TLIS_Service.Services
 
             return null;
         }
-
-
-
-
     }
 }
+
+         
+        

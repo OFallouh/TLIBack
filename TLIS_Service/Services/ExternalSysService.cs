@@ -39,6 +39,11 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 using Microsoft.Extensions.Configuration;
 using Nancy.Bootstrapper;
 using ClosedXML.Excel;
+using static TLIS_Service.Helpers.Constants;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.InkML;
+using static Dapper.SqlMapper;
+using System.Reflection;
 namespace TLIS_Service.Services
 {
     internal class ExternalSysService : IexternalSysService
@@ -60,7 +65,7 @@ namespace TLIS_Service.Services
             _mapper = mapper;
         }
 
-        public Response<string> CreateExternalSys(AddExternalSysBinding mod)
+        public Response<string> CreateExternalSys(AddExternalSysBinding mod,int UserId)
         {
             if (CheckUnique(0, mod.SysName) == true)
             {
@@ -72,9 +77,11 @@ namespace TLIS_Service.Services
                 try
                 {
                     var secretKey = _config["JWT:Key"];
+                    var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
                     TLIexternalSys ext = new TLIexternalSys(mod, Encrypt(mod.Password));
                     db.TLIexternalSys.Add(ext);
-                    db.SaveChanges();
+                   
+                 
                     if (mod.IsToken == true)
                     {
                         ext.Token = BuildToken(ext.Id, ext.UserName, secretKey, ext.LifeTime);
@@ -86,6 +93,16 @@ namespace TLIS_Service.Services
                     }
                     db.TLIexternalSys.Update(ext);
                     db.SaveChanges();
+                    TLIhistory exthistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        HistoryTypeId = 1,
+                        UserId = UserId
+                    };
+                    db.TLIhistory.Add(exthistory);
+                    db.SaveChanges();
+                    AddWithHDynamic(UserId, TabelNameId, ext, exthistory.Id);
+                    
                     if (ext.Id != 0)
                     {
                         foreach (int s in mod.ApiPermissionIds)
@@ -116,7 +133,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        public Response<string> EditExternalSys(EditExternalSysBinding mod)
+        public Response<string> EditExternalSys(EditExternalSysBinding mod,int UserId)
         {
             if (CheckUnique(mod.Id, mod.SysName) == true)
             {
@@ -134,7 +151,7 @@ namespace TLIS_Service.Services
                         return new Response<string>(true, null, null, "External system not found", (int)Helpers.Constants.ApiReturnCode.success);
 
                     }
-
+                    var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
                     TLIexternalSys ext = new TLIexternalSys(mod, Encrypt(mod.Password));
                     ext.IsActive = sys.IsActive;
                     if (mod.IsToken == true)
@@ -148,8 +165,18 @@ namespace TLIS_Service.Services
                     }
                     db.Entry(ext).State = EntityState.Modified;
                     db.SaveChanges();
-                    //-------------------------------------change permissions
-                    var pers = db.TLIexternalSysPermissions.Where(x => x.ExtSysId == mod.Id).ToList();
+                    TLIhistory exthistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        HistoryTypeId = 2,
+                        UserId = UserId,
+                       
+                    };
+                    db.TLIhistory.Add(exthistory);
+                    db.SaveChanges();
+                    UpdateWithHLogic(UserId, exthistory.Id, TabelNameId, sys, ext, mod.Id);
+                     //-------------------------------------change permissions
+                     var pers = db.TLIexternalSysPermissions.Where(x => x.ExtSysId == mod.Id).ToList();
                     db.TLIexternalSysPermissions.RemoveRange(pers);
                     db.SaveChanges(true);
 
@@ -179,15 +206,141 @@ namespace TLIS_Service.Services
                 }
             }
         }
-
-        public Response<bool> DisableExternalSys(int id)
+        public virtual void UpdateWithHLogic(int? userId, int historyId, int tableNameId, TLIexternalSys oldObject, TLIexternalSys newObject, int recordId)
         {
+            if (userId != null)
+            {
+                TLItablesNames entityTableNameModel = db.TLItablesNames.FirstOrDefault(x => x.TableName.Equals("TLIexternalSys", StringComparison.OrdinalIgnoreCase));
+
+                List<PropertyInfo> attributes = oldObject.GetType().GetProperties()
+                    .Where(x => x.PropertyType.IsGenericType
+                        ? x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)
+                            && (x.PropertyType.GetGenericArguments()[0] == typeof(int)
+                            || x.PropertyType.GetGenericArguments()[0] == typeof(string)
+                            || x.PropertyType.GetGenericArguments()[0] == typeof(double)
+                            || x.PropertyType.GetGenericArguments()[0] == typeof(float)
+                            || x.PropertyType.GetGenericArguments()[0] == typeof(bool)
+                            || x.PropertyType.GetGenericArguments()[0] == typeof(DateTime))
+                        : (x.PropertyType == typeof(int)
+                        || x.PropertyType == typeof(double)
+                        || x.PropertyType == typeof(string)
+                        || x.PropertyType == typeof(bool)
+                        || x.PropertyType == typeof(DateTime)
+                        || x.PropertyType == typeof(float)
+                        || x.PropertyType == typeof(Single)))
+                    .ToList();
+
+                List<TLIhistoryDet> listOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+
+                foreach (PropertyInfo attribute in attributes)
+                {
+                    object oldAttributeValue = attribute.GetValue(oldObject);
+                    object newAttributeValue = attribute.GetValue(newObject);
+
+                    if ((oldAttributeValue != null && newAttributeValue != null && oldAttributeValue.ToString() == newAttributeValue.ToString())
+                        || (oldAttributeValue == null && newAttributeValue == null))
+                        continue;
+
+                    TLIhistoryDet historyDetails = new TLIhistoryDet
+                    {
+                        TablesNameId = entityTableNameModel.Id,
+                        RecordId = recordId.ToString(),
+                        HistoryId = historyId,
+                        AttributeName = attribute.Name,
+                        OldValue = oldAttributeValue?.ToString(),
+                        NewValue = newAttributeValue?.ToString(),
+                        AttributeType = AttributeType.Static
+                    };
+
+                    listOfHistoryDetailsToAdd.Add(historyDetails);
+                }
+
+                db.TLIhistoryDet.AddRange(listOfHistoryDetailsToAdd);
+                db.SaveChanges();
+            }
+
+            oldObject = newObject;
+            db.Entry(oldObject).State = EntityState.Modified; 
+            db.SaveChanges();
+        }
+
+        public virtual void AddWithHDynamic(int? UserId, int TabelNameId, TLIexternalSys AddObject, int HistoryId)
+        {
+
+            
+            if (UserId != null)
+            {
+                TLItablesNames EntityTableNameModel = db.TLItablesNames.FirstOrDefault(x => x.TableName.ToLower() == AddObject.GetType().Name.ToLower());
+
+              
+                int entityId = (int)AddObject.GetType().GetProperty("Id").GetValue(AddObject, null);
+                string entityIdString = entityId.ToString();
+
+                List<PropertyInfo> Attributes = AddObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
+                    (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
+                        (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                         x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
+                    (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
+                     x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
+                     x.PropertyType == typeof(Single))).ToList();
+
+                List<TLIhistoryDet> ListOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+
+                foreach (PropertyInfo Attribute in Attributes)
+                {
+                    object NewAttributeValue = Attribute.GetValue(AddObject, null);
+
+                    TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                    {
+                        TablesNameId = EntityTableNameModel.Id,
+                        RecordId = entityIdString,
+                        HistoryId = 1,
+                        AttributeName = Attribute.Name,
+                        NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                        AttributeType = AttributeType.Static
+                    };
+                    ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+                }
+
+                db.TLIhistoryDet.AddRange(ListOfHistoryDetailsToAdd);
+                db.SaveChanges();
+            }
+        }
+        public Response<bool> DisableExternalSys(int id,int UserId)
+        {
+            var Oldext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
             var ext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
             if (ext != null)
             {
+                var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
                 ext.IsActive = !ext.IsActive;
                 db.Entry(ext).State = EntityState.Modified;
                 db.SaveChanges();
+                TLIhistory exthistory = new TLIhistory()
+                {
+                    TablesNameId = TabelNameId,
+                    HistoryTypeId = 2,
+                    UserId = UserId,
+
+                };
+                db.TLIhistory.Add(exthistory);
+                db.SaveChanges();
+                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                {
+
+                    RecordId = id.ToString(),
+                    TablesNameId = TabelNameId,
+                    OldValue = Oldext.IsActive.ToString(),
+                    NewValue = ext.IsActive.ToString(),
+                    AttributeName = "IsActive"
+
+                };
+                db.TLIhistoryDet.Add(tLIhistoryDet);
+                db.SaveChanges();
+                   
+
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
             }
@@ -195,14 +348,37 @@ namespace TLIS_Service.Services
 
         }
 
-        public Response<bool> DeleteExternalSys(int id)
+        public Response<bool> DeleteExternalSys(int id,int UserId)
         {
             var ext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
+            var Oldext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
+            var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
             if (ext != null)
             {
                 ext.IsDeleted = true;
                 ext.IsActive = false;
                 db.Entry(ext).State = EntityState.Modified;
+                db.SaveChanges();
+                TLIhistory exthistory = new TLIhistory()
+                {
+                    TablesNameId = TabelNameId,
+                    HistoryTypeId = 2,
+                    UserId = UserId,
+
+                };
+                db.TLIhistory.Add(exthistory);
+                db.SaveChanges();
+                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                {
+
+                    RecordId = id.ToString(),
+                    TablesNameId = TabelNameId,
+                    OldValue = Oldext.IsDeleted.ToString(),
+                    NewValue = ext.IsDeleted.ToString(),
+                    AttributeName = "IsDeleted"
+
+                };
+                db.TLIhistoryDet.Add(tLIhistoryDet);
                 db.SaveChanges();
                 return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 

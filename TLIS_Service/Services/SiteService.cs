@@ -8214,12 +8214,12 @@ namespace TLIS_Service.Services
                     sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
                 }
    
-                if (UserId != null)
+                else if (UserId != null)
                 {
                     sqlQuery += " AND USER_ID = :UserId";
                 }
        
-                if (ExternalSysId != null)
+                else if (ExternalSysId != null)
                 {
                     sqlQuery += " AND SYS_ID = :ExternalSysId";
                 }
@@ -8228,7 +8228,14 @@ namespace TLIS_Service.Services
                 {
                     sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
                 }
-
+                else if (SiteCode != null)
+                {
+                    sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
+                }
+                else if (TabelName != null && TabelName.ToLower() != "tlisite" && SiteCode != null && BaseId != null)
+                {
+                    sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode AND BASE_RECORD_ID = :BaseId";
+                }
                 using (var command = new OracleCommand(sqlQuery, connection))
                 {
                     

@@ -14,10 +14,10 @@ namespace TLIS_Service.IService
     public interface IexternalSysService
     {
         public Response<List<ExternalPermission>> GetAllExternalPermission();
-        Response<string> CreateExternalSys(AddExternalSysBinding mod);
-        Response<bool> DisableExternalSys(int id);
-        Response<bool> DeleteExternalSys(int id);
-        Response<string> EditExternalSys(EditExternalSysBinding mod);
+        Response<string> CreateExternalSys(AddExternalSysBinding mod,int UserId);
+        Response<bool> DisableExternalSys(int id, int UserId);
+        Response<bool> DeleteExternalSys(int id, int UserId);
+        Response<string> EditExternalSys(EditExternalSysBinding mod, int UserId);
         Response<List<GetAllExternalSysDto>> GetAllExternalSys();
         Response<GetAllExternalSysDto> GetByIdExternalSys(int id);
         Response<List<IntegrationViewModel>> GetAllIntegrationAPI();
