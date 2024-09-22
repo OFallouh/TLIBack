@@ -44,6 +44,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.InkML;
 using static Dapper.SqlMapper;
 using System.Reflection;
+using TLIS_DAL.ViewModels.SiteDTOs;
 namespace TLIS_Service.Services
 {
     internal class ExternalSysService : IexternalSysService
@@ -488,37 +489,35 @@ namespace TLIS_Service.Services
             List<TLIintegrationAccessLog> result = new List<TLIintegrationAccessLog>();
             var logs = db.TLIintegrationAccessLog.AsQueryable();
             int count = logs.Count();
+            result = logs.ToList();
             if (f.Filters.Count != 0)
             {
-                foreach (SimpleFilter c in f.Filters)
+                if (f.Filters != null ? f.Filters.Count != 0 : false)
                 {
-                    var filterKeyProperty = typeof(TLIintegrationAccessLog).GetProperty(c.Key);
-                    if (filterKeyProperty.PropertyType == typeof(string))
+                    foreach (SimpleFilter SimpleFilter in f.Filters)
                     {
-                        foreach (string s in c.Values)
-                        {
-                            logs = logs.Where(x => filterKeyProperty.GetValue(x).ToString().ToLower().StartsWith(s.ToLower()));
+                        PropertyInfo? FilterKeyProperty = typeof(TLIintegrationAccessLog).GetProperty(SimpleFilter.Key);
 
+                        if (FilterKeyProperty != null && FilterKeyProperty.PropertyType == typeof(string) || FilterKeyProperty.PropertyType == typeof(bool))
+                        {
+                            foreach (string FilterValue in SimpleFilter.Values)
+                            {
+                                result = result.Where(x => FilterKeyProperty.GetValue(x).ToString().ToLower().Contains(FilterValue.ToLower())).ToList();
+                            }
+                        }
+
+                        else
+                        {
+                            result = result.Where(x => SimpleFilter.Values.Contains(FilterKeyProperty.GetValue(x).ToString())).ToList();
                         }
 
                     }
-                    else if (filterKeyProperty.PropertyType == typeof(DateTime))
-                    {
-                        logs = logs.Where(x => c.Values.Contains(x.ActionDate.ToString("yyyy-MM-dd HH")));
-
-                    }
-                    else
-                    {
-                        logs = logs.Where(x => c.Values.Contains(filterKeyProperty.GetValue(x).ToString()));
-
-                    }
                 }
-                result = logs.ToList();
                 result = result.Skip((f.PageIndex - 1) * f.PageSize).Take(f.PageSize).ToList();
                 return new Response<List<TLIintegrationAccessLog>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
 
             }
-            result = logs.ToList();
+         
             result = result.Skip((f.PageIndex - 1) * f.PageSize).Take(f.PageSize).ToList();
             return new Response<List<TLIintegrationAccessLog>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, count);
 

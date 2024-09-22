@@ -22662,7 +22662,7 @@ namespace TLIS_Service.Services
 
                         return new GroupObject
                         {
-                            ColumnName = attribute.Label,
+                            ColumnName = attribute.Key,
                             Operation = rule.Rule.OperationId,
                             Value = value
                         };
