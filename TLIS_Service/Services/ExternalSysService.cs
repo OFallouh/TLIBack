@@ -80,8 +80,8 @@ namespace TLIS_Service.Services
                     var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
                     TLIexternalSys ext = new TLIexternalSys(mod, Encrypt(mod.Password));
                     db.TLIexternalSys.Add(ext);
-                   
-                 
+                    db.SaveChanges();
+
                     if (mod.IsToken == true)
                     {
                         ext.Token = BuildToken(ext.Id, ext.UserName, secretKey, ext.LifeTime);
@@ -210,7 +210,7 @@ namespace TLIS_Service.Services
         {
             if (userId != null)
             {
-                TLItablesNames entityTableNameModel = db.TLItablesNames.FirstOrDefault(x => x.TableName.Equals("TLIexternalSys", StringComparison.OrdinalIgnoreCase));
+            
 
                 List<PropertyInfo> attributes = oldObject.GetType().GetProperties()
                     .Where(x => x.PropertyType.IsGenericType
@@ -243,7 +243,7 @@ namespace TLIS_Service.Services
 
                     TLIhistoryDet historyDetails = new TLIhistoryDet
                     {
-                        TablesNameId = entityTableNameModel.Id,
+                        TablesNameId = tableNameId,
                         RecordId = recordId.ToString(),
                         HistoryId = historyId,
                         AttributeName = attribute.Name,
@@ -296,7 +296,7 @@ namespace TLIS_Service.Services
                     {
                         TablesNameId = EntityTableNameModel.Id,
                         RecordId = entityIdString,
-                        HistoryId = 1,
+                        HistoryId = HistoryId,
                         AttributeName = Attribute.Name,
                         NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
                         AttributeType = AttributeType.Static
