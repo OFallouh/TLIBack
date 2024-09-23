@@ -13,6 +13,8 @@ namespace TLIS_DAL.Models
         public int Id { get; set; }
         public TLIattributeActivated attributeActivated { get; set; }
         public int? attributeActivatedId { get; set; }
+        public TLIattributeViewManagment AttributeViewManagment { get; set; }
+        public int? AttributeViewManagmentId { get; set; }
         public TLIdynamicAtt dynamicAtt { get; set; }
         public int? dynamicAttId { get; set; }
         [ForeignKey("TLIoperation")]
@@ -25,6 +27,7 @@ namespace TLIS_DAL.Models
         //public string OperationValue { get; set; }
         public TLItablesNames tablesNames { get; set; }
         public int? tablesNamesId { get; set; }
+        public bool? IsDynamic { get; set; }
         public IEnumerable<TLIrowRule> rowRules { get; set; }
     }
 }
