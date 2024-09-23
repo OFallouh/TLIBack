@@ -7650,7 +7650,7 @@ namespace TLIS_Repository.Repositories
                                         Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
                                                 Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
                                                     Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                    Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : null
+                                                    Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
                                     };
                                 }).ToList())
                                 .ToList();
@@ -13058,7 +13058,7 @@ namespace TLIS_Repository.Repositories
                                             Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
                                                     Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
                                                         Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : null
+                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
                                         };
                                     }).ToList())
                                     .ToList();
@@ -17171,7 +17171,7 @@ namespace TLIS_Repository.Repositories
                                             Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
                                                     Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
                                                         Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : null
+                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
                                         };
                                     }).ToList())
                                     .ToList();
@@ -22450,7 +22450,7 @@ namespace TLIS_Repository.Repositories
                                             Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
                                                     Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
                                                         Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : null
+                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
                                         };
                                     }).ToList())
                                     .ToList();
@@ -26564,7 +26564,7 @@ namespace TLIS_Repository.Repositories
                                             Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
                                                     Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
                                                         Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : null
+                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
                                         };
                                     }).ToList())
                                     .ToList();
