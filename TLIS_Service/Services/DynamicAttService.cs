@@ -22463,7 +22463,7 @@ namespace TLIS_Service.Services
                             "string" => rule.Rule.OperationValueString,
                             "int" or "double" or "float" => rule.Rule.OperationValueDouble,
                             "datetime" => rule.Rule.OperationValueString, 
-                            "bool" => rule.Rule.OperationValueString,
+                            "bool" => rule.Rule.OperationValueString.ToLower(),
                             _ => null
                         };
 
@@ -22473,187 +22473,154 @@ namespace TLIS_Service.Services
                             {
                                 _ when Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "sectionslegtype_name" => _unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "supporttypedesigned_name" => _unitOfWork.SupportTypeDesignedRepository.GetWhere(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "sectionslegtype_name" => _unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "supporttypedesigned_name" => _unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
                                 _ when Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "civilnonsteeltype_name" => _unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "civilnonsteeltype_name" => _unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
                                 _ when Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "installationcivilwithoutlegstype_name" => _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "civilwithoutlegcategory_name" => _unitOfWork.CivilWithoutLegCategoryRepository.GetWhere(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "civilsteelsupportcategory_name" => _unitOfWork.CivilSteelSupportCategoryRepository.GetWhere(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "installationcivilwithoutlegstype_name" => _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "civilwithoutlegcategory_name" => _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "civilsteelsupportcategory_name" => _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
                                 _ when Helpers.Constants.LoadSubType.TLImwBULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
                                 _ when Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "boardtype_name" => _unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "rfutype" => new List<EnumOutPut>
-                                    {
-                                new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = RFUType.Compact.ToString() },
-                                new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = RFUType.Traditional.ToString() }
-                                    },
+                                    "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "boardtype_name" => _unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "rfutype" => Convert.ToInt32(rule.Rule.OperationValueDouble), 
                                     _ => value
                                 },
                                 _ when Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "polaritytype_name" => _unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "astype_name" => _unitOfWork.AsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "polaritytype_name" => _unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "astype_name" => _unitOfWork.AsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
                                 _ when Helpers.Constants.LoadSubType.TLImwODULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "parity_name" => _unitOfWork.ParityRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "parity_name" => _unitOfWork.ParityRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
                                 _ when Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "telecomtype_name" => _unitOfWork.TelecomTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "telecomtype_name" => _unitOfWork.TelecomTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
                                 _ when Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "cabinetpowertype_name" => _unitOfWork.CabinetPowerTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "integratedwith" => new List<EnumOutPut>
-                                    {
-                                new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = IntegratedWith.Solar.ToString() },
-                                new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = IntegratedWith.Wind.ToString() }
-                                    },
+                                    "cabinetpowertype_name" => _unitOfWork.CabinetPowerTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "integratedwith" => Convert.ToInt32(rule.Rule.OperationValueDouble),
+
                                     _ => value
                                 },
                                 _ when Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "basetype_name" => _unitOfWork.BaseTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "basecivilwithlegtype_name" => _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "guylinetype_name" => _unitOfWork.GuyLineTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "enforcmentcategory_name" => _unitOfWork.EnforcmentCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "baseplateshape" => new List<EnumOutPut>
-                                    {
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = BasePlateShape.Circular.ToString() },
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = BasePlateShape.Rectangular.ToString() },
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = BasePlateShape.Square.ToString() },
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = BasePlateShape.NotMeasurable.ToString() }
-                                    },
-                                    "structuretype" => new List<EnumOutPut>
-                                    {
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = StructureTypeCompatibleWithDesign.Yes.ToString() },
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = StructureTypeCompatibleWithDesign.No.ToString() }
-                                    },
-                                   "sectionslegtype" => new List<EnumOutPut>
-                                    {
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = SectionsLegTypeCompatibleWithDesign.Yes.ToString() },
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = SectionsLegTypeCompatibleWithDesign.No.ToString() }
-                                    },  
+                                    "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "basetype_name" => _unitOfWork.BaseTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "basecivilwithlegtype_name" => _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "guylinetype_name" => _unitOfWork.GuyLineTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "enforcmentcategory_name" => _unitOfWork.EnforcmentCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "baseplateshape" => Convert.ToInt32(rule.Rule.OperationValueDouble),
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString()  == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "subtype_name" => _unitOfWork.SubTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "equipmentslocation" => new List<EnumOutPut>
-                                    {
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = EquipmentsLocation.Body.ToString() },
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = EquipmentsLocation.Platform.ToString() },
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = EquipmentsLocation.Together.ToString() }
-                                    },
-                                   "laddersteps" => new List<EnumOutPut>
-                                    {
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = LadderSteps.Ladder.ToString() },
-                                        new EnumOutPut { Id = Convert.ToInt32(rule.Rule.OperationValueDouble), Name = LadderSteps.Steps.ToString() }
-                                    },
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "subtype_name" => _unitOfWork.SubTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "equipmentslocation" => Convert.ToInt32(rule.Rule.OperationValueDouble),
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.LoadSubType.TLIradioAntenna.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.LoadSubType.TLIradioRRU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.LoadSubType.TLIradioOther.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.LoadSubType.TLImwBU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.LoadSubType.TLImwDish.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "polarityonlocation_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "repeatertype_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "itemconnectto_name" => _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "polarityonlocation_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "repeatertype_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "itemconnectto_name" => _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.LoadSubType.TLImwRFU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.LoadSubType.TLImwODU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.LoadSubType.TLIpower.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.OtherInventoryType.TLIcabinetPower.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.OtherInventoryType.TLIcabinetTelecom.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
 
                                 _ when Helpers.Constants.OtherInventoryType.TLIgenerator.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                 {
-                                    "basegeneratortype_name" => _unitOfWork.BaseGeneratorTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble),
+                                    "basegeneratortype_name" => _unitOfWork.BaseGeneratorTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                     _ => value
                                 },
                                 _ => value

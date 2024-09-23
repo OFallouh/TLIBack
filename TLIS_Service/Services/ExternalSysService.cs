@@ -309,83 +309,109 @@ namespace TLIS_Service.Services
                 db.SaveChanges();
             }
         }
-        public Response<bool> DisableExternalSys(int id,int UserId)
+        public Response<bool> DisableExternalSys(int id, int UserId)
+
         {
-            var Oldext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
-            var ext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
-            if (ext != null)
+            using (TransactionScope transaction = new TransactionScope())
             {
-                var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
-                ext.IsActive = !ext.IsActive;
-                db.Entry(ext).State = EntityState.Modified;
-                db.SaveChanges();
-                TLIhistory exthistory = new TLIhistory()
+                try
                 {
-                    TablesNameId = TabelNameId,
-                    HistoryTypeId = 2,
-                    UserId = UserId,
+                    var Oldext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
+                    var ext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
+                    if (ext != null)
+                    {
+                        var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
+                        ext.IsActive = !ext.IsActive;
+                        db.Entry(ext).State = EntityState.Modified;
+                        db.SaveChanges();
+                        TLIhistory exthistory = new TLIhistory()
+                        {
+                            TablesNameId = TabelNameId,
+                            HistoryTypeId = 2,
+                            UserId = UserId,
 
-                };
-                db.TLIhistory.Add(exthistory);
-                db.SaveChanges();
-                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                        };
+                        db.TLIhistory.Add(exthistory);
+                        db.SaveChanges();
+                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                        {
+
+                            RecordId = id.ToString(),
+                            TablesNameId = TabelNameId,
+                            OldValue = Oldext.IsActive.ToString(),
+                            NewValue = ext.IsActive.ToString(),
+                            AttributeName = "IsActive"
+
+                        };
+                        db.TLIhistoryDet.Add(tLIhistoryDet);
+                        db.SaveChanges();
+
+                        transaction.Complete();
+                        return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                    }
+                    transaction.Complete();
+                    return new Response<bool>(false, false, null, "External system not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                catch (Exception ex)
                 {
+                    return new Response<bool>(false, false, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    RecordId = id.ToString(),
-                    TablesNameId = TabelNameId,
-                    OldValue = Oldext.IsActive.ToString(),
-                    NewValue = ext.IsActive.ToString(),
-                    AttributeName = "IsActive"
-
-                };
-                db.TLIhistoryDet.Add(tLIhistoryDet);
-                db.SaveChanges();
-                   
-
-                return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
+                }
             }
-            return new Response<bool>(false, false, null, "External system not found", (int)Helpers.Constants.ApiReturnCode.fail);
-
         }
 
-        public Response<bool> DeleteExternalSys(int id,int UserId)
+        public Response<bool> DeleteExternalSys(int id, int UserId)
         {
-            var ext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
-            var Oldext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
-            var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
-            if (ext != null)
+            using (TransactionScope transaction = new TransactionScope())
             {
-                ext.IsDeleted = true;
-                ext.IsActive = false;
-                db.Entry(ext).State = EntityState.Modified;
-                db.SaveChanges();
-                TLIhistory exthistory = new TLIhistory()
+                try
                 {
-                    TablesNameId = TabelNameId,
-                    HistoryTypeId = 2,
-                    UserId = UserId,
+                    var ext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
+                    var Oldext = db.TLIexternalSys.FirstOrDefault(x => x.Id == id && x.IsDeleted == false);
+                    var TabelNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIexternalSys".ToLower()).Id;
+                    if (ext != null)
+                    {
+                        ext.IsDeleted = true;
+                        ext.IsActive = false;
+                        db.Entry(ext).State = EntityState.Modified;
+                        db.SaveChanges();
+                        TLIhistory exthistory = new TLIhistory()
+                        {
+                            TablesNameId = TabelNameId,
+                            HistoryTypeId = 2,
+                            UserId = UserId,
 
-                };
-                db.TLIhistory.Add(exthistory);
-                db.SaveChanges();
-                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                        };
+                        db.TLIhistory.Add(exthistory);
+                        db.SaveChanges();
+                        TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                        {
+
+                            RecordId = id.ToString(),
+                            TablesNameId = TabelNameId,
+                            OldValue = Oldext.IsDeleted.ToString(),
+                            NewValue = ext.IsDeleted.ToString(),
+                            AttributeName = "IsDeleted",
+                            HistoryId = exthistory.Id,
+                            AttributeType = AttributeType.Static,
+
+                        };
+                        db.TLIhistoryDet.Add(tLIhistoryDet);
+                        db.SaveChanges();
+                        transaction.Complete();
+                        return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+
+                    }
+                    transaction.Complete();
+                    return new Response<bool>(false, false, null, "External system not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                catch (Exception ex)
                 {
+                    return new Response<bool>(false, false, null, ex.Message, (int)Helpers.Constants.ApiReturnCode.fail);
 
-                    RecordId = id.ToString(),
-                    TablesNameId = TabelNameId,
-                    OldValue = Oldext.IsDeleted.ToString(),
-                    NewValue = ext.IsDeleted.ToString(),
-                    AttributeName = "IsDeleted"
-
-                };
-                db.TLIhistoryDet.Add(tLIhistoryDet);
-                db.SaveChanges();
-                return new Response<bool>(true, true, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-
+                }
             }
-            return new Response<bool>(false, false, null, "External system not found", (int)Helpers.Constants.ApiReturnCode.fail);
-
         }
 
         public Response<GetAllExternalSysDto> GetByIdExternalSys(int id)
