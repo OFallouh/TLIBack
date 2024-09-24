@@ -13086,8 +13086,8 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                     _unitOfWork.SaveChanges();
                                                     bool result = false;
-                                                    DateTime defultDateTime = DateTime.Parse(defultvalue);
-                                                    DateTime validationDateTime = DateTime.Parse(Validationvalue);
+                                                    DateTime defultDateTime = DateTime.Parse(defultvalue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(Validationvalue).Date;
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
@@ -13349,8 +13349,8 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
                                                     bool result = false;
 
-                                                    DateTime defultDateTime = DateTime.Parse(defultvalue);
-                                                    DateTime validationDateTime = DateTime.Parse(Validationvalue);
+                                                    DateTime defultDateTime = DateTime.Parse(defultvalue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(Validationvalue).Date;
                                                     switch (addDynamicObject.validation.operation)
                                                     {
                                                         case 1:
@@ -13927,8 +13927,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14033,8 +14033,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14136,8 +14136,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14243,8 +14243,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14348,8 +14348,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14455,8 +14455,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14560,8 +14560,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14667,8 +14667,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14772,8 +14772,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14879,8 +14879,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -14983,8 +14983,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15090,8 +15090,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15195,8 +15195,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15302,8 +15302,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15407,8 +15407,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15514,8 +15514,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15619,8 +15619,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15726,8 +15726,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15831,8 +15831,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -15938,8 +15938,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16043,8 +16043,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16150,8 +16150,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16255,8 +16255,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16362,8 +16362,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16467,8 +16467,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16574,8 +16574,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16679,8 +16679,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16786,8 +16786,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16891,8 +16891,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -16998,8 +16998,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -17103,8 +17103,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -17210,8 +17210,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -17315,8 +17315,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -17422,8 +17422,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -17527,8 +17527,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -17634,8 +17634,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -18234,8 +18234,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -18341,8 +18341,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -18444,8 +18444,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -18551,8 +18551,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -18656,8 +18656,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -18763,8 +18763,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -18868,8 +18868,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -18975,8 +18975,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19080,8 +19080,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19187,8 +19187,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19291,8 +19291,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19398,8 +19398,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19503,8 +19503,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19610,8 +19610,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19715,8 +19715,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19822,8 +19822,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -19927,8 +19927,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20034,8 +20034,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20139,8 +20139,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20246,8 +20246,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20351,8 +20351,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20458,8 +20458,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20563,8 +20563,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20670,8 +20670,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20775,8 +20775,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20882,8 +20882,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -20987,8 +20987,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21094,8 +21094,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21199,8 +21199,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21306,8 +21306,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21411,8 +21411,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21518,8 +21518,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21623,8 +21623,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21730,8 +21730,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21835,8 +21835,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -21942,8 +21942,8 @@ namespace TLIS_Service.Services
                                                                 {
                                                                     if (propertyValue != null && value != null)
                                                                     {
-                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                                        DateTime validationDateTime = DateTime.Parse(value);
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                                        DateTime validationDateTime = DateTime.Parse(value).Date;
 
                                                                         switch (rule.Operation)
                                                                         {
@@ -22290,8 +22290,8 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.ValidationRepository.AddWithHDynamic(UserId, TabelNameTLIvalidation, tLIvalidation, HistoryId);
                                                 _unitOfWork.SaveChanges();
                                                 bool result = false;
-                                                DateTime defultDateTime = DateTime.Parse(defultvalue);
-                                                DateTime validationDateTime = DateTime.Parse(Validationvalue);
+                                                DateTime defultDateTime = DateTime.Parse(defultvalue).Date;
+                                                DateTime validationDateTime = DateTime.Parse(Validationvalue).Date;
                                                 switch (addDynamicObject.validation.operation)
                                                 {
                                                     case 1:

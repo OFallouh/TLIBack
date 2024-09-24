@@ -3450,7 +3450,7 @@ namespace TLIS_Repository.Repositories
                                 switch (Validation.OperationId)
                                 {
                                     case 1:
-                                        result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
+                                        result = DateTime.Parse(Comporsevalue).Date == Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3482,7 +3482,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 2:
-                                        result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date != Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3514,7 +3514,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 3:
-                                        result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date < Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3546,7 +3546,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 4:
-                                        result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date > Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3578,7 +3578,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 5:
-                                        result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date <= Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -3610,7 +3610,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 6:
-                                        result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date >= Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4124,7 +4124,7 @@ namespace TLIS_Repository.Repositories
                                 switch (Validation.OperationId)
                                 {
                                     case 1:
-                                        result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
+                                        result = DateTime.Parse(Comporsevalue).Date == Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4156,7 +4156,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 2:
-                                        result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date != Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4188,7 +4188,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 3:
-                                        result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date < Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4220,7 +4220,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 4:
-                                        result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date > Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4252,7 +4252,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 5:
-                                        result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date <= Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4284,7 +4284,7 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 6:
-                                        result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date >= Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
                                             return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4423,9 +4423,9 @@ namespace TLIS_Repository.Repositories
                                         ColumnName = attribute.Key,
                                         Operation = rule.Rule.OperationId,
                                         Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
-                                                Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
-                                                    Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                    Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
+                                                    Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
+                                                        Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueDateTime :
+                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueBoolean : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueDouble : null
                                     };
                                 }).ToList())
                                 .ToList();
@@ -4467,8 +4467,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -4573,8 +4573,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -4676,8 +4676,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -4782,8 +4782,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -4886,8 +4886,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -4992,8 +4992,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5096,8 +5096,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5202,8 +5202,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5306,8 +5306,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5412,8 +5412,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5516,8 +5516,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5622,8 +5622,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5726,8 +5726,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5832,8 +5832,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -5936,8 +5936,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6042,8 +6042,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6146,8 +6146,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6252,8 +6252,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6356,8 +6356,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6462,8 +6462,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6566,8 +6566,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6672,8 +6672,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6776,8 +6776,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6882,8 +6882,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -6986,8 +6986,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7092,8 +7092,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7196,8 +7196,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7302,8 +7302,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7406,8 +7406,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7512,8 +7512,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7616,8 +7616,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7722,8 +7722,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7826,8 +7826,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -7932,8 +7932,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8036,8 +8036,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8142,8 +8142,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8246,8 +8246,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8352,8 +8352,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8456,8 +8456,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8562,8 +8562,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8666,8 +8666,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8772,8 +8772,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8876,8 +8876,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -8982,8 +8982,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9086,8 +9086,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9192,8 +9192,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9296,8 +9296,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9402,8 +9402,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9506,8 +9506,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9612,8 +9612,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9716,8 +9716,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9822,8 +9822,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -9926,8 +9926,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10032,8 +10032,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10136,8 +10136,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10242,8 +10242,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10346,8 +10346,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10452,8 +10452,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10556,8 +10556,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10662,8 +10662,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10766,8 +10766,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10872,8 +10872,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -10976,8 +10976,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11082,8 +11082,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11186,8 +11186,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11292,8 +11292,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11396,8 +11396,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11502,8 +11502,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11606,8 +11606,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11712,8 +11712,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11816,8 +11816,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -11922,8 +11922,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -12160,9 +12160,9 @@ namespace TLIS_Repository.Repositories
                                         ColumnName = attribute.Key,
                                         Operation = rule.Rule.OperationId,
                                         Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
-                                                Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
-                                                    Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                    Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
+                                                   Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
+                                                       Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueDateTime :
+                                                       Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueBoolean : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueDouble : null
                                     };
                                 }).ToList())
                                 .ToList();
@@ -12204,8 +12204,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -12310,8 +12310,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -12413,8 +12413,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -12519,8 +12519,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -12623,8 +12623,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -12729,8 +12729,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -12833,8 +12833,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -12939,8 +12939,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13043,8 +13043,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13149,8 +13149,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13253,8 +13253,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13359,8 +13359,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13463,8 +13463,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13569,8 +13569,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13673,8 +13673,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13779,8 +13779,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13883,8 +13883,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -13989,8 +13989,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14093,8 +14093,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14199,8 +14199,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14303,8 +14303,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14409,8 +14409,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14513,8 +14513,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14619,8 +14619,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14723,8 +14723,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14829,8 +14829,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -14933,8 +14933,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15039,8 +15039,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15143,8 +15143,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15249,8 +15249,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15353,8 +15353,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15459,8 +15459,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15563,8 +15563,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15669,8 +15669,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15773,8 +15773,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15879,8 +15879,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -15983,8 +15983,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16089,8 +16089,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16193,8 +16193,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16299,8 +16299,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16403,8 +16403,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16509,8 +16509,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16613,8 +16613,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16719,8 +16719,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16823,8 +16823,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -16929,8 +16929,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17033,8 +17033,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17139,8 +17139,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17243,8 +17243,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17349,8 +17349,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17453,8 +17453,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17559,8 +17559,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17663,8 +17663,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17769,8 +17769,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17873,8 +17873,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -17979,8 +17979,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18083,8 +18083,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18189,8 +18189,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18293,8 +18293,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18399,8 +18399,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18503,8 +18503,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18609,8 +18609,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18713,8 +18713,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18819,8 +18819,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -18923,8 +18923,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -19029,8 +19029,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -19133,8 +19133,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -19239,8 +19239,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -19343,8 +19343,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -19449,8 +19449,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -19553,8 +19553,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -19659,8 +19659,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -20155,210 +20155,210 @@ namespace TLIS_Repository.Repositories
 
 
                                 }
-                                if (DynamicAttribute.DataTypeId == 25)
-                                {
-                                    bool result = false;
-                                    var Comporsevalue = value.ToString().Trim();
-                                    switch (Validation.OperationId)
+                                    if (DynamicAttribute.DataTypeId == 25)
                                     {
-                                        case 1:
-                                            result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
-                                            if (!result)
-                                            {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
-                                            }
-                                            else
-                                            {
-                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                        bool result = false;
+                                        var Comporsevalue = value.ToString().Trim();
+                                        switch (Validation.OperationId)
+                                        {
+                                            case 1:
+                                                result = DateTime.Parse(Comporsevalue).Date == Validation.ValueDateTime.Value.Date;
+                                                if (!result)
                                                 {
-                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
-                                                    DynamicAttId = DynamicAttributeId,
-                                                    disable = false,
-                                                    InventoryId = RecordId,
-                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
-                                                };
-                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
-                                                _context.SaveChanges();
-                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                }
+                                                else
                                                 {
-                                                    HistoryId = HistoryId,
-                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
-                                                    TablesNameId = TabelName,
-                                                    AttributeName = DynamicAttribute.Key,
-                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                    {
+                                                        ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                        DynamicAttId = DynamicAttributeId,
+                                                        disable = false,
+                                                        InventoryId = RecordId,
+                                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                    };
+                                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                    _context.SaveChanges();
+                                                    TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    {
+                                                        HistoryId = HistoryId,
+                                                        RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                        TablesNameId = TabelName,
+                                                        AttributeName = DynamicAttribute.Key,
+                                                        NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
-                                                };
-                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
-                                                _context.SaveChanges();
+                                                    };
+                                                    _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                    _context.SaveChanges();
 
-                                            }
-                                            break;
-                                        case 2:
-                                            result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
-                                            if (!result)
-                                            {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
-                                            }
-                                            else
-                                            {
-                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                }
+                                                break;
+                                            case 2:
+                                                result = Convert.ToDateTime(Comporsevalue).Date != Validation.ValueDateTime.Value.Date;
+                                                if (!result)
                                                 {
-                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
-                                                    DynamicAttId = DynamicAttributeId,
-                                                    disable = false,
-                                                    InventoryId = RecordId,
-                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
-                                                };
-                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
-                                                _context.SaveChanges();
-                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                }
+                                                else
                                                 {
-                                                    HistoryId = HistoryId,
-                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
-                                                    TablesNameId = TabelName,
-                                                    AttributeName = DynamicAttribute.Key,
-                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                    {
+                                                        ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                        DynamicAttId = DynamicAttributeId,
+                                                        disable = false,
+                                                        InventoryId = RecordId,
+                                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                    };
+                                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                    _context.SaveChanges();
+                                                    TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    {
+                                                        HistoryId = HistoryId,
+                                                        RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                        TablesNameId = TabelName,
+                                                        AttributeName = DynamicAttribute.Key,
+                                                        NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
-                                                };
-                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
-                                                _context.SaveChanges();
+                                                    };
+                                                    _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                    _context.SaveChanges();
 
-                                            }
-                                            break;
-                                        case 3:
-                                            result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
-                                            if (!result)
-                                            {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
-                                            }
-                                            else
-                                            {
-                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                }
+                                                break;
+                                            case 3:
+                                                result = Convert.ToDateTime(Comporsevalue).Date < Validation.ValueDateTime.Value.Date;
+                                                if (!result)
                                                 {
-                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
-                                                    DynamicAttId = DynamicAttributeId,
-                                                    disable = false,
-                                                    InventoryId = RecordId,
-                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
-                                                };
-                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
-                                                _context.SaveChanges();
-                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                }
+                                                else
                                                 {
-                                                    HistoryId = HistoryId,
-                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
-                                                    TablesNameId = TabelName,
-                                                    AttributeName = DynamicAttribute.Key,
-                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                    {
+                                                        ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                        DynamicAttId = DynamicAttributeId,
+                                                        disable = false,
+                                                        InventoryId = RecordId,
+                                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                    };
+                                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                    _context.SaveChanges();
+                                                    TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    {
+                                                        HistoryId = HistoryId,
+                                                        RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                        TablesNameId = TabelName,
+                                                        AttributeName = DynamicAttribute.Key,
+                                                        NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
-                                                };
-                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
-                                                _context.SaveChanges();
+                                                    };
+                                                    _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                    _context.SaveChanges();
 
-                                            }
-                                            break;
-                                        case 4:
-                                            result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
-                                            if (!result)
-                                            {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
-                                            }
-                                            else
-                                            {
-                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                }
+                                                break;
+                                            case 4:
+                                                result = Convert.ToDateTime(Comporsevalue).Date > Validation.ValueDateTime.Value.Date;
+                                                if (!result)
                                                 {
-                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
-                                                    DynamicAttId = DynamicAttributeId,
-                                                    disable = false,
-                                                    InventoryId = RecordId,
-                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
-                                                };
-                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
-                                                _context.SaveChanges();
-                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                }
+                                                else
                                                 {
-                                                    HistoryId = HistoryId,
-                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
-                                                    TablesNameId = TabelName,
-                                                    AttributeName = DynamicAttribute.Key,
-                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                    {
+                                                        ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                        DynamicAttId = DynamicAttributeId,
+                                                        disable = false,
+                                                        InventoryId = RecordId,
+                                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                    };
+                                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                    _context.SaveChanges();
+                                                    TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    {
+                                                        HistoryId = HistoryId,
+                                                        RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                        TablesNameId = TabelName,
+                                                        AttributeName = DynamicAttribute.Key,
+                                                        NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
-                                                };
-                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
-                                                _context.SaveChanges();
+                                                    };
+                                                    _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                    _context.SaveChanges();
 
-                                            }
-                                            break;
-                                        case 5:
-                                            result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
-                                            if (!result)
-                                            {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
-                                            }
-                                            else
-                                            {
-                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                }
+                                                break;
+                                            case 5:
+                                                result = Convert.ToDateTime(Comporsevalue).Date <= Validation.ValueDateTime.Value.Date;
+                                                if (!result)
                                                 {
-                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
-                                                    DynamicAttId = DynamicAttributeId,
-                                                    disable = false,
-                                                    InventoryId = RecordId,
-                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
-                                                };
-                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
-                                                _context.SaveChanges();
-                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                }
+                                                else
                                                 {
-                                                    HistoryId = HistoryId,
-                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
-                                                    TablesNameId = TabelName,
-                                                    AttributeName = DynamicAttribute.Key,
-                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                    {
+                                                        ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                        DynamicAttId = DynamicAttributeId,
+                                                        disable = false,
+                                                        InventoryId = RecordId,
+                                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                    };
+                                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                    _context.SaveChanges();
+                                                    TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    {
+                                                        HistoryId = HistoryId,
+                                                        RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                        TablesNameId = TabelName,
+                                                        AttributeName = DynamicAttribute.Key,
+                                                        NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
-                                                };
-                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
-                                                _context.SaveChanges();
+                                                    };
+                                                    _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                    _context.SaveChanges();
 
-                                            }
-                                            break;
-                                        case 6:
-                                            result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
-                                            if (!result)
-                                            {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
-                                            }
-                                            else
-                                            {
-                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                }
+                                                break;
+                                            case 6:
+                                                result = Convert.ToDateTime(Comporsevalue).Date >= Validation.ValueDateTime.Value.Date;
+                                                if (!result)
                                                 {
-                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
-                                                    DynamicAttId = DynamicAttributeId,
-                                                    disable = false,
-                                                    InventoryId = RecordId,
-                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
-                                                };
-                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
-                                                _context.SaveChanges();
-                                                TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                }
+                                                else
                                                 {
-                                                    HistoryId = HistoryId,
-                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
-                                                    TablesNameId = TabelName,
-                                                    AttributeName = DynamicAttribute.Key,
-                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
+                                                    TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                    {
+                                                        ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                        DynamicAttId = DynamicAttributeId,
+                                                        disable = false,
+                                                        InventoryId = RecordId,
+                                                        tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                    };
+                                                    _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
+                                                    _context.SaveChanges();
+                                                    TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
+                                                    {
+                                                        HistoryId = HistoryId,
+                                                        RecordId = (tLIdynamicAttLibValue.Id).ToString(),
+                                                        TablesNameId = TabelName,
+                                                        AttributeName = DynamicAttribute.Key,
+                                                        NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
-                                                };
-                                                _context.TLIhistoryDet.Add(tLIhistoryDet);
-                                                _context.SaveChanges();
+                                                    };
+                                                    _context.TLIhistoryDet.Add(tLIhistoryDet);
+                                                    _context.SaveChanges();
 
-                                            }
-                                            break;
+                                                }
+                                                break;
+
+                                        }
+
 
                                     }
-
-
-                                }
-                                if (DynamicAttribute.DataTypeId == 24)
+                                    if (DynamicAttribute.DataTypeId == 24)
                                 {
                                     bool result = false;
                                     var Comporsevalue = value.ToString().Trim();
@@ -20837,7 +20837,7 @@ namespace TLIS_Repository.Repositories
                                         switch (Validation.OperationId)
                                         {
                                             case 1:
-                                                result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
+                                                result = DateTime.Parse(Comporsevalue).Date == Validation.ValueDateTime.Value.Date;
                                                 if (!result)
                                                 {
                                                     return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -20869,7 +20869,7 @@ namespace TLIS_Repository.Repositories
                                                 }
                                                 break;
                                             case 2:
-                                                result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                                result = Convert.ToDateTime(Comporsevalue).Date != Validation.ValueDateTime.Value.Date;
                                                 if (!result)
                                                 {
                                                     return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -20901,7 +20901,7 @@ namespace TLIS_Repository.Repositories
                                                 }
                                                 break;
                                             case 3:
-                                                result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                                result = Convert.ToDateTime(Comporsevalue).Date < Validation.ValueDateTime.Value.Date;
                                                 if (!result)
                                                 {
                                                     return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -20933,7 +20933,7 @@ namespace TLIS_Repository.Repositories
                                                 }
                                                 break;
                                             case 4:
-                                                result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                                result = Convert.ToDateTime(Comporsevalue).Date > Validation.ValueDateTime.Value.Date;
                                                 if (!result)
                                                 {
                                                     return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -20965,7 +20965,7 @@ namespace TLIS_Repository.Repositories
                                                 }
                                                 break;
                                             case 5:
-                                                result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                                result = Convert.ToDateTime(Comporsevalue).Date <= Validation.ValueDateTime.Value.Date;
                                                 if (!result)
                                                 {
                                                     return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -20997,7 +20997,7 @@ namespace TLIS_Repository.Repositories
                                                 }
                                                 break;
                                             case 6:
-                                                result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                                result = Convert.ToDateTime(Comporsevalue).Date >= Validation.ValueDateTime.Value.Date;
                                                 if (!result)
                                                 {
                                                     return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -21683,25 +21683,30 @@ namespace TLIS_Repository.Repositories
                                 switch (Validation.OperationId)
                                 {
                                     case 1:
-                                        result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
+                                        result = DateTime.Parse(Comporsevalue).Date == Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                            TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                 TablesNameId = TabelName,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -21710,25 +21715,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 2:
-                                        result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date != Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                            TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                 TablesNameId = TabelName,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -21737,25 +21747,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 3:
-                                        result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date < Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                            TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                 TablesNameId = TabelName,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -21764,25 +21779,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 4:
-                                        result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date > Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                            TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                 TablesNameId = TabelName,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -21791,25 +21811,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 5:
-                                        result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date <= Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                            TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                 TablesNameId = TabelName,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -21818,25 +21843,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 6:
-                                        result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date >= Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                            TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                 TablesNameId = TabelName,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -21942,8 +21972,8 @@ namespace TLIS_Repository.Repositories
                                             Operation = rule.Rule.OperationId,
                                             Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
                                                     Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
-                                                        Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
+                                                        Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueDateTime :
+                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueBoolean : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueDouble : null
                                         };
                                     }).ToList())
                                     .ToList();
@@ -21985,8 +22015,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22091,8 +22121,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22194,8 +22224,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22300,8 +22330,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22404,8 +22434,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22510,8 +22540,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22614,8 +22644,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22720,8 +22750,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22824,8 +22854,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -22930,8 +22960,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23034,8 +23064,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23140,8 +23170,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23244,8 +23274,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23350,8 +23380,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23454,8 +23484,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23560,8 +23590,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23664,8 +23694,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23770,8 +23800,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23874,8 +23904,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -23980,8 +24010,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24084,8 +24114,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24190,8 +24220,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24294,8 +24324,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24400,8 +24430,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24504,8 +24534,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24610,8 +24640,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24714,8 +24744,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24820,8 +24850,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -24924,8 +24954,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25030,8 +25060,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25134,8 +25164,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25240,8 +25270,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25344,8 +25374,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25450,8 +25480,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25554,8 +25584,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25660,8 +25690,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25764,8 +25794,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25870,8 +25900,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -25974,8 +26004,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26080,8 +26110,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26184,8 +26214,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26290,8 +26320,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26394,8 +26424,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26500,8 +26530,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26604,8 +26634,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26710,8 +26740,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26814,8 +26844,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -26920,8 +26950,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27024,8 +27054,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27130,8 +27160,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27234,8 +27264,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27340,8 +27370,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27444,8 +27474,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27550,8 +27580,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27654,8 +27684,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27760,8 +27790,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27864,8 +27894,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -27970,8 +28000,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28074,8 +28104,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28180,8 +28210,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28284,8 +28314,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28390,8 +28420,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28494,8 +28524,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28600,8 +28630,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28704,8 +28734,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28810,8 +28840,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -28914,8 +28944,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -29020,8 +29050,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -29124,8 +29154,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -29230,8 +29260,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -29334,8 +29364,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -29440,8 +29470,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -29731,8 +29761,8 @@ namespace TLIS_Repository.Repositories
                                             Operation = rule.Rule.OperationId,
                                             Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
                                                     Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
-                                                        Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
+                                                        Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueDateTime :
+                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueBoolean : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueDouble : null
                                         };
                                     }).ToList())
                                     .ToList();
@@ -29777,8 +29807,8 @@ namespace TLIS_Repository.Repositories
                                         {
                                             if (propertyValue != null && value != null)
                                             {
-                                                DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                 switch (rule.Operation)
                                                 {
@@ -29880,8 +29910,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -29986,8 +30016,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30089,8 +30119,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30195,8 +30225,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30299,8 +30329,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30405,8 +30435,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30509,8 +30539,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30615,8 +30645,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30719,8 +30749,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30825,8 +30855,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -30929,8 +30959,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31035,8 +31065,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31139,8 +31169,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31245,8 +31275,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31349,8 +31379,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31455,8 +31485,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31559,8 +31589,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31665,8 +31695,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31769,8 +31799,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31875,8 +31905,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -31979,8 +32009,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32085,8 +32115,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32189,8 +32219,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32295,8 +32325,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32399,8 +32429,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32505,8 +32535,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32609,8 +32639,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32715,8 +32745,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32819,8 +32849,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -32925,8 +32955,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33029,8 +33059,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33135,8 +33165,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33239,8 +33269,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33345,8 +33375,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33449,8 +33479,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33555,8 +33585,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33659,8 +33689,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33765,8 +33795,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33869,8 +33899,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -33975,8 +34005,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34079,8 +34109,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34185,8 +34215,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34289,8 +34319,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34395,8 +34425,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34499,8 +34529,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34605,8 +34635,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34709,8 +34739,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34815,8 +34845,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -34919,8 +34949,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35025,8 +35055,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35129,8 +35159,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35235,8 +35265,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35339,8 +35369,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35445,8 +35475,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35549,8 +35579,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35655,8 +35685,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35759,8 +35789,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35865,8 +35895,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -35969,8 +35999,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36075,8 +36105,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36179,8 +36209,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36285,8 +36315,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36389,8 +36419,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36495,8 +36525,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36599,8 +36629,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36705,8 +36735,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36809,8 +36839,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -36915,8 +36945,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -37019,8 +37049,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -37125,8 +37155,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -37229,8 +37259,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -37335,8 +37365,8 @@ namespace TLIS_Repository.Repositories
                                             {
                                                 if (propertyValue != null && value != null)
                                                 {
-                                                    DateTime defultDateTime = DateTime.Parse(propertyValue);
-                                                    DateTime validationDateTime = DateTime.Parse(valuerule);
+                                                    DateTime defultDateTime = DateTime.Parse(propertyValue).Date;
+                                                    DateTime validationDateTime = DateTime.Parse(valuerule).Date;
 
                                                     switch (rule.Operation)
                                                     {
@@ -37765,25 +37795,30 @@ namespace TLIS_Repository.Repositories
                                     switch (Validation.OperationId)
                                     {
                                         case 1:
-                                            result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
+                                            result = DateTime.Parse(Comporsevalue).Date == Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                     TablesNameId = TabelName,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -37792,25 +37827,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 2:
-                                            result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date != Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                     TablesNameId = TabelName,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -37819,25 +37859,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 3:
-                                            result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date < Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                     TablesNameId = TabelName,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -37846,25 +37891,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 4:
-                                            result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date > Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                     TablesNameId = TabelName,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -37873,25 +37923,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 5:
-                                            result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date <= Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                     TablesNameId = TabelName,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -37900,25 +37955,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 6:
-                                            result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date >= Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttLibValue.Update(DynamicLibValue);
+                                                TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttLibValue.Add(tLIdynamicAttLibValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (tLIdynamicAttLibValue.Id).ToString(),
                                                     TablesNameId = TabelName,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = tLIdynamicAttLibValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -38533,25 +38593,30 @@ namespace TLIS_Repository.Repositories
                                 switch (Validation.OperationId)
                                 {
                                     case 1:
-                                        result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
+                                        result = DateTime.Parse(Comporsevalue).Date == Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                            TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                 TablesNameId = TabelName2,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -38560,25 +38625,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 2:
-                                        result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date != Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                            TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                 TablesNameId = TabelName2,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -38587,25 +38657,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 3:
-                                        result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date < Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                            TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                 TablesNameId = TabelName2,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -38614,25 +38689,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 4:
-                                        result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date > Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                            TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                 TablesNameId = TabelName2,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -38641,25 +38721,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 5:
-                                        result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date <= Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                            TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                 TablesNameId = TabelName2,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -38668,25 +38753,30 @@ namespace TLIS_Repository.Repositories
                                         }
                                         break;
                                     case 6:
-                                        result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                        result = Convert.ToDateTime(Comporsevalue).Date >= Validation.ValueDateTime.Value.Date;
                                         if (!result)
                                         {
-                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                            return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                         }
                                         else
                                         {
-                                            DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                            _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                            TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                            {
+                                                ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                DynamicAttId = DynamicAttributeId,
+                                                disable = false,
+                                                InventoryId = RecordId,
+                                                tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                            };
+                                            _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                             _context.SaveChanges();
-
                                             TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                             {
                                                 HistoryId = HistoryId,
-                                                RecordId = (OldDynamicValue.Id).ToString(),
+                                                RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                 TablesNameId = TabelName2,
                                                 AttributeName = DynamicAttribute.Key,
-                                                OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                             };
                                             _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -38791,9 +38881,9 @@ namespace TLIS_Repository.Repositories
                                             ColumnName = attribute.Key,
                                             Operation = rule.Rule.OperationId,
                                             Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
-                                                    Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
-                                                        Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
+                                                   Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
+                                                       Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueDateTime :
+                                                       Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueBoolean : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueDouble : null
                                         };
                                     }).ToList())
                                     .ToList();
@@ -46581,8 +46671,8 @@ namespace TLIS_Repository.Repositories
                                             Operation = rule.Rule.OperationId,
                                             Value = Type.ToLower() == "string" ? (object)rule.Rule.OperationValueString :
                                                     Type.ToLower() == "int" || Type.ToLower() == "double" || Type.ToLower() == "float" ? (object)rule.Rule.OperationValueDouble :
-                                                        Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueString :
-                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueString : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueString : null
+                                                        Type.ToLower() == "datetime" ? (object)rule.Rule.OperationValueDateTime :
+                                                        Type.ToLower() == "bool" ? (object)rule.Rule.OperationValueBoolean : Type.ToLower() == "list" ? (object)rule.Rule.OperationValueDouble : null
                                         };
                                     }).ToList())
                                     .ToList();
@@ -54509,25 +54599,30 @@ namespace TLIS_Repository.Repositories
                                     switch (Validation.OperationId)
                                     {
                                         case 1:
-                                            result = DateTime.Parse(Comporsevalue) == Validation.ValueDateTime;
+                                            result = DateTime.Parse(Comporsevalue).Date == Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDouble} must be equle {Validation.ValueDouble}  ", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value does not equle {Validation.ValueDateTime} must be equle {Validation.ValueDateTime}  ", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                                TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                     TablesNameId = TabelName2,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -54536,25 +54631,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 2:
-                                            result = Convert.ToDateTime(Comporsevalue) != Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date != Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDouble} must not equle {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value equle {Validation.ValueDateTime} must not equle {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                                TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                     TablesNameId = TabelName2,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -54563,25 +54663,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 3:
-                                            result = Convert.ToDateTime(Comporsevalue) < Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date < Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of{Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                                TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                     TablesNameId = TabelName2,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -54590,25 +54695,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 4:
-                                            result = Convert.ToDateTime(Comporsevalue) > Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date > Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                                TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                     TablesNameId = TabelName2,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -54617,25 +54727,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 5:
-                                            result = Convert.ToDateTime(Comporsevalue) <= Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date <= Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDouble} must be smaller of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value bigger of {Validation.ValueDateTime} must be smaller of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                                TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                     TablesNameId = TabelName2,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
@@ -54644,25 +54759,30 @@ namespace TLIS_Repository.Repositories
                                             }
                                             break;
                                         case 6:
-                                            result = Convert.ToDateTime(Comporsevalue) >= Validation.ValueDateTime;
+                                            result = Convert.ToDateTime(Comporsevalue).Date >= Validation.ValueDateTime.Value.Date;
                                             if (!result)
                                             {
-                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDouble} must be bigger of {Validation.ValueDouble}", (int)Helpers.Constants.ApiReturnCode.fail);
+                                                return new Response<AddDynamicObject>(false, null, null, $"The {DynamicAttribute.Key} value smaller of {Validation.ValueDateTime} must be bigger of {Validation.ValueDateTime}", (int)Helpers.Constants.ApiReturnCode.fail);
                                             }
                                             else
                                             {
-                                                DynamicLibValue.ValueDateTime = Convert.ToDateTime(Comporsevalue);
-                                                _context.TLIdynamicAttInstValue.Update(DynamicLibValue);
+                                                TLIdynamicAttInstValue TLIdynamicAttInstValue = new TLIdynamicAttInstValue()
+                                                {
+                                                    ValueDateTime = Convert.ToDateTime(Comporsevalue),
+                                                    DynamicAttId = DynamicAttributeId,
+                                                    disable = false,
+                                                    InventoryId = RecordId,
+                                                    tablesNamesId = DynamicAttribute.tablesNames.Id,
+                                                };
+                                                _context.TLIdynamicAttInstValue.Add(TLIdynamicAttInstValue);
                                                 _context.SaveChanges();
-
                                                 TLIhistoryDet tLIhistoryDet = new TLIhistoryDet()
                                                 {
                                                     HistoryId = HistoryId,
-                                                    RecordId = (OldDynamicValue.Id).ToString(),
+                                                    RecordId = (TLIdynamicAttInstValue.Id).ToString(),
                                                     TablesNameId = TabelName2,
                                                     AttributeName = DynamicAttribute.Key,
-                                                    OldValue = OldDynamicValue.ValueDateTime.ToString(),
-                                                    NewValue = DynamicLibValue.ValueDateTime.ToString()
+                                                    NewValue = TLIdynamicAttInstValue.ValueDateTime.ToString()
 
                                                 };
                                                 _context.TLIhistoryDet.Add(tLIhistoryDet);
