@@ -13909,7 +13909,7 @@ namespace TLIS_Service.Services
 
                                                             if (rule.IsDynamic == true) 
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(),x=>x.DynamicAtt
                                                                     ,x=>x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -14118,7 +14118,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -14330,7 +14330,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -14542,7 +14542,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -14754,7 +14754,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -14965,7 +14965,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -15177,7 +15177,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -15389,7 +15389,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -15601,7 +15601,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -15813,7 +15813,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -16025,7 +16025,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -16237,7 +16237,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -16449,7 +16449,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -16661,7 +16661,7 @@ namespace TLIS_Service.Services
                                                              bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -16873,7 +16873,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -17085,7 +17085,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -17297,7 +17297,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -17509,7 +17509,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -18216,7 +18216,7 @@ namespace TLIS_Service.Services
 
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttLibValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -18426,7 +18426,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -18638,7 +18638,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -18850,7 +18850,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -19062,7 +19062,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -19273,7 +19273,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -19485,7 +19485,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -19697,7 +19697,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -19909,7 +19909,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -20121,7 +20121,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -20333,7 +20333,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -20545,7 +20545,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -20757,7 +20757,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -20969,7 +20969,7 @@ namespace TLIS_Service.Services
                                                              bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -21176,12 +21176,12 @@ namespace TLIS_Service.Services
 
 
                                                         }
-                                                        if (TabelName.ToLower() == TablesNames.TLIcabinet.ToString().ToLower())
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetPower.ToString().ToLower())
                                                         {
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -21388,13 +21388,224 @@ namespace TLIS_Service.Services
 
 
                                                         }
-                                           
+                                                        if (TabelName.ToLower() == TablesNames.TLIcabinetTelecom.ToString().ToLower())
+                                                        {
+                                                            bool result = false;
+                                                            if (rule.IsDynamic == true)
+                                                            {
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
+                                                                    GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
+                                                                    && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
+                                                                    , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+
+
+                                                                var propertyValue = DynamicColumName?.ValueDouble?.ToString()
+                                                                        ?? DynamicColumName?.ValueDateTime?.ToString()
+                                                                        ?? DynamicColumName?.ValueString
+                                                                        ?? DynamicColumName?.ValueBoolean?.ToString();
+
+
+                                                                var value = rule.Value?.ToString().Trim();
+
+                                                                if (DynamicColumName.DynamicAtt.DataType.Name.ToLower() == "datetime")
+                                                                {
+                                                                    if (propertyValue != null && value != null)
+                                                                    {
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                        DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                        switch (rule.Operation)
+                                                                        {
+                                                                            case 1:
+                                                                                result = defultDateTime == validationDateTime;
+                                                                                break;
+
+                                                                            case 2:
+                                                                                result = defultDateTime != validationDateTime;
+                                                                                break;
+
+                                                                            case 3:
+                                                                                result = defultDateTime < validationDateTime;
+                                                                                break;
+
+                                                                            case 4:
+                                                                                result = defultDateTime > validationDateTime;
+                                                                                break;
+
+                                                                            case 5:
+                                                                                result = defultDateTime <= validationDateTime;
+                                                                                break;
+
+                                                                            case 6:
+                                                                                result = defultDateTime >= validationDateTime;
+                                                                                break;
+
+                                                                        }
+                                                                    }
+                                                                }
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = propertyValue == value;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = propertyValue != value;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                            break;
+                                                                        case 7:
+                                                                            result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                            break;
+
+                                                                        case 8:
+                                                                            result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                            break;
+
+                                                                        case 9:
+                                                                            result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    result = false;
+                                                                }
+
+                                                                groupResult = groupResult && result;
+
+                                                            }
+                                                            if (rule.IsDynamic == false)
+                                                            {
+                                                                var ColumName = _unitOfWork.CabinetRepository.GetWhereFirst(x => x.Id == RecordId);
+                                                                var AttributeActivated = _unitOfWork.AttributeActivatedRepository
+                                                                    .GetWhereFirst(x => x.Tabel == TabelName && x.Key.ToLower() == rule.ColumnName.ToLower());
+
+                                                                var attributeNames = ColumName.GetType().GetProperties()
+                                                                    .Where(x =>
+                                                                        (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                                                         new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                                                         .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                                                        || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                                                        .Contains(x.PropertyType)
+                                                                    )
+                                                                    .Select(x => x.Name)
+                                                                    .ToList();
+
+                                                                var attributeName = attributeNames.FirstOrDefault(x => x == rule.ColumnName);
+
+                                                                var propertyInfo = ColumName.GetType().GetProperty(attributeName);
+                                                                var propertyValue = propertyInfo?.GetValue(ColumName)?.ToString().Trim();
+                                                                var value = rule.Value?.ToString().Trim();
+
+                                                                if (AttributeActivated.DataType.ToLower() == "datetime")
+                                                                {
+                                                                    if (propertyValue != null && value != null)
+                                                                    {
+                                                                        DateTime defultDateTime = DateTime.Parse(propertyValue);
+                                                                        DateTime validationDateTime = DateTime.Parse(value);
+
+                                                                        switch (rule.Operation)
+                                                                        {
+                                                                            case 1:
+                                                                                result = defultDateTime == validationDateTime;
+                                                                                break;
+
+                                                                            case 2:
+                                                                                result = defultDateTime != validationDateTime;
+                                                                                break;
+
+                                                                            case 3:
+                                                                                result = defultDateTime < validationDateTime;
+                                                                                break;
+
+                                                                            case 4:
+                                                                                result = defultDateTime > validationDateTime;
+                                                                                break;
+
+                                                                            case 5:
+                                                                                result = defultDateTime <= validationDateTime;
+                                                                                break;
+
+                                                                            case 6:
+                                                                                result = defultDateTime >= validationDateTime;
+                                                                                break;
+
+                                                                        }
+                                                                    }
+                                                                }
+                                                                if (propertyValue != null && value != null)
+                                                                {
+                                                                    switch (rule.Operation)
+                                                                    {
+                                                                        case 1:
+                                                                            result = propertyValue == value;
+                                                                            break;
+
+                                                                        case 2:
+                                                                            result = propertyValue != value;
+                                                                            break;
+
+                                                                        case 3:
+                                                                            result = Convert.ToDecimal(propertyValue) < Convert.ToDecimal(value);
+                                                                            break;
+
+                                                                        case 4:
+                                                                            result = Convert.ToDecimal(propertyValue) > Convert.ToDecimal(value);
+                                                                            break;
+
+                                                                        case 5:
+                                                                            result = Convert.ToDecimal(propertyValue) <= Convert.ToDecimal(value);
+                                                                            break;
+
+                                                                        case 6:
+                                                                            result = Convert.ToDecimal(propertyValue) >= Convert.ToDecimal(value);
+                                                                            break;
+                                                                        case 7:
+                                                                            result = propertyValue.ToLower().Contains(value.ToLower());
+                                                                            break;
+
+                                                                        case 8:
+                                                                            result = propertyValue.ToLower().StartsWith(value.ToLower());
+                                                                            break;
+
+                                                                        case 9:
+                                                                            result = propertyValue.ToLower().EndsWith(value.ToLower());
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    result = false;
+                                                                }
+
+                                                                groupResult = groupResult && result;
+                                                            }
+
+
+                                                        }
                                                         if (TabelName.ToLower() == TablesNames.TLIsolar.ToString().ToLower())
                                                         {
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -21606,7 +21817,7 @@ namespace TLIS_Service.Services
                                                             bool result = false;
                                                             if (rule.IsDynamic == true)
                                                             {
-                                                                var DynamicColumName = _unitOfWork.DynamicAttLibRepository.
+                                                                var DynamicColumName = _unitOfWork.DynamicAttInstValueRepository.
                                                                     GetIncludeWhereFirst(x => x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower()
                                                                     && x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower(), x => x.DynamicAtt
                                                                     , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
@@ -21836,7 +22047,7 @@ namespace TLIS_Service.Services
                                                     var resultvalue = addDynamicObject.dependency.result?.ToString().Trim();
                                                     if (addDynamicObject.general.dataType == 1)
                                                     {
-                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
                                                         {
                                                             disable = false,
                                                             DynamicAttId = tLIdynamicAtt.Id,
@@ -21844,12 +22055,12 @@ namespace TLIS_Service.Services
                                                             ValueString = resultvalue,
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                                     {
-                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
                                                         {
                                                             disable = false,
                                                             DynamicAttId = tLIdynamicAtt.Id,
@@ -21857,12 +22068,12 @@ namespace TLIS_Service.Services
                                                             ValueDouble = Convert.ToDouble(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 25)
                                                     {
-                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
                                                         {
                                                             disable = false,
                                                             DynamicAttId = tLIdynamicAtt.Id,
@@ -21870,12 +22081,12 @@ namespace TLIS_Service.Services
                                                             ValueDateTime = Convert.ToDateTime(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 24)
                                                     {
-                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
                                                         {
                                                             disable = false,
                                                             DynamicAttId = tLIdynamicAtt.Id,
@@ -21883,7 +22094,7 @@ namespace TLIS_Service.Services
                                                             ValueBoolean = Convert.ToBoolean(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                 }
@@ -21891,7 +22102,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (addDynamicObject.general.dataType == 1)
                                                     {
-                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
                                                         {
                                                             disable = false,
                                                             DynamicAttId = tLIdynamicAtt.Id,
@@ -21899,12 +22110,12 @@ namespace TLIS_Service.Services
                                                             ValueString = defultvalue,
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                                     {
-                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
                                                         {
                                                             disable = false,
                                                             DynamicAttId = tLIdynamicAtt.Id,
@@ -21912,12 +22123,12 @@ namespace TLIS_Service.Services
                                                             ValueDouble = Convert.ToDouble(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 25)
                                                     {
-                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
                                                         {
                                                             disable = false,
                                                             DynamicAttId = tLIdynamicAtt.Id,
@@ -21925,12 +22136,12 @@ namespace TLIS_Service.Services
                                                             ValueDateTime = Convert.ToDateTime(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 24)
                                                     {
-                                                        TLIdynamicAttLibValue tLIdynamicAttLibValue = new TLIdynamicAttLibValue()
+                                                        TLIdynamicAttInstValue tLIdynamicAttLibValue = new TLIdynamicAttInstValue()
                                                         {
                                                             disable = false,
                                                             DynamicAttId = tLIdynamicAtt.Id,
@@ -21938,7 +22149,7 @@ namespace TLIS_Service.Services
                                                             ValueBoolean = Convert.ToBoolean(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                 }
@@ -22539,12 +22750,17 @@ namespace TLIS_Service.Services
                         isRequired = dynamicAtt.Required,
                         defualtValue = dynamicAtt.DefaultValue,
                         dataType = dynamicAtt.DataTypeId
+                       
                     },
+                  
                     type = dynamicAtt.Type,
                     validation = GetValidation(dynamicAtt.Id, dynamicAtt.DataTypeId),
                     dependency = GetDependency(dynamicAtt.Id)
                 };
-
+                if (dynamicAtt.DataTypeId == 24)
+                {
+                    addDynamicObject.general.defualtValue = Convert.ToBoolean(addDynamicObject.general.defualtValue);
+                }
                 return new Response<AddDynamicObject>(false, addDynamicObject, null, "Success", (int)Constants.ApiReturnCode.success);
             }
             catch (Exception ex)
@@ -22563,10 +22779,10 @@ namespace TLIS_Service.Services
                     operation = validation.OperationId,
                     value = dataTypeId switch
                     {
-                        1 => validation.ValueString,
-                        21 or 22 => validation.ValueDouble.ToString(),
-                        24 => validation.ValueBoolean.ToString(),
-                        25 => validation.ValueDateTime.ToString(),
+                        1 => validation.ValueString.ToString(),
+                        21 or 22 => Convert.ToDouble(validation.ValueDouble),
+                        24 => Convert.ToBoolean(validation.ValueBoolean),
+                        25 =>  Convert.ToDateTime(validation.ValueDateTime),
                         _ => null
                     }
                 };
@@ -22600,185 +22816,207 @@ namespace TLIS_Service.Services
                     .GroupBy(rule => rule.RowId)
                     .Select(group => group.Select(rule =>
                     {
-           
-                        var attribute = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(a => a.Id == rule.Rule.attributeActivatedId);
-                        var type = attribute.DataType.ToLower();
-
-                        object value = type switch
+                        if (rule.Rule.IsDynamic == true)
                         {
-                            "string" => rule.Rule.OperationValueString,
-                            "int" or "double" or "float" => rule.Rule.OperationValueDouble,
-                            "datetime" => rule.Rule.OperationValueString, 
-                            "bool" => rule.Rule.OperationValueString.ToLower(),
-                            _ => null
-                        };
+                            var attribute = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(a => a.Id == rule.Rule.AttributeViewManagmentId, x => x.DataType);
+                            var type = attribute?.DataType?.Name?.ToLower();
 
-                        if (type == "list")
-                        {
-                            value = attribute.Label.ToLower() switch
+                            object value = type switch
                             {
-                                _ when Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "sectionslegtype_name" => _unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "supporttypedesigned_name" => _unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "civilnonsteeltype_name" => _unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "installationcivilwithoutlegstype_name" => _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "civilwithoutlegcategory_name" => _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "civilsteelsupportcategory_name" => _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.LoadSubType.TLImwBULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "boardtype_name" => _unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "rfutype" => Convert.ToInt32(rule.Rule.OperationValueDouble), 
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "polaritytype_name" => _unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "astype_name" => _unitOfWork.AsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.LoadSubType.TLImwODULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "parity_name" => _unitOfWork.ParityRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "telecomtype_name" => _unitOfWork.TelecomTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "cabinetpowertype_name" => _unitOfWork.CabinetPowerTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "integratedwith" => Convert.ToInt32(rule.Rule.OperationValueDouble),
-
-                                    _ => value
-                                },
-                                _ when Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "basetype_name" => _unitOfWork.BaseTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "basecivilwithlegtype_name" => _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "guylinetype_name" => _unitOfWork.GuyLineTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "enforcmentcategory_name" => _unitOfWork.EnforcmentCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "baseplateshape" => Convert.ToInt32(rule.Rule.OperationValueDouble),
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString()  == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "subtype_name" => _unitOfWork.SubTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "equipmentslocation" => Convert.ToInt32(rule.Rule.OperationValueDouble),
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.LoadSubType.TLIradioAntenna.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.LoadSubType.TLIradioRRU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.LoadSubType.TLIradioOther.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.LoadSubType.TLImwBU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.LoadSubType.TLImwDish.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "polarityonlocation_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "repeatertype_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "itemconnectto_name" => _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.LoadSubType.TLImwRFU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.LoadSubType.TLImwODU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.LoadSubType.TLIpower.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.OtherInventoryType.TLIcabinetPower.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.OtherInventoryType.TLIcabinetTelecom.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-
-                                _ when Helpers.Constants.OtherInventoryType.TLIgenerator.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
-                                {
-                                    "basegeneratortype_name" => _unitOfWork.BaseGeneratorTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                    _ => value
-                                },
-                                _ => value
+                                "string" => rule.Rule.OperationValueString,
+                                "int" or "double" or "float" => rule.Rule.OperationValueDouble,
+                                "datetime" => rule.Rule.OperationValueString,
+                                "bool" => rule.Rule.OperationValueString?.ToLower(),
+                                _ => null
+                            };
+                            return new GroupObject
+                            {
+                                ColumnName = attribute.Key,
+                                Operation = rule.Rule.OperationId,
+                                Value = value
                             };
                         }
-
-                        return new GroupObject
+                        else
                         {
-                            ColumnName = attribute.Key,
-                            Operation = rule.Rule.OperationId,
-                            Value = value
-                        };
+                            var attribute = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(a => a.Id == rule.Rule.attributeActivatedId);
+                            var type = attribute.DataType.ToLower();
+
+                            object value = type switch
+                            {
+                                "string" => rule.Rule.OperationValueString,
+                                "int" or "double" or "float" => rule.Rule.OperationValueDouble,
+                                "datetime" => rule.Rule.OperationValueString,
+                                "bool" => rule.Rule.OperationValueString.ToLower(),
+                                _ => null
+                            };
+
+                            if (type == "list")
+                            {
+                                value = attribute.Label.ToLower() switch
+                                {
+                                    _ when Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "sectionslegtype_name" => _unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "supporttypedesigned_name" => _unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "civilnonsteeltype_name" => _unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "structuretype_name" => _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "installationcivilwithoutlegstype_name" => _unitOfWork.InstCivilwithoutLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "civilwithoutlegcategory_name" => _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "civilsteelsupportcategory_name" => _unitOfWork.CivilSteelSupportCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.LoadSubType.TLImwBULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "diversitytype_name" => _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "boardtype_name" => _unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "rfutype" => Convert.ToInt32(rule.Rule.OperationValueDouble),
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "polaritytype_name" => _unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "astype_name" => _unitOfWork.AsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.LoadSubType.TLImwODULibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "parity_name" => _unitOfWork.ParityRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.OtherInventoryType.TLIcabinetTelecomLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "telecomtype_name" => _unitOfWork.TelecomTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.OtherInventoryType.TLIcabinetPowerLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "cabinetpowertype_name" => _unitOfWork.CabinetPowerTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "integratedwith" => Convert.ToInt32(rule.Rule.OperationValueDouble),
+
+                                        _ => value
+                                    },
+                                    _ when Helpers.Constants.CivilType.TLIcivilWithLegs.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "basetype_name" => _unitOfWork.BaseTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "basecivilwithlegtype_name" => _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "guylinetype_name" => _unitOfWork.GuyLineTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "enforcmentcategory_name" => _unitOfWork.EnforcmentCategoryRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "baseplateshape" => Convert.ToInt32(rule.Rule.OperationValueDouble),
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "subtype_name" => _unitOfWork.SubTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "equipmentslocation" => Convert.ToInt32(rule.Rule.OperationValueDouble),
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.CivilType.TLIcivilNonSteel.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "locationtype_name" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "supporttypeimplemented_name" => _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.LoadSubType.TLIradioAntenna.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.LoadSubType.TLIradioRRU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.LoadSubType.TLIradioOther.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.LoadSubType.TLImwBU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.LoadSubType.TLImwDish.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "polarityonlocation_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "repeatertype_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "itemconnectto_name" => _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.LoadSubType.TLImwRFU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.LoadSubType.TLImwODU.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.LoadSubType.TLIpower.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.OtherInventoryType.TLIcabinetPower.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.OtherInventoryType.TLIcabinetTelecom.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "renewablecabinettype_name" => _unitOfWork.RenewableCabinetTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+
+                                    _ when Helpers.Constants.OtherInventoryType.TLIgenerator.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "basegeneratortype_name" => _unitOfWork.BaseGeneratorTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
+                                    _ => value
+                                };
+                            }
+                            return new GroupObject
+                            {
+                                ColumnName = attribute.Key,
+                                Operation = rule.Rule.OperationId,
+                                Value = value
+                            };
+                        }
+                       
                     }).ToList())
                     .ToList();
 
