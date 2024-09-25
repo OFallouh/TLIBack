@@ -38,6 +38,7 @@ using System.Reflection.Metadata;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Numerics;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.InkML;
 
 
 namespace TLIS_Service.Services
@@ -1752,6 +1753,7 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(WidthVariation != null ? WidthVariation : null);
 
                     cmd.ExecuteNonQuery();
+                  
                     //connection.Close();
                     List<int> InsertedIds = new List<int>();
                     //Check if LastId is null then table is empty
@@ -1853,16 +1855,17 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
-                    _dbContext.SaveChanges();
+      
 
                     foreach (var DynamicAtt in DynamicAtts)
                     {
                         for (int k = 0; k < DynamicAtt.Item3.Count; k++)
                         {
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilWithLegLibraryList).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -2863,7 +2866,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilWithoutLegLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -3526,7 +3529,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilNonSteelLibraryList).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -4145,7 +4148,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, loadOtherLibraryList).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -4893,7 +4896,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwBULibraryList).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -5630,7 +5633,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwDishLibraryList).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -6325,7 +6328,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwODULibraryList).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -6965,7 +6968,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwOtherLibraryList).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -7767,7 +7770,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwRFULibraryList).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -8490,7 +8493,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, powerLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -9128,7 +9131,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioAntennaLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -9752,7 +9755,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioOtherLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -10444,7 +10447,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioRRULibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -11207,7 +11210,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, cabinetPowerLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -11858,7 +11861,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, cabinetTelecomLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -12499,7 +12502,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, generatorLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -13222,7 +13225,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, solarLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
@@ -13813,7 +13816,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
                             {
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id).Message;
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, sideArmLibraryist).Message;
                                 if (Message != "Success")
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));

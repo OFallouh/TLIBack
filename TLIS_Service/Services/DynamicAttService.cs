@@ -9709,6 +9709,7 @@ namespace TLIS_Service.Services
                     NewDynamicAttribute.Key = DynamicAttViewModel.general.name;
                     NewDynamicAttribute.Description = DynamicAttViewModel.general.description;
                     NewDynamicAttribute.Required = DynamicAttViewModel.general.isRequired;
+
                     _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAttData, NewDynamicAttribute);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
@@ -13562,7 +13563,7 @@ namespace TLIS_Service.Services
                                         {
                                             bool overallResult = false;
                                             var RecordsIds = GetLibraryRecordsIds(TabelName);
-
+                                            
                                             foreach (var group in addDynamicObject.dependency.groups)
                                             {
                                                 TLIrow row = new TLIrow();
@@ -22818,8 +22819,9 @@ namespace TLIS_Service.Services
                     {
                         if (rule.Rule.IsDynamic == true)
                         {
-                            var attribute = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(a => a.Id == rule.Rule.AttributeViewManagmentId, x => x.DataType);
-                            var type = attribute?.DataType?.Name?.ToLower();
+                            var attribute = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(a => a.Id == rule.Rule.AttributeViewManagmentId,
+                                x => x.DynamicAtt,x=>x.DynamicAtt.AttributeViewManagments);
+                            var type = attribute?.DynamicAtt.DataType?.Name?.ToLower();
 
                             object value = type switch
                             {
@@ -22831,9 +22833,10 @@ namespace TLIS_Service.Services
                             };
                             return new GroupObject
                             {
-                                ColumnName = attribute.Key,
+                                ColumnName = attribute.DynamicAtt.Key,
                                 Operation = rule.Rule.OperationId,
-                                Value = value
+                                Value = value,
+                                IsDynamic = true
                             };
                         }
                         else
@@ -23013,7 +23016,8 @@ namespace TLIS_Service.Services
                             {
                                 ColumnName = attribute.Key,
                                 Operation = rule.Rule.OperationId,
-                                Value = value
+                                Value = value,
+                                IsDynamic = false
                             };
                         }
                        
