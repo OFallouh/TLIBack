@@ -24467,7 +24467,7 @@ namespace TLIS_Service.Services
 
                                     TLIotherInSite CheckSolarName = _unitOfWork.OtherInSiteRepository
                                         .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == Solar_SiteCodeAfterCheck.ToLower()
-                                                && x.allOtherInventoryInst.solar.Name.ToLower() == SolarName.ToLower(),
+                                                && x.allOtherInventoryInst.solar.Name.ToLower().Trim() == SolarName.ToLower().Trim(),
                                                     x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar);
 
                                     if (CheckSolarName != null)
