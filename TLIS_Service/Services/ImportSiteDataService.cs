@@ -23299,7 +23299,7 @@ namespace TLIS_Service.Services
                                         GeneratorTransaction.Dispose();
 
                                         TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
-                                             .GetWhereFirst(x => x.Model.ToLower() == GeneratorLibraryModel.ToLower() && !x.Deleted);
+                                             .GetWhereFirst(x => x.Model.ToLower().Trim() == GeneratorLibraryModel.ToLower().Trim()  && !x.Deleted);
 
                                         if (CheckGeneratorLibraryModel == null)
                                         {
@@ -23354,7 +23354,7 @@ namespace TLIS_Service.Services
                                     if (!string.IsNullOrEmpty(Generator_SiteCode))
                                     {
                                         TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                            .GetWhereFirst(x => x.SiteCode.ToLower() == Generator_SiteCode.ToLower());
+                                            .GetWhereFirst(x => x.SiteCode.ToLower().Trim() == Generator_SiteCode.ToLower().Trim());
 
                                         if (CheckSiteCode == null)
                                         {
@@ -23378,7 +23378,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            if (CheckSiteCode.SiteName.ToLower() != Generator_SiteName.ToLower())
+                                            if (CheckSiteCode.SiteName.ToLower().Trim() != Generator_SiteName.ToLower().Trim())
                                             {
                                                 GeneratorTransaction.Dispose();
 
@@ -23463,7 +23463,7 @@ namespace TLIS_Service.Services
                                     TLIotherInSite CheckGeneratorName = _unitOfWork.OtherInSiteRepository
                                             .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == Generator_SiteCodeAfterCheck.ToLower() && x.allOtherInventoryInstId != null ?
                                                 (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.generatorId != null ?
-                                                    (x.allOtherInventoryInst.generator.Name.ToLower() == GeneratorName.ToLower()) : false) : false,
+                                                    (x.allOtherInventoryInst.generator.Name.ToLower().Trim() == GeneratorName.ToLower().Trim() ) : false) : false,
                                                         x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
 
                                     if (CheckGeneratorName != null)
@@ -24265,7 +24265,7 @@ namespace TLIS_Service.Services
                                         SolarTransaction.Dispose();
 
                                         TLIsolarLibrary CheckSolarLibraryModel = _unitOfWork.SolarLibraryRepository
-                                             .GetWhereFirst(x => x.Model.ToLower() == SolarLibraryModel.ToLower() && !x.Deleted);
+                                             .GetWhereFirst(x => x.Model.ToLower().Trim() == SolarLibraryModel.ToLower().Trim() && !x.Deleted);
 
                                         if (CheckSolarLibraryModel == null)
                                         {
@@ -24277,7 +24277,7 @@ namespace TLIS_Service.Services
                                                 IsLib = true,
                                                 RefTable = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
                                                 SheetName = "Solar",
-                                                UniqueName = $"(Solar Library) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                                UniqueName = $"(Solar Library) coulumn and value in the Row{j}"
                                             };
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24300,7 +24300,7 @@ namespace TLIS_Service.Services
                                             IsLib = true,
                                             RefTable = Helpers.Constants.TablesNames.TLIsolarLibrary.ToString(),
                                             SheetName = "Solar",
-                                            UniqueName = $"(Solar Library) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                            UniqueName = $"(Solar Library) coulumn and value in the Row{j}"
                                         };
 
                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24320,7 +24320,7 @@ namespace TLIS_Service.Services
                                     if (!string.IsNullOrEmpty(Solar_SiteCode))
                                     {
                                         TLIsite CheckSiteCode = _unitOfWork.SiteRepository
-                                            .GetWhereFirst(x => x.SiteCode.ToLower() == Solar_SiteCode.ToLower());
+                                            .GetWhereFirst(x => x.SiteCode.ToLower().Trim() == Solar_SiteCode.ToLower().Trim());
 
                                         if (CheckSiteCode == null)
                                         {
@@ -24334,7 +24334,7 @@ namespace TLIS_Service.Services
                                                 IsLib = false,
                                                 RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                                 SheetName = "Solar",
-                                                UniqueName = $"(Site Code) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                                UniqueName = $"(Site Code) coulumn and value in the Row{j}"
                                             };
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24344,7 +24344,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            if (CheckSiteCode.SiteName.ToLower() != Solar_SiteName.ToLower())
+                                            if (CheckSiteCode.SiteName.ToLower().Trim() != Solar_SiteName.ToLower().Trim())
                                             {
                                                 SolarTransaction.Dispose();
 
@@ -24356,7 +24356,7 @@ namespace TLIS_Service.Services
                                                     IsLib = false,
                                                     RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                                     SheetName = "Solar",
-                                                    UniqueName = $"(Site Name) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                                    UniqueName = $"(Site Name) coulumn and value in the Row{j}"
                                                 };
 
                                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24380,7 +24380,7 @@ namespace TLIS_Service.Services
                                             IsLib = false,
                                             RefTable = Helpers.Constants.TablesNames.TLIsite.ToString(),
                                             SheetName = "Solar",
-                                            UniqueName = $"(Site Code) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                            UniqueName = $"(Site Code) coulumn and value in the Row{j}"
                                         };
 
                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24417,7 +24417,7 @@ namespace TLIS_Service.Services
                                                 IsLib = false,
                                                 RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
                                                 SheetName = "Solar",
-                                                UniqueName = $"(NumberOfSSU) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                                UniqueName = $"(NumberOfSSU) coulumn and value in the Row{j}"
                                             };
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24449,7 +24449,7 @@ namespace TLIS_Service.Services
                                                 IsLib = false,
                                                 RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
                                                 SheetName = "Solar",
-                                                UniqueName = $"(NumberOfInstallPVs) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                                UniqueName = $"(NumberOfInstallPVs) coulumn and value in the Row{j}"
                                             };
 
                                             _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24482,7 +24482,7 @@ namespace TLIS_Service.Services
                                             IsLib = false,
                                             RefTable = Helpers.Constants.TablesNames.TLIotherInSite.ToString(),
                                             SheetName = "Solar",
-                                            UniqueName = $" in the Row {SolarDataTable.Rows[j]}"
+                                            UniqueName = $" in the Row{j}"
                                         };
 
                                         _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24552,7 +24552,7 @@ namespace TLIS_Service.Services
                                                         IsLib = false,
                                                         RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
                                                         SheetName = "Solar",
-                                                        UniqueName = $"({MissedAttribute.Key}) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                                        UniqueName = $"({MissedAttribute.Key}) coulumn and value in the Row{j}"
                                                     };
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24582,7 +24582,7 @@ namespace TLIS_Service.Services
                                                         IsLib = false,
                                                         RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
                                                         SheetName = "Solar",
-                                                        UniqueName = $"({MissedAttribute.Key}) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                                        UniqueName = $"({MissedAttribute.Key}) coulumn and value in the Row{j}"
                                                     };
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24612,7 +24612,7 @@ namespace TLIS_Service.Services
                                                         IsLib = false,
                                                         RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
                                                         SheetName = "Solar",
-                                                        UniqueName = $"({MissedAttribute.Key}) coulumn and value in the Row {SolarDataTable.Rows[j]}"
+                                                        UniqueName = $"({MissedAttribute.Key}) coulumn and value in the Row{j}"
                                                     };
 
                                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
@@ -24673,7 +24673,7 @@ namespace TLIS_Service.Services
                                         IsLib = false,
                                         RefTable = Helpers.Constants.TablesNames.TLIsolar.ToString(),
                                         SheetName = "Solar",
-                                        UniqueName = $"in the Row {SolarDataTable.Rows[j]}"
+                                        UniqueName = $"in the Row{j}"
                                     };
 
                                     _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
