@@ -34,8 +34,8 @@ namespace TLIS_Service.IService
         Task<Response<DynamicAttViewModel>> Edit(EditDynamicAttViewModel dynamicAttViewModel,string connectionString);
         Response<DependencyColumnForAdd> GetDependencyInst(string Layer, int? CategoryId, bool IsLibrary = false);
         //Response<DynamicAttLibForAddViewModel>
-        Response<DynamicAttViewModel> Disable(int RecordId, string ConnectionString);
-        Response<DynamicAttViewModel> RequiredNOTRequired(int DynamicAttId, string ConnectionString);
+        Response<DynamicAttViewModel> Disable(int RecordId, string ConnectionString, int UserId);
+        Response<DynamicAttViewModel> RequiredNOTRequired(int DynamicAttId, string ConnectionString, int UserId);
         Response<List<OutPutString>> GetLayers(string TableName);
         Response<FirstStepAddDependencyViewModel> GetForAddingDynamicAttribute(string TableName);
         Response<DynamicAttViewModel> CheckEditingDynamicAttDataType(int DynamicAttributeId, int NewDataTypeId);

@@ -257,16 +257,52 @@ namespace TLIS_API.Controllers.DynamicAtt
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
         public IActionResult Disable(int RecordId)
         {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.DynamicAttService.Disable(RecordId, ConnectionString);
+            var response = _unitOfWorkService.DynamicAttService.Disable(RecordId, ConnectionString,userId);
             return Ok(response);
         }
         [HttpPost("RequiredNOTRequired")]
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
         public IActionResult RequiredNOTRequired(int DynamicAttId)
         {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.DynamicAttService.RequiredNOTRequired(DynamicAttId, ConnectionString);
+            var response = _unitOfWorkService.DynamicAttService.RequiredNOTRequired(DynamicAttId, ConnectionString,userId);
             return Ok(response);
         }
         [HttpPost("GetLayers")]

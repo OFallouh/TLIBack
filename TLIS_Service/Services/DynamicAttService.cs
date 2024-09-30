@@ -10374,7 +10374,7 @@ namespace TLIS_Service.Services
                         {
                             Id = 8,
                             Key = "TLIsideArmLibrary",
-                            Items = itemCivilWithLegs
+                            Items = itemCivilWithLegsLibrary
                         };
                         layers layersCivilWithLegs = new layers()
                         {
@@ -10858,7 +10858,7 @@ namespace TLIS_Service.Services
                         {
                             Id = 8,
                             Key = "TLIradioAntennaLibrary",
-                            Items = itemCivilWithLegs
+                            Items = itemCivilWithLegsLibrary
                         };
                         layers layersCivilWithLegs = new layers()
                         {
@@ -11343,7 +11343,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIradioRRULibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -11828,7 +11828,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIradioOtherLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -12330,7 +12330,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLImwBULibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -12842,7 +12842,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIradioAnteTLImwDishLibrarynnaLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -13365,7 +13365,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLImwRFULibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -13869,7 +13869,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLImwODULibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -14357,7 +14357,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIpowerLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -14493,7 +14493,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIcabinetPowerLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -14606,7 +14606,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIcabinetTelecomLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -14696,7 +14696,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIgeneratorLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -14763,7 +14763,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIsolarLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -15130,7 +15130,8 @@ namespace TLIS_Service.Services
                        .AsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == DynamicAttributeId);
                     if (OldDynamicAttData == null)
                         return new Response<AddDynamicObject>(true, null, null, $"This DynamicAttribute is not found", (int)Constants.ApiReturnCode.fail);
-                    var DynamicAttribute = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(x => x.Key.ToLower() == DynamicAttViewModel.general.name.ToLower() && x.Id != DynamicAttributeId, x => x.tablesNames);
+                    var DynamicAttribute = _unitOfWork.DynamicAttRepository.GetIncludeWhereFirst(x => x.Key.ToLower() == 
+                    DynamicAttViewModel.general.name.ToLower()&& x.tablesNamesId == OldDynamicAttData.tablesNamesId && x.Id != DynamicAttributeId, x => x.tablesNames);
                     if (DynamicAttribute != null)
                         return new Response<AddDynamicObject>(true, null, null, $"This Key {DynamicAttViewModel.general.name} is Already Exist in Table {DynamicAttribute.tablesNames.TableName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
                     if (DynamicAttViewModel.general.defualtValue == null)
@@ -17571,18 +17572,19 @@ namespace TLIS_Service.Services
             }
             return result;
         }
-        public Response<DynamicAttViewModel> Disable(int RecordId, string ConnectionString)
+        public Response<DynamicAttViewModel> Disable(int RecordId, string ConnectionString, int UserId)
         {
             try
             {
+                var OldDynamicAtt = _unitOfWork.DynamicAttRepository.GetAllAsQueryable().FirstOrDefault(x=>x.Id==RecordId);
                 var DynamicAtt = _unitOfWork.DynamicAttRepository.GetByID(RecordId);
                 DynamicAtt.disable = !(DynamicAtt.disable);
 
                 if (DynamicAtt.disable)
                     DynamicAtt.Required = false;
-
+                _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAtt, DynamicAtt);
                 _unitOfWork.SaveChanges();
-                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
+         
                 return new Response<DynamicAttViewModel>();
             }
             catch (Exception err)
@@ -17590,16 +17592,16 @@ namespace TLIS_Service.Services
                 return new Response<DynamicAttViewModel>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
             }
         }
-        public Response<DynamicAttViewModel> RequiredNOTRequired(int DynamicAttId, string ConnectionString)
+        public Response<DynamicAttViewModel> RequiredNOTRequired(int DynamicAttId, string ConnectionString,int UserId)
         {
             try
             {
+                var OldDynamicAtt = _unitOfWork.DynamicAttRepository.GetAllAsQueryable().FirstOrDefault(x => x.Id == DynamicAttId);
                 TLIdynamicAtt DynamicAtt = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttId);
 
                 DynamicAtt.Required = !(DynamicAtt.Required);
-
+                _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAtt, DynamicAtt);
                 _unitOfWork.SaveChanges();
-                Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                 return new Response<DynamicAttViewModel>();
             }
             catch (Exception err)
@@ -18060,11 +18062,37 @@ namespace TLIS_Service.Services
                                 var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower() && x.tablesNames.TableName.ToLower() == TabelName.ToLower());
                                 if (DynamicKey != null)
                                     return new Response<AddDynamicObject>(true, null, null, $"This Key {addDynamicObject.general.name} is Already Exist in Table {TabelName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
+                                var staticTableType = _dbContext.GetType().GetProperty(TabelName)?.PropertyType;
+                                if (staticTableType != null)
+                                {
+
+                                    var attributeNames = staticTableType.GetProperties()
+                                        .Where(x =>
+                                            (x.PropertyType.IsGenericType && x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                                             new Type[] { typeof(int), typeof(string), typeof(double), typeof(float), typeof(Single), typeof(bool), typeof(DateTime) }
+                                             .Contains(x.PropertyType.GetGenericArguments()[0]))
+                                            || new Type[] { typeof(int), typeof(string), typeof(double), typeof(bool), typeof(DateTime), typeof(float), typeof(Single) }
+                                            .Contains(x.PropertyType)
+                                        )
+                                        .Select(x => x.Name)
+                                        .ToList();
+                                    foreach (var attributeName in attributeNames)
+                                    {
+                                        if (addDynamicObject.general.name.ToLower() == attributeName.ToLower())
+                                        {
+                                            return new Response<AddDynamicObject>(true, null, null, $"The dynamic attribute cannot have the same name as the static attribute.", (int)Constants.ApiReturnCode.fail);
+                                        }
+                                    }
+                                }
+
                                 double double_Test = 0;
                                 DateTime datetime_Test = DateTime.Now;
                                 Boolean boolean_Test = false;
                                 if (addDynamicObject.general.defualtValue == null)
                                     return new Response<AddDynamicObject>(true, null, null, "The default can not to be null.", (int)Constants.ApiReturnCode.fail);
+
+                                if (addDynamicObject.general.isRequired==true && addDynamicObject.validation == null)
+                                   return new Response<AddDynamicObject>(true, null, null, $"The dynamic attribute cannot be requierd without having validation.", (int)Constants.ApiReturnCode.fail);                           
 
                                 if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                 {
@@ -18096,7 +18124,7 @@ namespace TLIS_Service.Services
                                     }
 
                                 }
-
+                               
                                 if (addDynamicObject.type == 0)
                                 {
                                     var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
@@ -19453,7 +19481,8 @@ namespace TLIS_Service.Services
 
 
                                                             }
-                                                            if (rule.IsDynamic == false) {
+                                                            if (rule.IsDynamic == false)
+                                                            {
                                                                 var ColumName = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == RecordId);
                                                                 var AttributeActivated = _unitOfWork.AttributeActivatedRepository
                                                                     .GetWhereFirst(x => x.Tabel .ToLower() == TabelName.ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
@@ -50852,15 +50881,15 @@ namespace TLIS_Service.Services
                         if (rule.Rule.IsDynamic == true)
                         {
                             var attribute = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(a => a.Id == rule.Rule.AttributeViewManagmentId,
-                                x => x.DynamicAtt,x=>x.DynamicAtt.AttributeViewManagments);
+                                x => x.DynamicAtt,x=>x.DynamicAtt.AttributeViewManagments,x=>x.DynamicAtt.DataType);
                             var type = attribute?.DynamicAtt.DataType?.Name?.ToLower();
 
                             object value = type switch
                             {
                                 "string" => rule.Rule.OperationValueString,
                                 "int" or "double" or "float" => rule.Rule.OperationValueDouble,
-                                "datetime" => rule.Rule.OperationValueString,
-                                "bool" => rule.Rule.OperationValueString?.ToLower(),
+                                "datetime" => rule.Rule.OperationValueDateTime,
+                                "bool" => rule.Rule.OperationValueBoolean.ToString().ToLower(),
                                 _ => null
                             };
                             return new GroupObject
@@ -50880,8 +50909,8 @@ namespace TLIS_Service.Services
                             {
                                 "string" => rule.Rule.OperationValueString,
                                 "int" or "double" or "float" => rule.Rule.OperationValueDouble,
-                                "datetime" => rule.Rule.OperationValueString,
-                                "bool" => rule.Rule.OperationValueString.ToLower(),
+                                "datetime" => rule.Rule.OperationValueDateTime,
+                                "bool" => rule.Rule.OperationValueBoolean.ToString().ToLower(),
                                 _ => null
                             };
 

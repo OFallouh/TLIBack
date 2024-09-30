@@ -3676,17 +3676,19 @@ namespace TLIS_Service.Services
                         {
                             TLIlogistical LogisticalObject = _unitOfWork.LogistcalRepository
                                 .GetByID(LogisticalItemIds.Vendor);
-
-                            TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                            if (LogisticalObject != null)
                             {
-                                Name = "",
-                                IsLib = true,
-                                logisticalId = LogisticalObject.Id,
-                                RecordId = MainEntity.Id,
-                                tablesNamesId = TableNameEntityId
-                            };
-                            _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
-                            _unitOfWork.SaveChangesAsync();
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = MainEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
                         }
                     }
                     if ((LogisticalItemIds.Supplier != null && LogisticalItemIds.Supplier != 0) || LogisticalItemIds.Supplier == null)
@@ -4036,17 +4038,19 @@ namespace TLIS_Service.Services
                             TLIlogistical LogisticalObject =
                                 _unitOfWork.LogistcalRepository
                                 .GetByID(OldLogisticalItemIds.Vendor);
-
-                            TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                            if (LogisticalObject != null)
                             {
-                                Name = "",
-                                IsLib = true,
-                                logisticalId = LogisticalObject.Id,
-                                RecordId = MainEntity.Id,
-                                tablesNamesId = TableNameEntityId
-                            };
-                            _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
-                            _unitOfWork.SaveChangesAsync();
+                                TLIlogisticalitem NewLogisticalItem = new TLIlogisticalitem
+                                {
+                                    Name = "",
+                                    IsLib = true,
+                                    logisticalId = LogisticalObject.Id,
+                                    RecordId = MainEntity.Id,
+                                    tablesNamesId = TableNameEntityId
+                                };
+                                _unitOfWork.LogisticalitemRepository.AddWithHDynamic(UserId, TabelNameId, NewLogisticalItem, HistoryId);
+                                _unitOfWork.SaveChangesAsync();
+                            }
                         }
                     }
                     if ((LogisticalItemIds.Supplier != null && LogisticalItemIds.Supplier != 0) || LogisticalItemIds.Supplier == null)
