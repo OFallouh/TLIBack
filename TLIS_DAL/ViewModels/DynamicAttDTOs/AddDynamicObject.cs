@@ -41,7 +41,8 @@ namespace TLIS_DAL.ViewModels.DynamicAttDTOs
         public string? ColumnName { get; set; }
         public int? Operation { get; set; }
         public object Value { get; set; }
-        public bool IsDynamic { get; set; }
+        public bool? IsDynamic { get; set; }
+        public int? Layer { get; set; }
 
     }
    

@@ -28,6 +28,7 @@ namespace TLIS_DAL.Models
         public TLItablesNames tablesNames { get; set; }
         public int? tablesNamesId { get; set; }
         public bool? IsDynamic { get; set; }
+        public int? Layer { get; set; }
         public IEnumerable<TLIrowRule> rowRules { get; set; }
     }
 }

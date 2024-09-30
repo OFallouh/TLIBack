@@ -231,6 +231,13 @@ namespace TLIS_API.Controllers.DynamicAtt
             var response = _unitOfWorkService.DynamicAttService.GeStaticAttsAndDynamicAttsByTableName(TabelName, IsLibrary, CategoryId);
             return Ok(response);
         }
+        [HttpPost("getLayersAndAttributesStaticAndDynamic")]
+        [ProducesResponseType(200, Type = typeof(List<DynamicAttViewModel>))]
+        public IActionResult getLayersAndAttributesStaticAndDynamic(String TabelName, int? CategoryId)
+        {
+            var response = _unitOfWorkService.DynamicAttService.getLayersAndAttributesStaticAndDynamic(TabelName, CategoryId);
+            return Ok(response);
+        }
         [HttpGet("GetById")]
         [ProducesResponseType(200, Type = typeof(DynamicAttViewModel))]
         public IActionResult GetById(int Id)
