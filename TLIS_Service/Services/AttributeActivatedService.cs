@@ -673,7 +673,7 @@ namespace TLIS_Service.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<Response<AttributeActivatedViewModel>> Disable(int AttributeActivatedId, int? CivilWithoutLegCategoryId,int UserId)
+        public async Task<Response<AttributeActivatedViewModel>> Disable(int AttributeActivatedId, int? CivilWithoutLegCategoryId)
         {
             try
             {
