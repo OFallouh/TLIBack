@@ -706,7 +706,7 @@ namespace TLIS_Service.Services
 
                   //  EditHistoryDetails testUpdate = CheckUpdateObject(BeforeUpdate, AfterUpdate);
 
-                     _unitOfWork.AttributeActivatedRepository.UpdateWithH(UserId,null, OldAttributeActivatedTest, AttributeActivated);
+                    // _unitOfWork.AttributeActivatedRepository.UpdateWithH(UserId,null, OldAttributeActivatedTest, AttributeActivated);
                     // AddHistoryForEditAttActivated(AttributeActivated.Id, "Update", testUpdate.Details.ToList());
                     await _unitOfWork.SaveChangesAsync();
                 }
