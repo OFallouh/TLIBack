@@ -673,10 +673,11 @@ namespace TLIS_Service.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<Response<AttributeActivatedViewModel>> Disable(int AttributeActivatedId, int? CivilWithoutLegCategoryId)
+        public async Task<Response<AttributeActivatedViewModel>> Disable(int AttributeActivatedId, int? CivilWithoutLegCategoryId,int UserId)
         {
             try
             {
+                TLIattributeActivated OldAttributeActivatedTest = _unitOfWork.AttributeActivatedRepository.GetAllAsQueryable().FirstOrDefault(x => x.Id == AttributeActivatedId);
                 TLIattributeActivated AttributeActivatedTest = _unitOfWork.AttributeActivatedRepository.GetWhereFirst(x => x.Id == AttributeActivatedId);
 
                 if (CivilWithoutLegCategoryId == null)
@@ -690,7 +691,10 @@ namespace TLIS_Service.Services
                         return new Response<AttributeActivatedViewModel>(true, null, null, "This Attribute is Engaged in Space Calculation Formula So Its Enable Status Can't Be Updated", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
 
-                    AttributeActivatedViewModel BeforeUpdate = _mapper.Map<AttributeActivatedViewModel>(AttributeActivated);
+                    //var RuleDynamic = _unitOfWork.RuleRepository.GetWhereFirst(x => x.attributeActivatedId == AttributeActivatedId
+                    //&& x.dynamicAtt.disable);
+                    //if()
+                   // AttributeActivatedViewModel BeforeUpdate = _mapper.Map<AttributeActivatedViewModel>(AttributeActivated);
 
                     AttributeActivated.enable = !(AttributeActivated.enable);
                     if (AttributeActivated.enable == false)
@@ -698,11 +702,11 @@ namespace TLIS_Service.Services
                         AttributeActivated.Required = false;
                     }
 
-                    AttributeActivatedViewModel AfterUpdate = _mapper.Map<AttributeActivatedViewModel>(AttributeActivated);
+                   // AttributeActivatedViewModel AfterUpdate = _mapper.Map<AttributeActivatedViewModel>(AttributeActivated);
 
-                    EditHistoryDetails testUpdate = CheckUpdateObject(BeforeUpdate, AfterUpdate);
+                  //  EditHistoryDetails testUpdate = CheckUpdateObject(BeforeUpdate, AfterUpdate);
 
-                    await _unitOfWork.AttributeActivatedRepository.UpdateItem(AttributeActivated);
+                     _unitOfWork.AttributeActivatedRepository.UpdateWithH(UserId,null, OldAttributeActivatedTest, AttributeActivated);
                     // AddHistoryForEditAttActivated(AttributeActivated.Id, "Update", testUpdate.Details.ToList());
                     await _unitOfWork.SaveChangesAsync();
                 }
