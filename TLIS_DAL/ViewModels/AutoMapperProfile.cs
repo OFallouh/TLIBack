@@ -380,7 +380,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIcity, CityViewModel>().ReverseMap();
             CreateMap<BaseInstAttViewDynamic, TLIdynamicAtt>().ReverseMap()
                 .ForMember(x => x.DataType, x => x.MapFrom(f => f.DataType.Name))
-                  .ForMember(x => x.Label, x => x.MapFrom(f => f.Key));
+                  .ForMember(x => x.Label, x => x.MapFrom(f => f.Key))
+                  .ForMember(x => x.Desc, x => x.MapFrom(f => f.Description));
             CreateMap<TLIbaseBU, BaseBUViewModel>().ReverseMap();
             CreateMap<TLIbaseBU, AddBaseBUViewModel>().ReverseMap();
             CreateMap<TLIbaseBU, EditBaseBUViewModel>().ReverseMap();
