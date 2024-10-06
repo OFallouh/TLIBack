@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -694,8 +695,12 @@ namespace TLIS_Service.Services
                     //var RuleDynamic = _unitOfWork.RuleRepository.GetWhereFirst(x => x.attributeActivatedId == AttributeActivatedId
                     //&& x.dynamicAtt.disable);
                     //if()
-                   // AttributeActivatedViewModel BeforeUpdate = _mapper.Map<AttributeActivatedViewModel>(AttributeActivated);
-
+                    // AttributeActivatedViewModel BeforeUpdate = _mapper.Map<AttributeActivatedViewModel>(AttributeActivated);
+                    var DynamicAtt = _dbContext.TLIrule.Include(x => x.dynamicAtt).FirstOrDefault(x => x.attributeActivatedId ==
+                    AttributeActivatedId && !x.dynamicAtt.disable);
+                    if (DynamicAtt == null)
+                        return new Response<AttributeActivatedViewModel>(true, null, null, "can not change status of this static attribute becuse it is involved in the dependency  of a dynamic attribute.", (int)Helpers.Constants.ApiReturnCode.fail);
+                
                     AttributeActivated.enable = !(AttributeActivated.enable);
                     if (AttributeActivated.enable == false)
                     {

@@ -506,7 +506,8 @@ namespace TLIS_Repository.Repositories
                     Label = DynamicAtt.Key,
                     Required = DynamicAtt.Required,
                     enable = !DynamicAtt.disable,
-                    Options = new object[] { }
+                    Options = new object[] { },
+                    Desc=DynamicAtt.Description,
 
                 };
 
