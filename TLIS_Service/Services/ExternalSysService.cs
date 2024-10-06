@@ -45,6 +45,7 @@ using DocumentFormat.OpenXml.InkML;
 using static Dapper.SqlMapper;
 using System.Reflection;
 using TLIS_DAL.ViewModels.SiteDTOs;
+using System.Globalization;
 namespace TLIS_Service.Services
 {
     internal class ExternalSysService : IexternalSysService
@@ -531,7 +532,12 @@ namespace TLIS_Service.Services
                                 result = result.Where(x => FilterKeyProperty.GetValue(x).ToString().ToLower().Contains(FilterValue.ToLower())).ToList();
                             }
                         }
-
+                        else if (FilterKeyProperty.PropertyType == typeof(DateTime) && FilterKeyProperty.Name == "ActionDate")
+                        {
+                            DateTime filterDate = DateTime.ParseExact(SimpleFilter.Values[0], "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                            result = result.Where(x => x.ActionDate >= filterDate).ToList();
+                        }
+                       
                         else
                         {
                             result = result.Where(x => SimpleFilter.Values.Contains(FilterKeyProperty.GetValue(x).ToString())).ToList();
