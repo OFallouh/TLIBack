@@ -516,10 +516,10 @@ namespace TLIS_Repository.Repositories
                         NewDynamicLibraryValue.Value = DynamicAttValue.ValueString;
 
                     else if (DynamicAttValue.ValueDateTime != null)
-                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueDateTime.ToString();
+                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueDateTime;
 
                     else if (DynamicAttValue.ValueDouble != null)
-                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueDouble.ToString();
+                        NewDynamicLibraryValue.Value = DynamicAttValue.ValueDouble;
 
                     else if (DynamicAttValue.ValueBoolean != null)
                         NewDynamicLibraryValue.Value = DynamicAttValue.ValueBoolean;
