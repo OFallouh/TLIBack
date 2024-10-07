@@ -698,7 +698,7 @@ namespace TLIS_Service.Services
                     // AttributeActivatedViewModel BeforeUpdate = _mapper.Map<AttributeActivatedViewModel>(AttributeActivated);
                     var DynamicAtt = _dbContext.TLIrule.Include(x => x.dynamicAtt).FirstOrDefault(x => x.attributeActivatedId ==
                     AttributeActivatedId && !x.dynamicAtt.disable);
-                    if (DynamicAtt == null)
+                    if (DynamicAtt != null)
                         return new Response<AttributeActivatedViewModel>(true, null, null, "can not change status of this static attribute becuse it is involved in the dependency  of a dynamic attribute.", (int)Helpers.Constants.ApiReturnCode.fail);
                 
                     AttributeActivated.enable = !(AttributeActivated.enable);
