@@ -939,6 +939,139 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSitesIntegration(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite)
+        {
+            string[] ErrorMessagesWhenReturning = null;
+
+        StartAgainWithRefresh:
+            try
+            {
+                if (UserId == null)
+                {
+                    UserId = _context.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                }
+                List<TLIlocationType> Locations = _context.TLIlocationType.AsNoTracking().ToList();
+
+                List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+                List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking()
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+                UsedSitesInCivils.AddRange(UsedSitesInLoads);
+
+                List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking()
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
+
+                UsedSitesInOtherInventories.AddRange(UsedSitesInCivils);
+
+                List<string> AllUsedSites = UsedSitesInOtherInventories.Distinct().ToList();
+
+                
+                    IEnumerable<SiteViewModelForGetAll> SitesViewModels;
+
+                    if (isRefresh != null ? isRefresh.Value : false)
+                    {
+                        _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
+                                .Include(x => x.siteStatus).ToList();
+
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
+                    }
+                    else
+                    {
+                        _MySites.Count();
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
+                    }
+
+
+
+
+
+                int Count = SitesViewModels.Count();
+
+                List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
+
+                    foreach (SiteViewModelForGetAll SitesViewModel in SitesViewModels)
+                    {
+                        string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == SitesViewModel.SiteCode.ToLower())
+                            .LocationType;
+
+                        if (!string.IsNullOrEmpty(LocationTypeInModel))
+                        {
+                            TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
+
+                            ListForOutPutOnly.Add(new SiteViewModelForGetAll()
+                            {
+                                SiteCode = SitesViewModel.SiteCode,
+                                LocationType = CheckLocation != null ? CheckLocation.Name : "NA",
+                                SiteName = SitesViewModel.SiteName,
+                                Area = SitesViewModel.Area,
+                                CityName = SitesViewModel.CityName,
+                                Latitude = SitesViewModel.Latitude,
+                                LocationHieght = SitesViewModel.LocationHieght,
+                                Longitude = SitesViewModel.Longitude,
+                                Region = SitesViewModel.Region,
+                                RentedSpace = SitesViewModel.RentedSpace,
+                                ReservedSpace = SitesViewModel.ReservedSpace,
+                                Status = SitesViewModel.Status,
+                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+                                ItemsOnSite = GetItemsCountOnEachSite != null ?
+                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+                            });
+                        }
+                        else
+                        {
+                            ListForOutPutOnly.Add(new SiteViewModelForGetAll()
+                            {
+                                SiteCode = SitesViewModel.SiteCode,
+                                LocationType = "NA",
+                                SiteName = SitesViewModel.SiteName,
+                                Area = SitesViewModel.Area,
+                                CityName = SitesViewModel.CityName,
+                                Latitude = SitesViewModel.Latitude,
+                                LocationHieght = SitesViewModel.LocationHieght,
+                                Longitude = SitesViewModel.Longitude,
+                                Region = SitesViewModel.Region,
+                                RentedSpace = SitesViewModel.RentedSpace,
+                                ReservedSpace = SitesViewModel.ReservedSpace,
+                                Status = SitesViewModel.Status,
+                                isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
+                                ItemsOnSite = GetItemsCountOnEachSite != null ?
+                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+                            });
+                        }
+                    }
+
+                    return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                
+                var TabelNameId = _context.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsite").Id;
+                TLIhistory tLIhistory = new TLIhistory()
+                {
+                    TablesNameId = TabelNameId,
+                    ExternalSysId = UserId,
+                    HistoryTypeId = 4,
+                };
+                _context.TLIhistory.Add(tLIhistory);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                isRefresh = true;
+                if (ErrorMessagesWhenReturning == null)
+                {
+                    ErrorMessagesWhenReturning = new string[]
+                    {
+                        "After Caching"
+                    };
+                    goto StartAgainWithRefresh;
+                }
+
+                return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
+            }
+        }
         public Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination(bool? GetItemsCountOnEachSite)
         {
             string[] ErrorMessagesWhenReturning = null;

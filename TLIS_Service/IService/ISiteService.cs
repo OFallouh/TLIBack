@@ -30,6 +30,7 @@ namespace TLIS_Service.IService
     public interface ISiteService
     {
         Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null);
+        Response<IEnumerable<SiteViewModelForGetAll>> GetSitesIntegration(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite);
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
         Response<List<RecalculatSpaceOnSite>> RecalculateSite();
