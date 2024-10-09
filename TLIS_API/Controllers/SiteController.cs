@@ -292,10 +292,28 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetHistory")]
         [ProducesResponseType(200, Type = typeof(List<dynamic>))]
-        public IActionResult GetHistory(string TabelName, int? BaseId, string SiteCode, int? UserId, int? ExternalSysId)
+        public IActionResult GetHistory(string TabelName, int? BaseId, string SiteCode, int? ExternalSysId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.SiteService.GetHistory(TabelName, BaseId, SiteCode, UserId, ExternalSysId, ConnectionString);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.SiteService.GetHistory(TabelName, BaseId, SiteCode, userId, ExternalSysId, ConnectionString);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

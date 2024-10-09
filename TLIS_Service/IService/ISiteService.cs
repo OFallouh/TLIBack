@@ -85,6 +85,6 @@ namespace TLIS_Service.IService
         Response<string> GetConfigurationTables(string SiteCode, string TableNameInstallation, int? CategoryId, string ConnectionString);
         Response<SiteDetailsObject> GetSiteDetails(string siteCode);
         Response<SiteDetailsObject> EditSiteDetalis(SiteDetailsObject siteDetailsObject, int? TaskId, int UserId);
-        List<dynamic> GetHistory(string TabelName, int? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString);
+        List<dynamic> GetHistory(string BASE_TABLE, int? BASE_RECORD_ID, string SITECODE, int? USER_ID, int? SYS_ID, string ConnectionString);
     }
 }
