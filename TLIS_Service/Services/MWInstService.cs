@@ -17004,7 +17004,7 @@ if (MWInstallationViewModel.dynamicAttribute != null ? MWInstallationViewModel.d
                                 {
                                     AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
                                        editmwOtherInstallationObject.installationConfig.civilNonSteelId && !x.Dismantle && x.SiteCode.ToLower() ==
-                                            mwOther.mwOtherInst.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                            mwOtherInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                        x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                     if (AllcivilinstId != null)
                                     {
