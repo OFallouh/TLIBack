@@ -940,7 +940,7 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
-        public Response<IEnumerable<SiteViewModelForGetAll>> GetSitesIntegration(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSitesIntegration(int? UserId, string UserName)
         {
             string[] ErrorMessagesWhenReturning = null;
 
@@ -974,18 +974,10 @@ namespace TLIS_Service.Services
                 
                     IEnumerable<SiteViewModelForGetAll> SitesViewModels;
 
-                    if (isRefresh != null ? isRefresh.Value : false)
-                    {
-                        _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
-                                .Include(x => x.siteStatus).ToList();
-
-                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
-                    }
-                    else
-                    {
+                    
                         _MySites.Count();
                         SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
-                    }
+                    
 
 
 
@@ -1019,8 +1011,7 @@ namespace TLIS_Service.Services
                                 ReservedSpace = SitesViewModel.ReservedSpace,
                                 Status = SitesViewModel.Status,
                                 isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
-                                ItemsOnSite = GetItemsCountOnEachSite != null ?
-                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+                         
                             });
                         }
                         else
@@ -1040,8 +1031,7 @@ namespace TLIS_Service.Services
                                 ReservedSpace = SitesViewModel.ReservedSpace,
                                 Status = SitesViewModel.Status,
                                 isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
-                                ItemsOnSite = GetItemsCountOnEachSite != null ?
-                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
+                              
                             });
                         }
                     }
@@ -1060,7 +1050,7 @@ namespace TLIS_Service.Services
             }
             catch (Exception)
             {
-                isRefresh = true;
+                
                 if (ErrorMessagesWhenReturning == null)
                 {
                     ErrorMessagesWhenReturning = new string[]
@@ -8369,14 +8359,13 @@ namespace TLIS_Service.Services
                             "AND SITECODE = :SITECODE AND USER_ID = :USER_ID AND SYS_ID = :SYS_ID";
 
 
-
                 using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
                 {
-                    queryCommand.Parameters.Add(new OracleParameter("BASE_TABLE", BASE_TABLE.ToLower()));
-                    queryCommand.Parameters.Add(new OracleParameter("BASE_RECORD_ID", BASE_RECORD_ID));
-                    queryCommand.Parameters.Add(new OracleParameter("SITECODE", SITECODE));
-                    queryCommand.Parameters.Add(new OracleParameter("USER_ID", USER_ID));
-                    queryCommand.Parameters.Add(new OracleParameter("SYS_ID", SYS_ID));
+                    queryCommand.Parameters.Add(new OracleParameter("BASE_TABLE", (object)BASE_TABLE ?? DBNull.Value));
+                    queryCommand.Parameters.Add(new OracleParameter("BASE_RECORD_ID", (object)BASE_RECORD_ID ?? DBNull.Value));
+                    queryCommand.Parameters.Add(new OracleParameter("SITECODE", (object)SITECODE ?? DBNull.Value));
+                    queryCommand.Parameters.Add(new OracleParameter("USER_ID", (object)USER_ID ?? DBNull.Value));
+                    queryCommand.Parameters.Add(new OracleParameter("SYS_ID", (object)SYS_ID ?? DBNull.Value));
 
                     using (OracleDataReader reader = queryCommand.ExecuteReader())
                     {
