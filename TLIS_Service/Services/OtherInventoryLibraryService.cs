@@ -3033,15 +3033,15 @@ namespace TLIS_Service.Services
 
                     TLIsolarLibrary SolarLegLib = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SolarLibraryEntites.Id);
 
-                    if (SolarLegLib.Length <= 0)
+                    if (SolarLibraryEntites.Length <= 0)
                     {
                         return new Response<EditSolarLibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    if (SolarLegLib.Width <= 0)
+                    if (SolarLibraryEntites.Width <= 0)
                     {
                         return new Response<EditSolarLibraryObject>(false, null, null, "Width must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
-                    SolarLegLib.SpaceLibrary = SolarLegLib.Length * SolarLegLib.Width;
+                    SolarLibraryEntites.SpaceLibrary = SolarLibraryEntites.Length * SolarLibraryEntites.Width;
 
 
                     var CheckModel = db.MV_SOLAR_LIBRARY_VIEW

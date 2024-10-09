@@ -3497,7 +3497,7 @@ namespace TLIS_Service.Services
                                     }
                                     else
                                     {
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                     }
 
                                 }
@@ -3515,7 +3515,7 @@ namespace TLIS_Service.Services
                                     if (AddPower.installationConfig.civilWithLegId != null)
                                     {
                                         AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                            AddPower.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                                            AddPower.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
                                             x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                         if (AllcivilinstId != null)
                                         {
@@ -3772,7 +3772,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                         }
 
 
@@ -3788,7 +3788,7 @@ namespace TLIS_Service.Services
                                     if (AddPower.installationConfig.civilWithoutLegId != null)
                                     {
                                         AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
-                                            AddPower.installationConfig.civilWithoutLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                            AddPower.installationConfig.civilWithoutLegId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                             x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
 
                                         if (AllcivilinstId != null)
@@ -4037,7 +4037,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                         }
 
                                     }
@@ -4052,7 +4052,7 @@ namespace TLIS_Service.Services
                                     if (AddPower.installationConfig.civilNonSteelId != null)
                                     {
                                         AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
-                                            AddPower.installationConfig.civilNonSteelId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                            AddPower.installationConfig.civilNonSteelId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                             x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                         if (AllcivilinstId != null)
                                         {
@@ -4185,7 +4185,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                         }
 
                                     }
@@ -4259,7 +4259,7 @@ namespace TLIS_Service.Services
                         if (Editpower.installationConfig.civilWithLegId != null)
                         {
                             AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                            Editpower.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                            Editpower.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == powerInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                             x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                             if (AllcivilinstId != null)
                             {
@@ -4717,7 +4717,7 @@ namespace TLIS_Service.Services
 
                             else
                             {
-                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                             }
 
                         }
@@ -4736,7 +4736,7 @@ namespace TLIS_Service.Services
                             {
 
                                 AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                               Editpower.installationConfig.civilWithLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                               Editpower.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == powerInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
                                x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                 if (AllcivilinstId != null)
                                 {
@@ -5211,7 +5211,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                 }
 
 
@@ -5227,7 +5227,7 @@ namespace TLIS_Service.Services
                             if (Editpower.installationConfig.civilWithoutLegId != null)
                             {
                                 AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
-                                  Editpower.installationConfig.civilWithoutLegId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                  Editpower.installationConfig.civilWithoutLegId && !x.Dismantle && x.SiteCode.ToLower() == powerInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                   x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
 
                                 if (AllcivilinstId != null)
@@ -5687,7 +5687,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                 }
                             }
 
@@ -5701,7 +5701,7 @@ namespace TLIS_Service.Services
                             if (Editpower.installationConfig.civilNonSteelId != null)
                             {
                                 AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
-                                   Editpower.installationConfig.civilNonSteelId && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                   Editpower.installationConfig.civilNonSteelId && !x.Dismantle && x.SiteCode.ToLower() == powerInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                    x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                 if (AllcivilinstId != null)
                                 {
@@ -5830,7 +5830,7 @@ namespace TLIS_Service.Services
                                 }
                                 else
                                 {
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found ", (int)ApiReturnCode.fail);
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                 }
 
                             }

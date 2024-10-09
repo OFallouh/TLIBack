@@ -21871,7 +21871,7 @@ namespace TLIS_Service.Services
                                 "string" => rule.Rule.OperationValueString,
                                 "int" or "double" or "float" => rule.Rule.OperationValueDouble,
                                 "datetime" => rule.Rule.OperationValueDateTime,
-                                "bool" => rule.Rule.OperationValueBoolean.ToString().ToLower(),
+                                "bool" => rule.Rule.OperationValueBoolean,
                                 _ => null
                             };
                             return new GroupObject
@@ -21892,7 +21892,7 @@ namespace TLIS_Service.Services
                                 "string" => rule.Rule.OperationValueString,
                                 "int" or "double" or "float" => rule.Rule.OperationValueDouble,
                                 "datetime" => rule.Rule.OperationValueDateTime,
-                                "bool" => rule.Rule.OperationValueBoolean.ToString().ToLower(),
+                                "bool" => rule.Rule.OperationValueBoolean,
                                 _ => null
                             };
 
