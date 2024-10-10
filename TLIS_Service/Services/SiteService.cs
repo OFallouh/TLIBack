@@ -940,7 +940,7 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
-        public Response<IEnumerable<SiteViewModelForGetAll>> GetSitesIntegration(int? UserId, string UserName)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName, ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite)
         {
             string[] ErrorMessagesWhenReturning = null;
 
@@ -971,21 +971,33 @@ namespace TLIS_Service.Services
 
                 List<string> AllUsedSites = UsedSitesInOtherInventories.Distinct().ToList();
 
-                
+               
                     IEnumerable<SiteViewModelForGetAll> SitesViewModels;
 
-                    
+                    if (isRefresh != null ? isRefresh.Value : false)
+                    {
+                        _MySites = _context.TLIsite.AsNoTracking().Include(x => x.Area).Include(x => x.Region)
+                                .Include(x => x.siteStatus).ToList();
+
+                        SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
+                    }
+                    else
+                    {
                         _MySites.Count();
                         SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
-                    
+                    }
+
+
+
+                    int Count = SitesViewModels.Count();
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
+                                                .Take(parameterPagination.PageSize));
 
 
 
 
 
-                int Count = SitesViewModels.Count();
-
-                List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
+                    List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
 
                     foreach (SiteViewModelForGetAll SitesViewModel in SitesViewModels)
                     {
@@ -1011,7 +1023,8 @@ namespace TLIS_Service.Services
                                 ReservedSpace = SitesViewModel.ReservedSpace,
                                 Status = SitesViewModel.Status,
                                 isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
-                         
+                                ItemsOnSite = GetItemsCountOnEachSite != null ?
+                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
                             });
                         }
                         else
@@ -1031,7 +1044,8 @@ namespace TLIS_Service.Services
                                 ReservedSpace = SitesViewModel.ReservedSpace,
                                 Status = SitesViewModel.Status,
                                 isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
-                              
+                                ItemsOnSite = GetItemsCountOnEachSite != null ?
+                                    (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
                             });
                         }
                     }
@@ -1050,7 +1064,7 @@ namespace TLIS_Service.Services
             }
             catch (Exception)
             {
-                
+                isRefresh = true;
                 if (ErrorMessagesWhenReturning == null)
                 {
                     ErrorMessagesWhenReturning = new string[]
@@ -8349,7 +8363,7 @@ namespace TLIS_Service.Services
 
 
 
-        public List<dynamic> GetHistory(string TabelName, int? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString)
+        public List<dynamic> GetHistory(string TabelName, string? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -8357,44 +8371,42 @@ namespace TLIS_Service.Services
 
                 List<dynamic> result = new List<dynamic>();
 
+                // Start with a base query
                 string sqlQuery = @"SELECT * FROM HISTORY_VIEW WHERE 1=1";
 
-
-                if (TabelName != null && BaseId != null)
+                // Build the query dynamically based on provided parameters
+                if (TabelName != null && BaseId != null && SiteCode == null && UserId == null && ExternalSysId == null)
                 {
                     sqlQuery += " AND BASE_TABLE = :TabelName AND BASE_RECORD_ID = :BaseId";
                 }
-
-                else if (TabelName != null && TabelName.ToLower() == "tlisite" && SiteCode != null)
+                else if (TabelName != null && TabelName.ToLower() == "tlisite" && SiteCode != null && BaseId == null && UserId == null && ExternalSysId == null)
                 {
                     sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
                 }
-
-                else if (UserId != null)
+                else if (UserId != null && TabelName == null && SiteCode == null && BaseId == null && ExternalSysId == null)
                 {
                     sqlQuery += " AND USER_ID = :UserId";
                 }
-
-                else if (ExternalSysId != null)
+                else if (ExternalSysId != null && TabelName == null && SiteCode == null && BaseId == null && UserId == null)
                 {
                     sqlQuery += " AND SYS_ID = :ExternalSysId";
                 }
-
-                else if (TabelName != null && TabelName.ToLower() != "tlisite" && SiteCode != null)
+                else if (TabelName != null && TabelName.ToLower() != "tlisite" && SiteCode != null && UserId == null && ExternalSysId == null && BaseId == null)
                 {
                     sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
                 }
-                else if (SiteCode != null)
+                else if (SiteCode != null && ExternalSysId == null && TabelName == null && BaseId == null && UserId == null)
                 {
-                    sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
+                    sqlQuery += " AND SITECODE = :SiteCode";
                 }
-                else if (TabelName != null && TabelName.ToLower() != "tlisite" && SiteCode != null && BaseId != null)
+                else if (TabelName != null && TabelName.ToLower() != "tlisite" && SiteCode != null && BaseId != null && UserId == null && ExternalSysId == null)
                 {
                     sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode AND BASE_RECORD_ID = :BaseId";
                 }
+
                 using (var command = new OracleCommand(sqlQuery, connection))
                 {
-
+                    // Add parameters only if they are not null
                     if (TabelName != null) command.Parameters.Add(new OracleParameter("TabelName", TabelName));
                     if (BaseId != null) command.Parameters.Add(new OracleParameter("BaseId", BaseId));
                     if (SiteCode != null) command.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
@@ -8418,6 +8430,8 @@ namespace TLIS_Service.Services
                 return result;
             }
         }
+
+
         public Response<SiteInfo> GetSiteInfo(string SiteCode)
         {
             var SiteInfo = _context.TLIsite.Include(x=>x.Area).Include(x=>x.Region).FirstOrDefault(x => x.SiteCode == SiteCode);

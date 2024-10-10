@@ -292,7 +292,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetHistory")]
         [ProducesResponseType(200, Type = typeof(List<dynamic>))]
-        public IActionResult GetHistory(string TabelName, int? BaseId,int? UserId, string SiteCode, int? ExternalSysId)
+        public IActionResult GetHistory(string TabelName, string? BaseId,int? UserId, string SiteCode, int? ExternalSysId)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             

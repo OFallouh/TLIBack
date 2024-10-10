@@ -7059,7 +7059,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("getAllSites")]
         [ProducesResponseType(200, Type = typeof(List<SiteViewModelForGetAll>))]
-        public IActionResult GetAllSites()
+        public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -7082,7 +7082,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.SiteService.GetSitesIntegration(userId, null);
+                var response = _unitOfWorkService.SiteService.GetSiteIntegration(userId, null, parameterPagination, isRefresh, GetItemsCountOnEachSite);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -7093,7 +7093,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.SiteService.GetSitesIntegration(null, username);
+                var response = _unitOfWorkService.SiteService.GetSiteIntegration(null, username, parameterPagination, isRefresh, GetItemsCountOnEachSite);
                 return Ok(response);
             }
             else

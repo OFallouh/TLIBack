@@ -30,7 +30,7 @@ namespace TLIS_Service.IService
     public interface ISiteService
     {
         Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite, List<FilterObjectList> filters = null);
-        Response<IEnumerable<SiteViewModelForGetAll>> GetSitesIntegration(int? UserId, string UserName);
+        Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName, ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite);
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectList> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
         Response<List<RecalculatSpaceOnSite>> RecalculateSite();
@@ -85,6 +85,6 @@ namespace TLIS_Service.IService
         Response<string> GetConfigurationTables(string SiteCode, string TableNameInstallation, int? CategoryId, string ConnectionString);
         Response<SiteDetailsObject> GetSiteDetails(string siteCode);
         Response<SiteDetailsObject> EditSiteDetalis(SiteDetailsObject siteDetailsObject, int? TaskId, int UserId);
-        List<dynamic> GetHistory(string BASE_TABLE, int? BASE_RECORD_ID, string SITECODE, int? USER_ID, int? SYS_ID, string ConnectionString);
+        List<dynamic> GetHistory(string BASE_TABLE, string? BASE_RECORD_ID, string SITECODE, int? USER_ID, int? SYS_ID, string ConnectionString);
     }
 }
