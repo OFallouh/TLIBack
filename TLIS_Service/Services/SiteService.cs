@@ -940,7 +940,7 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
             }
         }
-        public Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName, ParameterPagination parameterPagination, bool? isRefresh, bool? GetItemsCountOnEachSite)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName , bool? isRefresh, bool? GetItemsCountOnEachSite)
         {
             string[] ErrorMessagesWhenReturning = null;
 
@@ -990,8 +990,7 @@ namespace TLIS_Service.Services
 
 
                     int Count = SitesViewModels.Count();
-                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites.Skip((parameterPagination.PageNumber - 1) * parameterPagination.PageSize)
-                                                .Take(parameterPagination.PageSize));
+                    SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
 
 
 
