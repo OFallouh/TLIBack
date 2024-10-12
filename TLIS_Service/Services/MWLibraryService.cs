@@ -55,6 +55,7 @@ using TLIS_DAL.ViewModels.CabinetPowerTypeDTOs;
 using static TLIS_DAL.ViewModels.MW_RFULibraryDTOs.EditMWRFULibrary;
 using TLIS_DAL.ViewModels.MW_RFULibraryDTOs;
 using TLIS_DAL.ViewModels.LoadOtherLibraryDTOs;
+using TLIS_DAL.ViewModels.CivilNonSteelLibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -3941,14 +3942,71 @@ namespace TLIS_Service.Services
 
                                 var HistoryId=_unitOfWork.MW_DishLibraryRepository.AddWithH(UserId,null, MW_DishLibraryEntity);
                                 _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addMWDishLibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addMWDishLibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addMWDishLibraryObject.DynamicAttributes != null ? addMWDishLibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addMWDishLibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addMWDishLibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, MW_DishLibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddMWDishLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -4010,14 +4068,71 @@ namespace TLIS_Service.Services
                             var HistoryId=  _unitOfWork.MW_ODULibraryRepository.AddWithH(UserId,null, MW_ODULibraryEntity);
                             _unitOfWork.SaveChanges();
 
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in aDDMWODULibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in aDDMWODULibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (aDDMWODULibraryObject.DynamicAttributes != null ? aDDMWODULibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in aDDMWODULibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = aDDMWODULibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, MW_ODULibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<ADDMWODULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -4081,14 +4196,71 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.MW_BULibraryRepository.AddWithH(UserId,null, MW_BULibraryEntity);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addMWBULibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addMWBULibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addMWBULibraryObject.DynamicAttributes != null ? addMWBULibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addMWBULibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addMWBULibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, MW_BULibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddMWBULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -4269,14 +4441,71 @@ namespace TLIS_Service.Services
                            var HistoryId= _unitOfWork.MW_OtherLibraryRepository.AddWithH(UserId,null, MW_OtherLibraryEntity);
                             _unitOfWork.SaveChanges();
 
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addMWOtherLibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addMWOtherLibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addMWOtherLibraryObject.DynamicAttributes != null ? addMWOtherLibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addMWOtherLibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addMWOtherLibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, MW_OtherLibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddMWOtherLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -4333,14 +4562,71 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.MW_RFULibraryRepository.AddWithH(UserId,null, MW_RFULibraryEntity);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addMWRFULibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addMWRFULibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addMWRFULibraryObject.DynamicAttributes != null ? addMWRFULibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addMWRFULibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addMWRFULibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, MW_RFULibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddMWRFULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -5459,14 +5745,71 @@ namespace TLIS_Service.Services
                     var HistoryId =_unitOfWork.MW_BULibraryRepository.UpdateWithH(userId,null, MWBULegLib, MWBULibraryEntites);
                     _unitOfWork.SaveChanges();
 
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editMWBULibrary.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editMWBULibrary.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editMWBULibrary.DynamicAttributes != null ? editMWBULibrary.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editMWBULibrary.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editMWBULibrary.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, MWBULibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditMWBULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
 
@@ -5947,14 +6290,71 @@ namespace TLIS_Service.Services
                     var HistoryId = _unitOfWork.MW_OtherLibraryRepository.UpdateWithH(userId,null, MWOtherLegLib, MWOtherLibraryEntites);
                     _unitOfWork.SaveChanges();
 
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editMWOtherLibraryObject.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editMWOtherLibraryObject.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editMWOtherLibraryObject.DynamicAttributes != null ? editMWOtherLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editMWOtherLibraryObject.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editMWOtherLibraryObject.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, MWOtherLibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditMWOtherLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
                     LogisticalObject OldLogisticalItemIds = new LogisticalObject();
@@ -6069,14 +6469,71 @@ namespace TLIS_Service.Services
                    var HistoryId= _unitOfWork.MW_RFULibraryRepository.UpdateWithH(userId,null, MWRFULegLib, MWRFULibraryEntites);
                     _unitOfWork.SaveChanges();
 
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editMWRFULibraryAttributes.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editMWRFULibraryAttributes.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editMWRFULibraryAttributes.DynamicAttributes != null ? editMWRFULibraryAttributes.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editMWRFULibraryAttributes.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editMWRFULibraryAttributes.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, MWRFULibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditMWRFULibrary>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
 
@@ -6194,14 +6651,71 @@ namespace TLIS_Service.Services
                     var HistoryId=_unitOfWork.MW_DishLibraryRepository.UpdateWithH(userId,null, MWDishLegLib, MWDishLibraryEntites);
                     _unitOfWork.SaveChanges();
 
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editMWDishLibraryObject.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editMWDishLibraryObject.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editMWDishLibraryObject.DynamicAttributes != null ? editMWDishLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editMWDishLibraryObject.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editMWDishLibraryObject.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, MWDishLibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditMWDishLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
 
@@ -6319,14 +6833,71 @@ namespace TLIS_Service.Services
                     var HistoryId= _unitOfWork.MW_ODULibraryRepository.UpdateWithH(userId,null, MWODULegLib, MWODULibraryEntites);
                     _unitOfWork.SaveChanges();
 
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editMWODULibraryObject.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editMWODULibraryObject.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editMWODULibraryObject.DynamicAttributes != null ? editMWODULibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editMWODULibraryObject.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editMWODULibraryObject.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, MWODULibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditMWODULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();

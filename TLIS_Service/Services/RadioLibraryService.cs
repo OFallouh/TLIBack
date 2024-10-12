@@ -1992,14 +1992,71 @@ namespace TLIS_Service.Services
 
                            var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.AddWithH(UserId,null, radioAntennaLibrary);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+
+                                var sortedDynamicAttributes = RadioLibraryViewModel.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, radioAntennaLibrary.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddRadioAntennaLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -2181,14 +2238,71 @@ namespace TLIS_Service.Services
 
                            var HistoryId= _unitOfWork.RadioOtherLibraryRepository.AddWithH(UserId,null, radioOtherLibrary);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addRadioOtherLibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addRadioOtherLibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addRadioOtherLibraryObject.DynamicAttributes != null ? addRadioOtherLibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addRadioOtherLibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addRadioOtherLibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, radioOtherLibrary.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddRadioOtherLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -2251,14 +2365,71 @@ namespace TLIS_Service.Services
 
                            var HistoryId= _unitOfWork.RadioRRULibraryRepository.AddWithH(UserId,null, radioRRULibrary);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+
+                                var sortedDynamicAttributes = RadioLibraryViewModel.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, radioRRULibrary.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddRadioRRULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -3571,14 +3742,71 @@ namespace TLIS_Service.Services
                         radioAntennaLibrary.Deleted = OldRadioAntenna.Deleted;
                         var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntenna, radioAntennaLibrary);
                         await _unitOfWork.SaveChangesAsync();
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+
+                        var sortedDynamicAttributes = RadioLibraryViewModel.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioAntennaLibrary.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditRadioAntennaLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
                     dynamic LogisticalItemIds = new ExpandoObject();
@@ -4048,14 +4276,71 @@ namespace TLIS_Service.Services
                     radioOtherLibrary.Deleted = OldRadioOther.Deleted;
                    var HistoryId= _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId,null, OldRadioOther, radioOtherLibrary);
                     await _unitOfWork.SaveChangesAsync();
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editRadioOtherLibraryObject.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editRadioOtherLibraryObject.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editRadioOtherLibraryObject.DynamicAttributes != null ? editRadioOtherLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editRadioOtherLibraryObject.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editRadioOtherLibraryObject.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOtherLibrary.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditRadioOtherLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
                     dynamic LogisticalItemIds = new ExpandoObject();
@@ -4892,14 +5177,71 @@ namespace TLIS_Service.Services
                     radioRRULibrary.Deleted = OldRadioRRU.Deleted;
                     var HistoryId= _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId,null, OldRadioRRU, radioRRULibrary);
                     await _unitOfWork.SaveChangesAsync();
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (RadioLibraryViewModel.DynamicAttributes != null ? RadioLibraryViewModel.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in RadioLibraryViewModel.DynamicAttributes)
+
+                        var sortedDynamicAttributes = RadioLibraryViewModel.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioRRULibrary.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditRadioRRULibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
 

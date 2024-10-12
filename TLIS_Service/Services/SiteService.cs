@@ -8368,67 +8368,65 @@ namespace TLIS_Service.Services
             {
                 connection.Open();
 
-                List<dynamic> result = new List<dynamic>();
+                List<dynamic> result = new List<dynamic>();          
+                string sqlQuery = null;
 
-                // Start with a base query
-                string sqlQuery = @"SELECT * FROM HISTORY_VIEW WHERE 1=1";
+                if (!string.IsNullOrEmpty(TabelName) && !string.IsNullOrEmpty(BaseId) && string.IsNullOrEmpty(SiteCode) && UserId == null && ExternalSysId == null)
+                {
+                    sqlQuery += @"SELECT * FROM HISTORY_VIEW WHERE BASE_TABLE = :TabelName AND BASE_RECORD_ID = :BaseId";
+                }
+                else if (!string.IsNullOrEmpty(TabelName) && TabelName.ToLower() == "tlisite" && !string.IsNullOrEmpty(SiteCode) && BaseId == null && UserId == null && ExternalSysId == null)
+                {
+                    sqlQuery += @"SELECT * FROM HISTORY_VIEW WHERE BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
+                }
+                else if (UserId != null && string.IsNullOrEmpty(TabelName) && string.IsNullOrEmpty(SiteCode) && BaseId == null && ExternalSysId == null)
+                {
+                    sqlQuery += @"SELECT * FROM HISTORY_VIEW WHERE USER_ID = :UserId";
+                }
+                else if (ExternalSysId != null && string.IsNullOrEmpty(TabelName) && string.IsNullOrEmpty(SiteCode) && BaseId == null && UserId == null)
+                {
+                    sqlQuery += @"SELECT * FROM HISTORY_VIEW WHERE SYS_ID = :ExternalSysId";
+                }
+                else if (!string.IsNullOrEmpty(TabelName) && TabelName.ToLower() != "tlisite" && !string.IsNullOrEmpty(SiteCode) && UserId == null && ExternalSysId == null && BaseId == null)
+                {
+                    sqlQuery += @"SELECT * FROM HISTORY_VIEW WHERE BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
+                }
+                else if (!string.IsNullOrEmpty(SiteCode) && ExternalSysId == null && string.IsNullOrEmpty(TabelName) && BaseId == null && UserId == null)
+                {
+                    sqlQuery += @"SELECT * FROM HISTORY_VIEW WHERE SITECODE = :SiteCode";
+                }
+                else if (!string.IsNullOrEmpty(TabelName) && TabelName.ToLower() != "tlisite" && !string.IsNullOrEmpty(SiteCode) && !string.IsNullOrEmpty(BaseId) && UserId == null && ExternalSysId == null)
+                {
+                    sqlQuery = @"select * from HISTORY_VIEW where BASE_TABLE = :TabelName AND SITECODE = :SiteCode AND BASE_RECORD_ID = :BaseId";
+                }
+                using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
+                {
+                    queryCommand5.Parameters.Add(new OracleParameter("TabelName", TabelName));
+                    queryCommand5.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
+                    queryCommand5.Parameters.Add(new OracleParameter("BaseId", BaseId));
 
-                // Build the query dynamically based on provided parameters
-                if (TabelName != null && BaseId != null && SiteCode == null && UserId == null && ExternalSysId == null)
-                {
-                    sqlQuery += " AND BASE_TABLE = :TabelName AND BASE_RECORD_ID = :BaseId";
-                }
-                else if (TabelName != null && TabelName.ToLower() == "tlisite" && SiteCode != null && BaseId == null && UserId == null && ExternalSysId == null)
-                {
-                    sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
-                }
-                else if (UserId != null && TabelName == null && SiteCode == null && BaseId == null && ExternalSysId == null)
-                {
-                    sqlQuery += " AND USER_ID = :UserId";
-                }
-                else if (ExternalSysId != null && TabelName == null && SiteCode == null && BaseId == null && UserId == null)
-                {
-                    sqlQuery += " AND SYS_ID = :ExternalSysId";
-                }
-                else if (TabelName != null && TabelName.ToLower() != "tlisite" && SiteCode != null && UserId == null && ExternalSysId == null && BaseId == null)
-                {
-                    sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
-                }
-                else if (SiteCode != null && ExternalSysId == null && TabelName == null && BaseId == null && UserId == null)
-                {
-                    sqlQuery += " AND SITECODE = :SiteCode";
-                }
-                else if (TabelName != null && TabelName.ToLower() != "tlisite" && SiteCode != null && BaseId != null && UserId == null && ExternalSysId == null)
-                {
-                    sqlQuery += " AND BASE_TABLE = :TabelName AND SITECODE = :SiteCode AND BASE_RECORD_ID = :BaseId";
-                }
-
-                using (var command = new OracleCommand(sqlQuery, connection))
-                {
-                    // Add parameters only if they are not null
-                    if (TabelName != null) command.Parameters.Add(new OracleParameter("TabelName", TabelName));
-                    if (BaseId != null) command.Parameters.Add(new OracleParameter("BaseId", BaseId));
-                    if (SiteCode != null) command.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
-                    if (UserId != null) command.Parameters.Add(new OracleParameter("UserId", UserId));
-                    if (ExternalSysId != null) command.Parameters.Add(new OracleParameter("ExternalSysId", ExternalSysId));
-
-                    using (var reader = command.ExecuteReader())
+                    using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
                     {
-                        while (reader.Read())
+                        while (reader5.Read())
                         {
-                            dynamic row = new ExpandoObject();
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            dynamic dynamicResult = new ExpandoObject();
+                            var properties = (IDictionary<string, object>)dynamicResult;
+
+                            for (int i = 0; i < reader5.FieldCount; i++)
                             {
-                                ((IDictionary<string, object>)row).Add(reader.GetName(i), reader[i]);
+                                properties[reader5.GetName(i)] = reader5[i];
                             }
-                            result.Add(row);
+
+                            result.Add(dynamicResult);
                         }
                     }
                 }
+               
 
                 return result;
             }
         }
+
 
 
         public Response<SiteInfo> GetSiteInfo(string SiteCode)

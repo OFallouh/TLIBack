@@ -52,6 +52,7 @@ using TLIS_DAL.ViewModels.TelecomTypeDTOs;
 using TLIS_DAL.ViewModels.RadioRRULibraryDTOs;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using TLIS_DAL.ViewModels.RadioOtherLibraryDTOs;
+using TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -2934,16 +2935,74 @@ namespace TLIS_Service.Services
 
                     var HistoryId = _unitOfWork.GeneratorLibraryRepository.UpdateWithH(userId,null, GeneratorLegLib, GeneratorLibraryEntites);
                     _unitOfWork.SaveChanges();
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editGeneratorLibraryObject.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editGeneratorLibraryObject.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editGeneratorLibraryObject.DynamicAttributes != null ? editGeneratorLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editGeneratorLibraryObject.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editGeneratorLibraryObject.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, GeneratorLibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditGeneratorLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
+
 
 
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
@@ -3058,16 +3117,74 @@ namespace TLIS_Service.Services
 
                     var HistoryId = _unitOfWork.SolarLibraryRepository.UpdateWithH(userId,null, SolarLegLib, SolarLibraryEntites);
                     _unitOfWork.SaveChanges();
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editSolarLibraryObject.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editSolarLibraryObject.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editSolarLibraryObject.DynamicAttributes != null ? editSolarLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editSolarLibraryObject.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editSolarLibraryObject.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, SolarLibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditSolarLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
+
 
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
 
@@ -3544,14 +3661,71 @@ namespace TLIS_Service.Services
                     var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.UpdateWithH(userId,null, CabinetPowerLegLib, CabinetPowerLibraryEntites);
                     _unitOfWork.SaveChanges();
 
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editCabinetPowerLibraryObject.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editCabinetPowerLibraryObject.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editCabinetPowerLibraryObject.DynamicAttributes != null ? editCabinetPowerLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editCabinetPowerLibraryObject.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editCabinetPowerLibraryObject.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, CabinetPowerLibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditCabinetPowerLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
 
@@ -4387,16 +4561,74 @@ namespace TLIS_Service.Services
                     var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithH(userId,null, CabinetTelecomLegLib, CabinetTelecomLibraryEntites);
                     _unitOfWork.SaveChanges();
 
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in editCabinetTelecomLibraryObject.DynamicAttributes)
+                    {
+                        ints.Add(item.id);
+                    }
+
+
+                    foreach (var item in editCabinetTelecomLibraryObject.DynamicAttributes)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
                     if (editCabinetTelecomLibraryObject.DynamicAttributes != null ? editCabinetTelecomLibraryObject.DynamicAttributes.Count > 0 : false)
                     {
-                        foreach (var item in editCabinetTelecomLibraryObject.DynamicAttributes)
+
+                        var sortedDynamicAttributes = editCabinetTelecomLibraryObject.DynamicAttributes
+                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                            .ToList();
+
+
+                        foreach (var item in sortedDynamicAttributes)
                         {
                             var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, CabinetTelecomLibraryEntites.Id, HistoryId).Message;
                             if (Message != "Success")
+                            {
                                 return new Response<EditCabinetTelecomLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                            }
                         }
                     }
+
 
                     AddLogisticalViewModel OldLogisticalItemIds = new AddLogisticalViewModel();
 
@@ -8095,14 +8327,71 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.GeneratorLibraryRepository.AddWithH(UserId,null, GeneratorLibraryEntity);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addGeneratorLibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addGeneratorLibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addGeneratorLibraryObject.DynamicAttributes != null ? addGeneratorLibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addGeneratorLibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addGeneratorLibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, GeneratorLibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddGeneratorLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -8157,14 +8446,71 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.SolarLibraryRepository.AddWithH(UserId,null, SolarLibraryEntity);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addSolarLibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addSolarLibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addSolarLibraryObject.DynamicAttributes != null ? addSolarLibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addSolarLibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addSolarLibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, SolarLibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddSolarLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -8217,14 +8563,71 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.AddWithH(UserId,null, CabinetPowerLibraryEntity);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addCabinetPowerLibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addCabinetPowerLibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addCabinetPowerLibraryObject.DynamicAttributes != null ? addCabinetPowerLibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addCabinetPowerLibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addCabinetPowerLibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CabinetPowerLibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddCabinetPowerLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
@@ -8400,14 +8803,71 @@ namespace TLIS_Service.Services
 
                             var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.AddWithH(UserId,null, CabinetPowerLibraryEntity);
                             _unitOfWork.SaveChanges();
+                            List<int?> sortedIds = new List<int?>();
+
+
+                            List<int?> ints = new List<int?>();
+
+
+                            foreach (var item in addCabinetTelecomLibraryObject.DynamicAttributes)
+                            {
+                                ints.Add(item.id);
+                            }
+
+
+                            foreach (var item in addCabinetTelecomLibraryObject.DynamicAttributes)
+                            {
+                                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
+                                var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                                    x => x.DynamicAttId == item.id, x => x.DynamicAtt);
+
+
+                                if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                                {
+                                    var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                        x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
+
+
+                                    foreach (var itemRule in Rule)
+                                    {
+                                        if (itemRule.AttributeViewManagmentId != null)
+                                        {
+
+                                            if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                            {
+
+                                                sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            foreach (var item in ints)
+                            {
+                                if (!sortedIds.Contains(item))
+                                {
+
+                                    sortedIds.Add(item);
+                                }
+                            }
+
                             if (addCabinetTelecomLibraryObject.DynamicAttributes != null ? addCabinetTelecomLibraryObject.DynamicAttributes.Count > 0 : false)
                             {
-                                foreach (var item in addCabinetTelecomLibraryObject.DynamicAttributes)
+
+                                var sortedDynamicAttributes = addCabinetTelecomLibraryObject.DynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+
+                                foreach (var item in sortedDynamicAttributes)
                                 {
                                     var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CabinetPowerLibraryEntity.Id, HistoryId).Message;
                                     if (Message != "Success")
+                                    {
                                         return new Response<AddCabinetTelecomLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                                    }
                                 }
                             }
                             dynamic LogisticalItemIds = new ExpandoObject();
