@@ -288,7 +288,25 @@ namespace TLIS_DAL.ViewModels
             CreateMap<InstallationMWRFUConfigObject, TLImwRFU>().ReverseMap();
             CreateMap<installationAttributesMWDRFUObject, TLImwRFU>().ReverseMap();
             CreateMap<AddAsTypeViewModel, TLIoduInstallationType>().ReverseMap();
-            CreateMap<object, TLIcivilWithLegLibrary>().ReverseMap();
+            CreateMap<TLIcivilWithLegLibrary, TLIcivilWithLegLibrary>().ReverseMap();
+            CreateMap<TLIcivilWithoutLegLibrary, TLIcivilWithoutLegLibrary>().ReverseMap();
+            CreateMap<TLIcivilNonSteelLibrary, TLIcivilNonSteelLibrary>().ReverseMap();
+            CreateMap<TLIsideArmLibrary, TLIsideArmLibrary>().ReverseMap();
+            CreateMap<TLImwBULibrary, TLImwBULibrary>().ReverseMap();
+            CreateMap<TLImwRFULibrary, TLImwRFULibrary>().ReverseMap();
+            CreateMap<TLImwDishLibrary, TLImwDishLibrary>().ReverseMap();
+            CreateMap<TLImwODULibrary, TLImwODULibrary>().ReverseMap();
+            CreateMap<TLImwOtherLibrary, TLImwOtherLibrary>().ReverseMap();
+            CreateMap<TLIradioAntennaLibrary, TLIradioAntennaLibrary>().ReverseMap();
+            CreateMap<TLIradioRRULibrary, TLIradioRRULibrary>().ReverseMap();
+            CreateMap<TLIradioOtherLibrary, TLIradioOtherLibrary>().ReverseMap();
+            CreateMap<TLIloadOtherLibrary, TLIloadOtherLibrary>().ReverseMap();
+            CreateMap<TLIpowerLibrary, TLIpowerLibrary>().ReverseMap();
+            CreateMap<TLIcabinetPowerLibrary, TLIcabinetPowerLibrary>().ReverseMap();
+            CreateMap<TLIcabinetTelecomLibrary, TLIcabinetTelecomLibrary>().ReverseMap();
+            CreateMap<TLIsolarLibrary, TLIsolarLibrary>().ReverseMap();
+            CreateMap<TLIgeneratorLibrary, TLIgeneratorLibrary>().ReverseMap();
+     
      
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();

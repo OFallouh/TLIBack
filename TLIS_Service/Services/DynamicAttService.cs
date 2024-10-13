@@ -7660,19 +7660,19 @@ namespace TLIS_Service.Services
                 else if (TableName.ToLower() == TablesNames.TLIcabinet.ToString().ToLower())
                 {
                     Records = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x =>
-                        x.allOtherInventoryInst.cabinetId !=null,x=>x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet)
+                        x.allOtherInventoryInst.cabinetId !=null && !x.Dismantle, x=>x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet)
                         .Select(x => x.allOtherInventoryInst.cabinet.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIsolar.ToString().ToLower())
                 {
                     Records = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x =>
-                       x.allOtherInventoryInst.solarId != null, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar)
+                       x.allOtherInventoryInst.solarId != null && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar)
                        .Select(x => x.allOtherInventoryInst.solar.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIgenerator.ToString().ToLower())
                 {
                     Records = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x =>
-                       x.allOtherInventoryInst.generatorId != null, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator)
+                       x.allOtherInventoryInst.generatorId != null && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator)
                        .Select(x => x.allOtherInventoryInst.generator.Id).ToList();
                 }
 
@@ -20417,6 +20417,7 @@ namespace TLIS_Service.Services
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                 }
+                                                overallResult = false;
                                             }
                                         }
                                     }

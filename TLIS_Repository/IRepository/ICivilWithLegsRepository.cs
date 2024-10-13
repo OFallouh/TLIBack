@@ -7,6 +7,7 @@ using TLIS_DAL.Models;
 using TLIS_DAL.ViewModelBase;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegDTOs;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
@@ -18,6 +19,7 @@ namespace TLIS_Repository.IRepository
     {
         IDictionary<string, object> BuildDynamicSelect(object obj, Dictionary<string, string>? dynamic, List<string> propertyNamesStatic, Dictionary<string, string> propertyNamesDynamic);
         List<KeyValuePair<string, List<DropDownListFilters>>> GetRelatedTables();
+        List<int?> ProcessDynamicAttributes(AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, TLIcivilWithLegLibrary CivilWithLegEntites, int? HistoryId);
         Response<bool> CheckDynamicValidationAndDependenceRuleDynamic(List<GroupObject> group , int RecordId, bool groupResult,string TabelName,int? CategoryId);
         bool BuildDynamicQuery(List<FilterObjectList> filters, IDictionary<string, object> item);
         Response<float> CheckloadsOnCivil(int allcivilinstId,int? loadid,float Azimuth, float CenterHigh);

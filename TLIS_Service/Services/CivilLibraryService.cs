@@ -154,65 +154,14 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
 
 
-                             
-                                List<int?> sortedIds = new List<int?>();
+                                var sortedIds =_unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddCivilWithLegsLibraryObject, CivilWithLegEntites, HistoryId);
 
-                                
-                                List<int?> ints = new List<int?>();
-
-              
-                                foreach (var item in AddCivilWithLegsLibraryObject.dynamicAttributes)
+                                if (AddCivilWithLegsLibraryObject.dynamicAttributes != null && AddCivilWithLegsLibraryObject.dynamicAttributes.Count > 0)
                                 {
-                                    ints.Add(item.id);
-                                }
-
-                         
-                                foreach (var item in AddCivilWithLegsLibraryObject.dynamicAttributes)
-                                {
-                                    var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.id);
-                                    var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
-                                        x => x.DynamicAttId == item.id, x => x.DynamicAtt);
-
-                               
-                                    if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
-                                    {
-                                        var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
-                                            x => x.dynamicAttId == item.id, x => x.AttributeViewManagment).ToList();
-
-                               
-                                        foreach (var itemRule in Rule)
-                                        {
-                                            if (itemRule.AttributeViewManagmentId != null)
-                                            {
-                                          
-                                                if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
-                                                {
-                                                 
-                                                    sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                           
-                                foreach (var item in ints)
-                                {
-                                    if (!sortedIds.Contains(item))
-                                    {
-                                       
-                                        sortedIds.Add(item);
-                                    }
-                                }
-
-                                if (AddCivilWithLegsLibraryObject.dynamicAttributes != null ? AddCivilWithLegsLibraryObject.dynamicAttributes.Count > 0 : false)
-                                {
-                                   
                                     var sortedDynamicAttributes = AddCivilWithLegsLibraryObject.dynamicAttributes
                                         .OrderBy(item => sortedIds.IndexOf(item.id))
                                         .ToList();
 
-                             
                                     foreach (var item in sortedDynamicAttributes)
                                     {
                                         var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CivilWithLegEntites.Id, HistoryId).Message;
@@ -222,6 +171,7 @@ namespace TLIS_Service.Services
                                         }
                                     }
                                 }
+
 
 
                                 dynamic LogisticalItemIds = new ExpandoObject();
