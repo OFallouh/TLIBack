@@ -13386,8 +13386,512 @@ namespace TLIS_Service.Services
                     
                    layers.Add(layersCivilWithLegs);
                 }
-                  
-                    if (Helpers.Constants.LoadSubType.TLImwOther.ToString() == TabelName)
+                if (Helpers.Constants.LoadSubType.TLImwODU.ToString() == TabelName)
+                {
+
+                    Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
+                            {
+                                { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
+                            };
+
+                    ListAttributesActivated = ListAttributesActivated
+                        .Select(FKitem =>
+                        {
+                            if (repositoryMethods.ContainsKey(FKitem.Label.ToLower()))
+                            {
+                                FKitem.Options = repositoryMethods[FKitem.Label.ToLower()]().ToList();
+                            }
+                            else
+                            {
+                                FKitem.Options = new object[0];
+                            }
+
+                            return FKitem;
+                        })
+                        .ToList();
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    item item = new item()
+                    {
+                        staticAttributes = ListAttributesActivatedSite,
+                        dyanmicAttributes = null
+                    };
+
+                    InstalltionAttribute installtionAttributes = new InstalltionAttribute()
+                    {
+                        Id = 0,
+                        Key = "TLIsite",
+                        Items = item
+                    };
+                    layers layersSite = new layers()
+                    {
+
+                        Label = "Site",
+                        InstalltionAttributes = installtionAttributes,
+                        LibraryAttributes = null,
+
+                    };
+                    layersSite.InstalltionAttributes = installtionAttributes;
+                    layersSite.LibraryAttributes = null;
+                    layers.Add(layersSite);
+
+                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                    var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
+                    if (sectionsLegTypeItem != null)
+                    {
+                        sectionsLegTypeItem.Options = _mapper.Map<List<LocationTypeViewModel>>(
+                            _unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                        );
+                    }
+
+                    var baseTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "basetype_name");
+                    if (baseTypeItem != null)
+                    {
+                        baseTypeItem.Options = _mapper.Map<List<BaseTypeViewModel>>(
+                            _unitOfWork.BaseTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                        );
+                    }
+
+                    var ownerItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
+                    if (ownerItem != null)
+                    {
+                        ownerItem.Options = _mapper.Map<List<OwnerViewModel>>(
+                            _unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                        );
+                    }
+
+                    var baseCivilWithLegsTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "basecivilwithlegtype_name");
+                    if (baseCivilWithLegsTypeItem != null)
+                    {
+                        baseCivilWithLegsTypeItem.Options = _mapper.Map<List<BaseCivilWithLegsTypeViewModel>>(
+                            _unitOfWork.BaseCivilWithLegsTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                        );
+                    }
+
+                    var guyLineTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "guylinetype_name");
+                    if (guyLineTypeItem != null)
+                    {
+                        guyLineTypeItem.Options = _mapper.Map<List<GuyLineTypeViewModel>>(
+                            _unitOfWork.GuyLineTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                        );
+                    }
+
+                    var supportTypeImplementedItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "supporttypeimplemented_name");
+                    if (supportTypeImplementedItem != null)
+                    {
+                        supportTypeImplementedItem.Options = _mapper.Map<List<SupportTypeImplementedViewModel>>(
+                            _unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                        );
+                    }
+
+                    var enforcementCategoryItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "enforcmentcategory_name");
+                    if (enforcementCategoryItem != null)
+                    {
+                        enforcementCategoryItem.Options = _mapper.Map<List<EnforcmentCategoryViewModel>>(
+                            _unitOfWork.EnforcmentCategoryRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()
+                        );
+                    }
+
+
+                    var BasePlateShapeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "BasePlateShape".ToLower());
+                    if (BasePlateShapeItem != null)
+                    {
+                        List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)BasePlateShape.Circular,
+                            Name = BasePlateShape.Circular.ToString()
+                        });
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)BasePlateShape.Rectangular,
+                            Name = BasePlateShape.Rectangular.ToString()
+                        });
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)BasePlateShape.Square,
+                            Name = BasePlateShape.Square.ToString()
+                        });
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)BasePlateShape.NotMeasurable,
+                            Name = BasePlateShape.NotMeasurable.ToString()
+                        });
+
+                        BasePlateShapeItem.Options = BasePlateShapes;
+
+                    }
+                    var structuretypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "structuretype".ToLower());
+                    if (structuretypeItem != null)
+                    {
+                        List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)StructureTypeCompatibleWithDesign.Yes,
+                            Name = StructureTypeCompatibleWithDesign.Yes.ToString()
+                        });
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)StructureTypeCompatibleWithDesign.No,
+                            Name = StructureTypeCompatibleWithDesign.No.ToString()
+                        });
+
+
+                        structuretypeItem.Options = BasePlateShapes;
+
+                    }
+                    var sectionslegtypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "sectionslegtype".ToLower());
+                    if (sectionslegtypeItem != null)
+                    {
+                        List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)SectionsLegTypeCompatibleWithDesign.Yes,
+                            Name = SectionsLegTypeCompatibleWithDesign.Yes.ToString()
+                        });
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)SectionsLegTypeCompatibleWithDesign.No,
+                            Name = SectionsLegTypeCompatibleWithDesign.No.ToString()
+                        });
+
+
+                        sectionslegtypeItem.Options = BasePlateShapes;
+
+                    }
+                    var TableNameEntityTower = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIcivilWithLegs".ToLower());
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutTower = _unitOfWork.DynamicAttRepository
+                   .GetDynamicInstAttInst(TableNameEntityTower.Id, CategoryId);
+                    item itemTower = new item()
+                    {
+                        staticAttributes = ListAttributesActivatedTower,
+                        dyanmicAttributes = DynamicAttributesWithoutTower
+                    };
+
+                    InstalltionAttribute installtionAttributesTower = new InstalltionAttribute()
+                    {
+                        Id = 1,
+                        Key = "TLIcivilWithLegs",
+                        Items = itemTower
+                    };
+
+
+                    layers layersTower = new layers()
+                    {
+
+                        Label = "Civil With Legs",
+                        InstalltionAttributes = installtionAttributesTower,
+                        LibraryAttributes = null,
+
+                    };
+
+                    layers.Add(layersTower);
+
+                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                    var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
+                    if (structuretype_name != null)
+                    {
+                        structuretype_name.Options = _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                    }
+                    var instcivilwithoutlegstype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "subtype_name");
+                    if (instcivilwithoutlegstype_name != null)
+                    {
+                        instcivilwithoutlegstype_name.Options = _mapper.Map<List<SubTypeViewModel>>(_unitOfWork.SubTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
+
+                    }
+                    var equipmentslocationItem = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "equipmentslocation".ToLower());
+                    if (equipmentslocationItem != null)
+                    {
+                        List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)EquipmentsLocation.Body,
+                            Name = EquipmentsLocation.Body.ToString()
+                        });
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)EquipmentsLocation.Platform,
+                            Name = EquipmentsLocation.Platform.ToString()
+                        });
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)EquipmentsLocation.Together,
+                            Name = EquipmentsLocation.Together.ToString()
+                        });
+
+                        equipmentslocationItem.Options = BasePlateShapes;
+
+                    }
+                    var ladderstepsItem = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "laddersteps".ToLower());
+                    if (ladderstepsItem != null)
+                    {
+                        List<EnumOutPut> BasePlateShapes = new List<EnumOutPut>();
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)LadderSteps.Ladder,
+                            Name = LadderSteps.Ladder.ToString()
+                        });
+                        BasePlateShapes.Add(new EnumOutPut
+                        {
+                            Id = (int)LadderSteps.Steps,
+                            Name = LadderSteps.Steps.ToString()
+                        });
+
+
+                        ladderstepsItem.Options = BasePlateShapes;
+
+                    }
+
+                    var TableNameEntityCivilWithOutMast = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIcivilWithoutLeg".ToLower());
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutCivilWithOutMast = _unitOfWork.DynamicAttRepository
+                   .GetDynamicInstAttInst(TableNameEntityCivilWithOutMast.Id, 1);
+
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutCivilWithOutCapsule = _unitOfWork.DynamicAttRepository
+                  .GetDynamicInstAttInst(TableNameEntityCivilWithOutMast.Id, 2);
+
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutCivilWithOutMonopole = _unitOfWork.DynamicAttRepository
+                  .GetDynamicInstAttInst(TableNameEntityCivilWithOutMast.Id, 3);
+                    item itemCivilWithOutMast = new item()
+                    {
+                        staticAttributes = ListAttributesActivatedCivilWithOutMast,
+                        dyanmicAttributes = DynamicAttributesWithoutCivilWithOutMast
+                    };
+
+                    InstalltionAttribute installtionAttributesCivilWithOutMast = new InstalltionAttribute()
+                    {
+                        Id = 2,
+                        Key = "TLIcivilWithoutLeg_Mast",
+                        Items = itemCivilWithOutMast
+                    };
+
+
+                    layers layersCivilWithOutMast = new layers()
+                    {
+
+                        Label = "Civil Without Legs Mast",
+                        InstalltionAttributes = installtionAttributesCivilWithOutMast,
+                        LibraryAttributes = null,
+
+                    };
+
+                    layers.Add(layersCivilWithOutMast);
+
+
+                    item itemCivilWithOutCapsule = new item()
+                    {
+                        staticAttributes = ListAttributesActivatedCivilWithOutMast,
+                        dyanmicAttributes = DynamicAttributesWithoutCivilWithOutCapsule
+                    };
+
+                    InstalltionAttribute installtionAttributesCivilWithOutCapsule = new InstalltionAttribute()
+                    {
+                        Id = 3,
+                        Key = "TLIcivilWithoutLeg_Capsule",
+                        Items = itemCivilWithOutCapsule
+                    };
+
+
+                    layers layersCivilWithOutCapsule = new layers()
+                    {
+
+                        Label = "Civil Without Legs Capsule",
+                        InstalltionAttributes = installtionAttributesCivilWithOutCapsule,
+                        LibraryAttributes = null,
+
+                    };
+
+                    layers.Add(layersCivilWithOutCapsule);
+
+
+                    item itemCivilWithOutMonopole = new item()
+                    {
+                        staticAttributes = ListAttributesActivatedCivilWithOutMast,
+                        dyanmicAttributes = DynamicAttributesWithoutCivilWithOutMonopole
+                    };
+
+                    InstalltionAttribute installtionAttributesCivilWithOutMonopole = new InstalltionAttribute()
+                    {
+                        Id = 4,
+                        Key = "TLIcivilWithoutLeg_Monopole",
+                        Items = itemCivilWithOutMonopole
+                    };
+
+
+                    layers layersCivilWithOutMonopole = new layers()
+                    {
+
+                        Label = "Civil Without Legs Monopole",
+                        InstalltionAttributes = installtionAttributesCivilWithOutMonopole,
+                        LibraryAttributes = null,
+
+                    };
+
+                    layers.Add(layersCivilWithOutMonopole);
+
+
+
+
+                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+
+                    Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
+                        {
+                            { "locationtype_name", () => _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                            { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                            { "supporttypeimplemented_name", () => _mapper.Map<List<SupportTypeImplementedViewModel>>(_unitOfWork.SupportTypeImplementedRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                        };
+
+                    ListAttributesActivatedCivilNonSteel = ListAttributesActivatedCivilNonSteel
+                        .Select(FKitem =>
+                        {
+                            if (repositoryMethodsCivilNonSteel.ContainsKey(FKitem.Label.ToLower()))
+                            {
+                                FKitem.Options = repositoryMethodsCivilNonSteel[FKitem.Label.ToLower()]().ToList();
+                            }
+                            else
+                            {
+                                FKitem.Options = new object[0];
+                            }
+                            return FKitem;
+                        })
+                        .ToList();
+
+                    var TableNameEntityCiviNonSteel = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIcivilNonSteel".ToLower());
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutTLIcivilNonSteel = _unitOfWork.DynamicAttRepository
+                   .GetDynamicInstAttInst(TableNameEntityCiviNonSteel.Id, CategoryId);
+                    item itemCivilWithOutCivilNonSteel = new item()
+                    {
+                        staticAttributes = ListAttributesActivatedCivilNonSteel,
+                        dyanmicAttributes = DynamicAttributesWithoutTLIcivilNonSteel
+                    };
+
+                    InstalltionAttribute installtionAttributesCiviNonSteel = new InstalltionAttribute()
+                    {
+                        Id = 4,
+                        Key = "TLIcivilNonSteel",
+                        Items = itemCivilWithOutCivilNonSteel
+                    };
+
+
+                    layers layersCiviNonSteel = new layers()
+                    {
+
+                        Label = "Civil Non-Steel",
+                        InstalltionAttributes = installtionAttributesCiviNonSteel,
+                        LibraryAttributes = null,
+
+                    };
+
+                    layers.Add(layersCiviNonSteel);
+
+                    Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
+                    {
+                        { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                    };
+
+                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                    ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
+                        .Select(FKitem =>
+                        {
+                            if (repositoryMethodsidearm.ContainsKey(FKitem.Label.ToLower()))
+                            {
+                                FKitem.Options = repositoryMethodsidearm[FKitem.Label.ToLower()]().ToList();
+                            }
+                            else
+                            {
+                                FKitem.Options = new object[0];
+                            }
+                            return FKitem;
+                        })
+                        .ToList();
+                    var TableNameEntitySideArm = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIsideArm".ToLower());
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutSieArm = _unitOfWork.DynamicAttRepository
+                   .GetDynamicInstAttInst(TableNameEntitySideArm.Id, CategoryId);
+                    item itemSideArm = new item()
+                    {
+                        staticAttributes = ListAttributesActivatedSideArm,
+                        dyanmicAttributes = DynamicAttributesWithoutSieArm
+                    };
+
+                    InstalltionAttribute installtionAttributesSideArm = new InstalltionAttribute()
+                    {
+                        Id = 6,
+                        Key = "TLIsideArm",
+                        Items = itemSideArm
+                    };
+
+
+                    layers layersSideArm = new layers()
+                    {
+
+                        Label = "side Arm",
+                        InstalltionAttributes = installtionAttributesSideArm,
+                        LibraryAttributes = null,
+
+                    };
+
+                    layers.Add(layersSideArm);
+
+                    var ListAttributesActivatedLibrary = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLImwODULibrary", null, null);
+                    ListAttributesActivatedLibrary
+                         .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                         .ToList()
+                          .Select(FKitem =>
+                          {
+                              if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
+                              {
+                                  switch (FKitem.Desc.ToLower())
+                                  {
+                                      case "parity_name":
+                                          FKitem.Options = _unitOfWork.ParityRepository
+                                              .GetWhere(x => !x.Delete && !x.Disable)
+                                              .Select(x => _mapper.Map<ParityViewModel>(x))
+                                              .ToList();
+                                          break;
+                                  }
+                              }
+                              return FKitem;
+                          }).ToList();
+
+                    var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLImwODULibrary".ToLower());
+                    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
+                    .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
+                    item itemCivilWithLegs = new item()
+                    {
+                        staticAttributes = ListAttributesActivated,
+                        dyanmicAttributes = DynamicAttributesWithoutValue
+                    };
+                    item itemCivilWithLegsLibrary = new item()
+                    {
+                        staticAttributes = ListAttributesActivatedLibrary,
+                        dyanmicAttributes = DynamicAttributesWithoutValueLibrary
+                    };
+                    InstalltionAttribute installtionAttributesInstallation = new InstalltionAttribute()
+                    {
+                        Id = 7,
+                        Key = "TLImwODU",
+                        Items = itemCivilWithLegs
+                    };
+
+                    LibraryAttribute libraryAttribute = new LibraryAttribute()
+                    {
+                        Id = 8,
+                        Key = "TLImwODULibrary",
+                        Items = itemCivilWithLegsLibrary
+                    };
+                    layers layersCivilWithLegs = new layers()
+                    {
+
+                        Label = "MW ODU",
+                        InstalltionAttributes = installtionAttributesInstallation,
+                        LibraryAttributes = libraryAttribute,
+
+                    };
+
+                    layers.Add(layersCivilWithLegs);
+
+                }
+                if (Helpers.Constants.LoadSubType.TLImwOther.ToString() == TabelName)
                     {
 
                        

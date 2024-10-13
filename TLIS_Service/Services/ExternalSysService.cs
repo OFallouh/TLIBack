@@ -99,7 +99,8 @@ namespace TLIS_Service.Services
                     {
                         TablesNameId = TabelNameId,
                         HistoryTypeId = 1,
-                        UserId = UserId
+                        UserId = UserId,
+                        RecordId= ext.Id.ToString()
                     };
                     db.TLIhistory.Add(exthistory);
                     db.SaveChanges();
@@ -172,7 +173,8 @@ namespace TLIS_Service.Services
                         TablesNameId = TabelNameId,
                         HistoryTypeId = 2,
                         UserId = UserId,
-                       
+                        RecordId= mod.Id.ToString()
+
                     };
                     db.TLIhistory.Add(exthistory);
                     db.SaveChanges();
@@ -382,6 +384,7 @@ namespace TLIS_Service.Services
                             TablesNameId = TabelNameId,
                             HistoryTypeId = 2,
                             UserId = UserId,
+                            RecordId=id.ToString()
 
                         };
                         db.TLIhistory.Add(exthistory);
