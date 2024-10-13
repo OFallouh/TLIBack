@@ -9688,7 +9688,8 @@ namespace TLIS_Service.Services
                         item itemCivilWithLegs = new item()
                         {
                             staticAttributes = ListAttributesActivated,
-                            dyanmicAttributes = DynamicAttributesWithoutValue
+                            dyanmicAttributes = DynamicAttributesWithoutValue,
+                            
                         };
                         item itemCivilWithLegsLibrary = new item()
                         {
@@ -9705,7 +9706,7 @@ namespace TLIS_Service.Services
                         {
                             Id = 8,
                             Key = "TLIcivilWithLegLibrary",
-                            Items = itemCivilWithLegs
+                            Items = itemCivilWithLegsLibrary
                         };
                         layers layersCivilWithLegs = new layers()
                         {
@@ -9840,7 +9841,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIcivilWithoutLegLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
@@ -9945,7 +9946,7 @@ namespace TLIS_Service.Services
                     {
                         Id = 8,
                         Key = "TLIcivilNonSteelLibrary",
-                        Items = itemCivilWithLegs
+                        Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
                     {
