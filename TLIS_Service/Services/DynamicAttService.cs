@@ -22892,7 +22892,8 @@ namespace TLIS_Service.Services
                                 ColumnName = attribute.DynamicAtt.Key,
                                 Operation = rule.Rule.OperationId,
                                 Value = value,
-                                IsDynamic = true
+                                IsDynamic = true,
+                                Layer = rule.Rule.Layer
                             };
                         }
                         else
@@ -23073,7 +23074,8 @@ namespace TLIS_Service.Services
                                 ColumnName = attribute.Key,
                                 Operation = rule.Rule.OperationId,
                                 Value = value,
-                                IsDynamic = false
+                                IsDynamic = false,
+                                Layer= rule.Rule.Layer
                             };
                         }
                        
