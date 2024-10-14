@@ -154,7 +154,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
 
 
-                                var sortedIds =_unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddCivilWithLegsLibraryObject, CivilWithLegEntites, HistoryId);
+                                var sortedIds =_unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddCivilWithLegsLibraryObject, HistoryId);
 
                                 if (AddCivilWithLegsLibraryObject.dynamicAttributes != null && AddCivilWithLegsLibraryObject.dynamicAttributes.Count > 0)
                                 {

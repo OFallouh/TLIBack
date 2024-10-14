@@ -2838,10 +2838,27 @@ namespace TLIS_Service.Services
                                 return new Response<ObjectInstAtts>(false, null, null, "Leg information for letter 'A' not found", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
                         }
-                  
-                     _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddCivilWithLegsViewModel.dynamicAttribute, TableNameEntity.Id, civilWithLegs.Id, connectionString,HistoryId);
-                        
-                     
+
+                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddCivilWithLegsViewModel, HistoryId);
+
+                        if (AddCivilWithLegsViewModel.dynamicAttribute != null && AddCivilWithLegsViewModel.dynamicAttribute.Count > 0)
+                        {
+                            var sortedDynamicAttributes = AddCivilWithLegsViewModel.dynamicAttribute
+                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                .ToList();
+
+                            foreach (var item in sortedDynamicAttributes)
+                            {
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, civilWithLegs.Id, HistoryId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
+                        }
+
+
+
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);

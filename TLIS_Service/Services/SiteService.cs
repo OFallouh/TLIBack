@@ -304,6 +304,44 @@ namespace TLIS_Service.Services
                             _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode);
                             _unitOfWork.SaveChanges();
                         }
+                        if (siteDetailsObject.CollectData ==null)
+                        {
+                            SiteSelected.PlanStatusCollectData = (int?)siteDetailsObject.CollectData.PlanStatus;
+                            SiteSelected.pendingTypeCollectData = (int?)siteDetailsObject.CollectData.PendingType;
+                            SiteSelected.MWValidationRemarkCollectData = siteDetailsObject.CollectData.MwValidationRemark;
+                            SiteSelected.MWValidationStatusCollectDate = (int?)siteDetailsObject.CollectData.MwValidationStatus;
+                            SiteSelected.RadioVStatusCollectData = (int?)siteDetailsObject.CollectData.RadioValidationStatus;
+                            SiteSelected.RadioVRemarkCollectData = siteDetailsObject.CollectData.RadioValidationRemark;
+                            SiteSelected.PowerVStatusCollectData = (int?)siteDetailsObject.CollectData.PowerValidationStatus;
+                            SiteSelected.PowerVRemarkCollectData = siteDetailsObject.CollectData.PowerValidationRemark;
+                        }
+                        else if (siteDetailsObject.MWMd == null)
+                        {
+                            SiteSelected.MdTypeMWMd = (int?)siteDetailsObject.MWMd.MdType;
+                            SiteSelected.DescriptionMWMd = siteDetailsObject.MWMd.Description;
+                            SiteSelected.PlanStatusMWMd = (int?)siteDetailsObject.MWMd.PlanStatus;
+                            SiteSelected.pendingTypeMWMd = (int?)siteDetailsObject.MWMd.PendingType;
+                            SiteSelected.MWValidationStatusMWMd = (int?)siteDetailsObject.MWMd.MwValidationStatus;
+                            SiteSelected.MWValidationRemarkMWMd = siteDetailsObject.MWMd.MwValidationRemark;
+                        }
+                        else if (siteDetailsObject.RadioMd == null)
+                        {
+                            SiteSelected.MdTypeRadioMd = (int?)siteDetailsObject.RadioMd.MdType;
+                            SiteSelected.DescriptionRadioMd = siteDetailsObject.RadioMd.Description;
+                            SiteSelected.PlanStatusRadioMd = (int?)siteDetailsObject.RadioMd.PlanStatus;
+                            SiteSelected.pendingTypeRadioMd = (int?)siteDetailsObject.RadioMd.PendingType;
+                            SiteSelected.RadioVStatusRadioMd = (int?)siteDetailsObject.RadioMd.RadioValidationStatus;
+                            SiteSelected.RadioVRemarkRadioMd = siteDetailsObject.RadioMd.RadioValidationRemark;
+                        }
+                        else if (siteDetailsObject.PowerMd == null)
+                        {
+                            SiteSelected.MdTypePowerMd = (int?)siteDetailsObject.PowerMd.MdType;
+                            SiteSelected.DescriptionPowerMd = siteDetailsObject.PowerMd.Description;
+                            SiteSelected.PlanStatusPowerMd = (int?)siteDetailsObject.PowerMd.PlanStatus;
+                            SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
+                            SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
+                            SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
+                        }
                     }
                     else
                     {

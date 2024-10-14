@@ -23297,9 +23297,13 @@ namespace TLIS_Service.Services
                                     if (!string.IsNullOrEmpty(GeneratorLibraryModel))
                                     {
                                         GeneratorTransaction.Dispose();
-
                                         TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
-                                             .GetWhereFirst(x => x.Model.ToLower().Trim() == GeneratorLibraryModel.ToLower().Trim()  && !x.Deleted);
+                                        .GetWhereFirst(x =>
+                                            Regex.Replace(x.Model.Replace("\n", "").Replace("\r", ""), @"\s+", "").ToLower() ==
+                                            Regex.Replace(GeneratorLibraryModel.Replace("\n", "").Replace("\r", ""), @"\s+", "").ToLower() &&
+                                            !x.Deleted);
+
+                                       
 
                                         if (CheckGeneratorLibraryModel == null)
                                         {
@@ -23456,15 +23460,20 @@ namespace TLIS_Service.Services
 
                                    
                                      string GeneratorName = GeneratorLibraryModel + " " + Generator_SiteName;
-                                    
+
+
+
 
                                     // Check if Power Name is Already Exist on This Site..
 
                                     TLIotherInSite CheckGeneratorName = _unitOfWork.OtherInSiteRepository
-                                            .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == Generator_SiteCodeAfterCheck.ToLower() && x.allOtherInventoryInstId != null ?
-                                                (!x.allOtherInventoryInst.Draft && x.allOtherInventoryInst.generatorId != null ?
-                                                    (x.allOtherInventoryInst.generator.Name.ToLower().Trim() == GeneratorName.ToLower().Trim() ) : false) : false,
-                                                        x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator);
+                                      .GetIncludeWhereFirst(
+                                          x => !x.Dismantle &&
+                                               x.SiteCode.ToLower().Trim() == Generator_SiteCodeAfterCheck.ToLower().Trim() &&
+                                               x.allOtherInventoryInst.generator.Name.Replace("\n", "").Replace("\r", "").ToLower().Trim() ==
+                                               GeneratorName.Replace("\n", "").Replace("\r", "").ToLower().Trim(),
+                                          x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator
+                                      );
 
                                     if (CheckGeneratorName != null)
                                     {
@@ -24265,7 +24274,11 @@ namespace TLIS_Service.Services
                                         SolarTransaction.Dispose();
 
                                         TLIsolarLibrary CheckSolarLibraryModel = _unitOfWork.SolarLibraryRepository
-                                             .GetWhereFirst(x => x.Model.ToLower().Trim() == SolarLibraryModel.ToLower().Trim() && !x.Deleted);
+                                      .GetWhereFirst(x =>
+                                          Regex.Replace(x.Model.Replace("\n", "").Replace("\r", ""), @"\s+", "").ToLower() ==
+                                          Regex.Replace(SolarLibraryModel.Replace("\n", "").Replace("\r", ""), @"\s+", "").ToLower() &&
+                                          !x.Deleted);
+
 
                                         if (CheckSolarLibraryModel == null)
                                         {
@@ -24461,14 +24474,18 @@ namespace TLIS_Service.Services
 
                                
                                       var SolarName = SolarLibraryModel + " " + Solar_SiteName;
-                                    
+
 
                                     // Check if Power Name is Already Exist on This Site..
-
                                     TLIotherInSite CheckSolarName = _unitOfWork.OtherInSiteRepository
-                                        .GetIncludeWhereFirst(x => !x.Dismantle && x.SiteCode.ToLower() == Solar_SiteCodeAfterCheck.ToLower()
-                                                && x.allOtherInventoryInst.solar.Name.ToLower().Trim() == SolarName.ToLower().Trim(),
-                                                    x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar);
+                                        .GetIncludeWhereFirst(
+                                            x => !x.Dismantle &&
+                                                 x.SiteCode.ToLower().Trim() == Solar_SiteCodeAfterCheck.ToLower().Trim() &&
+                                                 x.allOtherInventoryInst.solar.Name.Replace("\n", "").Replace("\r", "").ToLower().Trim() ==
+                                                 SolarName.Replace("\n", "").Replace("\r", "").ToLower().Trim(),
+                                            x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar
+                                        );
+
 
                                     if (CheckSolarName != null)
                                     {
