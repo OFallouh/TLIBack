@@ -226,54 +226,58 @@ namespace TLIS_Service.Services
                     var SiteSelected = _context.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
                     if (SiteSelected != null)
                     {
-                        var planTypeValues = siteDetailsObject.PlanType.Select(pt => ((int)pt).ToString());
-                        SiteSelected.PlanType = string.Join(",", planTypeValues);
-
-                        foreach (var item in siteDetailsObject.PlanType)
+                        if (siteDetailsObject.PlanType != null)
                         {
-                            if (item == Enums.PlanType.CollectData)
-                            {
-                                SiteSelected.PlanStatusCollectData = (int?)siteDetailsObject.CollectData.PlanStatus;
-                                SiteSelected.pendingTypeCollectData = (int?)siteDetailsObject.CollectData.PendingType;
-                                SiteSelected.MWValidationRemarkCollectData = siteDetailsObject.CollectData.MwValidationRemark;
-                                SiteSelected.MWValidationStatusCollectDate = (int?)siteDetailsObject.CollectData.MwValidationStatus;
-                                SiteSelected.RadioVStatusCollectData = (int?)siteDetailsObject.CollectData.RadioValidationStatus;
-                                SiteSelected.RadioVRemarkCollectData = siteDetailsObject.CollectData.RadioValidationRemark;
-                                SiteSelected.PowerVStatusCollectData = (int?)siteDetailsObject.CollectData.PowerValidationStatus;
-                                SiteSelected.PowerVRemarkCollectData = siteDetailsObject.CollectData.PowerValidationRemark;
-                            }
-                            else if (item == Enums.PlanType.MWMD)
-                            {
-                                SiteSelected.MdTypeMWMd = (int?)siteDetailsObject.MWMd.MdType;
-                                SiteSelected.DescriptionMWMd = siteDetailsObject.MWMd.Description;
-                                SiteSelected.PlanStatusMWMd = (int?)siteDetailsObject.MWMd.PlanStatus;
-                                SiteSelected.pendingTypeMWMd = (int?)siteDetailsObject.MWMd.PendingType;
-                                SiteSelected.MWValidationStatusMWMd = (int?)siteDetailsObject.MWMd.MwValidationStatus;
-                                SiteSelected.MWValidationRemarkMWMd = siteDetailsObject.MWMd.MwValidationRemark;
-                            }
-                            else if (item == Enums.PlanType.RadioMD)
-                            {
-                                SiteSelected.MdTypeRadioMd = (int?)siteDetailsObject.RadioMd.MdType;
-                                SiteSelected.DescriptionRadioMd = siteDetailsObject.RadioMd.Description;
-                                SiteSelected.PlanStatusRadioMd = (int?)siteDetailsObject.RadioMd.PlanStatus;
-                                SiteSelected.pendingTypeRadioMd = (int?)siteDetailsObject.RadioMd.PendingType;
-                                SiteSelected.RadioVStatusRadioMd = (int?)siteDetailsObject.RadioMd.RadioValidationStatus;
-                                SiteSelected.RadioVRemarkRadioMd = siteDetailsObject.RadioMd.RadioValidationRemark;
-                            }
-                            else if (item == Enums.PlanType.PowerMD)
-                            {
-                                SiteSelected.MdTypePowerMd = (int?)siteDetailsObject.PowerMd.MdType;
-                                SiteSelected.DescriptionPowerMd = siteDetailsObject.PowerMd.Description;
-                                SiteSelected.PlanStatusPowerMd = (int?)siteDetailsObject.PowerMd.PlanStatus;
-                                SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
-                                SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
-                                SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
-                            }
-                            _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode);
-                            _unitOfWork.SaveChanges();
+                            var planTypeValues = siteDetailsObject.PlanType.Select(pt => ((int)pt).ToString());
+                            SiteSelected.PlanType = string.Join(",", planTypeValues);
 
+
+                            foreach (var item in siteDetailsObject.PlanType)
+                            {
+                                if (item == Enums.PlanType.CollectData)
+                                {
+                                    SiteSelected.PlanStatusCollectData = (int?)siteDetailsObject.CollectData.PlanStatus;
+                                    SiteSelected.pendingTypeCollectData = (int?)siteDetailsObject.CollectData.PendingType;
+                                    SiteSelected.MWValidationRemarkCollectData = siteDetailsObject.CollectData.MwValidationRemark;
+                                    SiteSelected.MWValidationStatusCollectDate = (int?)siteDetailsObject.CollectData.MwValidationStatus;
+                                    SiteSelected.RadioVStatusCollectData = (int?)siteDetailsObject.CollectData.RadioValidationStatus;
+                                    SiteSelected.RadioVRemarkCollectData = siteDetailsObject.CollectData.RadioValidationRemark;
+                                    SiteSelected.PowerVStatusCollectData = (int?)siteDetailsObject.CollectData.PowerValidationStatus;
+                                    SiteSelected.PowerVRemarkCollectData = siteDetailsObject.CollectData.PowerValidationRemark;
+                                }
+                                else if (item == Enums.PlanType.MWMD)
+                                {
+                                    SiteSelected.MdTypeMWMd = (int?)siteDetailsObject.MWMd.MdType;
+                                    SiteSelected.DescriptionMWMd = siteDetailsObject.MWMd.Description;
+                                    SiteSelected.PlanStatusMWMd = (int?)siteDetailsObject.MWMd.PlanStatus;
+                                    SiteSelected.pendingTypeMWMd = (int?)siteDetailsObject.MWMd.PendingType;
+                                    SiteSelected.MWValidationStatusMWMd = (int?)siteDetailsObject.MWMd.MwValidationStatus;
+                                    SiteSelected.MWValidationRemarkMWMd = siteDetailsObject.MWMd.MwValidationRemark;
+                                }
+                                else if (item == Enums.PlanType.RadioMD)
+                                {
+                                    SiteSelected.MdTypeRadioMd = (int?)siteDetailsObject.RadioMd.MdType;
+                                    SiteSelected.DescriptionRadioMd = siteDetailsObject.RadioMd.Description;
+                                    SiteSelected.PlanStatusRadioMd = (int?)siteDetailsObject.RadioMd.PlanStatus;
+                                    SiteSelected.pendingTypeRadioMd = (int?)siteDetailsObject.RadioMd.PendingType;
+                                    SiteSelected.RadioVStatusRadioMd = (int?)siteDetailsObject.RadioMd.RadioValidationStatus;
+                                    SiteSelected.RadioVRemarkRadioMd = siteDetailsObject.RadioMd.RadioValidationRemark;
+                                }
+                                else if (item == Enums.PlanType.PowerMD)
+                                {
+                                    SiteSelected.MdTypePowerMd = (int?)siteDetailsObject.PowerMd.MdType;
+                                    SiteSelected.DescriptionPowerMd = siteDetailsObject.PowerMd.Description;
+                                    SiteSelected.PlanStatusPowerMd = (int?)siteDetailsObject.PowerMd.PlanStatus;
+                                    SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
+                                    SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
+                                    SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
+                                }
+                                _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode);
+                                _unitOfWork.SaveChanges();
+
+                            }
                         }
-                        if (siteDetailsObject.PlanType.Count == 0)
+                        if (siteDetailsObject.PlanType == null)
                         {
                             SiteSelected.PlanStatusCollectData = (int?)siteDetailsObject.CollectData.PlanStatus;
                             SiteSelected.pendingTypeCollectData = (int?)siteDetailsObject.CollectData.PendingType;
