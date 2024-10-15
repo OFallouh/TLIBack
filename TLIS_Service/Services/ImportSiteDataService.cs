@@ -23299,8 +23299,7 @@ namespace TLIS_Service.Services
                                         GeneratorTransaction.Dispose();
                                         TLIgeneratorLibrary CheckGeneratorLibraryModel = _unitOfWork.GeneratorLibraryRepository
                                         .GetWhereFirst(x =>
-                                            Regex.Replace(x.Model.Replace("\n", "").Replace("\r", ""), @"\s+", "").ToLower() ==
-                                            Regex.Replace(GeneratorLibraryModel.Replace("\n", "").Replace("\r", ""), @"\s+", "").ToLower() &&
+                                            x.Model.ToLower().Trim() ==GeneratorLibraryModel.ToLower().Trim() &&
                                             !x.Deleted);
 
                                        
@@ -23470,8 +23469,8 @@ namespace TLIS_Service.Services
                                       .GetIncludeWhereFirst(
                                           x => !x.Dismantle &&
                                                x.SiteCode.ToLower().Trim() == Generator_SiteCodeAfterCheck.ToLower().Trim() &&
-                                               x.allOtherInventoryInst.generator.Name.Replace("\n", "").Replace("\r", "").ToLower().Trim() ==
-                                               GeneratorName.Replace("\n", "").Replace("\r", "").ToLower().Trim(),
+                                               x.allOtherInventoryInst.generator.Name.ToLower().Trim() ==
+                                               GeneratorName.ToLower().Trim(),
                                           x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.generator
                                       );
 
@@ -24274,9 +24273,7 @@ namespace TLIS_Service.Services
                                         SolarTransaction.Dispose();
 
                                         TLIsolarLibrary CheckSolarLibraryModel = _unitOfWork.SolarLibraryRepository
-                                      .GetWhereFirst(x =>
-                                          Regex.Replace(x.Model.Replace("\n", "").Replace("\r", ""), @"\s+", "").ToLower() ==
-                                          Regex.Replace(SolarLibraryModel.Replace("\n", "").Replace("\r", ""), @"\s+", "").ToLower() &&
+                                      .GetWhereFirst(x =>x.Model.ToLower().Trim()== SolarLibraryModel.ToLower().Trim()&&
                                           !x.Deleted);
 
 
@@ -24481,8 +24478,8 @@ namespace TLIS_Service.Services
                                         .GetIncludeWhereFirst(
                                             x => !x.Dismantle &&
                                                  x.SiteCode.ToLower().Trim() == Solar_SiteCodeAfterCheck.ToLower().Trim() &&
-                                                 x.allOtherInventoryInst.solar.Name.Replace("\n", "").Replace("\r", "").ToLower().Trim() ==
-                                                 SolarName.Replace("\n", "").Replace("\r", "").ToLower().Trim(),
+                                                 x.allOtherInventoryInst.solar.Name.ToLower().Trim() ==
+                                                 SolarName.ToLower().Trim(),
                                             x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.solar
                                         );
 
