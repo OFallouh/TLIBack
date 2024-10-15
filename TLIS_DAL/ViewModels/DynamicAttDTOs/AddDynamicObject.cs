@@ -21,6 +21,7 @@ namespace TLIS_DAL.ViewModels.DynamicAttDTOs
         public bool isRequired { get; set; }
         public object defualtValue { get; set; }
         public int? dataType { get; set; }
+        public bool IsLibrary { get; set; }
     }
     public class ValidationObject
     {

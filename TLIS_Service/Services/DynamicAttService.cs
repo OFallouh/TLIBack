@@ -19197,7 +19197,7 @@ namespace TLIS_Service.Services
                                         DataTypeId = addDynamicObject.general.dataType,
                                         tablesNamesId = TabelNameId,
                                         disable = false,
-                                        LibraryAtt = true,
+                                         LibraryAtt = addDynamicObject.general.IsLibrary,
                                         CivilWithoutLegCategoryId = CategoryId,
                                         Type = 0
 
@@ -19430,7 +19430,7 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
-                                            LibraryAtt = true,
+                                             LibraryAtt = addDynamicObject.general.IsLibrary,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type = 1
 
@@ -20035,7 +20035,7 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
-                                            LibraryAtt = true,
+                                             LibraryAtt = addDynamicObject.general.IsLibrary,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type = 2
 
@@ -21449,7 +21449,7 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
-                                            LibraryAtt = true,
+                                             LibraryAtt = addDynamicObject.general.IsLibrary,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type = 3
 
