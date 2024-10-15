@@ -239,7 +239,7 @@ namespace TLIS_Repository.Repositories
 
                             });
                         }
-                        if (item.DefaultValue != null)
+                        if (item.DefaultValue == null)
                         {
                             dynamicAtts.Add(new BaseInstAttViewDynamic()
                             {
