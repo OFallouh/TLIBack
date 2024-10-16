@@ -10087,7 +10087,7 @@ namespace TLIS_Service.Services
                         layersSite.LibraryAttributes = null;
                        layers.Add(layersSite);
 
-                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null, "CivilWithLegsLibId");
                         var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                         if (sectionsLegTypeItem != null)
                         {
@@ -10236,10 +10236,11 @@ namespace TLIS_Service.Services
                             LibraryAttributes = null,
 
                         };
+                 
 
-                       layers.Add(layersTower);
+                    layers.Add(layersTower);
 
-                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null, "CivilWithoutlegsLibId");
                         var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                         if (structuretype_name != null)
                         {
@@ -10384,7 +10385,7 @@ namespace TLIS_Service.Services
 
 
 
-                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null, "CivilNonSteelLibraryId");
 
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                             {
@@ -10544,7 +10545,7 @@ namespace TLIS_Service.Services
                         layersSite.LibraryAttributes = null;
                        layers.Add(layersSite);
                     
-                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                         var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                         if (sectionsLegTypeItem != null)
                         {
@@ -10696,7 +10697,7 @@ namespace TLIS_Service.Services
 
                        layers.Add(layersTower);
                     
-                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                         var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                         if (structuretype_name != null)
                         {
@@ -10841,7 +10842,7 @@ namespace TLIS_Service.Services
 
 
 
-                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                             {
@@ -10898,7 +10899,7 @@ namespace TLIS_Service.Services
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
                     
-                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                         ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                             .Select(FKitem =>
                             {
@@ -11047,7 +11048,7 @@ namespace TLIS_Service.Services
                     layersSite.LibraryAttributes = null;
                       layers.Add(layersSite);
 
-                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                     var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                     if (sectionsLegTypeItem != null)
                     {
@@ -11199,7 +11200,7 @@ namespace TLIS_Service.Services
 
                    layers.Add(layersTower);
 
-                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                     var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                     if (structuretype_name != null)
                     {
@@ -11344,7 +11345,7 @@ namespace TLIS_Service.Services
 
 
 
-                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                         {
@@ -11401,7 +11402,7 @@ namespace TLIS_Service.Services
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
-                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                     ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                         .Select(FKitem =>
                         {
@@ -11552,7 +11553,7 @@ namespace TLIS_Service.Services
                     layersSite.LibraryAttributes = null;
                    layers.Add(layersSite);
 
-                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                     var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                     if (sectionsLegTypeItem != null)
                     {
@@ -11704,7 +11705,7 @@ namespace TLIS_Service.Services
 
                    layers.Add(layersTower);
 
-                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                     var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                     if (structuretype_name != null)
                     {
@@ -11849,7 +11850,7 @@ namespace TLIS_Service.Services
 
 
 
-                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                         {
@@ -11906,7 +11907,7 @@ namespace TLIS_Service.Services
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
-                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                     ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                         .Select(FKitem =>
                         {
@@ -12058,7 +12059,7 @@ namespace TLIS_Service.Services
                     layersSite.LibraryAttributes = null;
                    layers.Add(layersSite);
 
-                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                     var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                     if (sectionsLegTypeItem != null)
                     {
@@ -12210,7 +12211,7 @@ namespace TLIS_Service.Services
 
                    layers.Add(layersTower);
 
-                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                     var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                     if (structuretype_name != null)
                     {
@@ -12355,7 +12356,7 @@ namespace TLIS_Service.Services
 
 
 
-                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                         {
@@ -12412,7 +12413,7 @@ namespace TLIS_Service.Services
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
-                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                     ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                         .Select(FKitem =>
                         {
@@ -12583,7 +12584,7 @@ namespace TLIS_Service.Services
                     layersSite.LibraryAttributes = null;
                    layers.Add(layersSite);
 
-                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                     var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                     if (sectionsLegTypeItem != null)
                     {
@@ -12735,7 +12736,7 @@ namespace TLIS_Service.Services
 
                    layers.Add(layersTower);
 
-                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                     var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                     if (structuretype_name != null)
                     {
@@ -12880,7 +12881,7 @@ namespace TLIS_Service.Services
 
 
 
-                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                         {
@@ -12937,7 +12938,7 @@ namespace TLIS_Service.Services
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
-                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                     ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                         .Select(FKitem =>
                         {
@@ -13031,7 +13032,7 @@ namespace TLIS_Service.Services
                     LibraryAttribute libraryAttribute = new LibraryAttribute()
                     {
                         Id = 8,
-                        Key = "TLIradioAnteTLImwDishLibrarynnaLibrary",
+                        Key = "TLImwDishLibrary",
                         Items = itemCivilWithLegsLibrary
                     };
                     layers layersCivilWithLegs = new layers()
@@ -13113,7 +13114,7 @@ namespace TLIS_Service.Services
                     layersSite.LibraryAttributes = null;
                    layers.Add(layersSite);
 
-                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                    var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                     var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                     if (sectionsLegTypeItem != null)
                     {
@@ -13265,7 +13266,7 @@ namespace TLIS_Service.Services
 
                    layers.Add(layersTower);
 
-                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                    var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                     var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                     if (structuretype_name != null)
                     {
@@ -13410,7 +13411,7 @@ namespace TLIS_Service.Services
 
 
 
-                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                    var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                         {
@@ -13467,7 +13468,7 @@ namespace TLIS_Service.Services
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
-                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                    var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                     ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                         .Select(FKitem =>
                         {
@@ -13655,7 +13656,7 @@ namespace TLIS_Service.Services
                         layersSite.LibraryAttributes = null;
                         layers.Add(layersSite);
 
-                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                         var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                         if (sectionsLegTypeItem != null)
                         {
@@ -13807,7 +13808,7 @@ namespace TLIS_Service.Services
 
                         layers.Add(layersTower);
 
-                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                         var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                         if (structuretype_name != null)
                         {
@@ -13952,7 +13953,7 @@ namespace TLIS_Service.Services
 
 
 
-                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                             {
@@ -14009,7 +14010,7 @@ namespace TLIS_Service.Services
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
 
-                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                         ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                             .Select(FKitem =>
                             {
@@ -14158,7 +14159,7 @@ namespace TLIS_Service.Services
                         layersSite.LibraryAttributes = null;
                        layers.Add(layersSite);
 
-                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                         var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                         if (sectionsLegTypeItem != null)
                         {
@@ -14310,7 +14311,7 @@ namespace TLIS_Service.Services
 
                        layers.Add(layersTower);
 
-                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                         var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                         if (structuretype_name != null)
                         {
@@ -14455,7 +14456,7 @@ namespace TLIS_Service.Services
 
 
 
-                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                             {
@@ -14512,7 +14513,7 @@ namespace TLIS_Service.Services
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
 
-                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                         ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                             .Select(FKitem =>
                             {
@@ -14662,7 +14663,7 @@ namespace TLIS_Service.Services
                         layersSite.LibraryAttributes = null;
                         layers.Add(layersSite);
 
-                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                         var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                         if (sectionsLegTypeItem != null)
                         {
@@ -14814,7 +14815,7 @@ namespace TLIS_Service.Services
 
                         layers.Add(layersTower);
 
-                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                         var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                         if (structuretype_name != null)
                         {
@@ -14959,7 +14960,7 @@ namespace TLIS_Service.Services
 
 
 
-                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                             {
@@ -15016,7 +15017,7 @@ namespace TLIS_Service.Services
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
 
-                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                         ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                             .Select(FKitem =>
                             {
@@ -15187,7 +15188,7 @@ namespace TLIS_Service.Services
                         layersSite.LibraryAttributes = null;
                        layers.Add(layersSite);
 
-                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null);
+                        var ListAttributesActivatedTower = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithLegs", null, null,"CivilWithLegsLibId");
                         var sectionsLegTypeItem = ListAttributesActivatedTower.FirstOrDefault(item => item.Label.ToLower() == "locationtype_name");
                         if (sectionsLegTypeItem != null)
                         {
@@ -15339,7 +15340,7 @@ namespace TLIS_Service.Services
 
                        layers.Add(layersTower);
 
-                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null);
+                        var ListAttributesActivatedCivilWithOutMast = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilWithoutLeg", null, null,"CivilWithoutlegsLibId");
                         var structuretype_name = ListAttributesActivatedCivilWithOutMast.FirstOrDefault(item => item.Label.ToLower() == "owner_name");
                         if (structuretype_name != null)
                         {
@@ -15484,7 +15485,7 @@ namespace TLIS_Service.Services
 
 
 
-                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null);
+                        var ListAttributesActivatedCivilNonSteel = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIcivilNonSteel", null, null,"CivilNonSteelLibraryId");
 
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsCivilNonSteel = new Dictionary<string, Func<IEnumerable<object>>>
                             {
@@ -15541,7 +15542,7 @@ namespace TLIS_Service.Services
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
 
-                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null);
+                        var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
                         ListAttributesActivatedSideArm = ListAttributesActivatedSideArm
                             .Select(FKitem =>
                             {
