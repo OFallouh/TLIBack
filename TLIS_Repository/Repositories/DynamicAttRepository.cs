@@ -149,7 +149,7 @@ namespace TLIS_Repository.Repositories
                         }
                      
                     }
-                    else if (item.DataType.Name.ToLower() == "double")
+                    else if (item.DataType.Name.ToLower() == "double" || item.DataType.Name.ToLower() == "int")
                     {
                         if (item.DefaultValue != null)
                         {
@@ -158,7 +158,7 @@ namespace TLIS_Repository.Repositories
                                 Label = item.Key,
                                 Id = item.Id,
                                 Key = item.Key,
-                                Value = Convert.ToInt32(item.DefaultValue),
+                                Value = Convert.ToDouble(item.DefaultValue),
                                 Desc = item?.Description ?? null,
                                 Required = item.Required,
                                 enable = !item.disable,
@@ -303,7 +303,7 @@ namespace TLIS_Repository.Repositories
                         }
                         
                     }
-                    else if (item.DataType.Name.ToLower() == "double")
+                    else if (item.DataType.Name.ToLower() == "double"|| item.DataType.Name.ToLower() == "int")
                     {
                         if (item.DefaultValue != null)
                         {
@@ -312,7 +312,7 @@ namespace TLIS_Repository.Repositories
                                 Label = item.Key,
                                 Id = item.Id,
                                 Key = item.Key,
-                                Value = Convert.ToInt32(item.DefaultValue),
+                                Value = Convert.ToDouble(item.DefaultValue),
                                 Desc = item?.Description ?? null,
                                 Required = item.Required,
                                 enable = !item.disable,

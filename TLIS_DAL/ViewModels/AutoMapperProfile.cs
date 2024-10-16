@@ -306,6 +306,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIcabinetTelecomLibrary, TLIcabinetTelecomLibrary>().ReverseMap();
             CreateMap<TLIsolarLibrary, TLIsolarLibrary>().ReverseMap();
             CreateMap<TLIgeneratorLibrary, TLIgeneratorLibrary>().ReverseMap();
+            CreateMap<OwnerViewModel, TLIarea>().ReverseMap();
+            CreateMap<OwnerViewModel, TLIregion>().ReverseMap();
      
      
 
