@@ -108,6 +108,9 @@ using TLIS_DAL.ViewModels.BaseCivilWithLegsTypeDTOs;
 using TLIS_DAL.ViewModels.BaseTypeDTOs;
 using TLIS_DAL.ViewModels.EnforcmentCategoryDTOs;
 using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
+using TLIS_DAL.ViewModels.AreaDTOs;
+using TLIS_DAL.ViewModels.RegionDTOs;
+using TLIS_DAL.ViewModels.SiteStatusDTOs;
 
 
 namespace TLIS_Service.Services
@@ -9644,8 +9647,25 @@ namespace TLIS_Service.Services
 
                         }
                   
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
-                        item item = new item()
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                         .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                         .ToList()
+                         .Select(FKitem =>
+                         {
+                             if (FKitem.Label.ToLower() == "area_name")
+                                 FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                             else if (FKitem.Label.ToLower() == "regioncode")
+                                 FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                             else if (FKitem.Label.ToLower() == "sitestatus_name")
+                                 FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                             else if (FKitem.Label.ToLower() == "locationtype")
+                                 FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                             return FKitem;
+                         })
+                     .ToList();
+                    item item = new item()
                         {
                             staticAttributes = ListAttributesActivatedSite,
                             dyanmicAttributes=null
@@ -9780,7 +9800,24 @@ namespace TLIS_Service.Services
                             ladderstepsItem.Options = BasePlateShapes;
 
                         }
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                        .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                        .ToList()
+                        .Select(FKitem =>
+                        {
+                            if (FKitem.Label.ToLower() == "area_name")
+                                FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                            else if (FKitem.Label.ToLower() == "regioncode")
+                                FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                            else if (FKitem.Label.ToLower() == "sitestatus_name")
+                                FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                            else if (FKitem.Label.ToLower() == "locationtype")
+                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                            return FKitem;
+                        })
+                    .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -9884,7 +9921,24 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                    .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -9958,7 +10012,7 @@ namespace TLIS_Service.Services
                     layers layersCivilWithLegs = new layers()
                     {
 
-                        Label = "Civil Non-Steel",
+                        Label = "Civil Non Steel",
                         InstalltionAttributes = installtionAttributesInstallation,
                         LibraryAttributes = libraryAttribute,
 
@@ -9991,8 +10045,25 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
-                        item item = new item()
+                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                        ListAttributesActivatedSite
+                        .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                        .ToList()
+                        .Select(FKitem =>
+                        {
+                            if (FKitem.Label.ToLower() == "area_name")
+                                FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                            else if (FKitem.Label.ToLower() == "regioncode")
+                                FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                            else if (FKitem.Label.ToLower() == "sitestatus_name")
+                                FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                            else if (FKitem.Label.ToLower() == "locationtype")
+                                FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                            return FKitem;
+                        })
+                    .ToList();
+                    item item = new item()
                         {
                             staticAttributes = ListAttributesActivatedSite,
                             dyanmicAttributes = null
@@ -10431,8 +10502,25 @@ namespace TLIS_Service.Services
                                     return FKitem;
                                 })
                                 .ToList();
-                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
-                        item item = new item()
+                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
+                    item item = new item()
                         {
                             staticAttributes = ListAttributesActivatedSite,
                             dyanmicAttributes = null
@@ -10917,7 +11005,24 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -11405,7 +11510,24 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -11894,7 +12016,24 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -12401,7 +12540,25 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -12914,7 +13071,24 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -13439,8 +13613,25 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
-                        item item = new item()
+                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
+                    item item = new item()
                         {
                             staticAttributes = ListAttributesActivatedSite,
                             dyanmicAttributes = null
@@ -13925,8 +14116,25 @@ namespace TLIS_Service.Services
 
                         var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
                         GetInstAttributeActivatedGetForAdd(LoadSubType.TLImwOther.ToString(), null, "InstallationPlaceId", "mwOtherLibraryId").ToList();
-                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
-                        item item = new item()
+                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
+                    item item = new item()
                         {
                             staticAttributes = ListAttributesActivatedSite,
                             dyanmicAttributes = null
@@ -14412,8 +14620,25 @@ namespace TLIS_Service.Services
                       var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
                        GetInstAttributeActivatedGetForAdd(LoadSubType.TLIloadOther.ToString(), null, "InstallationPlaceId", "loadOtherLibraryId", "EquivalentSpace").ToList();
 
-                       var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
-                        item item = new item()
+                       var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
+                    item item = new item()
                         {
                             staticAttributes = ListAttributesActivatedSite,
                             dyanmicAttributes = null
@@ -14920,8 +15145,25 @@ namespace TLIS_Service.Services
                                 })
                                 .ToList();
                        
-                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
-                        item item = new item()
+                        var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
+                    item item = new item()
                         {
                             staticAttributes = ListAttributesActivatedSite,
                             dyanmicAttributes = null
@@ -15409,7 +15651,24 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -15548,7 +15807,24 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -15660,7 +15936,24 @@ namespace TLIS_Service.Services
                                 return FKitem;
                             })
                             .ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
@@ -15732,7 +16025,24 @@ namespace TLIS_Service.Services
                 {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
                        GetInstAttributeActivatedGetForAdd(OtherInventoryType.TLIsolar.ToString(), null, "SolarLibraryId").ToList();
-                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null);
+                    var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
+                    ListAttributesActivatedSite
+                    .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
+                    .ToList()
+                    .Select(FKitem =>
+                    {
+                        if (FKitem.Label.ToLower() == "area_name")
+                            FKitem.Options = _mapper.Map<List<AreaViewModel>>(_dbContext.TLIarea.ToList());
+                        else if (FKitem.Label.ToLower() == "regioncode")
+                            FKitem.Options = _mapper.Map<List<RegionViewModel>>(_dbContext.TLIregion.ToList());
+                        else if (FKitem.Label.ToLower() == "sitestatus_name")
+                            FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
+                        else if (FKitem.Label.ToLower() == "locationtype")
+                            FKitem.Options = _mapper.Map<List<LocationTypeViewModel>>(_unitOfWork.LocationTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+
+                        return FKitem;
+                    })
+                .ToList();
                     item item = new item()
                     {
                         staticAttributes = ListAttributesActivatedSite,
