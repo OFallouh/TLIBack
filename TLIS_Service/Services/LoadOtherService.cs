@@ -1201,13 +1201,24 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
                                                         {
-
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString,HistoryId);
-
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, LoadOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
                                                         }
                                                     }
+                                                }
                                                     else
                                                     {
                                                         if (LoadOther.CenterHigh <= 0)
@@ -1284,11 +1295,22 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
                                                     {
+                                                        var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
 
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
-
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, LoadOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
                                                     }
 
                                                 }
@@ -1458,11 +1480,22 @@ namespace TLIS_Service.Services
 
                                                                 }
 
-                                                                if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                                if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
                                                                 {
+                                                                    var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                        .ToList();
 
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
-
+                                                                    foreach (var item in sortedDynamicAttributes)
+                                                                    {
+                                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, LoadOther.Id, HistoryId).Message;
+                                                                        if (Message != "Success")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                                 else
@@ -1543,11 +1576,22 @@ namespace TLIS_Service.Services
 
                                                                 }
 
-                                                                if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                                if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
                                                                 {
+                                                                    var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                        .ToList();
 
-                                                                    _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
-
+                                                                    foreach (var item in sortedDynamicAttributes)
+                                                                    {
+                                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, LoadOther.Id, HistoryId).Message;
+                                                                        if (Message != "Success")
+                                                                        {
+                                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                        }
+                                                                    }
                                                                 }
 
                                                             }
@@ -1715,11 +1759,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                        if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, LoadOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                         else
@@ -1800,11 +1855,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                        if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, LoadOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
 
                                                     }
@@ -1940,11 +2006,22 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
                                                     {
+                                                        var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
 
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameEntity.Id, LoadOther.Id, ConnectionString, HistoryId);
-
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, LoadOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
                                                     }
 
                                                 }
@@ -2173,10 +2250,24 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString,HistoryId);
+                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
 
+                                            if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                            {
+                                                var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                    .ToList();
+
+                                                foreach (var item in sortedDynamicAttributes)
+                                                {
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+                                                }
                                             }
+                                        }
                                             else if (loadOtherInst.ReservedSpace == true && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                             {
                                                 if (loadOther.CenterHigh <= 0)
@@ -2284,8 +2375,23 @@ namespace TLIS_Service.Services
 
                                             }
 
-                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                            if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                            {
+                                                var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                    .ToList();
+
+                                                foreach (var item in sortedDynamicAttributes)
+                                                {
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+                                                }
+                                            }
                                         }
                                         else if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
                                             {
@@ -2408,9 +2514,23 @@ namespace TLIS_Service.Services
                                                 _unitOfWork.SaveChanges();
 
                                             }
+                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
 
-                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                            if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                            {
+                                                var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                    .ToList();
+
+                                                foreach (var item in sortedDynamicAttributes)
+                                                {
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+                                                }
+                                            }
                                         }
                                         else if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                             {
@@ -2512,8 +2632,23 @@ namespace TLIS_Service.Services
 
                                             }
 
-                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                            if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                            {
+                                                var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                    .ToList();
+
+                                                foreach (var item in sortedDynamicAttributes)
+                                                {
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                         else
@@ -2704,8 +2839,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 if (loadOtherInst.ReservedSpace == true && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                                     {
@@ -2813,8 +2963,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
                                                     {
@@ -2940,8 +3105,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                                     {
@@ -3043,8 +3223,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                    if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
 
 
@@ -3230,8 +3425,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             if (loadOtherInst.ReservedSpace == true && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                                 {
@@ -3342,8 +3552,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == true)
                                                 {
@@ -3467,8 +3692,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             if (loadOtherInst.ReservedSpace == false && LoadOtherViewModel.civilLoads.ReservedSpace == false)
                                                 {
@@ -3571,8 +3811,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                                if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
 
 
@@ -3730,8 +3985,23 @@ namespace TLIS_Service.Services
 
                                             }
 
-                                            if (LoadOtherViewModel.dynamicAttribute != null ? LoadOtherViewModel.dynamicAttribute.Count() > 0 : false)
-                                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, LoadOtherViewModel.dynamicAttribute, TableNameId, loadOther.Id, ConnectionString, HistoryId);
+                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(LoadOtherViewModel, HistoryId);
+
+                                            if (LoadOtherViewModel.dynamicAttribute != null && LoadOtherViewModel.dynamicAttribute.Count > 0)
+                                            {
+                                                var sortedDynamicAttributes = LoadOtherViewModel.dynamicAttribute
+                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                    .ToList();
+
+                                                foreach (var item in sortedDynamicAttributes)
+                                                {
+                                                    var Messagee = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, loadOther.Id, HistoryId).Message;
+                                                    if (Messagee != "Success")
+                                                    {
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Messagee, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+                                                }
+                                            }
                                         }
                                         else
                                             {

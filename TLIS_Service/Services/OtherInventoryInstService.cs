@@ -64,6 +64,7 @@ using TLIS_DAL.ViewModels.TelecomTypeDTOs;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs;
 using System.Reflection.Emit;
+using TLIS_DAL.ViewModels.SiteDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -2787,8 +2788,23 @@ namespace TLIS_Service.Services
                                 _unitOfWork.OtherInventoryDistanceRepository.AddWithHDynamic(UserId, TabelTLIotherInventoryDistance, otherInventoryDistance, HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addGeneratorInstallationObject.dynamicAttribute, TableNameEntity.Id, Generator.Id, ConnectionString, HistoryId);
+                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addGeneratorInstallationObject, HistoryId);
 
+                            if (addGeneratorInstallationObject.dynamicAttribute != null && addGeneratorInstallationObject.dynamicAttribute.Count > 0)
+                            {
+                                var sortedDynamicAttributes = addGeneratorInstallationObject.dynamicAttribute
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+                                foreach (var item in sortedDynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, Generator.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<AddGeneratorInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                }
+                            }
                             if (TaskId != null)
                             {
                                 var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -2911,8 +2927,23 @@ namespace TLIS_Service.Services
                                 _unitOfWork.OtherInventoryDistanceRepository.AddWithHDynamic(UserId, TabelTLIotherInventoryDistance, otherInventoryDistance,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addCabinetPowerInstallation.dynamicAttribute, TableNameEntity.Id, CabinetPower.Id, ConnectionString,HistoryId);
+                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addCabinetPowerInstallation, HistoryId);
 
+                            if (addCabinetPowerInstallation.dynamicAttribute != null && addCabinetPowerInstallation.dynamicAttribute.Count > 0)
+                            {
+                                var sortedDynamicAttributes = addCabinetPowerInstallation.dynamicAttribute
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+                                foreach (var item in sortedDynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CabinetPower.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<AddCabinetPowerInstallation>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                }
+                            }
                             if (TaskId != null)
                             {
                                 var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -3036,8 +3067,23 @@ namespace TLIS_Service.Services
                                 _unitOfWork.OtherInventoryDistanceRepository.AddWithHDynamic(UserId, TabelTLIotherInventoryDistance, otherInventoryDistance,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addCabinetTelecomInstallationObject.dynamicAttribute, TableNameEntity.Id, CabinetTelecom.Id, ConnectionString,HistoryId);
+                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addCabinetTelecomInstallationObject, HistoryId);
 
+                            if (addCabinetTelecomInstallationObject.dynamicAttribute != null && addCabinetTelecomInstallationObject.dynamicAttribute.Count > 0)
+                            {
+                                var sortedDynamicAttributes = addCabinetTelecomInstallationObject.dynamicAttribute
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+                                foreach (var item in sortedDynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, CabinetTelecom.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<AddCabinetTelecomInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                }
+                            }
                             if (TaskId != null)
                             {
                                 var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -3160,8 +3206,23 @@ namespace TLIS_Service.Services
                                 _unitOfWork.OtherInventoryDistanceRepository.AddWithHDynamic(UserId, TabelTLIotherInventoryDistance, otherInventoryDistance,HistoryId);
                                 _unitOfWork.SaveChanges();
                             }
-                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSolarInstallationObject.dynamicAttribute, TableNameEntity.Id, Solar.Id, ConnectionString,HistoryId);
+                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addSolarInstallationObject, HistoryId);
 
+                            if (addSolarInstallationObject.dynamicAttribute != null && addSolarInstallationObject.dynamicAttribute.Count > 0)
+                            {
+                                var sortedDynamicAttributes = addSolarInstallationObject.dynamicAttribute
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+                                foreach (var item in sortedDynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, Solar.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<AddSolarInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                }
+                            }
                             if (TaskId != null)
                             {
                                 var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -3951,9 +4012,22 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
 
                             }
-                            if (GeneratorModel.dynamicAttribute.Count > 0)
+                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(GeneratorModel, HistoryId);
+
+                            if (GeneratorModel.dynamicAttribute != null && GeneratorModel.dynamicAttribute.Count > 0)
                             {
-                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, GeneratorModel.dynamicAttribute, TableEntity.Id, Generator.Id, connectionString,HistoryId);
+                                var sortedDynamicAttributes = GeneratorModel.dynamicAttribute
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+                                foreach (var item in sortedDynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, Generator.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                }
                             }
                             await _unitOfWork.SaveChangesAsync();
 
@@ -4084,9 +4158,22 @@ namespace TLIS_Service.Services
                                 _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInventoryDistance, OldOtherinventorydistance, Otherinventorydistance);
                                 _unitOfWork.SaveChanges();
                             }
-                            if (SolarModel.dynamicAttribute.Count > 0)
+                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(SolarModel, HistoryId);
+
+                            if (SolarModel.dynamicAttribute != null && SolarModel.dynamicAttribute.Count > 0)
                             {
-                                _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, SolarModel.dynamicAttribute, TableEntity.Id, Solar.Id, connectionString,HistoryId);
+                                var sortedDynamicAttributes = SolarModel.dynamicAttribute
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+                                foreach (var item in sortedDynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, Solar.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                }
                             }
                             await _unitOfWork.SaveChangesAsync();
 
@@ -4252,9 +4339,22 @@ namespace TLIS_Service.Services
                             _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInventoryDistance, OldOtherinventorydistance, Otherinventorydistance);
                             _unitOfWork.SaveChanges();
                         }
-                        if (editCabinetPowerInstallationObject.dynamicAttribute.Count > 0)
+                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(editCabinetPowerInstallationObject, HistoryId);
+
+                        if (editCabinetPowerInstallationObject.dynamicAttribute != null && editCabinetPowerInstallationObject.dynamicAttribute.Count > 0)
                         {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, editCabinetPowerInstallationObject.dynamicAttribute, TableEntity.Id, CabinetPower.Id, connectionString,HistoryId);
+                            var sortedDynamicAttributes = editCabinetPowerInstallationObject.dynamicAttribute
+                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                .ToList();
+
+                            foreach (var item in sortedDynamicAttributes)
+                            {
+                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, CabinetPower.Id, HistoryId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
                         }
                         await _unitOfWork.SaveChangesAsync();
 
@@ -4421,9 +4521,22 @@ namespace TLIS_Service.Services
                             _unitOfWork.OtherInventoryDistanceRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIotherInventoryDistance, OldOtherinventorydistance, Otherinventorydistance);
                             _unitOfWork.SaveChanges();
                         }
-                        if (editCabinetTelecomInstallationObject.dynamicAttribute.Count > 0)
+                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(editCabinetTelecomInstallationObject, HistoryId);
+
+                        if (editCabinetTelecomInstallationObject.dynamicAttribute != null && editCabinetTelecomInstallationObject.dynamicAttribute.Count > 0)
                         {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, editCabinetTelecomInstallationObject.dynamicAttribute, TableEntity.Id, CabinetTelecom.Id, connectionString,HistoryId);
+                            var sortedDynamicAttributes = editCabinetTelecomInstallationObject.dynamicAttribute
+                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                .ToList();
+
+                            foreach (var item in sortedDynamicAttributes)
+                            {
+                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, CabinetTelecom.Id, HistoryId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
                         }
                         await _unitOfWork.SaveChangesAsync();
 

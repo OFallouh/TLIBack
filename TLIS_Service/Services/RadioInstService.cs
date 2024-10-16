@@ -52,6 +52,7 @@ using static TLIS_DAL.ViewModels.RadioRRULibraryDTOs.EditRadioRRULibraryObject;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using static TLIS_DAL.ViewModels.RadioOtherLibraryDTOs.EditRadioOtherLibraryObject;
 using TLIS_DAL.ViewModels.Mw_OtherDTOs;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace TLIS_Service.Services
 {
@@ -1713,11 +1714,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioAntenna, HistoryId);
+
+                                                        if (AddRadioAntenna.dynamicAttribute != null && AddRadioAntenna.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioAntenna.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString,HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                     else
@@ -1803,11 +1815,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioAntenna, HistoryId);
+
+                                                        if (AddRadioAntenna.dynamicAttribute != null && AddRadioAntenna.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioAntenna.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
 
                                                     }
@@ -1984,11 +2007,22 @@ namespace TLIS_Service.Services
 
                                                                     }
 
-                                                                    if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioAntenna, HistoryId);
+
+                                                                    if (AddRadioAntenna.dynamicAttribute != null && AddRadioAntenna.dynamicAttribute.Count > 0)
                                                                     {
+                                                                        var sortedDynamicAttributes = AddRadioAntenna.dynamicAttribute
+                                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                            .ToList();
 
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
-
+                                                                        foreach (var item in sortedDynamicAttributes)
+                                                                        {
+                                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                            if (Message != "Success")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                            }
+                                                                        }
                                                                     }
                                                                 }
                                                                 else
@@ -2074,11 +2108,22 @@ namespace TLIS_Service.Services
 
                                                                     }
 
-                                                                    if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioAntenna, HistoryId);
+
+                                                                    if (AddRadioAntenna.dynamicAttribute != null && AddRadioAntenna.dynamicAttribute.Count > 0)
                                                                     {
+                                                                        var sortedDynamicAttributes = AddRadioAntenna.dynamicAttribute
+                                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                            .ToList();
 
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
-
+                                                                        foreach (var item in sortedDynamicAttributes)
+                                                                        {
+                                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                            if (Message != "Success")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                            }
+                                                                        }
                                                                     }
 
                                                                 }
@@ -2252,11 +2297,22 @@ namespace TLIS_Service.Services
 
                                                             }
 
-                                                            if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioAntenna, HistoryId);
+
+                                                            if (AddRadioAntenna.dynamicAttribute != null && AddRadioAntenna.dynamicAttribute.Count > 0)
                                                             {
+                                                                var sortedDynamicAttributes = AddRadioAntenna.dynamicAttribute
+                                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                    .ToList();
 
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
-
+                                                                foreach (var item in sortedDynamicAttributes)
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                         else
@@ -2344,12 +2400,22 @@ namespace TLIS_Service.Services
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
+                                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioAntenna, HistoryId);
 
-                                                            if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                            if (AddRadioAntenna.dynamicAttribute != null && AddRadioAntenna.dynamicAttribute.Count > 0)
                                                             {
+                                                                var sortedDynamicAttributes = AddRadioAntenna.dynamicAttribute
+                                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                    .ToList();
 
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
-
+                                                                foreach (var item in sortedDynamicAttributes)
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                    }
+                                                                }
                                                             }
 
                                                         }
@@ -2493,11 +2559,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioAntenna.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioAntenna, HistoryId);
+
+                                                        if (AddRadioAntenna.dynamicAttribute != null && AddRadioAntenna.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioAntenna.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioAntenna.dynamicAttribute, TableNameEntity.Id, RadioAntenna.Id, ConnectionString, HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
 
                                                     }
@@ -2700,11 +2777,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioRRU.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioRRU, HistoryId);
+
+                                                        if (AddRadioRRU.dynamicAttribute != null && AddRadioRRU.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioRRU.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString,HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                     else
@@ -2798,11 +2886,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioRRU.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioRRU, HistoryId);
+
+                                                        if (AddRadioRRU.dynamicAttribute != null && AddRadioRRU.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioRRU.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
 
                                                     }
@@ -2999,11 +3098,22 @@ namespace TLIS_Service.Services
 
                                                                     }
 
-                                                                    if (AddRadioRRU.dynamicAttribute.Count > 0)
+                                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioRRU, HistoryId);
+
+                                                                    if (AddRadioRRU.dynamicAttribute != null && AddRadioRRU.dynamicAttribute.Count > 0)
                                                                     {
+                                                                        var sortedDynamicAttributes = AddRadioRRU.dynamicAttribute
+                                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                            .ToList();
 
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
-
+                                                                        foreach (var item in sortedDynamicAttributes)
+                                                                        {
+                                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                            if (Message != "Success")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                            }
+                                                                        }
                                                                     }
                                                                 }
                                                                 else
@@ -3101,11 +3211,22 @@ namespace TLIS_Service.Services
 
                                                                     }
 
-                                                                    if (AddRadioRRU.dynamicAttribute.Count > 0)
+                                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioRRU, HistoryId);
+
+                                                                    if (AddRadioRRU.dynamicAttribute != null && AddRadioRRU.dynamicAttribute.Count > 0)
                                                                     {
+                                                                        var sortedDynamicAttributes = AddRadioRRU.dynamicAttribute
+                                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                            .ToList();
 
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
-
+                                                                        foreach (var item in sortedDynamicAttributes)
+                                                                        {
+                                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                            if (Message != "Success")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                            }
+                                                                        }
                                                                     }
 
                                                                 }
@@ -3295,11 +3416,22 @@ namespace TLIS_Service.Services
 
                                                             }
 
-                                                            if (AddRadioRRU.dynamicAttribute.Count > 0)
+                                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioRRU, HistoryId);
+
+                                                            if (AddRadioRRU.dynamicAttribute != null && AddRadioRRU.dynamicAttribute.Count > 0)
                                                             {
+                                                                var sortedDynamicAttributes = AddRadioRRU.dynamicAttribute
+                                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                    .ToList();
 
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
-
+                                                                foreach (var item in sortedDynamicAttributes)
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                         else
@@ -3395,11 +3527,22 @@ namespace TLIS_Service.Services
 
                                                             }
 
-                                                            if (AddRadioRRU.dynamicAttribute.Count > 0)
+                                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioRRU, HistoryId);
+
+                                                            if (AddRadioRRU.dynamicAttribute != null && AddRadioRRU.dynamicAttribute.Count > 0)
                                                             {
+                                                                var sortedDynamicAttributes = AddRadioRRU.dynamicAttribute
+                                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                    .ToList();
 
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
-
+                                                                foreach (var item in sortedDynamicAttributes)
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                    }
+                                                                }
                                                             }
 
                                                         }
@@ -3560,11 +3703,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioRRU.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioRRU, HistoryId);
+
+                                                        if (AddRadioRRU.dynamicAttribute != null && AddRadioRRU.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioRRU.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioRRU.dynamicAttribute, TableNameEntity.Id, RadioRRU.Id, ConnectionString, HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
 
                                                     }
@@ -3739,11 +3893,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioOther.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioOther, HistoryId);
+
+                                                        if (AddRadioOther.dynamicAttribute != null && AddRadioOther.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioOther.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString,HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                     else
@@ -3823,11 +3988,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioOther.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioOther, HistoryId);
+
+                                                        if (AddRadioOther.dynamicAttribute != null && AddRadioOther.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioOther.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
 
                                                     }
@@ -3999,11 +4175,22 @@ namespace TLIS_Service.Services
 
                                                                     }
 
-                                                                    if (AddRadioOther.dynamicAttribute.Count > 0)
+                                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioOther, HistoryId);
+
+                                                                    if (AddRadioOther.dynamicAttribute != null && AddRadioOther.dynamicAttribute.Count > 0)
                                                                     {
+                                                                        var sortedDynamicAttributes = AddRadioOther.dynamicAttribute
+                                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                            .ToList();
 
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
-
+                                                                        foreach (var item in sortedDynamicAttributes)
+                                                                        {
+                                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioOther.Id, HistoryId).Message;
+                                                                            if (Message != "Success")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                            }
+                                                                        }
                                                                     }
                                                                 }
                                                                 else
@@ -4082,11 +4269,22 @@ namespace TLIS_Service.Services
 
                                                                     }
 
-                                                                    if (AddRadioOther.dynamicAttribute.Count > 0)
+                                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioOther, HistoryId);
+
+                                                                    if (AddRadioOther.dynamicAttribute != null && AddRadioOther.dynamicAttribute.Count > 0)
                                                                     {
+                                                                        var sortedDynamicAttributes = AddRadioOther.dynamicAttribute
+                                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                            .ToList();
 
-                                                                        _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
-
+                                                                        foreach (var item in sortedDynamicAttributes)
+                                                                        {
+                                                                            var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioOther.Id, HistoryId).Message;
+                                                                            if (Message != "Success")
+                                                                            {
+                                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                            }
+                                                                        }
                                                                     }
 
                                                                 }
@@ -4253,11 +4451,22 @@ namespace TLIS_Service.Services
 
                                                             }
 
-                                                            if (AddRadioOther.dynamicAttribute.Count > 0)
+                                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioOther, HistoryId);
+
+                                                            if (AddRadioOther.dynamicAttribute != null && AddRadioOther.dynamicAttribute.Count > 0)
                                                             {
+                                                                var sortedDynamicAttributes = AddRadioOther.dynamicAttribute
+                                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                    .ToList();
 
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
-
+                                                                foreach (var item in sortedDynamicAttributes)
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioOther.Id, HistoryId).Message;
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                         else
@@ -4339,11 +4548,22 @@ namespace TLIS_Service.Services
 
                                                             }
 
-                                                            if (AddRadioOther.dynamicAttribute.Count > 0)
+                                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioOther, HistoryId);
+
+                                                            if (AddRadioOther.dynamicAttribute != null && AddRadioOther.dynamicAttribute.Count > 0)
                                                             {
+                                                                var sortedDynamicAttributes = AddRadioOther.dynamicAttribute
+                                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                    .ToList();
 
-                                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
-
+                                                                foreach (var item in sortedDynamicAttributes)
+                                                                {
+                                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioOther.Id, HistoryId).Message;
+                                                                    if (Message != "Success")
+                                                                    {
+                                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                    }
+                                                                }
                                                             }
 
                                                         }
@@ -4480,11 +4700,22 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (AddRadioOther.dynamicAttribute.Count > 0)
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(AddRadioOther, HistoryId);
+
+                                                        if (AddRadioOther.dynamicAttribute != null && AddRadioOther.dynamicAttribute.Count > 0)
                                                         {
+                                                            var sortedDynamicAttributes = AddRadioOther.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
 
-                                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, AddRadioOther.dynamicAttribute, TableNameEntity.Id, RadioOther.Id, ConnectionString, HistoryId);
-
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, RadioOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
                                                         }
 
                                                     }
@@ -4729,9 +4960,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString,HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
 
+                                                if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                             {
@@ -4846,8 +5091,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                             {
@@ -4977,8 +5237,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                             {
@@ -5085,9 +5360,23 @@ namespace TLIS_Service.Services
                                                     _unitOfWork.SaveChanges();
 
                                                 }
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
 
-                                                if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                         else
@@ -5283,8 +5572,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                        if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                     else if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                     {
@@ -5399,8 +5703,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                        if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                     else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                                     {
@@ -5531,8 +5850,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                        if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                     else if(RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                     {
@@ -5639,8 +5973,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                        if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
 
 
@@ -5831,8 +6180,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                    if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 else if (RadioAntennaInst.ReservedSpace == true && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                 {
@@ -5947,8 +6311,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                    if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 else if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == true)
                                                 {
@@ -6078,8 +6457,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                    if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 else if (RadioAntennaInst.ReservedSpace == false && EditRadioAntenna.civilLoads.ReservedSpace == false)
                                                 {
@@ -6186,8 +6580,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                    if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
 
 
@@ -6349,8 +6758,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditRadioAntenna.dynamicAttribute != null ? EditRadioAntenna.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioAntenna.dynamicAttribute, TableNameId, RadioAntenna.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioAntenna, HistoryId);
+
+                                                if (EditRadioAntenna.dynamicAttribute != null && EditRadioAntenna.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioAntenna.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Messagee = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioAntenna.Id, HistoryId).Message;
+                                                        if (Messagee != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Messagee, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else
                                             {
@@ -6395,12 +6819,12 @@ namespace TLIS_Service.Services
                     if (LoadSubType.TLIradioRRU.ToString() == TableName)
                     {
                         var TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLIradioRRU.ToString().ToLower()).Id;
-                        EditRadioRRUInstallationObject EditRadioRRU= _mapper.Map<EditRadioRRUInstallationObject>(RadioInstallationViewModel);
+                        EditRadioRRUInstallationObject EditRadioRRU = _mapper.Map<EditRadioRRUInstallationObject>(RadioInstallationViewModel);
                         TLIRadioRRU RadioRRU = _mapper.Map<TLIRadioRRU>(EditRadioRRU.installationAttributes);
                         TLIcivilLoads RadioRRUInst = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                        .Include(x => x.allLoadInst).Include(x => x.allLoadInst.radioRRU).Include(x => x.allLoadInst.radioRRU.radioRRULibrary).Include(x => x.allCivilInst)
                        .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
-                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && x.allLoadInst.radioAntennaId==null && !x.Dismantle);
+                       .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.radioRRUId == RadioRRU.Id && x.allLoadInst.radioAntennaId == null && !x.Dismantle);
 
                         if (RadioRRUInst == null)
                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "RadioRR is not found", (int)ApiReturnCode.fail);
@@ -6408,9 +6832,9 @@ namespace TLIS_Service.Services
                         {
                             if (EditRadioRRU.installationConfig.civilWithLegId != null)
                             {
-                                 AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                 EditRadioRRU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == RadioRRUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                                 x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                EditRadioRRU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == RadioRRUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                 if (AllcivilinstId != null)
                                 {
                                     if (EditRadioRRU.installationConfig.legId != null)
@@ -6450,13 +6874,13 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                    if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -6477,8 +6901,8 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
-                                                        , null, EditRadioRRU.installationConfig.civilWithLegId,null,
+                                                         null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, null,
                                                          null, null, null, RadioRRU.Azimuth
                                                         , RadioRRU.HeightBase, 1).Data;
 
@@ -6518,7 +6942,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 RadioRRU.radioRRULibraryId = EditRadioRRU.civilType.radioRRULibraryId;
                                                 RadioRRU.installationPlaceId = EditRadioRRU.installationConfig.InstallationPlaceId;
-                                                var HistoryId= _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId,null,  RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
+                                                var HistoryId = _unitOfWork.RadioRRURepository.UpdateWithHInstallation(UserId, null, RadioRRUInst.allLoadInst.radioRRU, RadioRRU, RadioRRUInst.SiteCode);
                                                 _unitOfWork.SaveChanges();
                                                 if (EditRadioRRU.installationConfig.radioAntennaId != null)
                                                 {
@@ -6556,14 +6980,28 @@ namespace TLIS_Service.Services
                                                     NewRadioRRUInst.ItemStatus = EditRadioRRU.civilLoads?.ItemStatus;
                                                     NewRadioRRUInst.ReservedSpace = EditRadioRRU.civilLoads.ReservedSpace;
                                                     var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewRadioRRUInst);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
 
-                                                if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString,HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
 
+                                                if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else if (RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
                                             {
@@ -6573,20 +7011,20 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                    if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
                                                 {
-                                                  
-                                                       return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
-                                                       
+
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SpaceInstallation must bigger from zero", (int)ApiReturnCode.fail);
+
                                                 }
 
                                                 if (EditRadioRRU.installationAttributes.Azimuth <= 0)
@@ -6599,7 +7037,7 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                          null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                          null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                          , null, EditRadioRRU.installationConfig.civilWithLegId, null,
                                                           null, null, null, RadioRRU.Azimuth
                                                          , RadioRRU.HeightBase, 1).Data;
@@ -6619,7 +7057,7 @@ namespace TLIS_Service.Services
                                                 var OldVcivilinfo = _dbContext.TLIcivilWithLegs.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithLegsId);
                                                 if (OldVcivilinfo != null)
                                                 {
-                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads -  RadioRRUInst.allLoadInst.radioRRU.EquivalentSpace;
+                                                    AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads = AllcivilinstId.allCivilInst.civilWithLegs.CurrentLoads - RadioRRUInst.allLoadInst.radioRRU.EquivalentSpace;
                                                     _unitOfWork.CivilWithLegsRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithLegs);
                                                     _unitOfWork.SaveChanges();
                                                     RadioRRU.EquivalentSpace = 0;
@@ -6669,10 +7107,25 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
-                                            else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
+                                            else if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                             {
                                                 if (RadioRRU.CenterHigh <= 0)
                                                 {
@@ -6680,13 +7133,13 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                    if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -6706,7 +7159,7 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                         null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                         , null, EditRadioRRU.installationConfig.civilWithLegId, null,
                                                          null, null, null, RadioRRU.Azimuth
                                                         , RadioRRU.HeightBase, 1).Data;
@@ -6791,10 +7244,25 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
-                                            else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                            else if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                             {
                                                 if (RadioRRU.CenterHigh <= 0)
                                                 {
@@ -6802,13 +7270,13 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                    if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -6829,7 +7297,7 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                         null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                         , null, EditRadioRRU.installationConfig.civilWithLegId, null,
                                                          null, null, null, RadioRRU.Azimuth
                                                         , RadioRRU.HeightBase, 1).Data;
@@ -6891,8 +7359,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                         else
@@ -6928,9 +7411,9 @@ namespace TLIS_Service.Services
                             {
                                 if (EditRadioRRU.installationConfig.civilWithLegId != null)
                                 {
-                                     AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                       EditRadioRRU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == RadioRRUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
-                                       x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                    AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
+                                      EditRadioRRU.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() == RadioRRUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
+                                      x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                     if (AllcivilinstId != null)
                                     {
                                         if (EditRadioRRU.installationConfig.legId != null)
@@ -6945,7 +7428,7 @@ namespace TLIS_Service.Services
 
                                                 var SideArm = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
                                                   EditRadioRRU.installationConfig.civilWithLegId && !x.Dismantle && x.sideArmId ==
-                                                  EditRadioRRU.installationConfig.sideArmId &&x.legId== EditRadioRRU.installationConfig.legId,
+                                                  EditRadioRRU.installationConfig.sideArmId && x.legId == EditRadioRRU.installationConfig.legId,
                                                   x => x.allCivilInst, x => x.allCivilInst.civilWithLegs,
                                                   x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib,
                                                   x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
@@ -6983,7 +7466,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -7003,7 +7486,7 @@ namespace TLIS_Service.Services
                                                         }
 
                                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                         null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                         , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                          EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                         , RadioRRU.HeightBase, 2).Data;
@@ -7087,10 +7570,25 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                        if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
-                                                    else if(RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                                    else if (RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (RadioRRU.CenterHigh <= 0)
                                                         {
@@ -7104,7 +7602,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -7125,7 +7623,7 @@ namespace TLIS_Service.Services
 
 
                                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                        null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                         EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                        , RadioRRU.HeightBase, 2).Data;
@@ -7195,10 +7693,25 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                        if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
-                                                    else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
+                                                    else if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                                     {
                                                         if (RadioRRU.CenterHigh <= 0)
                                                         {
@@ -7212,10 +7725,10 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                             }
                                                         }
-                                                        
+
                                                         if (EditRadioRRU.installationAttributes.Azimuth <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Azimuth must bigger from zero", (int)ApiReturnCode.fail);
@@ -7227,7 +7740,7 @@ namespace TLIS_Service.Services
 
 
                                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                        null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                         EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                        , RadioRRU.HeightBase, 2).Data;
@@ -7312,10 +7825,25 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                        if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
-                                                    else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                                    else if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                     {
                                                         if (RadioRRU.CenterHigh <= 0)
                                                         {
@@ -7329,7 +7857,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                RadioRRU.CenterHigh = RadioRRU.HBA +( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                                RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                             }
                                                         }
                                                         if (RadioRRU.SpaceInstallation == 0)
@@ -7349,7 +7877,7 @@ namespace TLIS_Service.Services
                                                         }
 
                                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                         null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                         , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                          EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                         , RadioRRU.HeightBase, 2).Data;
@@ -7411,8 +7939,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                        if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
 
                                                 }
@@ -7451,9 +7994,9 @@ namespace TLIS_Service.Services
                             {
                                 if (EditRadioRRU.installationConfig.civilWithoutLegId != null)
                                 {
-                                     AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
-                                       EditRadioRRU.installationConfig.civilWithoutLegId && !x.Dismantle && x.SiteCode.ToLower() == RadioRRUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                                       x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                    AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId ==
+                                      EditRadioRRU.installationConfig.civilWithoutLegId && !x.Dismantle && x.SiteCode.ToLower() == RadioRRUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                      x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
 
                                     if (AllcivilinstId != null)
                                     {
@@ -7495,13 +8038,13 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                        if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         else
                                                         {
-                                                            RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                            RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -7520,7 +8063,7 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                                                                           null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                                                                           null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                                                                           , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                                                                            EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                                                                           , RadioRRU.HeightBase, 2).Data;
@@ -7604,10 +8147,25 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                    if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
-                                                else if(RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                                else if (RadioRRUInst.ReservedSpace == true && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (RadioRRU.CenterHigh <= 0)
                                                     {
@@ -7615,13 +8173,13 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                        if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         else
                                                         {
-                                                            RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                            RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -7642,7 +8200,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                           null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                           null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                           , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                            EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                           , RadioRRU.HeightBase, 2).Data;
@@ -7662,7 +8220,7 @@ namespace TLIS_Service.Services
                                                     var OldVcivilinfo = _dbContext.TLIcivilWithoutLeg.AsNoTracking().FirstOrDefault(x => x.Id == AllcivilinstId.allCivilInst.civilWithoutLegId);
                                                     if (OldVcivilinfo != null)
                                                     {
-                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads -  RadioRRUInst.allLoadInst.radioRRU.EquivalentSpace;
+                                                        AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads = AllcivilinstId.allCivilInst.civilWithoutLeg.CurrentLoads - RadioRRUInst.allLoadInst.radioRRU.EquivalentSpace;
                                                         _unitOfWork.CivilWithoutLegRepository.UpdateWithHistory(UserId, OldVcivilinfo, AllcivilinstId.allCivilInst.civilWithoutLeg);
                                                         _unitOfWork.SaveChanges();
                                                         RadioRRU.EquivalentSpace = 0;
@@ -7712,10 +8270,25 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                    if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
-                                                else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
+                                                else if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == true)
                                                 {
                                                     if (RadioRRU.CenterHigh <= 0)
                                                     {
@@ -7723,13 +8296,13 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                        if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         else
                                                         {
-                                                            RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                            RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -7750,7 +8323,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                          null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                          null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                          , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                           EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                          , RadioRRU.HeightBase, 2).Data;
@@ -7835,10 +8408,25 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                    if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
-                                                else if(RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
+                                                else if (RadioRRUInst.ReservedSpace == false && EditRadioRRU.civilLoads.ReservedSpace == false)
                                                 {
                                                     if (RadioRRU.CenterHigh <= 0)
                                                     {
@@ -7846,13 +8434,13 @@ namespace TLIS_Service.Services
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
-                                                        if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                        if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                         }
                                                         else
                                                         {
-                                                            RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                            RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                         }
                                                     }
                                                     if (RadioRRU.SpaceInstallation == 0)
@@ -7872,7 +8460,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                        null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                        null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                        , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                         EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                        , RadioRRU.HeightBase, 2).Data;
@@ -7934,8 +8522,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                    if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
 
 
@@ -7968,9 +8571,9 @@ namespace TLIS_Service.Services
                             {
                                 if (EditRadioRRU.installationConfig.civilNonSteelId != null)
                                 {
-                                     AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
-                                        EditRadioRRU.installationConfig.civilNonSteelId && !x.Dismantle && x.SiteCode.ToLower() == RadioRRUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
-                                        x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
+                                    AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilNonSteelId ==
+                                       EditRadioRRU.installationConfig.civilNonSteelId && !x.Dismantle && x.SiteCode.ToLower() == RadioRRUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
+                                       x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                                     if (AllcivilinstId != null)
                                     {
                                         if (EditRadioRRU.installationConfig.sideArmId != null)
@@ -8013,13 +8616,13 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surface must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
-                                                    if ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
+                                                    if (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length <= 0)
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "CenterHigh must bigger from zero", (int)ApiReturnCode.fail);
                                                     }
                                                     else
                                                     {
-                                                        RadioRRU.CenterHigh = RadioRRU.HBA + ( RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
+                                                        RadioRRU.CenterHigh = RadioRRU.HBA + (RadioRRUInst.allLoadInst.radioRRU.radioRRULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (RadioRRU.SpaceInstallation == 0)
@@ -8038,7 +8641,7 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HeightBase must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                         null, null, null, RadioRRU.Id, null, null, null,null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
+                                                         null, null, null, RadioRRU.Id, null, null, null, null, "TLIRadioRRU", RadioRRUInst.SiteCode, EditRadioRRU.installationConfig.legId
                                                         , null, EditRadioRRU.installationConfig.civilWithLegId, EditRadioRRU.installationConfig.civilWithoutLegId,
                                                          EditRadioRRU.installationConfig.civilNonSteelId, EditRadioRRU.installationConfig.sideArmId, null, RadioRRU.Azimuth
                                                         , RadioRRU.HeightBase, 2).Data;
@@ -8100,8 +8703,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditRadioRRU.dynamicAttribute != null ? EditRadioRRU.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditRadioRRU.dynamicAttribute, TableNameId, RadioRRU.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditRadioRRU, HistoryId);
+
+                                                if (EditRadioRRU.dynamicAttribute != null && EditRadioRRU.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditRadioRRU.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Messagee = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, RadioRRU.Id, HistoryId).Message;
+                                                        if (Messagee != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Messagee, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else
                                             {
@@ -8302,9 +8920,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString,HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
 
+                                                if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else if (radioOtherInst.ReservedSpace == true && EditradioOther.civilLoads.ReservedSpace == false)
                                             {
@@ -8415,8 +9047,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == true)
                                             {
@@ -8542,8 +9189,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == false)
                                             {
@@ -8646,8 +9308,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                         else
@@ -8839,8 +9516,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                        if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                     else if (radioOtherInst.ReservedSpace == true && EditradioOther.civilLoads.ReservedSpace == false)
                                                     {
@@ -8949,8 +9641,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                        if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                     else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == true)
                                                     {
@@ -9075,8 +9782,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                        if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                     else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == false)
                                                     {
@@ -9177,8 +9899,23 @@ namespace TLIS_Service.Services
 
                                                         }
 
-                                                        if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                        if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                        {
+                                                            var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                                .ToList();
+
+                                                            foreach (var item in sortedDynamicAttributes)
+                                                            {
+                                                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                                if (Message != "Success")
+                                                                {
+                                                                    return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                                }
+                                                            }
+                                                        }
                                                     }
 
 
@@ -9364,9 +10101,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValues(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                    if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 else if (radioOtherInst.ReservedSpace == true && EditradioOther.civilLoads.ReservedSpace == false)
                                                 {
@@ -9476,8 +10227,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                    if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == true)
                                                 {
@@ -9602,8 +10368,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                    if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 else if (radioOtherInst.ReservedSpace == false && EditradioOther.civilLoads.ReservedSpace == false)
                                                 {
@@ -9705,8 +10486,23 @@ namespace TLIS_Service.Services
 
                                                     }
 
-                                                    if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                    var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                    if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                    {
+                                                        var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                            .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                            .ToList();
+
+                                                        foreach (var item in sortedDynamicAttributes)
+                                                        {
+                                                            var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                            if (Message != "Success")
+                                                            {
+                                                                return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                            }
+                                                        }
+                                                    }
                                                 }
 
 
@@ -9863,8 +10659,23 @@ namespace TLIS_Service.Services
 
                                                 }
 
-                                                if (EditradioOther.dynamicAttribute != null ? EditradioOther.dynamicAttribute.Count() > 0 : false)
-                                                    _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(UserId, EditradioOther.dynamicAttribute, TableNameId, radioOther.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(EditradioOther, HistoryId);
+
+                                                if (EditradioOther.dynamicAttribute != null && EditradioOther.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = EditradioOther.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Messagee = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, radioOther.Id, HistoryId).Message;
+                                                        if (Messagee != "Success")
+                                                        {
+                                                            return new Response<GetForAddMWDishInstallationObject>(true, null, null, Messagee, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
                                             }
                                             else
                                             {

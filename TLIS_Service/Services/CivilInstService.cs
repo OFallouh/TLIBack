@@ -3036,14 +3036,14 @@ namespace TLIS_Service.Services
                             return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
 
                         civilwithoutlegs.CivilWithoutlegsLibId = addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId;
-                        var HistorId= _unitOfWork.CivilWithoutLegRepository.AddWithHInsatallation(UserId,null, civilwithoutlegs,SiteCode);
+                        var HistoryId= _unitOfWork.CivilWithoutLegRepository.AddWithHInsatallation(UserId,null, civilwithoutlegs,SiteCode);
                         _unitOfWork.SaveChanges();
 
                         TLIallCivilInst allCivilInst = new TLIallCivilInst();
                         allCivilInst.civilWithoutLegId = civilwithoutlegs.Id;
                         allCivilInst.Draft = false;
                         var TabelTLIallCivilInst = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIallCivilInst").Id;
-                        _unitOfWork.AllCivilInstRepository.AddWithHDynamic(UserId, TabelTLIallCivilInst, allCivilInst,HistorId);
+                        _unitOfWork.AllCivilInstRepository.AddWithHDynamic(UserId, TabelTLIallCivilInst, allCivilInst, HistoryId);
                         _unitOfWork.SaveChanges();
                         allCivilInstId = allCivilInst.Id;
 
@@ -3057,7 +3057,7 @@ namespace TLIS_Service.Services
                             civilSiteDate.HorizontalSpindleLengthm = addCivilWithoutLegViewModel.civilSiteDate.HorizontalSpindleLengthm;
                             civilSiteDate.ReservedSpace = addCivilWithoutLegViewModel.civilSiteDate.ReservedSpace;
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
-                            _unitOfWork.CivilSiteDateRepository.AddWithHDynamic(UserId, TabelTLIcivilSiteDate, civilSiteDate,HistorId);
+                            _unitOfWork.CivilSiteDateRepository.AddWithHDynamic(UserId, TabelTLIcivilSiteDate, civilSiteDate, HistoryId);
                             _unitOfWork.SaveChanges();
                         }
                         if (addCivilWithoutLegViewModel.civilSupportDistance != null)
@@ -3080,12 +3080,28 @@ namespace TLIS_Service.Services
           
                             civilSupportDistance.CivilInstId = allCivilInst.Id;
                             var TabelTLIcivilSupportDistance = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSupportDistance").Id;
-                            _unitOfWork.CivilSupportDistanceRepository.AddWithHDynamic(UserId, TabelTLIcivilSupportDistance, civilSupportDistance,HistorId);
+                            _unitOfWork.CivilSupportDistanceRepository.AddWithHDynamic(UserId, TabelTLIcivilSupportDistance, civilSupportDistance, HistoryId);
                             _unitOfWork.SaveChanges();
                         }
-                      
-                          _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addCivilWithoutLegViewModel.dynamicAttribute, TableNameEntity.Id, civilwithoutlegs.Id, connectionString,HistorId);
-                           
+
+                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addCivilWithoutLegViewModel, HistoryId);
+
+                        if (addCivilWithoutLegViewModel.dynamicAttribute != null && addCivilWithoutLegViewModel.dynamicAttribute.Count > 0)
+                        {
+                            var sortedDynamicAttributes = addCivilWithoutLegViewModel.dynamicAttribute
+                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                .ToList();
+
+                            foreach (var item in sortedDynamicAttributes)
+                            {
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, civilwithoutlegs.Id, HistoryId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
+                        }
+
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -3223,9 +3239,25 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSupportDistanceRepository.AddWithHDynamic(UserId, TabelTLIcivilSupportDistance, civilSupportDistance,HistorId);
                             _unitOfWork.SaveChanges();
                         }
-                       
-                          _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addCivilNonSteelObject.dynamicAttribute, TableNameEntity.Id, civilNonSteel.Id, connectionString,HistorId);
-                            
+
+                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addCivilNonSteelObject, HistorId);
+
+                        if (addCivilNonSteelObject.dynamicAttribute != null && addCivilNonSteelObject.dynamicAttribute.Count > 0)
+                        {
+                            var sortedDynamicAttributes = addCivilNonSteelObject.dynamicAttribute
+                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                .ToList();
+
+                            foreach (var item in sortedDynamicAttributes)
+                            {
+                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, civilNonSteel.Id, HistorId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
+                        }
+
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -3619,9 +3651,22 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        if (editCivilWithLegsInstallationObject.dynamicAttribute.Count > 0)
+                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(editCivilWithLegsInstallationObject, HistoryId);
+
+                        if (editCivilWithLegsInstallationObject.dynamicAttribute != null && editCivilWithLegsInstallationObject.dynamicAttribute.Count > 0)
                         {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(userId, editCivilWithLegsInstallationObject.dynamicAttribute, TableNameId, civilWithLegsEntity.Id,connectionString,HistoryId);
+                            var sortedDynamicAttributes = editCivilWithLegsInstallationObject.dynamicAttribute
+                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                .ToList();
+
+                            foreach (var item in sortedDynamicAttributes)
+                            {
+                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, civilWithLegsEntity.Id, HistoryId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
                         }
                         await _unitOfWork.SaveChangesAsync();
 
@@ -3997,9 +4042,22 @@ namespace TLIS_Service.Services
                                  
                             }
                         }
-                        if (editCivilWithoutLegsInstallationObject.dynamicAttribute.Count > 0)
+                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(editCivilWithoutLegsInstallationObject, HistoryId);
+
+                        if (editCivilWithoutLegsInstallationObject.dynamicAttribute != null && editCivilWithoutLegsInstallationObject.dynamicAttribute.Count > 0)
                         {
-                            _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(userId, editCivilWithoutLegsInstallationObject.dynamicAttribute, TableNameId, civilWithoutLegsEntity.Id,connectionString,HistoryId);
+                            var sortedDynamicAttributes = editCivilWithoutLegsInstallationObject.dynamicAttribute
+                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                .ToList();
+
+                            foreach (var item in sortedDynamicAttributes)
+                            {
+                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, civilWithoutLegsEntity.Id, HistoryId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
                         }
                         await _unitOfWork.SaveChangesAsync();
                     }
@@ -4176,13 +4234,26 @@ namespace TLIS_Service.Services
 
                             }
                         }
-                   
 
-                    if (editCivilNonSteelInstallationObject.dynamicAttribute.Count > 0)
-                    {
-                        _unitOfWork.DynamicAttInstValueRepository.UpdateDynamicValuesH(userId, editCivilNonSteelInstallationObject.dynamicAttribute, TableNameId, civilNonSteelEntity.Id,connectionString,HistoryId);
-                    }
-                    await _unitOfWork.SaveChangesAsync();
+
+                        var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(editCivilNonSteelInstallationObject, HistoryId);
+
+                        if (editCivilNonSteelInstallationObject.dynamicAttribute != null && editCivilNonSteelInstallationObject.dynamicAttribute.Count > 0)
+                        {
+                            var sortedDynamicAttributes = editCivilNonSteelInstallationObject.dynamicAttribute
+                                .OrderBy(item => sortedIds.IndexOf(item.id))
+                                .ToList();
+
+                            foreach (var item in sortedDynamicAttributes)
+                            {
+                                var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, civilNonSteelEntity.Id, HistoryId).Message;
+                                if (Message != "Success")
+                                {
+                                    return new Response<ObjectInstAtts>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
+                        }
+                        await _unitOfWork.SaveChangesAsync();
                     }
                     else
                     {
