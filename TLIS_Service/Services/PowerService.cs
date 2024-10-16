@@ -4391,7 +4391,7 @@ namespace TLIS_Service.Services
                                             }
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                  null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                  , null, Editpower.installationConfig.civilWithLegId, null, null, null, null, power.Azimuth
                                                  , power.HeightBase, 1).Data;
 
@@ -4436,7 +4436,7 @@ namespace TLIS_Service.Services
                                             }
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                           var HistoryId= _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId,null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4461,7 +4461,7 @@ namespace TLIS_Service.Services
                                                 NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                 NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
                                                 var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                 _unitOfWork.SaveChanges();
 
                                             }
@@ -4515,7 +4515,7 @@ namespace TLIS_Service.Services
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                  null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                  , null, Editpower.installationConfig.civilWithLegId, null, null, null, null, power.Azimuth
                                                  , power.HeightBase, 1).Data;
 
@@ -4630,7 +4630,7 @@ namespace TLIS_Service.Services
                                             }
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                   null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                   null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                   , null, Editpower.installationConfig.civilWithLegId, null, null, null, null, power.Azimuth
                                                   , power.HeightBase, 1).Data;
 
@@ -4760,7 +4760,7 @@ namespace TLIS_Service.Services
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                                                             null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                                                             null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                                                             , null, Editpower.installationConfig.civilWithLegId, null, null, null, null, power.Azimuth
                                                                                             , power.HeightBase, 1).Data;
 
@@ -4933,7 +4933,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                 null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                 , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                 , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                 , power.HeightBase, 2).Data;
@@ -5062,7 +5062,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                 null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                 , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                 , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                 , power.HeightBase, 2).Data;
@@ -5177,7 +5177,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                     null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                     null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                     , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                     , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                     , power.HeightBase, 2).Data;
@@ -5307,7 +5307,7 @@ namespace TLIS_Service.Services
                                                     }
 
                                                     var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                  null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                  , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                  , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                  , power.HeightBase, 2).Data;
@@ -5476,7 +5476,7 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                                 }
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                  null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                  , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                  , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                  , power.HeightBase, 2).Data;
@@ -5605,7 +5605,7 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                 null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                 , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                 , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                 , power.HeightBase, 2).Data;
@@ -5720,7 +5720,7 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                  null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                  , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                  , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                  , power.HeightBase, 2).Data;
@@ -5849,7 +5849,7 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                 null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                 , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                 , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                 , power.HeightBase, 2).Data;
@@ -6011,7 +6011,7 @@ namespace TLIS_Service.Services
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "Height must bigger from zero", (int)ApiReturnCode.fail);
                                             }
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 null, null, null, null, null, null, power.Id,null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
+                                                 null, null, null, null, null, null, power.Id, null, "TLIpower", powerInst.SiteCode, Editpower.installationConfig.legId
                                                 , null, Editpower.installationConfig.civilWithLegId, Editpower.installationConfig.civilWithoutLegId
                                                 , Editpower.installationConfig.civilNonSteelId, Editpower.installationConfig.sideArmId, null, power.Azimuth
                                                 , power.HeightBase, 2).Data;
@@ -6036,7 +6036,7 @@ namespace TLIS_Service.Services
 
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                             var HistoryId= _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId,null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -6061,7 +6061,7 @@ namespace TLIS_Service.Services
                                                 NewpowerInst.ItemStatus = Editpower.civilLoads?.ItemStatus;
                                                 NewpowerInst.ReservedSpace = Editpower.civilLoads.ReservedSpace;
                                                 var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, NewpowerInst);
                                                 _unitOfWork.SaveChanges();
 
                                             }
@@ -6084,31 +6084,32 @@ namespace TLIS_Service.Services
                                                 }
                                             }
                                             else
+                                            {
+                                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
+                                            }
+
+                                        }
+                                        else
                                         {
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this sidearm is not found ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
                                         }
 
                                     }
                                     else
                                     {
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected sideArm ", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                     }
 
                                 }
                                 else
                                 {
-                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilnonsteel item ", (int)ApiReturnCode.fail);
                                 }
 
-                            }
-                            else
-                            {
-                                return new Response<GetForAddMWDishInstallationObject>(false, null, null, "must selected civilnonsteel item ", (int)ApiReturnCode.fail);
-                            }
 
+                            }
 
                         }
-
                     }
                     if (TaskId != null)
                     {
