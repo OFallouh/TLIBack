@@ -17998,10 +17998,10 @@ namespace TLIS_Service.Services
 
                                                 foreach (var item in sortedDynamicAttributes)
                                                 {
-                                                    var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, mwOther.Id, HistoryId).Message;
-                                                    if (Message != "Success")
+                                                    var Messagee = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, mwOther.Id, HistoryId).Message;
+                                                    if (Messagee != "Success")
                                                     {
-                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(true, null, null, Messagee, (int)Helpers.Constants.ApiReturnCode.fail);
                                                     }
                                                 }
                                             }
