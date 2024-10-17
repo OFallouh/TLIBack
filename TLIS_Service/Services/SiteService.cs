@@ -8378,22 +8378,22 @@ namespace TLIS_Service.Services
 
         public class FilterRequest
         {
-            public int First { get; set; } // بداية العنصر في الترحيل
-            public int Rows { get; set; } // عدد الصفوف لكل صفحة
-            public int SortOrder { get; set; } // ترتيب الفرز (1 للصعود، -1 للنزول)
-            public Dictionary<string, Filter> Filters { get; set; } // الفلاتر
-            public List<SortMeta> MultiSortMeta { get; set; } // ترتيب متعدد
+            public int First { get; set; } 
+            public int Rows { get; set; } 
+            public int SortOrder { get; set; } 
+            public Dictionary<string, Filter> Filters { get; set; }
+            public List<SortMeta> MultiSortMeta { get; set; } 
         }
 
         public class Filter
         {
-            public string Value { get; set; } // قيمة الفلتر
-            public string MatchMode { get; set; } // طريقة المطابقة
+            public string Value { get; set; }
+            public string MatchMode { get; set; } 
         }
 
         public class SortMeta
         {
-            public string Field { get; set; } // الحقل المطلوب الفرز عليه
+            public string Field { get; set; } 
             public int Order { get; set; } // ترتيب الفرز
         }
         public class FilterMatchMode
@@ -8560,7 +8560,33 @@ namespace TLIS_Service.Services
                         }
                     }
                 }
-              
+                else if (string.IsNullOrEmpty(TabelName) && !string.IsNullOrEmpty(SiteCode) && UserId == null && ExternalSysId == null && BaseId == null)
+                {
+                    sqlQuery = @"select * from HISTORY_VIEW where SITECODE = :SiteCode";
+                    using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
+                    {
+
+                        queryCommand5.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
+                    
+
+
+                        using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
+                        {
+                            while (reader5.Read())
+                            {
+                                dynamic dynamicResult = new ExpandoObject();
+                                var properties = (IDictionary<string, object>)dynamicResult;
+
+                                for (int i = 0; i < reader5.FieldCount; i++)
+                                {
+                                    properties[reader5.GetName(i)] = reader5[i];
+                                }
+
+                                result.Add(dynamicResult);
+                            }
+                        }
+                    }
+                }
                 else if (!string.IsNullOrEmpty(TabelName) && TabelName.ToLower() != "tlisite" && !string.IsNullOrEmpty(SiteCode) && !string.IsNullOrEmpty(BaseId) && UserId == null && ExternalSysId == null)
                 {
                     sqlQuery = @"select * from HISTORY_VIEW where BASE_TABLE = :TabelName AND SITECODE = :SiteCode AND BASE_RECORD_ID = :BaseId";
@@ -8588,38 +8614,38 @@ namespace TLIS_Service.Services
                         }
                     }
                 }
-                else if (string.IsNullOrEmpty(TabelName) && !string.IsNullOrEmpty(SiteCode) && string.IsNullOrEmpty(BaseId) && UserId == null && ExternalSysId == null)
+                else if (string.IsNullOrEmpty(TabelName) && string.IsNullOrEmpty(SiteCode) && string.IsNullOrEmpty(BaseId) && UserId == null && ExternalSysId == null)
                 {
                     var filterMatchModeOptions = new
                     {
                         text = new[]
                         {
-            FilterMatchMode.STARTS_WITH,
-            FilterMatchMode.CONTAINS,
-            FilterMatchMode.NOT_CONTAINS,
-            FilterMatchMode.ENDS_WITH,
-            FilterMatchMode.EQUALS,
-            FilterMatchMode.NOT_EQUALS
-        },
-                        numeric = new[]
-                        {
-            FilterMatchMode.EQUALS,
-            FilterMatchMode.NOT_EQUALS,
-            FilterMatchMode.LESS_THAN,
-            FilterMatchMode.LESS_THAN_OR_EQUAL_TO,
-            FilterMatchMode.GREATER_THAN,
-            FilterMatchMode.GREATER_THAN_OR_EQUAL_TO
-        },
-                        date = new[]
-                        {
-            FilterMatchMode.DATE_IS,
-            FilterMatchMode.DATE_IS_NOT,
-            FilterMatchMode.DATE_BEFORE,
-            FilterMatchMode.DATE_AFTER
-        }
+                            FilterMatchMode.STARTS_WITH,
+                            FilterMatchMode.CONTAINS,
+                            FilterMatchMode.NOT_CONTAINS,
+                            FilterMatchMode.ENDS_WITH,
+                            FilterMatchMode.EQUALS,
+                            FilterMatchMode.NOT_EQUALS
+                        },
+                                        numeric = new[]
+                                        {
+                            FilterMatchMode.EQUALS,
+                            FilterMatchMode.NOT_EQUALS,
+                            FilterMatchMode.LESS_THAN,
+                            FilterMatchMode.LESS_THAN_OR_EQUAL_TO,
+                            FilterMatchMode.GREATER_THAN,
+                            FilterMatchMode.GREATER_THAN_OR_EQUAL_TO
+                        },
+                                        date = new[]
+                                        {
+                            FilterMatchMode.DATE_IS,
+                            FilterMatchMode.DATE_IS_NOT,
+                            FilterMatchMode.DATE_BEFORE,
+                            FilterMatchMode.DATE_AFTER
+                        }
                     };
 
-                    sqlQuery = @"SELECT * FROM HISTORY_VIEW WHERE ""SITECODE"" = :SiteCode";
+                    sqlQuery = @"SELECT * FROM HISTORY_VIEW" ;
 
                     if (filters != null)
                     {
