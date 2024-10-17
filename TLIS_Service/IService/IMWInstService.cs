@@ -66,5 +66,6 @@ namespace TLIS_Service.IService
         Response<ObjectInstAtts> GetAttForAddForMW_ODUOnly(string TableName, int LibraryID, string SiteCode, int AllCivilInstId);
         Response<List<MW_PortViewModel>> GetPortCascadedByBUId(int BUId, int? MainBUId);
         Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
+        Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString);
     }
 }

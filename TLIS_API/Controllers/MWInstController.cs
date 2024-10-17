@@ -1249,5 +1249,22 @@ namespace TLIS_API.Controllers
             }
          
         }
+
+
+        [HttpPost("Test")]
+        [ProducesResponseType(200, Type = typeof(object))]
+        public IActionResult Test([FromQuery] string? SiteCode)
+        {
+         
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString);
+                return Ok(response);
+            
+
+            
+
+
+
+        }
     }
 }
