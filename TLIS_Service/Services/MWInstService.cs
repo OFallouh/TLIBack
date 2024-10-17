@@ -80,6 +80,7 @@ using static TLIS_DAL.ViewModels.MW_OtherLibraryDTOs.EditMWOtherLibraryObject;
 using TLIS_DAL.ViewModels.MW_RFULibraryDTOs;
 using static TLIS_DAL.ViewModels.MW_RFULibraryDTOs.EditMWRFULibrary;
 using TLIS_DAL.ViewModels.BoardTypeDTOs;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace TLIS_Service.Services
 {
@@ -89,12 +90,14 @@ namespace TLIS_Service.Services
         IServiceCollection _services;
         private readonly ApplicationDbContext _dbContext;
         private IMapper _mapper;
-        public MWInstService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext dbContext, IMapper mapper)
+        private readonly IMemoryCache _memoryCache;
+        public MWInstService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext dbContext, IMapper mapper, IMemoryCache memoryCache)
         {
             _unitOfWork = unitOfWork;
             _services = services;
             _dbContext = dbContext;
             _mapper = mapper;
+            _memoryCache = memoryCache;
         }
         //Function take 3 parameters TableName, LibraryID, SiteCode
         //First get tabe name Entity by TableName
@@ -30163,8 +30166,15 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId)
+        public Response<GetEnableAttribute> Test(string? SiteCode, string ConnectionString)
         {
+            var cacheKey = "MW_DishInstallation_All";
+            if (_memoryCache.TryGetValue(cacheKey, out GetEnableAttribute cachedData))
+            {
+                // إذا كانت البيانات موجودة في الكاش، أعدها فوراً
+                return new Response<GetEnableAttribute>(true, cachedData, null, "From Cache", (int)Helpers.Constants.ApiReturnCode.success);
+            }
+
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
@@ -30221,64 +30231,86 @@ namespace TLIS_Service.Services
                     }
 
                     // إضافة الخصائص الثابتة المطلوبة
-                    propertyNamesStatic.AddRange(new[]
-                    {
+                    propertyNamesStatic.AddRange(new[] {
                 "SiteCode", "LEG_NAME", "CIVILNAME", "CIVIL_ID", "SIDEARMNAME", "SIDEARM_ID",
                 "ALLCIVILINST_ID", "LEG_ID", "ODU_COUNT", "POLARITYTYPE", "SideArmSec_Name", "SideArmSec_Id"
             });
 
-                    // لا حاجة لتصفية `SiteCode` هنا
+                    // تنفيذ الاستعلام بناءً على حالة SiteCode والقيم الديناميكية
                     IQueryable<MV_MWDISH_VIEW> queryBase = _dbContext.MV_MWDISH_VIEW.Where(x => !x.Dismantle);
 
-                    // بدون pagination
-                    var query = queryBase.AsEnumerable()
-                        .GroupBy(x => new
-                        {
-                            x.SiteCode,
-                            x.Id,
-                            x.DishName,
-                            x.Azimuth,
-                            x.Notes,
-                            x.Far_End_Site_Code,
-                            x.HBA_Surface,
-                            x.Serial_Number,
-                            x.MW_LINK,
-                            x.Visiable_Status,
-                            x.SpaceInstallation,
-                            x.HeightBase,
-                            x.HeightLand,
-                            x.Temp,
-                            x.OWNER,
-                            x.REPEATERTYPE,
-                            x.POLARITYONLOCATION,
-                            x.ITEMCONNECTTO,
-                            x.MWDISHLIBRARY,
-                            x.INSTALLATIONPLACE,
-                            x.CenterHigh,
-                            x.HBA,
-                            x.HieghFromLand,
-                            x.EquivalentSpace,
-                            x.Dismantle,
-                            x.LEG_NAME,
-                            x.CIVILNAME,
-                            x.CIVIL_ID,
-                            x.SIDEARMNAME,
-                            x.SIDEARM_ID,
-                            x.ALLCIVILINST_ID,
-                            x.LEG_ID,
-                            x.ODU_COUNT,
-                            x.POLARITYTYPE,
-                            x.SideArmSec_Name,
-                            x.SideArmSec_Id
-                        })
-                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                    // فلترة بناءً على SiteCode إذا تم تقديمه
+                    if (!string.IsNullOrEmpty(SiteCode))
+                    {
+                        queryBase = queryBase.Where(x => x.SiteCode.ToLower() == SiteCode.ToLower());
+                    }
 
-                    getEnableAttribute.Model = query;
-                    int count = query.Count();
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = queryBase.AsEnumerable()
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
 
-                    // إرجاع جميع البيانات دفعة واحدة
-                    return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        int count = query.Count();
+                        getEnableAttribute.Model = query;
+
+                        // حفظ البيانات في الكاش
+                        _memoryCache.Set(cacheKey, getEnableAttribute, TimeSpan.FromMinutes(30));
+
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = queryBase.AsEnumerable()
+                            .GroupBy(x => new
+                            {
+                                x.SiteCode,
+                                x.Id,
+                                x.DishName,
+                                x.Azimuth,
+                                x.Notes,
+                                x.Far_End_Site_Code,
+                                x.HBA_Surface,
+                                x.Serial_Number,
+                                x.MW_LINK,
+                                x.Visiable_Status,
+                                x.SpaceInstallation,
+                                x.HeightBase,
+                                x.HeightLand,
+                                x.Temp,
+                                x.OWNER,
+                                x.REPEATERTYPE,
+                                x.POLARITYONLOCATION,
+                                x.ITEMCONNECTTO,
+                                x.MWDISHLIBRARY,
+                                x.INSTALLATIONPLACE,
+                                x.CenterHigh,
+                                x.HBA,
+                                x.HieghFromLand,
+                                x.EquivalentSpace,
+                                x.Dismantle,
+                                x.LEG_NAME,
+                                x.CIVILNAME,
+                                x.CIVIL_ID,
+                                x.SIDEARMNAME,
+                                x.SIDEARM_ID,
+                                x.ALLCIVILINST_ID,
+                                x.LEG_ID,
+                                x.ODU_COUNT,
+                                x.POLARITYTYPE,
+                                x.SideArmSec_Name,
+                                x.SideArmSec_Id
+                            })
+                            .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+
+                        int count = query.Count();
+                        getEnableAttribute.Model = query;
+
+                        // حفظ البيانات في الكاش
+                        _memoryCache.Set(cacheKey, getEnableAttribute, TimeSpan.FromMinutes(30));
+
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
                 }
                 catch (Exception err)
                 {
@@ -30287,6 +30319,8 @@ namespace TLIS_Service.Services
                 }
             }
         }
+
+
 
     }
 }

@@ -68,6 +68,7 @@ namespace TLIS_API
         {
             services.AddControllers();
             services.AddSingleton(Configuration);
+            services.AddMemoryCache();
 
             //services.AddDbContext<ApplicationDbContext>(options =>
             //{

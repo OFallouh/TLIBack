@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -78,11 +79,12 @@ namespace TLIS_Service.ServiceBase
         IInternalApiService _InternalApiService;
         ApplicationDbContext db;
         IHostingEnvironment _hostingEnvironment;
+        private readonly IMemoryCache _memoryCache;
         IMapper _mapper;
         IServiceProvider Services;
         private readonly IHttpContextAccessor _httpContextAccessor;
         public UnitOfWorkService(IUnitOfWork unitOfWork, IConfiguration config, IServiceCollection services, ApplicationDbContext _context,
-            IHostingEnvironment hostingEnvironment, IMapper mapper,IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor)
+            IHostingEnvironment hostingEnvironment, IMapper mapper,IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor, IMemoryCache memoryCache)
         {
             db = _context;
             _config = config;
@@ -92,6 +94,7 @@ namespace TLIS_Service.ServiceBase
             _mapper = mapper;
             Services=serviceProvider;
             _httpContextAccessor = httpContextAccessor;
+            _memoryCache = memoryCache;
         }
         public UnitOfWorkService(IUnitOfWork unitOfWork, IConfiguration config)
         {
@@ -543,7 +546,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_MWInstService == null)
-                    _MWInstService = new MWInstService(_unitOfWork, _services, db,_mapper);
+                    _MWInstService = new MWInstService(_unitOfWork, _services, db,_mapper, _memoryCache);
                 return _MWInstService;
             }
         }

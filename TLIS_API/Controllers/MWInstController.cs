@@ -1257,7 +1257,7 @@ namespace TLIS_API.Controllers
         {
          
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationWithEnableAtt(SiteCode, connectionString);
+                var response = _unitOfWorkService.MWInstService.Test(SiteCode, connectionString);
                 return Ok(response);
             
 
