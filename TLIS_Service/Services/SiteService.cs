@@ -8735,7 +8735,7 @@ namespace TLIS_Service.Services
                     // دمج شروط الفلترة في الاستعلام
                     if (filterConditions.Count > 0)
                     {
-                        sqlQuery += " AND " + string.Join(" AND ", filterConditions);
+                        sqlQuery += " where " + string.Join(" where ", filterConditions);
                     }
 
                     // إضافة ترتيب
