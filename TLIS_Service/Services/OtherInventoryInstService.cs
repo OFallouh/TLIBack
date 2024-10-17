@@ -3442,6 +3442,7 @@ namespace TLIS_Service.Services
 
                     }
                     propertyNamesStatic.Add("SITECODE");
+                    propertyNamesStatic.Remove("CabinetPowerLibrary");
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)
@@ -3460,6 +3461,7 @@ namespace TLIS_Service.Services
                               !x.Dismantle).AsEnumerable()
                         .GroupBy(x => new
                         {
+
                             Id = x.Id,
                             Name = x.Name,
                             SITECODE = x.SITECODE,
@@ -3479,7 +3481,6 @@ namespace TLIS_Service.Services
                             SOLARLIBRARY = x.SOLARLIBRARY,
                             CABINET = x.CABINET,
                             Dismantle = x.Dismantle,
-
                         }).OrderBy(x => x.Key.Name)
                         .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                         .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
@@ -3504,6 +3505,7 @@ namespace TLIS_Service.Services
                          && !x.Dismantle).AsEnumerable()
                     .GroupBy(x => new
                     {
+
                         Id = x.Id,
                         Name = x.Name,
                         SITECODE = x.SITECODE,
@@ -3523,7 +3525,6 @@ namespace TLIS_Service.Services
                         SOLARLIBRARY = x.SOLARLIBRARY,
                         CABINET = x.CABINET,
                         Dismantle = x.Dismantle,
-
                     }).OrderBy(x => x.Key.Name)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
