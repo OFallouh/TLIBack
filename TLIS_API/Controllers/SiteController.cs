@@ -27,6 +27,7 @@ using TLIS_DAL.ViewModels.SiteStatusDTOs;
 using TLIS_DAL.ViewModels.UserDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
+using static TLIS_Service.Services.SiteService;
 
 namespace TLIS_API.Controllers
 {
@@ -290,15 +291,23 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetHistory")]
+        [HttpPost("GetHistory")]
         [ProducesResponseType(200, Type = typeof(List<dynamic>))]
-        public IActionResult GetHistory(string TabelName, string? BaseId,int? UserId, string SiteCode, int? ExternalSysId)
+        public IActionResult GetHistory(
+        [FromQuery] string TabelName,
+        [FromQuery] string? BaseId,
+        [FromQuery] int? UserId,
+        [FromQuery] string SiteCode,
+        [FromQuery] int? ExternalSysId,
+        [FromBody] GetHistoryRequest request)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            
-            var response = _unitOfWorkService.SiteService.GetHistory(TabelName, BaseId, SiteCode, UserId, ExternalSysId, ConnectionString);
+
+            var response = _unitOfWorkService.SiteService.GetHistory(TabelName, BaseId, SiteCode, UserId, ExternalSysId, ConnectionString, request.First, request.Rows, request.SortOrder,
+           request.Filters, request.MultiSortMeta);
             return Ok(response);
         }
+
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetSiteStatusById/{SiteStatusId}")]
         [ProducesResponseType(200, Type = typeof(SiteStatusViewModel))]

@@ -24,6 +24,7 @@ using TLIS_DAL.ViewModels.RegionDTOs;
 using TLIS_DAL.ViewModels.SideArmDTOs;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using TLIS_DAL.ViewModels.SiteStatusDTOs;
+using static TLIS_Service.Services.SiteService;
 
 namespace TLIS_Service.IService
 {
@@ -85,6 +86,8 @@ namespace TLIS_Service.IService
         Response<string> GetConfigurationTables(string SiteCode, string TableNameInstallation, int? CategoryId, string ConnectionString);
         Response<SiteDetailsObject> GetSiteDetails(string siteCode);
         Response<SiteDetailsObject> EditSiteDetalis(SiteDetailsObject siteDetailsObject, int? TaskId, int UserId);
-        List<dynamic> GetHistory(string BASE_TABLE, string? BASE_RECORD_ID, string SITECODE, int? USER_ID, int? SYS_ID, string ConnectionString);
+        List<dynamic> GetHistory(string TabelName, string? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString
+           , int first, int rows, int sortOrder, Dictionary<string, dynamic> filters, List<SortMeta> multiSortMeta);
+
     }
 }

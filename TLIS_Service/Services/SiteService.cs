@@ -8366,10 +8366,59 @@ namespace TLIS_Service.Services
                 return result;
             }
         }
+        public class GetHistoryRequest
+        {
+           
+            public int First { get; set; }
+            public int Rows { get; set; }
+            public int SortOrder { get; set; }
+            public Dictionary<string, dynamic> Filters { get; set; }
+            public List<SortMeta> MultiSortMeta { get; set; }
+        }
 
+        public class FilterRequest
+        {
+            public int First { get; set; } // بداية العنصر في الترحيل
+            public int Rows { get; set; } // عدد الصفوف لكل صفحة
+            public int SortOrder { get; set; } // ترتيب الفرز (1 للصعود، -1 للنزول)
+            public Dictionary<string, Filter> Filters { get; set; } // الفلاتر
+            public List<SortMeta> MultiSortMeta { get; set; } // ترتيب متعدد
+        }
 
+        public class Filter
+        {
+            public string Value { get; set; } // قيمة الفلتر
+            public string MatchMode { get; set; } // طريقة المطابقة
+        }
 
-        public List<dynamic> GetHistory(string TabelName, string? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString)
+        public class SortMeta
+        {
+            public string Field { get; set; } // الحقل المطلوب الفرز عليه
+            public int Order { get; set; } // ترتيب الفرز
+        }
+        public class FilterMatchMode
+        {
+            public const string STARTS_WITH = "startsWith";
+            public const string CONTAINS = "contains";
+            public const string NOT_CONTAINS = "notContains";
+            public const string ENDS_WITH = "endsWith";
+            public const string EQUALS = "equals";
+            public const string NOT_EQUALS = "notEquals";
+            public const string LESS_THAN = "lessThan";
+            public const string LESS_THAN_OR_EQUAL_TO = "lessThanOrEqualTo";
+            public const string GREATER_THAN = "greaterThan";
+            public const string GREATER_THAN_OR_EQUAL_TO = "greaterThanOrEqualTo";
+            public const string DATE_IS = "dateIs";
+            public const string DATE_IS_NOT = "dateIsNot";
+            public const string DATE_BEFORE = "dateBefore";
+            public const string DATE_AFTER = "dateAfter";
+        }
+
+        // تعريف الفلاتر
+        
+
+        public List<dynamic> GetHistory(string TabelName, string? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString
+            , int first, int rows, int sortOrder, Dictionary<string, dynamic> filters, List<SortMeta> multiSortMeta)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
@@ -8377,6 +8426,7 @@ namespace TLIS_Service.Services
 
                 List<dynamic> result = new List<dynamic>();          
                 string sqlQuery = null;
+                List<string> filterConditions = new List<string>();
 
                 if (!string.IsNullOrEmpty(TabelName) && !string.IsNullOrEmpty(BaseId) && string.IsNullOrEmpty(SiteCode) && UserId == null && ExternalSysId == null)
                 {
@@ -8510,32 +8560,7 @@ namespace TLIS_Service.Services
                         }
                     }
                 }
-                else if (!string.IsNullOrEmpty(SiteCode) && ExternalSysId == null && string.IsNullOrEmpty(TabelName) && BaseId == null && UserId == null)
-                {
-                    sqlQuery = @"select * from HISTORY_VIEW where SITECODE = :SiteCode";
-                    using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
-                    {
-                        
-                        queryCommand5.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
-                       
-
-                        using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
-                        {
-                            while (reader5.Read())
-                            {
-                                dynamic dynamicResult = new ExpandoObject();
-                                var properties = (IDictionary<string, object>)dynamicResult;
-
-                                for (int i = 0; i < reader5.FieldCount; i++)
-                                {
-                                    properties[reader5.GetName(i)] = reader5[i];
-                                }
-
-                                result.Add(dynamicResult);
-                            }
-                        }
-                    }
-                }
+              
                 else if (!string.IsNullOrEmpty(TabelName) && TabelName.ToLower() != "tlisite" && !string.IsNullOrEmpty(SiteCode) && !string.IsNullOrEmpty(BaseId) && UserId == null && ExternalSysId == null)
                 {
                     sqlQuery = @"select * from HISTORY_VIEW where BASE_TABLE = :TabelName AND SITECODE = :SiteCode AND BASE_RECORD_ID = :BaseId";
@@ -8563,8 +8588,220 @@ namespace TLIS_Service.Services
                         }
                     }
                 }
-                
-               
+                else if (string.IsNullOrEmpty(TabelName) && !string.IsNullOrEmpty(SiteCode) && string.IsNullOrEmpty(BaseId) && UserId == null && ExternalSysId == null)
+                {
+                    var filterMatchModeOptions = new
+                    {
+                        text = new[]
+                        {
+            FilterMatchMode.STARTS_WITH,
+            FilterMatchMode.CONTAINS,
+            FilterMatchMode.NOT_CONTAINS,
+            FilterMatchMode.ENDS_WITH,
+            FilterMatchMode.EQUALS,
+            FilterMatchMode.NOT_EQUALS
+        },
+                        numeric = new[]
+                        {
+            FilterMatchMode.EQUALS,
+            FilterMatchMode.NOT_EQUALS,
+            FilterMatchMode.LESS_THAN,
+            FilterMatchMode.LESS_THAN_OR_EQUAL_TO,
+            FilterMatchMode.GREATER_THAN,
+            FilterMatchMode.GREATER_THAN_OR_EQUAL_TO
+        },
+                        date = new[]
+                        {
+            FilterMatchMode.DATE_IS,
+            FilterMatchMode.DATE_IS_NOT,
+            FilterMatchMode.DATE_BEFORE,
+            FilterMatchMode.DATE_AFTER
+        }
+                    };
+
+                    sqlQuery = @"SELECT * FROM HISTORY_VIEW WHERE ""SITECODE"" = :SiteCode";
+
+                    if (filters != null)
+                    {
+                        foreach (var filter in filters)
+                        {
+                            string field = filter.Key;
+
+                            JsonElement filterValue = (JsonElement)filter.Value;
+
+                            // الوصول إلى matchMode و value
+                            string matchMode = filterValue.GetProperty("matchMode").GetString();
+                            JsonElement valueElement = filterValue.GetProperty("value");
+                            object value;
+
+                            switch (valueElement.ValueKind)
+                            {
+                                case JsonValueKind.String:
+                                    value = valueElement.GetString();
+                                    break;
+                                case JsonValueKind.Number:
+                                    value = valueElement.GetDouble(); // أو GetInt32() إذا كنت تتوقع عدد صحيح
+                                    break;
+                                case JsonValueKind.True:
+                                case JsonValueKind.False:
+                                    value = valueElement.GetBoolean();
+                                    break;
+                                case JsonValueKind.Null:
+                                    value = null; // أو يمكنك التعامل مع القيمة null كما يناسب حالتك
+                                    break;
+                                default:
+                                    value = null; // أو قيم افتراضية أخرى إذا كان النوع غير متوقع
+                                    break;
+                            }
+
+                            if (value != null)
+                            {
+                                // استخدام علامات الاقتباس المزدوجة حول اسم الحقل
+                                switch (matchMode)
+                                {
+                                    case FilterMatchMode.STARTS_WITH:
+                                        filterConditions.Add($"\"{field}\" LIKE :{field}");
+                                        break;
+                                    case FilterMatchMode.CONTAINS:
+                                        filterConditions.Add($"\"{field}\" LIKE :{field}");
+                                        break;
+                                    case FilterMatchMode.NOT_CONTAINS:
+                                        filterConditions.Add($"\"{field}\" NOT LIKE :{field}");
+                                        break;
+                                    case FilterMatchMode.ENDS_WITH:
+                                        filterConditions.Add($"\"{field}\" LIKE :{field}");
+                                        break;
+                                    case FilterMatchMode.EQUALS:
+                                        filterConditions.Add($"\"{field}\" = :{field}");
+                                        break;
+                                    case FilterMatchMode.NOT_EQUALS:
+                                        filterConditions.Add($"\"{field}\" <> :{field}");
+                                        break;
+                                    case FilterMatchMode.LESS_THAN:
+                                        filterConditions.Add($"\"{field}\" < :{field}");
+                                        break;
+                                    case FilterMatchMode.LESS_THAN_OR_EQUAL_TO:
+                                        filterConditions.Add($"\"{field}\" <= :{field}");
+                                        break;
+                                    case FilterMatchMode.GREATER_THAN:
+                                        filterConditions.Add($"\"{field}\" > :{field}");
+                                        break;
+                                    case FilterMatchMode.GREATER_THAN_OR_EQUAL_TO:
+                                        filterConditions.Add($"\"{field}\" >= :{field}");
+                                        break;
+                                    case FilterMatchMode.DATE_IS:
+                                        filterConditions.Add($"TRUNC(\"{field}\") = TO_DATE(:{field}, 'YYYY-MM-DD')");
+                                        break;
+                                    case FilterMatchMode.DATE_IS_NOT:
+                                        filterConditions.Add($"TRUNC(\"{field}\") <> TO_DATE(:{field}, 'YYYY-MM-DD')");
+                                        break;
+                                    case FilterMatchMode.DATE_BEFORE:
+                                        filterConditions.Add($"TRUNC(\"{field}\") < TO_DATE(:{field}, 'YYYY-MM-DD')");
+                                        break;
+                                    case FilterMatchMode.DATE_AFTER:
+                                        filterConditions.Add($"TRUNC(\"{field}\") > TO_DATE(:{field}, 'YYYY-MM-DD')");
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    // دمج شروط الفلترة في الاستعلام
+                    if (filterConditions.Count > 0)
+                    {
+                        sqlQuery += " AND " + string.Join(" AND ", filterConditions);
+                    }
+
+                    // إضافة ترتيب
+                    if (multiSortMeta != null && multiSortMeta.Count > 0)
+                    {
+                        List<string> sortConditions = new List<string>();
+                        foreach (var sort in multiSortMeta)
+                        {
+                            sortConditions.Add($"\"{sort.Field}\" {(sort.Order == 1 ? "ASC" : "DESC")}");
+                        }
+                        sqlQuery += " ORDER BY " + string.Join(", ", sortConditions);
+                    }
+
+                    // إضافة الصفحات
+                    sqlQuery += $" OFFSET {first} ROWS FETCH NEXT {rows} ROWS ONLY";
+
+                    using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
+                    {
+                        if (!string.IsNullOrEmpty(SiteCode))
+                        {
+                            queryCommand.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
+                        }
+
+                        // إضافة معلمات الفلترة
+                        if (filters != null)
+                        {
+                            foreach (var filter in filters)
+                            {
+                                string field = filter.Key;
+
+                                // الحصول على JsonElement
+                                JsonElement filterValue = (JsonElement)filter.Value;
+
+                                // الوصول إلى matchMode
+                                string matchMode = filterValue.GetProperty("matchMode").GetString();
+
+                                // الوصول إلى القيمة
+                                JsonElement valueElement;
+
+                                // التأكد من وجود الخاصية 'value'
+                                if (filterValue.TryGetProperty("value", out valueElement))
+                                {
+                                    object value;
+
+                                    // تحديد النوع
+                                    switch (valueElement.ValueKind)
+                                    {
+                                        case JsonValueKind.String:
+                                            value = valueElement.GetString();
+                                            break;
+                                        case JsonValueKind.Number:
+                                            value = valueElement.GetDouble(); // أو GetInt32() إذا كنت تتوقع عدد صحيح
+                                            break;
+                                        case JsonValueKind.True:
+                                        case JsonValueKind.False:
+                                            value = valueElement.GetBoolean();
+                                            break;
+                                        case JsonValueKind.Null:
+                                            value = null; // أو يمكنك التعامل مع القيمة null كما يناسب حالتك
+                                            break;
+                                        default:
+                                            value = null; // أو قيم افتراضية أخرى إذا كان النوع غير متوقع
+                                            break;
+                                    }
+
+                                    if (value != null)
+                                    {
+                                        queryCommand.Parameters.Add(new OracleParameter(field,
+                                            matchMode == FilterMatchMode.CONTAINS ? "%" + value + "%" : value));
+                                    }
+                                }
+                            }
+                        }
+
+                        using (OracleDataReader reader = queryCommand.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                dynamic dynamicResult = new ExpandoObject();
+                                var properties = (IDictionary<string, object>)dynamicResult;
+
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    properties[reader.GetName(i)] = reader[i];
+                                }
+
+                                result.Add(dynamicResult);
+                            }
+                        }
+                    }
+                }
+
 
                 return result;
             }
