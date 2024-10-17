@@ -8787,17 +8787,17 @@ namespace TLIS_Service.Services
                                             value = valueElement.GetString();
                                             break;
                                         case JsonValueKind.Number:
-                                            value = valueElement.GetDouble(); // أو GetInt32() إذا كنت تتوقع عدد صحيح
+                                            value = valueElement.GetDouble();
                                             break;
                                         case JsonValueKind.True:
                                         case JsonValueKind.False:
                                             value = valueElement.GetBoolean();
                                             break;
                                         case JsonValueKind.Null:
-                                            value = null; // أو يمكنك التعامل مع القيمة null كما يناسب حالتك
+                                            value = null;
                                             break;
                                         default:
-                                            value = null; // أو قيم افتراضية أخرى إذا كان النوع غير متوقع
+                                            value = null; 
                                             break;
                                     }
 
