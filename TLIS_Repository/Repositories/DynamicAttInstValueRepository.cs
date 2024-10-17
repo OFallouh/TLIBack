@@ -459,27 +459,33 @@ namespace TLIS_Repository.Repositories
 
                 if (DynamicAtt != null)
                 {
+                  
+
+                    dynamic value = null;
                     if (DynamicInstAtt == null)
                     {
-                        DynamicInstAtt = new TLIdynamicAttInstValue();
+                        
+                        value = DynamicAtt.DefaultValue;
+                       
                     }
-
-                    dynamic value = null; 
-                    if (DynamicInstAtt.ValueString != null)
+                    else
                     {
-                        value = DynamicInstAtt.ValueString;
-                    }
-                    else if (DynamicInstAtt.ValueBoolean != null)
-                    {
-                        value = DynamicInstAtt.ValueBoolean;
-                    }
-                    else if (DynamicInstAtt.ValueDateTime != null)
-                    {
-                        value = DynamicInstAtt.ValueDateTime;
-                    }
-                    else if (DynamicInstAtt.ValueDouble != null)
-                    {
-                        value = DynamicInstAtt.ValueDouble;
+                        if (DynamicInstAtt.ValueString != null)
+                        {
+                            value = DynamicInstAtt.ValueString;
+                        }
+                        else if (DynamicInstAtt.ValueBoolean != null)
+                        {
+                            value = DynamicInstAtt.ValueBoolean;
+                        }
+                        else if (DynamicInstAtt.ValueDateTime != null)
+                        {
+                            value = DynamicInstAtt.ValueDateTime;
+                        }
+                        else if (DynamicInstAtt.ValueDouble != null)
+                        {
+                            value = DynamicInstAtt.ValueDouble;
+                        }
                     }
 
                     dynamicAttInstViewModels.Add(new BaseInstAttViewDynamic
