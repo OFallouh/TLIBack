@@ -307,9 +307,10 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIsolarLibrary, TLIsolarLibrary>().ReverseMap();
             CreateMap<TLIgeneratorLibrary, TLIgeneratorLibrary>().ReverseMap();
             CreateMap<OwnerViewModel, TLIarea>().ReverseMap();
-            CreateMap<OwnerViewModel, TLIregion>().ReverseMap();
-     
-     
+            CreateMap<OwnerViewModel, TLIregion>().ReverseMap().
+                ForMember(x => x.Name, x => x.MapFrom(f => f.RegionName));
+
+
 
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
             CreateMap<TLIsideArm, SideArmViewDto>().ReverseMap();
