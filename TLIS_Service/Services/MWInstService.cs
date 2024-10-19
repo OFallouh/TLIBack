@@ -3740,8 +3740,7 @@ namespace TLIS_Service.Services
                                SideArmSec_Id = x.SideArmSec_Id
 
                            })
-                           .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                           .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                         ;
 
                             int count = query.Count();
 

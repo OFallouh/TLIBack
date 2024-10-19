@@ -2701,16 +2701,7 @@ namespace TLIS_Service.Services
                         {
                             return new Response<ObjectInstAtts>(false, null, null, $"SpecialEnforcementCategory It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                        string CheckGeneralValidation = CheckGeneralValidationFunction(AddCivilWithLegsViewModel.dynamicAttribute, TableName);
-
-                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            return new Response<ObjectInstAtts>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(AddCivilWithLegsViewModel, TableName, SiteCode, null);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
+        
                         civilWithLegs.CivilWithLegsLibId = AddCivilWithLegsViewModel.civilType.civilWithLegsLibId;
                         var HistoryId=_unitOfWork.CivilWithLegsRepository.AddWithHInsatallation(UserId,null, civilWithLegs,SiteCode);
                         _unitOfWork.SaveChanges();
@@ -3025,16 +3016,7 @@ namespace TLIS_Service.Services
                         //{
                         //    return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
                         //}
-                        string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilWithoutLegViewModel.dynamicAttribute, TableName);
-
-                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            return new Response<ObjectInstAtts>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(addCivilWithoutLegViewModel, TableName, SiteCode, null);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                       
                         civilwithoutlegs.CivilWithoutlegsLibId = addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId;
                         var HistoryId= _unitOfWork.CivilWithoutLegRepository.AddWithHInsatallation(UserId,null, civilwithoutlegs,SiteCode);
                         _unitOfWork.SaveChanges();
@@ -3182,16 +3164,7 @@ namespace TLIS_Service.Services
                             return new Response<ObjectInstAtts>(false, null, null, $"LocationHeight must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
 
-                        string CheckGeneralValidation = CheckGeneralValidationFunction(addCivilNonSteelObject.dynamicAttribute, TableName);
-
-                        if (!string.IsNullOrEmpty(CheckGeneralValidation))
-                            return new Response<ObjectInstAtts>(false, null, null, CheckGeneralValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypes(addCivilNonSteelObject, TableName, SiteCode, null);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(false, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-
+                       
                         civilNonSteel.CivilNonSteelLibraryId = addCivilNonSteelObject.civilType.CivilNonSteelLibraryId;
                         var HistorId=_unitOfWork.CivilNonSteelRepository.AddWithHInsatallation(UserId,null, civilNonSteel,SiteCode);
                         _unitOfWork.SaveChanges();
@@ -3504,15 +3477,7 @@ namespace TLIS_Service.Services
                             }
                             
                         }
-                        string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersions(editCivilWithLegsInstallationObject.dynamicAttribute, CivilType, null);
-
-                        if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersions(editCivilWithLegsInstallationObject, CivilType, SiteCode.SiteCode, null);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
+                       
                         civilWithLegsEntity.CivilWithLegsLibId = editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId;
                         var HistoryId= _unitOfWork.CivilWithLegsRepository.UpdateWithHInstallation(userId,null, CivilWithLegInst, civilWithLegsEntity, SiteCode.SiteCode);
                         ////////////////////////UpdateCivilSiteDate=////////////////////////
@@ -3975,16 +3940,7 @@ namespace TLIS_Service.Services
                             
                         }
 
-                        string CheckGeneralValidationFunction = CheckGeneralValidationFunctionEditVersions(editCivilWithoutLegsInstallationObject.dynamicAttribute, CivilType, null);
-
-                        if (!string.IsNullOrEmpty(CheckGeneralValidationFunction))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckGeneralValidationFunction, (int)Helpers.Constants.ApiReturnCode.fail);
-
-                        string CheckDependencyValidation = CheckDependencyValidationForCivilTypesEditVersions(editCivilWithoutLegsInstallationObject, CivilType, SiteCode.SiteCode, null);
-
-                        if (!string.IsNullOrEmpty(CheckDependencyValidation))
-                            return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
-                        civilWithoutLegsEntity.CivilWithoutlegsLibId = editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId;
+                       civilWithoutLegsEntity.CivilWithoutlegsLibId = editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId;
                        var HistoryId= _unitOfWork.CivilWithoutLegRepository.UpdateWithHInstallation(userId,null, CivilWithoutLegInst, civilWithoutLegsEntity,SiteCode.SiteCode);
                         ////////////////////////UpdateCivilSiteDate=////////////////////////
                         var OldValuecivilsitedate = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInst.civilWithoutLegId == civilWithoutLegsEntity.Id);
