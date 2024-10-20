@@ -3826,13 +3826,7 @@ namespace TLIS_Service.Services
 
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    //string storedProcedureName = "CREATE_DYNAMIC_PIVOT_MWDISH";
-                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    //{
-                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
-                    //    procedureCommand.ExecuteNonQuery();
-                    //}
-
+             
                     var query = _dbContext.MV_MWDISH_VIEW.Where(x => !x.Dismantle).Distinct().AsEnumerable();
                         int count = query.Count();
                         getEnableAttribute.Model = query;

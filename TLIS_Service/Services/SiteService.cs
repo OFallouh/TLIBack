@@ -8620,80 +8620,78 @@ namespace TLIS_Service.Services
                     {
                         text = new[]
                         {
-                            FilterMatchMode.STARTS_WITH,
-                            FilterMatchMode.CONTAINS,
-                            FilterMatchMode.NOT_CONTAINS,
-                            FilterMatchMode.ENDS_WITH,
-                            FilterMatchMode.EQUALS,
-                            FilterMatchMode.NOT_EQUALS
-                        },
-                                        numeric = new[]
-                                        {
-                            FilterMatchMode.EQUALS,
-                            FilterMatchMode.NOT_EQUALS,
-                            FilterMatchMode.LESS_THAN,
-                            FilterMatchMode.LESS_THAN_OR_EQUAL_TO,
-                            FilterMatchMode.GREATER_THAN,
-                            FilterMatchMode.GREATER_THAN_OR_EQUAL_TO
-                        },
-                                        date = new[]
-                                        {
-                            FilterMatchMode.DATE_IS,
-                            FilterMatchMode.DATE_IS_NOT,
-                            FilterMatchMode.DATE_BEFORE,
-                            FilterMatchMode.DATE_AFTER
-                        }
+            FilterMatchMode.STARTS_WITH,
+            FilterMatchMode.CONTAINS,
+            FilterMatchMode.NOT_CONTAINS,
+            FilterMatchMode.ENDS_WITH,
+            FilterMatchMode.EQUALS,
+            FilterMatchMode.NOT_EQUALS
+        },
+                        numeric = new[]
+                        {
+            FilterMatchMode.EQUALS,
+            FilterMatchMode.NOT_EQUALS,
+            FilterMatchMode.LESS_THAN,
+            FilterMatchMode.LESS_THAN_OR_EQUAL_TO,
+            FilterMatchMode.GREATER_THAN,
+            FilterMatchMode.GREATER_THAN_OR_EQUAL_TO
+        },
+                        date = new[]
+                        {
+            FilterMatchMode.DATE_IS,
+            FilterMatchMode.DATE_IS_NOT,
+            FilterMatchMode.DATE_BEFORE,
+            FilterMatchMode.DATE_AFTER
+        }
                     };
 
-                    sqlQuery = @"SELECT * FROM HISTORY_VIEW" ;
+                    sqlQuery = @"SELECT * FROM HISTORY_VIEW";
 
                     if (filters != null)
                     {
                         foreach (var filter in filters)
                         {
                             string field = filter.Key;
-
                             JsonElement filterValue = (JsonElement)filter.Value;
-
-                            // الوصول إلى matchMode و value
                             string matchMode = filterValue.GetProperty("matchMode").GetString();
                             JsonElement valueElement = filterValue.GetProperty("value");
                             object value;
 
-                            switch (valueElement.ValueKind)
+                            // تحويل التاريخ إذا كان النوع هو string ويمثل تاريخًا
+                            if (valueElement.ValueKind == JsonValueKind.String && DateTime.TryParse(valueElement.GetString(), out DateTime parsedDate))
                             {
-                                case JsonValueKind.String:
-                                    value = valueElement.GetString();
-                                    break;
-                                case JsonValueKind.Number:
-                                    value = valueElement.GetDouble(); // أو GetInt32() إذا كنت تتوقع عدد صحيح
-                                    break;
-                                case JsonValueKind.True:
-                                case JsonValueKind.False:
-                                    value = valueElement.GetBoolean();
-                                    break;
-                                case JsonValueKind.Null:
-                                    value = null; // أو يمكنك التعامل مع القيمة null كما يناسب حالتك
-                                    break;
-                                default:
-                                    value = null; // أو قيم افتراضية أخرى إذا كان النوع غير متوقع
-                                    break;
+                                value = parsedDate.ToString("yyyy-MM-dd"); // تحويل إلى الشكل YYYY-MM-DD
+                            }
+                            else
+                            {
+                                switch (valueElement.ValueKind)
+                                {
+                                    case JsonValueKind.String:
+                                        value = valueElement.GetString();
+                                        break;
+                                    case JsonValueKind.Number:
+                                        value = valueElement.GetDouble();
+                                        break;
+                                    case JsonValueKind.True:
+                                    case JsonValueKind.False:
+                                        value = valueElement.GetBoolean();
+                                        break;
+                                    case JsonValueKind.Null:
+                                        value = null;
+                                        break;
+                                    default:
+                                        value = null;
+                                        break;
+                                }
                             }
 
                             if (value != null)
                             {
-                                // استخدام علامات الاقتباس المزدوجة حول اسم الحقل
                                 switch (matchMode)
                                 {
                                     case FilterMatchMode.STARTS_WITH:
-                                        filterConditions.Add($"\"{field}\" LIKE :{field}");
-                                        break;
                                     case FilterMatchMode.CONTAINS:
-                                        filterConditions.Add($"\"{field}\" LIKE :{field}");
-                                        break;
                                     case FilterMatchMode.NOT_CONTAINS:
-                                        filterConditions.Add($"\"{field}\" NOT LIKE :{field}");
-                                        break;
                                     case FilterMatchMode.ENDS_WITH:
                                         filterConditions.Add($"\"{field}\" LIKE :{field}");
                                         break;
@@ -8716,16 +8714,16 @@ namespace TLIS_Service.Services
                                         filterConditions.Add($"\"{field}\" >= :{field}");
                                         break;
                                     case FilterMatchMode.DATE_IS:
-                                        filterConditions.Add($"TRUNC(\"{field}\") = TO_DATE(:{field}, 'YYYY-MM-DD')");
+                                        filterConditions.Add($"TRUNC(\"{field}\") = TRUNC(TO_DATE(:{field}, 'YYYY-MM-DD'))");
                                         break;
                                     case FilterMatchMode.DATE_IS_NOT:
-                                        filterConditions.Add($"TRUNC(\"{field}\") <> TO_DATE(:{field}, 'YYYY-MM-DD')");
+                                        filterConditions.Add($"TRUNC(\"{field}\") <> TRUNC(TO_DATE(:{field}, 'YYYY-MM-DD'))");
                                         break;
                                     case FilterMatchMode.DATE_BEFORE:
-                                        filterConditions.Add($"TRUNC(\"{field}\") < TO_DATE(:{field}, 'YYYY-MM-DD')");
+                                        filterConditions.Add($"TRUNC(\"{field}\") < TRUNC(TO_DATE(:{field}, 'YYYY-MM-DD'))");
                                         break;
                                     case FilterMatchMode.DATE_AFTER:
-                                        filterConditions.Add($"TRUNC(\"{field}\") > TO_DATE(:{field}, 'YYYY-MM-DD')");
+                                        filterConditions.Add($"TRUNC(\"{field}\") > TRUNC(TO_DATE(:{field}, 'YYYY-MM-DD'))");
                                         break;
                                 }
                             }
@@ -8735,52 +8733,33 @@ namespace TLIS_Service.Services
                     // دمج شروط الفلترة في الاستعلام
                     if (filterConditions.Count > 0)
                     {
-                        sqlQuery += " where " + string.Join(" AND  ", filterConditions);
+                        sqlQuery += " WHERE " + string.Join(" AND ", filterConditions);
                     }
 
-                    // إضافة ترتيب
-                    if (multiSortMeta != null && multiSortMeta.Count > 0)
+                    // حساب العدد فقط بعد تطبيق الفلاتر
+                    string countQuery = $"SELECT COUNT(*) FROM HISTORY_VIEW {(filterConditions.Count > 0 ? " WHERE " + string.Join(" AND ", filterConditions) : "")}";
+
+                    int totalCount = 0;
+                    using (OracleCommand countCommand = new OracleCommand(countQuery, connection))
                     {
-                        List<string> sortConditions = new List<string>();
-                        foreach (var sort in multiSortMeta)
-                        {
-                            sortConditions.Add($"\"{sort.Field}\" {(sort.Order == 1 ? "ASC" : "DESC")}");
-                        }
-                        sqlQuery += " ORDER BY " + string.Join(", ", sortConditions);
-                    }
-
-                    // إضافة الصفحات
-                    sqlQuery += $" OFFSET {first} ROWS FETCH NEXT {rows} ROWS ONLY";
-
-                    using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
-                    {
-                        if (!string.IsNullOrEmpty(SiteCode))
-                        {
-                            queryCommand.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
-                        }
-
                         // إضافة معلمات الفلترة
                         if (filters != null)
                         {
                             foreach (var filter in filters)
                             {
                                 string field = filter.Key;
-
-                                // الحصول على JsonElement
                                 JsonElement filterValue = (JsonElement)filter.Value;
-
-                                // الوصول إلى matchMode
                                 string matchMode = filterValue.GetProperty("matchMode").GetString();
+                                JsonElement valueElement = filterValue.GetProperty("value");
+                                object value;
 
-                                // الوصول إلى القيمة
-                                JsonElement valueElement;
-
-                                // التأكد من وجود الخاصية 'value'
-                                if (filterValue.TryGetProperty("value", out valueElement))
+                                // تحويل التاريخ إذا كان النوع هو string ويمثل تاريخًا
+                                if (valueElement.ValueKind == JsonValueKind.String && DateTime.TryParse(valueElement.GetString(), out DateTime parsedDate))
                                 {
-                                    object value;
-
-                                    // تحديد النوع
+                                    value = parsedDate.ToString("yyyy-MM-dd"); // تحويل إلى الشكل YYYY-MM-DD
+                                }
+                                else
+                                {
                                     switch (valueElement.ValueKind)
                                     {
                                         case JsonValueKind.String:
@@ -8797,14 +8776,89 @@ namespace TLIS_Service.Services
                                             value = null;
                                             break;
                                         default:
-                                            value = null; 
+                                            value = null;
                                             break;
+                                    }
+                                }
+
+                                // إضافة المعاملات لاستعلام العدد
+                                if (value != null)
+                                {
+                                    countCommand.Parameters.Add(new OracleParameter(field, matchMode == FilterMatchMode.CONTAINS ? "%" + value + "%" : value));
+                                }
+                            }
+                        }
+
+                        totalCount = Convert.ToInt32(countCommand.ExecuteScalar());
+                    }
+
+                    // بعد حساب العدد، إضافة شروط الترتيب والصفحات للاستعلام الأساسي
+                    if (multiSortMeta != null && multiSortMeta.Count > 0)
+                    {
+                        List<string> sortConditions = new List<string>();
+                        foreach (var sort in multiSortMeta)
+                        {
+                            sortConditions.Add($"\"{sort.Field}\" {(sort.Order == 1 ? "ASC" : "DESC")}");
+                        }
+                        sqlQuery += " ORDER BY " + string.Join(", ", sortConditions);
+                    }
+
+                    // إضافة الصفحات
+                    sqlQuery += $" OFFSET {first} ROWS FETCH NEXT {rows} ROWS ONLY";
+
+                    // تنفيذ الاستعلام الأساسي لجلب البيانات
+                    using (OracleCommand queryCommand = new OracleCommand(sqlQuery, connection))
+                    {
+                        if (!string.IsNullOrEmpty(SiteCode))
+                        {
+                            queryCommand.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
+                        }
+
+                        // إضافة معلمات الفلترة
+                        if (filters != null)
+                        {
+                            foreach (var filter in filters)
+                            {
+                                string field = filter.Key;
+                                JsonElement filterValue = (JsonElement)filter.Value;
+                                string matchMode = filterValue.GetProperty("matchMode").GetString();
+                                JsonElement valueElement;
+
+                                if (filterValue.TryGetProperty("value", out valueElement))
+                                {
+                                    object value;
+
+                                    // تحويل التاريخ إذا كان النوع هو string ويمثل تاريخًا
+                                    if (valueElement.ValueKind == JsonValueKind.String && DateTime.TryParse(valueElement.GetString(), out DateTime parsedDate))
+                                    {
+                                        value = parsedDate.ToString("yyyy-MM-dd"); // تحويل إلى الشكل YYYY-MM-DD
+                                    }
+                                    else
+                                    {
+                                        switch (valueElement.ValueKind)
+                                        {
+                                            case JsonValueKind.String:
+                                                value = valueElement.GetString();
+                                                break;
+                                            case JsonValueKind.Number:
+                                                value = valueElement.GetDouble();
+                                                break;
+                                            case JsonValueKind.True:
+                                            case JsonValueKind.False:
+                                                value = valueElement.GetBoolean();
+                                                break;
+                                            case JsonValueKind.Null:
+                                                value = null;
+                                                break;
+                                            default:
+                                                value = null;
+                                                break;
+                                        }
                                     }
 
                                     if (value != null)
                                     {
-                                        queryCommand.Parameters.Add(new OracleParameter(field,
-                                            matchMode == FilterMatchMode.CONTAINS ? "%" + value + "%" : value));
+                                        queryCommand.Parameters.Add(new OracleParameter(field, matchMode == FilterMatchMode.CONTAINS ? "%" + value + "%" : value));
                                     }
                                 }
                             }
@@ -8826,9 +8880,11 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+
+                    return new Response<List<dynamic>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
                 }
 
-               return new Response<List<dynamic>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, result.Count);
+                return new Response<List<dynamic>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
             }
         }
