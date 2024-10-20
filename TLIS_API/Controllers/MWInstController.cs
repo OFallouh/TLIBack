@@ -27,6 +27,7 @@ using TLIS_DAL.ViewModels.SiteDTOs;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using System.Text;
 using TLIS_DAL.ViewModels.RadioOtherDTOs;
+using Newtonsoft.Json;
 
 namespace TLIS_API.Controllers
 {
@@ -1249,22 +1250,30 @@ namespace TLIS_API.Controllers
             }
          
         }
-
+        public class YourResponseType
+        {
+            public string Message { get; set; } // نص
+            public List<string> Data { get; set; } // قائمة من النصوص
+        }
 
         [HttpPost("Test")]
-        [ProducesResponseType(200, Type = typeof(object))]
+        [Produces("application/json")]
+        [ProducesResponseType(200, Type = typeof(YourResponseType))]
         public IActionResult Test([FromQuery] string? SiteCode)
         {
-         
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.Test(SiteCode, connectionString);
-                return Ok(response);
-            
+            var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWInstService.Test(SiteCode, connectionString);
 
-            
+            // تأكد من أن response هو من النوع YourResponseType
+            var jsonResponse = JsonConvert.SerializeObject(response);
 
+            // إذا كنت ترغب في التحقق من jsonResponse، يمكنك القيام بذلك هنا (مثل تسجيله أو التحقق منه)
+            // Console.WriteLine(jsonResponse);  // يمكنك تسجيله في السجلات لمراجعة النتيجة
 
-
+            return Ok(response); // ASP.NET Core سيتولى تعيين نوع المحتوى إلى application/json تلقائيًا
         }
+
+
+
     }
 }
