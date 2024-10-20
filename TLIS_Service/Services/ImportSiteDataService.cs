@@ -23693,6 +23693,7 @@ namespace TLIS_Service.Services
             }
 
         }
+        
         public Response<string> ImportSolarInstallation(IFormFile File, string ConnectionString)
         {
             List<TLIdataType> DataTypes = _unitOfWork.DataTypeRepository.GetAllWithoutCount().ToList();

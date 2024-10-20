@@ -8417,7 +8417,7 @@ namespace TLIS_Service.Services
         // تعريف الفلاتر
         
 
-        public List<dynamic> GetHistory(string TabelName, string? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString
+        public Response<List<dynamic>> GetHistory(string TabelName, string? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString
             , int first, int rows, int sortOrder, Dictionary<string, dynamic> filters, List<SortMeta> multiSortMeta)
         {
             using (var connection = new OracleConnection(ConnectionString))
@@ -8828,8 +8828,8 @@ namespace TLIS_Service.Services
                     }
                 }
 
+               return new Response<List<dynamic>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, result.Count);
 
-                return result;
             }
         }
 
