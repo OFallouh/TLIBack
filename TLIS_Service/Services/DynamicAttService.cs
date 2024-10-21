@@ -9656,7 +9656,7 @@ namespace TLIS_Service.Services
                              if (FKitem.Label.ToLower() == "area_name")
                                  FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                              else if (FKitem.Label.ToLower() == "regioncode")
-                                 FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                                 FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                              else if (FKitem.Label.ToLower() == "sitestatus_name")
                                  FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                              else if (FKitem.Label.ToLower() == "locationtype")
@@ -9809,7 +9809,7 @@ namespace TLIS_Service.Services
                             if (FKitem.Label.ToLower() == "area_name")
                                 FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                             else if (FKitem.Label.ToLower() == "regioncode")
-                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                                FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                             else if (FKitem.Label.ToLower() == "sitestatus_name")
                                 FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                             else if (FKitem.Label.ToLower() == "locationtype")
@@ -9930,7 +9930,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -10054,7 +10054,7 @@ namespace TLIS_Service.Services
                             if (FKitem.Label.ToLower() == "area_name")
                                 FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                             else if (FKitem.Label.ToLower() == "regioncode")
-                                FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                                FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                             else if (FKitem.Label.ToLower() == "sitestatus_name")
                                 FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                             else if (FKitem.Label.ToLower() == "locationtype")
@@ -10512,7 +10512,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -11015,7 +11015,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -11520,7 +11520,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -12026,7 +12026,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -12551,7 +12551,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -13081,7 +13081,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -13623,7 +13623,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -14126,7 +14126,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -14630,7 +14630,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -15155,7 +15155,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -15661,7 +15661,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -15817,7 +15817,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -15946,7 +15946,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
@@ -16035,7 +16035,7 @@ namespace TLIS_Service.Services
                         if (FKitem.Label.ToLower() == "area_name")
                             FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIarea.ToList());
                         else if (FKitem.Label.ToLower() == "regioncode")
-                            FKitem.Options = _mapper.Map<List<OwnerViewModel>>(_dbContext.TLIregion.ToList());
+                            FKitem.Options = _mapper.Map<List<RegionView>>(_dbContext.TLIregion.ToList());
                         else if (FKitem.Label.ToLower() == "sitestatus_name")
                             FKitem.Options = _mapper.Map<List<SiteStatusViewModel>>(_unitOfWork.SiteStatusRepository.GetWhere(x => !x.Deleted && x.Active).ToList());
                         else if (FKitem.Label.ToLower() == "locationtype")
