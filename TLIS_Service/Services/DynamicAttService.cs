@@ -23215,7 +23215,7 @@ namespace TLIS_Service.Services
                             object value = type switch
                             {
                                 "string" => rule.Rule.OperationValueString,
-                                "int" or "double" or "float" => rule.Rule.OperationValueDouble,
+                                "int" or "double" or "float" or "list" => rule.Rule.OperationValueDouble,
                                 "datetime" => rule.Rule.OperationValueDateTime,
                                 "bool" => rule.Rule.OperationValueBoolean,
                                 _ => null
@@ -23225,6 +23225,14 @@ namespace TLIS_Service.Services
                             {
                                 value = attribute.Label.ToLower() switch
                                 {
+                                    _ when Helpers.Constants.TablesNames.TLIsite.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
+                                    {
+                                        "area_name" => _unitOfWork.AreaRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "regioncode" => _unitOfWork.RegionRepository.GetWhereFirst(x => x.RegionCode == rule.Rule.OperationValueDouble.ToString()).RegionCode,
+                                        "sitestatus_name" => _unitOfWork.SiteStatusRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "locationtype" => _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        _ => value
+                                    },
                                     _ when Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                     {
                                         "sectionslegtype_name" => _unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,

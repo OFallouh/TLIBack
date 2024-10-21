@@ -41,6 +41,7 @@ using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using TLIS_DAL;
 using System.Data;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
+using TLIS_DAL.ViewModels.SideArmDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -180,6 +181,23 @@ namespace TLIS_Service.Services
                             LogisticalItemIds = addSideArmLibraryViewModel.LogisticalItems;
 
                             AddLogisticalItemWithCivilH(UserId,LogisticalItemIds, tLIsideArmLibrary, TableNameEntity.Id,HistoryId);
+                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addSideArmLibraryViewModel, HistoryId);
+
+                            if (addSideArmLibraryViewModel.dynamicAttributes != null && addSideArmLibraryViewModel.dynamicAttributes.Count > 0)
+                            {
+                                var sortedDynamicAttributes = addSideArmLibraryViewModel.dynamicAttributes
+                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                    .ToList();
+
+                                foreach (var item in sortedDynamicAttributes)
+                                {
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, tLIsideArmLibrary.Id, HistoryId).Message;
+                                    if (Message != "Success")
+                                    {
+                                        return new Response<AddSideArmLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                    }
+                                }
+                            }
                             transaction.Complete();
                             tran.Commit();
                             Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
@@ -1080,7 +1098,23 @@ namespace TLIS_Service.Services
                     OldLogisticalItemIds.Consultant = 0;
 
                 EditLogisticalItemsH(UserId, editSideArmLibraryViewModel.logisticalItems, tLIsideArmLibrary, TableNames.Id, OldLogisticalItemIds, HistoryId);
-                
+                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(editSideArmLibraryViewModel, HistoryId);
+
+                if (editSideArmLibraryViewModel.dynamicAttributes != null && editSideArmLibraryViewModel.dynamicAttributes.Count > 0)
+                {
+                    var sortedDynamicAttributes = editSideArmLibraryViewModel.dynamicAttributes
+                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                        .ToList();
+
+                    foreach (var item in sortedDynamicAttributes)
+                    {
+                        var Message = _unitOfWork.CivilWithLegsRepository.EditCheckDynamicValidationAndDependence(item.id, item.value, tLIsideArmLibrary.Id, HistoryId).Message;
+                        if (Message != "Success")
+                        {
+                            return new Response<EditSideArmLibraryObject>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                }
                 await _unitOfWork.SaveChangesAsync();
                 Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                 return new Response<EditSideArmLibraryObject>();

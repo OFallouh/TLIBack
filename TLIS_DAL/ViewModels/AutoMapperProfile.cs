@@ -308,7 +308,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIgeneratorLibrary, TLIgeneratorLibrary>().ReverseMap();
             CreateMap<OwnerViewModel, TLIarea>().ReverseMap();
             CreateMap<OwnerViewModel, TLIregion>().ReverseMap().
-                ForMember(x => x.Name, x => x.MapFrom(f => f.RegionName));
+                ForMember(x => x.Name, x => x.MapFrom(f => f.RegionName))
+                .ForMember(x => x.Id, x => x.MapFrom(f => f.RegionCode));
 
 
 

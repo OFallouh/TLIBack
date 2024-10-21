@@ -18,6 +18,7 @@ using TLIS_DAL.Models;
 using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 using TLIS_DAL.ViewModels.CivilLoadsDTOs;
 using TLIS_DAL.ViewModels.Mw_OtherDTOs;
+using static TLIS_Service.Services.MWInstService;
 
 namespace TLIS_Service.IService
 {
@@ -66,6 +67,6 @@ namespace TLIS_Service.IService
         Response<ObjectInstAtts> GetAttForAddForMW_ODUOnly(string TableName, int LibraryID, string SiteCode, int AllCivilInstId);
         Response<List<MW_PortViewModel>> GetPortCascadedByBUId(int BUId, int? MainBUId);
         Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
-        Response<GetEnableAttribute> Test(string? SiteCode, string ConnectionString);
+        Response<GetEnableAttributes> Test(string? SiteCode, string ConnectionString);
     }
 }

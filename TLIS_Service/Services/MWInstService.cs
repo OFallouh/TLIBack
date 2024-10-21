@@ -3817,32 +3817,141 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetEnableAttribute> Test(string? SiteCode, string ConnectionString)
+
+        public class GetEnableAttributes
+        {
+            public List<MWDishModel> Model { get; set; }
+        }
+
+        public class MWDishModel
+        {
+            public string SiteCode { get; set; }
+            public int Id { get; set; }
+            public string DishName { get; set; }
+            public decimal Azimuth { get; set; }
+            public string Notes { get; set; }
+            public string FarEndSiteCode { get; set; }
+            public string HBASurface { get; set; }
+            public string SerialNumber { get; set; }
+            public string MWLink { get; set; }
+            public int VisiableStatus { get; set; }
+            public string SpaceInstallation { get; set; }
+            public decimal HeightBase { get; set; }
+            public decimal HeightLand { get; set; }
+            public decimal Temp { get; set; }
+            public string Owner { get; set; }
+            public string RepeaterType { get; set; }
+            public string PolarityOnLocation { get; set; }
+            public string ItemConnectTo { get; set; }
+            public string MWDishLibrary { get; set; }
+            public string InstallationPlace { get; set; }
+            public decimal CenterHigh { get; set; }
+            public decimal HBA { get; set; }
+            public decimal HeightFromLand { get; set; }
+            public decimal EquivalentSpace { get; set; }
+            public int Dismantle { get; set; }
+            public string LegName { get; set; }
+            public string CivilName { get; set; }
+            public int CivilId { get; set; }
+            public string SideArmName { get; set; }
+            public int SideArmId { get; set; }
+            public int AllCivilInstId { get; set; }
+            public int LegId { get; set; }
+            public int ODUCount { get; set; }
+            public string PolarityType { get; set; }
+            public string SideArmSecName { get; set; }
+            public int SideArmSecId { get; set; }
+        }
+
+        public Response<GetEnableAttributes> Test(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 try
                 {
-
-                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-             
-                    var query = _dbContext.MV_MWDISH_VIEW.Where(x => !x.Dismantle).Distinct().AsEnumerable();
-                        int count = query.Count();
-                        getEnableAttribute.Model = query;
-                    
-                    return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
-                  
-                    
 
+                    using (var command = new OracleCommand("GetMWDishInstallationWithEnableAtt", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.Add("p_SiteCode", OracleDbType.Varchar2).Value = (object)SiteCode ?? DBNull.Value;
+                        command.Parameters.Add("p_ConnectionString", OracleDbType.Varchar2).Value = ConnectionString;
+                   
+
+                        // مخرجات
+                        var resultCursor = new OracleParameter("p_Result", OracleDbType.RefCursor) { Direction = ParameterDirection.Output };
+                        command.Parameters.Add(resultCursor);
+
+                        var countParameter = new OracleParameter("p_Count", OracleDbType.Int32) { Direction = ParameterDirection.Output };
+                        command.Parameters.Add(countParameter);
+
+                        command.ExecuteNonQuery();
+
+                        // التعامل مع النتيجة
+                        using (var reader = (OracleDataReader)resultCursor.Value)
+                        {
+                            var getEnableAttribute = new GetEnableAttributes
+                            {
+                                Model = new List<MWDishModel>()
+                            };
+
+                            while (reader.Read())
+                            {
+                                var mWDishModel = new MWDishModel
+                                {
+                                    SiteCode = reader["SiteCode"].ToString(),
+                                    Id = Convert.ToInt32(reader["Id"]),
+                                    DishName = reader["DishName"].ToString(),
+                                    Azimuth = Convert.ToDecimal(reader["Azimuth"]),
+                                    Notes = reader["Notes"].ToString(),
+                                    FarEndSiteCode = reader["Far_End_Site_Code"].ToString(),
+                                    HBASurface = reader["HBA_Surface"].ToString(),
+                                    SerialNumber = reader["Serial_Number"].ToString(),
+                                    MWLink = reader["MW_LINK"].ToString(),
+                                    VisiableStatus = Convert.ToInt32(reader["Visiable_Status"]),
+                                    SpaceInstallation = reader["SpaceInstallation"].ToString(),
+                                    HeightBase = Convert.ToDecimal(reader["HeightBase"]),
+                                    HeightLand = Convert.ToDecimal(reader["HeightLand"]),
+                                    Temp = Convert.ToDecimal(reader["Temp"]),
+                                    Owner = reader["OWNER"].ToString(),
+                                    RepeaterType = reader["REPEATERTYPE"].ToString(),
+                                    PolarityOnLocation = reader["POLARITYONLOCATION"].ToString(),
+                                    ItemConnectTo = reader["ITEMCONNECTTO"].ToString(),
+                                    MWDishLibrary = reader["MWDISHLIBRARY"].ToString(),
+                                    InstallationPlace = reader["INSTALLATIONPLACE"].ToString(),
+                                    CenterHigh = Convert.ToDecimal(reader["CenterHigh"]),
+                                    HBA = Convert.ToDecimal(reader["HBA"]),
+                                    HeightFromLand = Convert.ToDecimal(reader["HieghFromLand"]),
+                                    EquivalentSpace = Convert.ToDecimal(reader["EquivalentSpace"]),
+                                    Dismantle = Convert.ToInt32(reader["Dismantle"]),
+                                    LegName = reader["LEG_NAME"].ToString(),
+                                    CivilName = reader["CIVILNAME"].ToString(),
+                                    CivilId = Convert.ToInt32(reader["CIVIL_ID"]),
+                                    SideArmName = reader["SIDEARMNAME"].ToString(),
+                                    SideArmId = Convert.ToInt32(reader["SIDEARM_ID"]),
+                                    AllCivilInstId = Convert.ToInt32(reader["ALLCIVILINST_ID"]),
+                                    LegId = Convert.ToInt32(reader["LEG_ID"]),
+                                    ODUCount = Convert.ToInt32(reader["ODU_COUNT"]),
+                                    PolarityType = reader["POLARITYTYPE"].ToString(),
+                                    SideArmSecName = reader["SideArmSec_Name"].ToString(),
+                                    SideArmSecId = Convert.ToInt32(reader["SideArmSec_Id"]),
+                                };
+
+                                getEnableAttribute.Model.Add(mWDishModel);
+                            }
+
+                            return new Response<GetEnableAttributes>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, (int)countParameter.Value);
+                        }
+                    }
                 }
                 catch (Exception err)
                 {
-                    return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<GetEnableAttributes>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
-
         }
+
         public Response<GetEnableAttribute> GetMWOtherInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId)
         {
             using (var connection = new OracleConnection(ConnectionString))
