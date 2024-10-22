@@ -23220,7 +23220,10 @@ namespace TLIS_Service.Services
                                 "bool" => rule.Rule.OperationValueBoolean,
                                 _ => null
                             };
-
+                            if(attribute.Label.ToLower() == "regioncode")
+                            {
+                                value = rule.Rule.OperationValueDouble.ToString();
+                            }
                             if (type == "list")
                             {
                                 value = attribute.Label.ToLower() switch
