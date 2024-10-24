@@ -19639,8 +19639,8 @@ namespace TLIS_Service.Services
                                         || TabelName == "TLIRadioRRU"
                                         || TabelName == "TLIloadOther"
                                         || TabelName == "TLIpower"
-                                        || TabelName == "TLIcabinet"
-                                        || TabelName == "TLIsolar"
+                                        || TabelName == "TLIcabinetPower"
+                                        || TabelName == "TLIcabinetTelecom"
                                         || TabelName == "TLIsolar"
                                         || TabelName == "TLIgenerator")
                                     {
@@ -20037,8 +20037,8 @@ namespace TLIS_Service.Services
                                        || TabelName == "TLIRadioRRU"
                                        || TabelName == "TLIloadOther"
                                        || TabelName == "TLIpower"
-                                       || TabelName == "TLIcabinet"
-                                       || TabelName == "TLIsolar"
+                                       || TabelName == "TLIcabinetTelecom"
+                                       || TabelName == "TLIcabinetPower"
                                        || TabelName == "TLIsolar"
                                        || TabelName == "TLIgenerator")
                                             {
@@ -20868,8 +20868,8 @@ namespace TLIS_Service.Services
                                         || TabelName == "TLIRadioRRU"
                                         || TabelName == "TLIloadOther"
                                         || TabelName == "TLIpower"
-                                        || TabelName == "TLIcabinet"
-                                        || TabelName == "TLIsolar"
+                                        || TabelName == "TLIcabinetTelecom"
+                                        || TabelName == "TLIcabinetPower"
                                         || TabelName == "TLIsolar"
                                         || TabelName == "TLIgenerator")
                                         {
@@ -22325,8 +22325,8 @@ namespace TLIS_Service.Services
                                       || TabelName == "TLIRadioRRU"
                                       || TabelName == "TLIloadOther"
                                       || TabelName == "TLIpower"
-                                      || TabelName == "TLIcabinet"
-                                      || TabelName == "TLIsolar"
+                                      || TabelName == "TLIcabinetTelecom"
+                                      || TabelName == "TLIcabinetPower"
                                       || TabelName == "TLIsolar"
                                       || TabelName == "TLIgenerator")
                                         {
