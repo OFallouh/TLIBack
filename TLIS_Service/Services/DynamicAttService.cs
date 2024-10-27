@@ -19406,6 +19406,47 @@ namespace TLIS_Service.Services
 
             return new Response<DynamicAttViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
         }
+        public Response<bool> MoveDynamicToAttributeViewManagment()
+        {
+            try
+            {
+                var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhere(x => !x.disable);
+                foreach (var item in DynamicAtt)
+                {
+                    var DynmiUnique = _unitOfWork.DynamicAttRepository.GetWhere(x => x.tablesNamesId == item.tablesNamesId && x.Key == item.Key
+                    && !x.disable && x.Id != item.Id);
+                    if (DynmiUnique.Count > 0)
+                    {
+                        foreach (var itemDynmiUnique in DynmiUnique)
+                        {
+                            itemDynmiUnique.disable = true;
+                            _unitOfWork.DynamicAttRepository.Update(itemDynmiUnique);
+                        }
+                    }
+                    var AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository.GetWhereFirst(x => x.DynamicAttId== item.Id && x.Enable);
+                    if (AttributeViewManagment == null)
+                    {
+                        TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
+                        {
+                            DynamicAttId = item.Id,
+                            Enable = true,
+                            AttributeActivatedId = null,
+
+                        };
+
+                        _unitOfWork.AttributeViewManagmentRepository.Add(tLIattributeViewManagment);
+                    }
+                }
+                _unitOfWork.SaveChanges();
+                return new Response<bool>(true, true, null, null, (int)Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+
+                return new Response<bool>(true, false, null, err.Message, (int)Constants.ApiReturnCode.fail);
+            }
+           
+        }
 
         public Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int UserId, int? CategoryId)
         {

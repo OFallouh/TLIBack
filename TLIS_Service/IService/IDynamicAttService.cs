@@ -41,5 +41,6 @@ namespace TLIS_Service.IService
         Response<DynamicAttViewModel> CheckEditingDynamicAttDataType(int DynamicAttributeId, int NewDataTypeId);
         Response<AddDynamicObject> GetDynamicLibraryById(int id);
         Response<getLayersAndAttributesStaticAndDynamic> getLayersAndAttributesStaticAndDynamic(string TabelName, int? CategoryId);
+        Response<bool> MoveDynamicToAttributeViewManagment();
     }
 }

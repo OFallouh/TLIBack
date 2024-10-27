@@ -334,5 +334,12 @@ namespace TLIS_API.Controllers.DynamicAtt
             var response = _unitOfWorkService.DynamicAttService.GetDynamicLibraryById(DynamicAttributeId);
             return Ok(response);
         }
+        [HttpGet("MoveDynamicToAttributeViewManagment")]
+        [ProducesResponseType(200, Type = typeof(FirstStepAddDependencyViewModel))]
+        public IActionResult MoveDynamicToAttributeViewManagment()
+        {
+            var response = _unitOfWorkService.DynamicAttService.MoveDynamicToAttributeViewManagment();
+            return Ok(response);
+        }
     }
 }

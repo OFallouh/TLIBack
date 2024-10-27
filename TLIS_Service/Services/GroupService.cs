@@ -321,14 +321,14 @@ namespace TLIS_Service.Services
                     {
                         GroupCildren.ParentId = null;
                         _unitOfWork.GroupRepository.Update(GroupCildren);
-                        await _unitOfWork.SaveChangesAsync();
+                      
                     }
                     DeleteGroup.Deleted = true;
                     DeleteGroup.ParentId = null;
                     DeleteGroup.UpperId = null;
                     DeleteGroup.Name = DeleteGroup.Name + DateTime.Now.ToString();
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
-                    await _unitOfWork.SaveChangesAsync();
+                  
                     var TabelNameRole = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgroup").Id;
                     TLIhistory AddTablesHistory = new TLIhistory
                     {
@@ -339,8 +339,8 @@ namespace TLIS_Service.Services
                     };
 
 
-                    _dbContext.TLIhistory.Add(AddTablesHistory);
-                    _dbContext.SaveChanges();
+                    await  _dbContext.TLIhistory.AddAsync(AddTablesHistory);
+
                 }
 
                 List<TLIgroup> GroupLowers = _unitOfWork.GroupRepository.GetWhere(x => x.UpperId == GroupId).ToList();
@@ -350,7 +350,7 @@ namespace TLIS_Service.Services
                     {
                         GroupLower.UpperId = null;
                         _unitOfWork.GroupRepository.Update(GroupLower);
-                        await _unitOfWork.SaveChangesAsync();
+
                     }
                   
                     DeleteGroup.Deleted = true;
@@ -358,7 +358,18 @@ namespace TLIS_Service.Services
                     DeleteGroup.UpperId = null;
                     DeleteGroup.Name = DeleteGroup.Name + DateTime.Now.ToString();
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
-                    await _unitOfWork.SaveChangesAsync();
+                    var TabelNameRole = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgroup").Id;
+                    TLIhistory AddTablesHistory = new TLIhistory
+                    {
+                        HistoryTypeId = 3,
+                        RecordId = GroupId.ToString(),
+                        TablesNameId = TabelNameRole,
+                        UserId = UserId
+                    };
+
+
+                    await _dbContext.TLIhistory.AddAsync(AddTablesHistory);
+
                 }
                 else if (GroupLowers.Count == 0 && GroupCildrens.Count == 0)
                 {
@@ -367,8 +378,42 @@ namespace TLIS_Service.Services
                     DeleteGroup.UpperId = null;
                     DeleteGroup.Name = DeleteGroup.Name + DateTime.Now.ToString();
                     _unitOfWork.GroupRepository.Update(DeleteGroup);
-                    await _unitOfWork.SaveChangesAsync();
+                    var TabelNameRole = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgroup").Id;
+                    TLIhistory AddTablesHistory = new TLIhistory
+                    {
+                        HistoryTypeId = 3,
+                        RecordId = GroupId.ToString(),
+                        TablesNameId = TabelNameRole,
+                        UserId = UserId
+                    };
+
+
+                    await _dbContext.TLIhistory.AddAsync(AddTablesHistory);
+
                 }
+                var GroupUser = _unitOfWork.GroupUserRepository.GetWhere(x => x.groupId == GroupId);
+                foreach (var itemGroupUser in GroupUser)
+                {
+                    
+                    itemGroupUser.Active = false;
+                    itemGroupUser.Deleted=true;
+                    _unitOfWork.GroupUserRepository.Update(itemGroupUser);
+                    var TabelNameRole = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgroupUser").Id;
+                    TLIhistory AddTablesHistory = new TLIhistory
+                    {
+                        HistoryTypeId = 3,
+                        RecordId = GroupId.ToString(),
+                        TablesNameId = TabelNameRole,
+                        UserId = UserId
+                    };
+
+
+                    await _dbContext.TLIhistory.AddAsync(AddTablesHistory);
+
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync(); 
                 return new Response<GroupViewModel>();
             }
             catch (Exception err)
@@ -376,6 +421,8 @@ namespace TLIS_Service.Services
                 return new Response<GroupViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+       
+
         //public Response <GroupChildsViewModel> CheckGroupForParent(int GroupId)
         //{
         //   GroupChildsViewModel GroupChild =new GroupChildsViewModel {Group = new List<GroupViewModel>(), User = new List<UserViewModel>() };
