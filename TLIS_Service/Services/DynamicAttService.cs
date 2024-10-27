@@ -23165,15 +23165,22 @@ namespace TLIS_Service.Services
                         name = dynamicAtt.Key,
                         description = dynamicAtt.Description,
                         isRequired = dynamicAtt.Required,
-                        defualtValue = dynamicAtt.DefaultValue,
-                        dataType = dynamicAtt.DataTypeId
-                       
+                        dataType = dynamicAtt.DataTypeId,
+                        defualtValue = dynamicAtt.DataTypeId switch
+                        {
+                            1 => dynamicAtt.DefaultValue.ToString(),
+                            21 or 22 => Convert.ToDouble(dynamicAtt.DefaultValue),
+                            24 => Convert.ToBoolean(dynamicAtt.DefaultValue),
+                            25 => Convert.ToDateTime(dynamicAtt.DefaultValue),
+                            _ => null
+                        }
                     },
-                  
+
                     type = dynamicAtt.Type,
                     validation = GetValidation(dynamicAtt.Id, dynamicAtt.DataTypeId),
                     dependency = GetDependency(dynamicAtt.Id)
                 };
+
                 if (dynamicAtt.DataTypeId == 24)
                 {
                     addDynamicObject.general.defualtValue = Convert.ToBoolean(addDynamicObject.general.defualtValue);
