@@ -36,7 +36,7 @@ namespace TLIS_DAL.ViewModels.SolarDTOs
         public string? Extension { get; set; } = " ";
         public float SpaceInstallation { get; set; } = 0;
         public string? VisibleStatus { get; set; } = " ";
-        public int CabinetId { get; set; }
+        public int? CabinetId { get; set; }
 
     }
 }

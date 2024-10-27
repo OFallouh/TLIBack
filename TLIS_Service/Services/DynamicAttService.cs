@@ -7660,11 +7660,19 @@ namespace TLIS_Service.Services
                 }
 
                 // Other Inventories ...
-                else if (TableName.ToLower() == TablesNames.TLIcabinet.ToString().ToLower())
+                else if (TableName.ToLower() == TablesNames.TLIcabinetTelecom.ToString().ToLower())
                 {
                     Records = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x =>
-                        x.allOtherInventoryInst.cabinetId !=null && !x.Dismantle, x=>x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet)
+                        x.allOtherInventoryInst.cabinetId !=null  && x.allOtherInventoryInst.cabinet.CabinetTelecomLibraryId !=null&& !x.Dismantle,
+                        x=>x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet,x=>x.allOtherInventoryInst.cabinet.CabinetTelecomLibrary)
                         .Select(x => x.allOtherInventoryInst.cabinet.Id).ToList();
+                }
+                else if (TableName.ToLower() == TablesNames.TLIcabinetPower.ToString().ToLower())
+                {
+                    Records = _unitOfWork.OtherInSiteRepository.GetWhereAndInclude(x =>
+                       x.allOtherInventoryInst.cabinetId != null && x.allOtherInventoryInst.cabinet.CabinetPowerLibraryId != null && !x.Dismantle,
+                       x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet, x => x.allOtherInventoryInst.cabinet.CabinetTelecomLibrary)
+                       .Select(x => x.allOtherInventoryInst.cabinet.Id).ToList();
                 }
                 else if (TableName.ToLower() == TablesNames.TLIsolar.ToString().ToLower())
                 {
@@ -15788,7 +15796,7 @@ namespace TLIS_Service.Services
                        GetInstAttributeActivatedGetForAdd(OtherInventoryType.TLIcabinet.ToString(), null, "CabinetTelecomLibraryId", "CabinetPowerLibraryId").ToList();
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                     {
-                        { "renewablecabinettype_name", () => _mapper.Map<List<RenewableCabinetTypeViewModel>>(_unitOfWork.RenewableCabinetTypeRepository.GetWhereAndInclude(x => !x.Deleted &&
+                        { "renewablecabinettype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.RenewableCabinetTypeRepository.GetWhereAndInclude(x => !x.Deleted &&
                         !x.Disable).ToList())},
 
                     };
@@ -15860,7 +15868,7 @@ namespace TLIS_Service.Services
                                  .GetWhere(x => !x.Deleted && !x.Disable).ToList())},
 
                            };
-                    ListAttributesActivated = ListAttributesActivated
+                    ListAttributesActivatedLibrary = ListAttributesActivatedLibrary
                        .Select(FKitem =>
                        {
                            if (repositoryMethodsCabinetTelecom.ContainsKey(FKitem.Label.ToLower()))
