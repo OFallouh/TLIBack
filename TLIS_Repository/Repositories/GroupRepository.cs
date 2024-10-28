@@ -80,11 +80,12 @@ namespace TLIS_Repository.Repositories
                     {
                         var GroupRoles = await _context.TLIgroupRole.AsNoTracking().Where(g => g.groupId.Equals(ChildId)).Select(g => g.roleId).ToListAsync();
                   
-                        var roleIds = roles.Select(r => r.Id).Union(GroupRoles).Distinct().ToList();
+                        var roleIds = roles.Select(r => r.Id).ToList();
+                        var roleIdD = roles.Select(r => r.Id).Union(GroupRoles).Distinct().ToList();
 
                         var RolesToAdd = roleIds.Except(GroupRoles);
 
-                        var RolesToDelete = GroupRoles.Except(roleIds);
+                        var RolesToDelete = GroupRoles.Except(roleIdD);
 
                         var groupUsersID = await GetGroupUsersIdByGroupId(ChildId);
                         foreach (var Role in RolesToAdd)

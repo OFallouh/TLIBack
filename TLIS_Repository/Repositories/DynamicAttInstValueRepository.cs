@@ -18,6 +18,7 @@ using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_Repository.Base;
 using TLIS_Repository.IRepository;
 using static Dapper.SqlMapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace TLIS_Repository.Repositories
 {
@@ -464,9 +465,18 @@ namespace TLIS_Repository.Repositories
                     dynamic value = null;
                     if (DynamicInstAtt == null)
                     {
-                        
-                        value = DynamicAtt.DefaultValue;
-                       
+
+
+                        value = DynamicAtt.DataTypeId switch
+                        {
+                            1 => DynamicAtt.DefaultValue.ToString(),
+                            21 or 22 => Convert.ToDouble(DynamicAtt.DefaultValue),
+                            24 => Convert.ToBoolean(DynamicAtt.DefaultValue),
+                            25 => Convert.ToDateTime(DynamicAtt.DefaultValue),
+                            _ => null
+                        };
+
+
                     }
                     else
                     {
