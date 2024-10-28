@@ -28598,7 +28598,7 @@ namespace TLIS_Service.Services
                         Key = "InstallationDate",
                         Value = MWDish.InstallationDate,
                         DataType = "datetime",
-                        Label = "InstallationDate",
+                        Label = "InstallationDate",   Desc= "InstallationDate",
 
 
                     };
@@ -28608,7 +28608,7 @@ namespace TLIS_Service.Services
                         Key = "ItemOnCivilStatus",
                         Value = MWDish.ItemOnCivilStatus,
                         DataType = "string",
-                        Label = "ItemOnCivilStatus",
+                        Label = "ItemOnCivilStatus",   Desc= "ItemOnCivilStatus",
 
 
                     };
@@ -28618,7 +28618,7 @@ namespace TLIS_Service.Services
                         Key = "ItemStatus",
                         Value = MWDish.ItemStatus,
                         DataType = "string",
-                        Label = "ItemStatus",
+                        Label = "ItemStatus",   Desc= "ItemStatus",
 
 
                     };
@@ -28628,7 +28628,7 @@ namespace TLIS_Service.Services
                         Key = "ReservedSpace",
                         Value = MWDish.ReservedSpace,
                         DataType = "bool",
-                        Label = "ReservedSpace",
+                        Label = "ReservedSpace",   Desc= "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);
@@ -29056,7 +29056,8 @@ namespace TLIS_Service.Services
                         Key = "InstallationDate",
                         Value = MWBU.InstallationDate,
                         DataType = "datetime",
-                        Label = "InstallationDate",
+                        Label = "InstallationDate",  
+                        Desc= "InstallationDate",
 
 
                     };
@@ -29066,7 +29067,8 @@ namespace TLIS_Service.Services
                         Key = "ItemOnCivilStatus",
                         Value = MWBU.ItemOnCivilStatus,
                         DataType = "string",
-                        Label = "ItemOnCivilStatus",
+                        Label = "ItemOnCivilStatus", 
+                        Desc= "ItemOnCivilStatus",
 
 
                     };
@@ -29076,7 +29078,8 @@ namespace TLIS_Service.Services
                         Key = "ItemStatus",
                         Value = MWBU.ItemStatus,
                         DataType = "string",
-                        Label = "ItemStatus",
+                        Label = "ItemStatus",  
+                        Desc= "ItemStatus",
 
 
                     };
@@ -29086,7 +29089,7 @@ namespace TLIS_Service.Services
                         Key = "ReservedSpace",
                         Value = MWBU.ReservedSpace,
                         DataType = "bool",
-                        Label = "ReservedSpace",
+                        Label = "ReservedSpace",   Desc= "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);
@@ -29297,7 +29300,7 @@ namespace TLIS_Service.Services
                         Key = "InstallationDate",
                         Value = MWRFU.InstallationDate,
                         DataType = "datetime",
-                        Label = "InstallationDate",
+                        Label = "InstallationDate",   Desc= "InstallationDate",
 
 
                     };
@@ -29307,7 +29310,7 @@ namespace TLIS_Service.Services
                         Key = "ItemOnCivilStatus",
                         Value = MWRFU.ItemOnCivilStatus,
                         DataType = "string",
-                        Label = "ItemOnCivilStatus",
+                        Label = "ItemOnCivilStatus",   Desc= "ItemOnCivilStatus",
 
 
                     };
@@ -29317,7 +29320,7 @@ namespace TLIS_Service.Services
                         Key = "ItemStatus",
                         Value = MWRFU.ItemStatus,
                         DataType = "string",
-                        Label = "ItemStatus",
+                        Label = "ItemStatus",   Desc= "ItemStatus",
 
 
                     };
@@ -29327,7 +29330,7 @@ namespace TLIS_Service.Services
                         Key = "ReservedSpace",
                         Value = MWRFU.ReservedSpace,
                         DataType = "bool",
-                        Label = "ReservedSpace",
+                        Label = "ReservedSpace",   Desc= "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);
@@ -29629,7 +29632,7 @@ namespace TLIS_Service.Services
                         Value = MWODU.InstallationDate,
                         DataType = "datetime",
                         Label = "InstallationDate",
-
+                       
 
                     };
                     Civilload.Add(InstallationDate);
@@ -29639,6 +29642,7 @@ namespace TLIS_Service.Services
                         Value = MWODU.ItemOnCivilStatus,
                         DataType = "string",
                         Label = "ItemOnCivilStatus",
+                        Desc = "ItemOnCivilStatus",
 
 
                     };
@@ -29649,6 +29653,7 @@ namespace TLIS_Service.Services
                         Value = MWODU.ItemStatus,
                         DataType = "string",
                         Label = "ItemStatus",
+                        Desc = "ItemStatus",
 
 
                     };
@@ -29659,6 +29664,7 @@ namespace TLIS_Service.Services
                         Value = MWODU.ReservedSpace,
                         DataType = "bool",
                         Label = "ReservedSpace",
+                        Desc = "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);
@@ -29905,6 +29911,7 @@ namespace TLIS_Service.Services
                         Value = MWOther.InstallationDate,
                         DataType = "datetime",
                         Label = "InstallationDate",
+                        Desc = "InstallationDate",
 
 
                     };
@@ -29915,6 +29922,7 @@ namespace TLIS_Service.Services
                         Value = MWOther.ItemOnCivilStatus,
                         DataType = "string",
                         Label = "ItemOnCivilStatus",
+                        Desc = "ItemOnCivilStatus",
 
 
                     };
@@ -29925,6 +29933,7 @@ namespace TLIS_Service.Services
                         Value = MWOther.ItemStatus,
                         DataType = "string",
                         Label = "ItemStatus",
+                        Desc = "ItemStatus",
 
 
                     };
@@ -29935,6 +29944,7 @@ namespace TLIS_Service.Services
                         Value = MWOther.ReservedSpace,
                         DataType = "bool",
                         Label = "ReservedSpace",
+                        Desc = "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);

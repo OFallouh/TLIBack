@@ -994,6 +994,7 @@ namespace TLIS_Service.Services
                         Value = LoadOther.InstallationDate,
                         DataType = "datetime",
                         Label = "InstallationDate",
+                        Desc = "InstallationDate",
 
 
                     };
@@ -1004,6 +1005,7 @@ namespace TLIS_Service.Services
                         Value = LoadOther.ItemOnCivilStatus,
                         DataType = "string",
                         Label = "ItemOnCivilStatus",
+                        Desc = "ItemOnCivilStatus",
 
 
                     };
@@ -1014,6 +1016,7 @@ namespace TLIS_Service.Services
                         Value = LoadOther.ItemStatus,
                         DataType = "string",
                         Label = "ItemStatus",
+                        Desc = "ItemStatus",
 
 
                     };
@@ -1024,6 +1027,7 @@ namespace TLIS_Service.Services
                         Value = LoadOther.ReservedSpace,
                         DataType = "bool",
                         Label = "ReservedSpace",
+                        Desc = "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);

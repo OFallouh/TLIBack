@@ -3003,6 +3003,7 @@ namespace TLIS_Service.Services
                         Value = Power.InstallationDate,
                         DataType = "datetime",
                         Label = "InstallationDate",
+                        Desc = "InstallationDate",
 
 
                     };
@@ -3013,6 +3014,7 @@ namespace TLIS_Service.Services
                         Value = Power.ItemOnCivilStatus,
                         DataType = "string",
                         Label = "ItemOnCivilStatus",
+                        Desc = "ItemOnCivilStatus",
 
 
                     };
@@ -3023,6 +3025,7 @@ namespace TLIS_Service.Services
                         Value = Power.ItemStatus,
                         DataType = "string",
                         Label = "ItemStatus",
+                        Desc = "ItemStatus",
 
 
                     };
@@ -3033,6 +3036,7 @@ namespace TLIS_Service.Services
                         Value = Power.ReservedSpace,
                         DataType = "bool",
                         Label = "ReservedSpace",
+                        Desc = "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);

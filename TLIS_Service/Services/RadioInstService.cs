@@ -14586,7 +14586,8 @@ namespace TLIS_Service.Services
                         Key = "InstallationDate",
                         Value = RadioAntenna.InstallationDate,
                         DataType = "datetime",
-                        Label = "InstallationDate",
+                        Label = "InstallationDate",   
+                        Desc= "InstallationDate",
 
 
                     };
@@ -14596,7 +14597,8 @@ namespace TLIS_Service.Services
                         Key = "ItemOnCivilStatus",
                         Value = RadioAntenna.ItemOnCivilStatus,
                         DataType = "string",
-                        Label = "ItemOnCivilStatus",
+                        Label = "ItemOnCivilStatus", 
+                        Desc= "ItemOnCivilStatus",
 
 
                     };
@@ -14606,7 +14608,8 @@ namespace TLIS_Service.Services
                         Key = "ItemStatus",
                         Value = RadioAntenna.ItemStatus,
                         DataType = "string",
-                        Label = "ItemStatus",
+                        Label = "ItemStatus",  
+                        Desc= "ItemStatus",
 
 
                     };
@@ -14616,7 +14619,8 @@ namespace TLIS_Service.Services
                         Key = "ReservedSpace",
                         Value = RadioAntenna.ReservedSpace,
                         DataType = "bool",
-                        Label = "ReservedSpace",
+                        Label = "ReservedSpace",   
+                        Desc= "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);
@@ -14880,7 +14884,7 @@ namespace TLIS_Service.Services
                         Key = "InstallationDate",
                         Value = RadioOther.InstallationDate,
                         DataType = "datetime",
-                        Label = "InstallationDate",
+                        Label = "InstallationDate",   Desc= "InstallationDate",
 
 
                     };
@@ -14890,7 +14894,7 @@ namespace TLIS_Service.Services
                         Key = "ItemOnCivilStatus",
                         Value = RadioOther.ItemOnCivilStatus,
                         DataType = "string",
-                        Label = "ItemOnCivilStatus",
+                        Label = "ItemOnCivilStatus",   Desc= "ItemOnCivilStatus",
 
 
                     };
@@ -14900,7 +14904,7 @@ namespace TLIS_Service.Services
                         Key = "ItemStatus",
                         Value = RadioOther.ItemStatus,
                         DataType = "string",
-                        Label = "ItemStatus",
+                        Label = "ItemStatus",   Desc= "ItemStatus",
 
 
                     };
@@ -14910,7 +14914,7 @@ namespace TLIS_Service.Services
                         Key = "ReservedSpace",
                         Value = RadioOther.ReservedSpace,
                         DataType = "bool",
-                        Label = "ReservedSpace",
+                        Label = "ReservedSpace",   Desc= "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);
@@ -15220,7 +15224,7 @@ namespace TLIS_Service.Services
                         Key = "InstallationDate",
                         Value = RadioRRU.InstallationDate,
                         DataType = "datetime",
-                        Label = "InstallationDate",
+                        Label = "InstallationDate",   Desc= "InstallationDate",
 
 
                     };
@@ -15230,7 +15234,7 @@ namespace TLIS_Service.Services
                         Key = "ItemOnCivilStatus",
                         Value = RadioRRU.ItemOnCivilStatus,
                         DataType = "string",
-                        Label = "ItemOnCivilStatus",
+                        Label = "ItemOnCivilStatus",   Desc= "ItemOnCivilStatus",
 
 
                     };
@@ -15240,7 +15244,7 @@ namespace TLIS_Service.Services
                         Key = "ItemStatus",
                         Value = RadioRRU.ItemStatus,
                         DataType = "string",
-                        Label = "ItemStatus",
+                        Label = "ItemStatus",   Desc= "ItemStatus",
 
 
                     };
@@ -15250,7 +15254,7 @@ namespace TLIS_Service.Services
                         Key = "ReservedSpace",
                         Value = RadioRRU.ReservedSpace,
                         DataType = "bool",
-                        Label = "ReservedSpace",
+                        Label = "ReservedSpace",   Desc= "ReservedSpace",
 
                     };
                     Civilload.Add(ReservedSpace);

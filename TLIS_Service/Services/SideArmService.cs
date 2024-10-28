@@ -1968,6 +1968,7 @@ namespace TLIS_Service.Services
                         Value = sideArm.InstallationDate,
                         DataType = "datetime",
                         Label = "InstallationDate",
+                        Desc = "InstallationDate",
 
 
                     };
@@ -1978,6 +1979,7 @@ namespace TLIS_Service.Services
                         Value = sideArm.ItemOnCivilStatus,
                         DataType = "string",
                         Label = "ItemOnCivilStatus",
+                        Desc = "ItemOnCivilStatus",
 
 
                     };
@@ -1988,6 +1990,7 @@ namespace TLIS_Service.Services
                         Value = sideArm.ItemStatus,
                         DataType = "string",
                         Label = "ItemStatus",
+                        Desc = "ItemStatus",
 
 
                     };
@@ -1998,6 +2001,7 @@ namespace TLIS_Service.Services
                         Value = sideArm.ReservedSpace,
                         DataType = "bool",
                         Label = "ReservedSpace",
+                        Desc = "ReservedSpace",
 
                     };
                     Civilloads.Add(ReservedSpace);

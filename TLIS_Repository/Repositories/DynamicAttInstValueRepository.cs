@@ -496,7 +496,8 @@ namespace TLIS_Repository.Repositories
                         DataType = DynamicAtt.DataType.Name,
                         Value = value, 
                         Required = DynamicAtt.Required,
-                        Label= DynamicAtt.Key
+                        Label= DynamicAtt.Key,
+                        Desc= DynamicAtt.Description
                     });
                 }
 

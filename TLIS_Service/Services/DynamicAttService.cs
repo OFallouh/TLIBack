@@ -111,6 +111,7 @@ using TLIS_DAL.ViewModels.GuyLineTypeDTOs;
 using TLIS_DAL.ViewModels.AreaDTOs;
 using TLIS_DAL.ViewModels.RegionDTOs;
 using TLIS_DAL.ViewModels.SiteStatusDTOs;
+using TLIS_DAL.ViewModels.SideArmTypeDTOs;
 
 
 namespace TLIS_Service.Services
@@ -9714,7 +9715,7 @@ namespace TLIS_Service.Services
                       .ToList();
                         var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIcivilWithLegLibrary".ToLower());
                         IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
-                        .GetDynamicInstAttInst(TableNameEntity.Id, CategoryId);
+                        .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
                         item itemCivilWithLegs = new item()
                         {
                             staticAttributes = ListAttributesActivated,
@@ -10037,6 +10038,8 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                        { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+
                     };
 
                         ListAttributesActivated = ListAttributesActivated
@@ -19685,7 +19688,7 @@ namespace TLIS_Service.Services
                                         || TabelName == "TLImwOther"
                                         || TabelName == "TLIradioAntenna"
                                         || TabelName == "TLIradioOther"
-                                        || TabelName == "TLIRadioRRU"
+                                        || TabelName == "TLIradioRRU"
                                         || TabelName == "TLIloadOther"
                                         || TabelName == "TLIpower"
                                         || TabelName == "TLIcabinetPower"
@@ -20083,7 +20086,7 @@ namespace TLIS_Service.Services
                                        || TabelName == "TLImwOther"
                                        || TabelName == "TLIradioAntenna"
                                        || TabelName == "TLIradioOther"
-                                       || TabelName == "TLIRadioRRU"
+                                       || TabelName == "TLIradioRRU"
                                        || TabelName == "TLIloadOther"
                                        || TabelName == "TLIpower"
                                        || TabelName == "TLIcabinetTelecom"
@@ -20914,7 +20917,7 @@ namespace TLIS_Service.Services
                                         || TabelName == "TLImwOther"
                                         || TabelName == "TLIradioAntenna"
                                         || TabelName == "TLIradioOther"
-                                        || TabelName == "TLIRadioRRU"
+                                        || TabelName == "TLIradioRRU"
                                         || TabelName == "TLIloadOther"
                                         || TabelName == "TLIpower"
                                         || TabelName == "TLIcabinetTelecom"
@@ -21072,7 +21075,7 @@ namespace TLIS_Service.Services
                                                                , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
-                                                            if (TabelName == "TLIRadioRRU")
+                                                            if (TabelName == "TLIradioRRU")
                                                             {
                                                               AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
                                                               .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
@@ -21425,7 +21428,7 @@ namespace TLIS_Service.Services
                                                      
 
                                                             }
-                                                            if (TabelName == "TLIRadioRRU")
+                                                            if (TabelName == "TLIradioRRU")
                                                             {
                                                             AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
                                                                 .GetWhereFirst(x => x.Tabel.ToLower() == "TLIradioRRULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
@@ -22371,7 +22374,7 @@ namespace TLIS_Service.Services
                                       || TabelName == "TLImwOther"
                                       || TabelName == "TLIradioAntenna"
                                       || TabelName == "TLIradioOther"
-                                      || TabelName == "TLIRadioRRU"
+                                      || TabelName == "TLIradioRRU"
                                       || TabelName == "TLIloadOther"
                                       || TabelName == "TLIpower"
                                       || TabelName == "TLIcabinetTelecom"
@@ -22529,7 +22532,7 @@ namespace TLIS_Service.Services
                                                                  , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
-                                                            if (TabelName == "TLIRadioRRU")
+                                                            if (TabelName == "TLIradioRRU")
                                                             {
                                                                 AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
                                                                 .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
@@ -22882,7 +22885,7 @@ namespace TLIS_Service.Services
 
 
                                                             }
-                                                            if (TabelName == "TLIRadioRRU")
+                                                            if (TabelName == "TLIradioRRU")
                                                             {
                                                                 AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
                                                                     .GetWhereFirst(x => x.Tabel.ToLower() == "TLIradioRRULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());

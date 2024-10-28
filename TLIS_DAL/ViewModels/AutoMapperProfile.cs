@@ -315,6 +315,7 @@ namespace TLIS_DAL.ViewModels
 
 
             CreateMap<TLIrenewableCabinetType, OwnerViewModel>().ReverseMap();
+            CreateMap<TLIsideArmType, OwnerViewModel>().ReverseMap();
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
             CreateMap<TLIsideArm, SideArmViewDto>().ReverseMap();
             CreateMap<StructureTypeViewModel, TLIinstallationCivilwithoutLegsType>().ReverseMap();
