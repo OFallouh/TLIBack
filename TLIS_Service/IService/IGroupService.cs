@@ -22,7 +22,7 @@ namespace TLIS_Service.IService
         bool ValidateGroupNameFromDatabaseAdd(string GroupName);
         Task<bool> ValidateGroupNameFromDatabaseUpdate(string GroupName, int GroupId);
         Task<Response<GroupViewModel>> EditGroup([FromBody]GroupViewModel model, string domain,int UserId);
-        void UpdateGroupRoles(List<RoleViewModel> roles, int groupId);
+        //void UpdateGroupRoles(List<RoleViewModel> roles, int groupId);
         void UpdateGroupUsers(List<UserNameViewModel> users, int groupId);
         Task<Response<GroupViewModel>> DeleteGroup(int GrouId, int UserId);
         Task<Response<GroupViewModel>> AddActorToGroup(int GroupId, int ActorId);

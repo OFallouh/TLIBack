@@ -520,7 +520,7 @@ namespace TLIS_Service.Services
                 List<int> AllChildsIds = new List<int>();
                 LoopForChilds(groupEntity.Id, AllChildsIds);
                 AllChildsIds.Add(groupEntity.Id);
-                await _unitOfWork.GroupRepository.UpdateGroupRoles(model.Roles, AllChildsIds);
+                await _unitOfWork.GroupRepository.UpdateGroupRoles(model.Roles, AllChildsIds, model.Id);
                 //await _unitOfWork.GroupRepository.UpdateGroupUsers(model.Users, groupEntity.Id);
                 await UpdateGroupUsersHelperMethod(model.Users, groupEntity.Id);
 
@@ -820,12 +820,12 @@ namespace TLIS_Service.Services
         }
         //Function take 2 parameters
         //Function update group roles (add role or delete role)
-        public void UpdateGroupRoles(List<RoleViewModel> roles, int groupId)
-        {
-            List<int> GroupId = new List<int>();
-            GroupId.Add(groupId);
-            _unitOfWork.GroupRepository.UpdateGroupRoles(roles, GroupId);
-        }
+        //public void UpdateGroupRoles(List<RoleViewModel> roles, int groupId)
+        //{
+        //    List<int> GroupId = new List<int>();
+        //    GroupId.Add(groupId);
+        //    _unitOfWork.GroupRepository.UpdateGroupRoles(roles, GroupId);
+        //}
         //Function take 2 parameters
         //Function update group users (add user or delete user)
         public void UpdateGroupUsers(List<UserNameViewModel> users, int groupId)

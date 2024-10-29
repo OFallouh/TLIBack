@@ -10,7 +10,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
     {
         public string SiteCode { get; set; }
         public string SiteName { get; set; }
-        public string LocationType { get; set; }
+        public int LocationType { get; set; }
         public float LocationHieght { get; set; }
         public float Latitude { get; set; }
         public float Longitude { get; set; }

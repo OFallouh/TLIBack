@@ -70,22 +70,46 @@ namespace TLIS_Repository.Repositories
                 }
             }
         }
-        public async Task UpdateGroupRoles(List<RoleViewModel> roles, List<int> AllChildsIds)
+        public async Task UpdateGroupRoles(List<RoleViewModel> roles, List<int> AllChildsIds,int ParentId)
         {
             using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(60)))
             {
                 try
                 {
+                    List<int > RolesToAdd =new List<int>();
+                    List<int > RolesToDelete = new List<int>();
+                    List<int> ChildSp = new List<int>();
                     foreach (int ChildId in AllChildsIds)
                     {
-                        var GroupRoles = await _context.TLIgroupRole.AsNoTracking().Where(g => g.groupId.Equals(ChildId)).Select(g => g.roleId).ToListAsync();
-                  
-                        var roleIds = roles.Select(r => r.Id).ToList();
-                        var roleIdD = roles.Select(r => r.Id).Union(GroupRoles).Distinct().ToList();
+                        if (ChildId == ParentId)
+                        {
+                            var GroupRoles = await _context.TLIgroupRole.AsNoTracking().Where(g => g.groupId.Equals(ChildId)).Select(g => g.roleId).ToListAsync();
+                            var roleIds = roles.Select(r => r.Id).ToList();
+                       
 
-                        var RolesToAdd = roleIds.Except(GroupRoles);
+                             RolesToAdd = roleIds.Except(GroupRoles).ToList();
 
-                        var RolesToDelete = GroupRoles.Except(roleIdD);
+                             RolesToDelete = GroupRoles.Except(roleIds).ToList();
+                        }
+                       else
+                       {
+                          
+                            var GroupRoles = await _context.TLIgroupRole.AsNoTracking().Where(g => g.groupId.Equals(ChildId)).Select(g => g.roleId).ToListAsync();
+                            foreach (var item in GroupRoles)
+                            {
+                                var Parent = _context.TLIgroupRole.FirstOrDefault(x => x.groupId == ParentId && x.roleId == item);
+                                if (Parent == null)
+                                {
+                                    ChildSp.Add(item);
+                                }
+                            }
+                            var roleId = roles.Select(r => r.Id).ToList();
+                            RolesToAdd = roleId.Except(GroupRoles).Union(ChildSp).ToList();
+                            RolesToDelete = GroupRoles.Except(ChildSp).Except(roleId).ToList();
+
+
+                            
+                       }
 
                         var groupUsersID = await GetGroupUsersIdByGroupId(ChildId);
                         foreach (var Role in RolesToAdd)
@@ -249,7 +273,7 @@ namespace TLIS_Repository.Repositories
         {
             using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(60)))
             {
-                var Check = _context.TLIgroupRole.FirstOrDefault(x => x.groupId == GroupId && x.roleId == RoleId);
+                var Check = _context.TLIgroupRole.AsNoTracking().FirstOrDefault(x => x.groupId == GroupId && x.roleId == RoleId);
                 if (Check == null)
                 {
                     TLIgroupRole groupRole = new TLIgroupRole();

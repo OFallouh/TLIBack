@@ -184,6 +184,10 @@ namespace TLIS_Service.Services
                     var OldSiteInfo = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
                         (x => x.SiteCode == EditSiteViewModel.SiteCode);
                     TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
+                    if(Site.RentedSpace > Site.ReservedSpace)
+                        return new Response<EditSiteViewModel>(true, null, null, $"can not to be rented space bigger than reserved space",
+                            (int)Helpers.Constants.ApiReturnCode.fail);
+
                     _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteInfo, Site, EditSiteViewModel.SiteCode);
 
                     _MySites.Remove(_MySites.FirstOrDefault(x => x.SiteCode.ToLower() == EditSiteViewModel.SiteCode.ToLower()));
@@ -1412,7 +1416,7 @@ namespace TLIS_Service.Services
                                                 .Include(x => x.Region)
                                                 .Include(x => x.siteStatus)
                                                 .FirstOrDefault(x => x.SiteCode == SiteCode);
-
+              
                 if (siteInfo != null)
                 {
                     siteViewModel = new SiteViewModel()
@@ -1422,7 +1426,12 @@ namespace TLIS_Service.Services
                         Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId)?.Name ?? "",
                         LocationHieght = siteInfo.LocationHieght,
                         Longitude = siteInfo.Longitude,
-                        LocationType = _context.TLIlocationType.FirstOrDefault(x => x.Id == Convert.ToInt64(siteInfo.LocationType))?.Name ?? "",
+
+                    
+                        LocationType = int.TryParse(siteInfo.LocationType, out int locationTypeId)
+                                       ? _context.TLIlocationType.FirstOrDefault(x => x.Id == locationTypeId)?.Name ?? ""
+                                       : "",
+
                         Latitude = siteInfo.Latitude,
                         CityName = siteInfo.Zone,
                         Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId)?.AreaName ?? "",
@@ -1432,6 +1441,7 @@ namespace TLIS_Service.Services
                         SubArea = siteInfo.SubArea,
                     };
                 }
+
 
                 return new Response<SiteViewModel>(true, siteViewModel, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }

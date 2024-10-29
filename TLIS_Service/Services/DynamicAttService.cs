@@ -9982,10 +9982,10 @@ namespace TLIS_Service.Services
                                {
                                    switch (FKitem.Label.ToLower())
                                    {
-                                       case "diversitytype_name":
-                                           FKitem.Options = _unitOfWork.DiversityTypeRepository
+                                       case "civilnonsteeltype_name":
+                                           FKitem.Options = _unitOfWork.CivilNonSteelTypeRepository
                                                .GetWhere(x => !x.Deleted && !x.Disable)
-                                               .Select(x => _mapper.Map<DiversityTypeViewModel>(x))
+                                               .Select(x => _mapper.Map<CivilNonSteelTypeViewModel>(x))
                                                .ToList();
                                            break;
 
@@ -10908,6 +10908,7 @@ namespace TLIS_Service.Services
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                         {
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                             { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
                     
                         var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -11411,6 +11412,7 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                         { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
                     var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -11916,6 +11918,7 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                         { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
                     var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -12422,6 +12425,7 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                         { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
                     var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -12947,6 +12951,7 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                         { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
                     var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -13477,6 +13482,7 @@ namespace TLIS_Service.Services
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                     {
                         { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                         { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                     };
 
                     var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -14019,6 +14025,7 @@ namespace TLIS_Service.Services
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                         {
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                             { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
 
                         var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -14522,6 +14529,7 @@ namespace TLIS_Service.Services
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                         {
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                             { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
 
                         var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -15026,6 +15034,7 @@ namespace TLIS_Service.Services
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                         {
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                             { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
 
                         var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");
@@ -15551,6 +15560,7 @@ namespace TLIS_Service.Services
                         Dictionary<string, Func<IEnumerable<object>>> repositoryMethodsidearm = new Dictionary<string, Func<IEnumerable<object>>>
                         {
                             { "owner_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.OwnerRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
+                             { "sidearmtype_name", () => _mapper.Map<List<OwnerViewModel>>(_unitOfWork.SideArmTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList()) },
                         };
 
                         var ListAttributesActivatedSideArm = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsideArm", null, null, "sideArmLibraryId", "ItemStatusId", "TicketId", "sideArmInstallationPlaceId");

@@ -4247,7 +4247,23 @@ namespace TLIS_Service.Services
                                                 }
 
 
-                                                _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString, HistoryId);
+                                                var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addSideArms, HistoryId);
+
+                                                if (addSideArms.dynamicAttribute != null && addSideArms.dynamicAttribute.Count > 0)
+                                                {
+                                                    var sortedDynamicAttributes = addSideArms.dynamicAttribute
+                                                        .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                        .ToList();
+
+                                                    foreach (var item in sortedDynamicAttributes)
+                                                    {
+                                                        var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, SideArm.Id, HistoryId).Message;
+                                                        if (Message != "Success")
+                                                        {
+                                                            return new Response<SideArmViewDto>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                        }
+                                                    }
+                                                }
 
                                             }
                                             else
@@ -4383,7 +4399,23 @@ namespace TLIS_Service.Services
                                             }
 
 
-                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString, HistoryId);
+                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addSideArms, HistoryId);
+
+                                            if (addSideArms.dynamicAttribute != null && addSideArms.dynamicAttribute.Count > 0)
+                                            {
+                                                var sortedDynamicAttributes = addSideArms.dynamicAttribute
+                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                    .ToList();
+
+                                                foreach (var item in sortedDynamicAttributes)
+                                                {
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, SideArm.Id, HistoryId).Message;
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<SideArmViewDto>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+                                                }
+                                            }
                                         }
                                         else
                                         {
@@ -4517,7 +4549,23 @@ namespace TLIS_Service.Services
                                             }
 
 
-                                            _unitOfWork.DynamicAttInstValueRepository.AddDdynamicAttributeInstallationsH(UserId, addSideArms.dynamicAttribute, TableNameEntity.Id, SideArm.Id, ConnectionString, HistoryId);
+                                            var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(addSideArms, HistoryId);
+
+                                            if (addSideArms.dynamicAttribute != null && addSideArms.dynamicAttribute.Count > 0)
+                                            {
+                                                var sortedDynamicAttributes = addSideArms.dynamicAttribute
+                                                    .OrderBy(item => sortedIds.IndexOf(item.id))
+                                                    .ToList();
+
+                                                foreach (var item in sortedDynamicAttributes)
+                                                {
+                                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependence(item.id, item.value, SideArm.Id, HistoryId).Message;
+                                                    if (Message != "Success")
+                                                    {
+                                                        return new Response<SideArmViewDto>(true, null, null, Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                                                    }
+                                                }
+                                            }
                                         }
                                         else
                                         {

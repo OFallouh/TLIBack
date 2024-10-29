@@ -15,9 +15,9 @@ namespace TLIS_Repository.IRepository
         bool ValidateGroupNameFromADAdd(string GroupName, string domain);
         bool ValidateGroupNameFromDatabaseAdd(string GroupName);
         Task<bool> ValidateGroupNameFromDatabaseUpdate(string GroupName,int GroupId);
-        Task UpdateGroupRoles(List<RoleViewModel> roles, List<int> AllChildsIds);
         Task UpdateGroupUsers(List<UserNameViewModel> users, int groupId);
         Task DeleteGroup(int GroupId);
+        Task UpdateGroupRoles(List<RoleViewModel> roles, List<int> AllChildsIds, int ParentId);
         void GetGroupsTest<TEntity>(params string[] Values);
     }
 }
