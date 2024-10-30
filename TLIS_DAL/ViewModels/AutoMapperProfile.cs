@@ -653,11 +653,9 @@ namespace TLIS_DAL.ViewModels
 
             CreateMap<EditBaseCivilWithLegsTypeViewModel, TLIbaseCivilWithLegsType>().ReverseMap();
 
-            CreateMap<TLIsite, SiteViewModel>()
-                .ForMember(dst => dst.Area, opt => opt.MapFrom(src => src.Area.AreaName))
-                .ForMember(dst => dst.Region, opt => opt.MapFrom(src => src.Region.RegionName))
-                .ForMember(x => x.Status, y => y.MapFrom(s => s.siteStatus.Name));
-          
+            CreateMap<TLIsite, SiteViewModel>().ReverseMap();
+
+
 
             CreateMap<TLIsite, SiteViewModelForGetAll>()
                 .ForMember(dst => dst.Area, opt => opt.MapFrom(src => src.Area.AreaName))
