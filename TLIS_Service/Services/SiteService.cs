@@ -1411,7 +1411,7 @@ namespace TLIS_Service.Services
                     {
                         SiteCode = siteInfo.SiteCode,
                         SiteName = siteInfo.SiteName ?? "",
-                        Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId).Id ,
+                        siteStatusId = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId).Id ,
                         LocationHieght = siteInfo.LocationHieght,
                         Longitude = siteInfo.Longitude,
 
@@ -1422,8 +1422,8 @@ namespace TLIS_Service.Services
 
                         Latitude = siteInfo.Latitude,
                         Zone = siteInfo.Zone,
-                        Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId).Id ,
-                        Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode)?.RegionCode ?? null,
+                        AreaId = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId).Id ,
+                        RegionCode = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode)?.RegionCode ?? null,
                         ReservedSpace = siteInfo.ReservedSpace,
                         RentedSpace = siteInfo.RentedSpace,
                         SubArea = siteInfo.SubArea,
