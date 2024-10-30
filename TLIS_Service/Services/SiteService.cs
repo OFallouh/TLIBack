@@ -184,8 +184,8 @@ namespace TLIS_Service.Services
                     var OldSiteInfo = _unitOfWork.SiteRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
                         (x => x.SiteCode == EditSiteViewModel.SiteCode);
                     TLIsite Site = _mapper.Map<TLIsite>(EditSiteViewModel);
-                    if(Site.RentedSpace > Site.ReservedSpace)
-                        return new Response<EditSiteViewModel>(true, null, null, $"can not to be rented space bigger than reserved space",
+                    if(Site.RentedSpace < Site.ReservedSpace)
+                        return new Response<EditSiteViewModel>(true, null, null, $"can not to be resered space bigger than rented space",
                             (int)Helpers.Constants.ApiReturnCode.fail);
 
                     _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteInfo, Site, EditSiteViewModel.SiteCode);
@@ -1242,19 +1242,7 @@ namespace TLIS_Service.Services
 
                 var sitesViewModels = _mapper.Map<IEnumerable<SiteViewModel>>(sites);
 
-                var locationTypeMap = _context.TLIlocationType.ToDictionary(l => l.Id.ToString(), l => l.Name);
-
-                foreach (var siteViewModel in sitesViewModels)
-                {
-                    if (siteViewModel.LocationType != null && locationTypeMap.TryGetValue(siteViewModel.LocationType, out string locationTypeName))
-                    {
-                        siteViewModel.LocationType = locationTypeName;
-                    }
-                    else
-                    {
-                        siteViewModel.LocationType = null;
-                    }
-                }
+      
 
                 return new Response<IEnumerable<SiteViewModel>>(true, sitesViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
@@ -1423,19 +1411,19 @@ namespace TLIS_Service.Services
                     {
                         SiteCode = siteInfo.SiteCode,
                         SiteName = siteInfo.SiteName ?? "",
-                        Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId)?.Name ?? "",
+                        Status = _context.TLIsiteStatus.FirstOrDefault(x => x.Id == siteInfo.siteStatusId).Id ,
                         LocationHieght = siteInfo.LocationHieght,
                         Longitude = siteInfo.Longitude,
 
-                    
+
                         LocationType = int.TryParse(siteInfo.LocationType, out int locationTypeId)
-                                       ? _context.TLIlocationType.FirstOrDefault(x => x.Id == locationTypeId)?.Name ?? ""
-                                       : "",
+                          ? (int?)_context.TLIlocationType.FirstOrDefault(x => x.Id == locationTypeId)?.Id
+                          : null,
 
                         Latitude = siteInfo.Latitude,
-                        CityName = siteInfo.Zone,
-                        Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId)?.AreaName ?? "",
-                        Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode)?.RegionName ?? "",
+                        Zone = siteInfo.Zone,
+                        Area = _context.TLIarea.FirstOrDefault(x => x.Id == siteInfo.AreaId).Id ,
+                        Region = _context.TLIregion.FirstOrDefault(x => x.RegionCode == siteInfo.RegionCode)?.RegionCode ?? null,
                         ReservedSpace = siteInfo.ReservedSpace,
                         RentedSpace = siteInfo.RentedSpace,
                         SubArea = siteInfo.SubArea,

@@ -656,8 +656,8 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIsite, SiteViewModel>()
                 .ForMember(dst => dst.Area, opt => opt.MapFrom(src => src.Area.AreaName))
                 .ForMember(dst => dst.Region, opt => opt.MapFrom(src => src.Region.RegionName))
-                .ForMember(x => x.Status, y => y.MapFrom(s => s.siteStatus.Name))
-                .ForMember(x => x.CityName, y => y.MapFrom(s => s.Zone));
+                .ForMember(x => x.Status, y => y.MapFrom(s => s.siteStatus.Name));
+          
 
             CreateMap<TLIsite, SiteViewModelForGetAll>()
                 .ForMember(dst => dst.Area, opt => opt.MapFrom(src => src.Area.AreaName))

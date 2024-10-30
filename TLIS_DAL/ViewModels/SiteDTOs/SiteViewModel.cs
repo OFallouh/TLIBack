@@ -12,7 +12,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         [Required]
         public string SiteName { get; set; }
 
-        public string LocationType { get; set; }
+        public int? LocationType { get; set; }
 
         public float LocationHieght { get; set; }
 
@@ -20,11 +20,11 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
 
         public float Longitude { get; set; }
 
-        public string Status { get; set; }
+        public int Status { get; set; }
 
-        public string CityName { get; set; }
+        public string Zone { get; set; }
 
-        public string Area { get; set; }
+        public int Area { get; set; }
         public string SubArea { get; set; }
         public string Region { get; set; }
 

@@ -12531,7 +12531,7 @@ namespace TLIS_Service.Services
                     if (Helpers.Constants.LoadSubType.TLImwDish.ToString() == TabelName)
                     {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                      GetInstAttributeActivatedGetForAdd(LoadSubType.TLImwDish.ToString(), null, "InstallationPlaceId", "MwDishLibraryId").ToList();
+                      GetInstAttributeActivatedGetForAdd(LoadSubType.TLImwDish.ToString(), null, "InstallationPlaceId", "MwDishLibraryId", "Far_End_Site_Code").ToList();
 
                     Dictionary<string, Func<IEnumerable<object>>> repositoryMethods = new Dictionary<string, Func<IEnumerable<object>>>
                         {
@@ -16046,7 +16046,7 @@ namespace TLIS_Service.Services
                     if (Helpers.Constants.OtherInventoryType.TLIsolar.ToString() == TabelName)
                 {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                       GetInstAttributeActivatedGetForAdd(OtherInventoryType.TLIsolar.ToString(), null, "SolarLibraryId").ToList();
+                       GetInstAttributeActivatedGetForAdd(OtherInventoryType.TLIsolar.ToString(), null, "SolarLibraryId","Cabinet_Name").ToList();
                     var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite",null, null, "STATUS_DATE","CREATE_DATE");
                     ListAttributesActivatedSite
                     .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
@@ -18962,9 +18962,9 @@ namespace TLIS_Service.Services
                 ,x => x.DynamicAtt);
 
                 var Rule = _unitOfWork.RuleRepository.GetIncludeWhereFirst(x => x.AttributeViewManagmentId == AttributeViewManagment.Id
-                && !x.dynamicAtt.disable,x=>x.dynamicAtt);
+                && !x.dynamicAtt.disable,x=>x.dynamicAtt,x=>x.dynamicAtt.tablesNames);
                 if(Rule !=null)
-                    return new Response<DynamicAttViewModel>(true, null, null, "Cannot change the status of this dynamic element because it is involved in the dependency process of a dynamic attribute.", (int)Constants.ApiReturnCode.fail);
+                    return new Response<DynamicAttViewModel>(true, null, null, $"Cannot change the status of this dynamic element because it is involved in the dependency process of a dynamic attribute {Rule.dynamicAtt.Key} in tabel {Rule.dynamicAtt.tablesNames.TableName}.", (int)Constants.ApiReturnCode.fail);
                 DynamicAtt.disable = !(DynamicAtt.disable);
 
                 if (DynamicAtt.disable)
