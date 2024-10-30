@@ -70,81 +70,117 @@ namespace TLIS_Repository.Repositories
                 }
             }
         }
-        public async Task UpdateGroupRoles(List<RoleViewModel> roles, List<int> AllChildsIds,int ParentId)
+        public async Task UpdateGroupRoles(List<RoleViewModel> roles, List<int> AllChildsIds, int ParentId)
         {
             using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(60)))
             {
                 try
                 {
-                    List<int > RolesToAdd =new List<int>();
-                    List<int > RolesToDelete = new List<int>();
+                    List<int> RolesToAdd = new List<int>();
+                    List<int> RolesToDelete = new List<int>();
                     List<int> ChildSp = new List<int>();
+
                     foreach (int ChildId in AllChildsIds)
                     {
                         if (ChildId == ParentId)
                         {
-                            var GroupRoles = await _context.TLIgroupRole.AsNoTracking().Where(g => g.groupId.Equals(ChildId)).Select(g => g.roleId).ToListAsync();
+                            // Use AsNoTracking to avoid tracking issues for read operations
+                            var GroupRoles = await _context.TLIgroupRole
+                                .AsNoTracking()
+                                .Where(g => g.groupId.Equals(ChildId))
+                                .Select(g => g.roleId)
+                                .ToListAsync();
+
                             var roleIds = roles.Select(r => r.Id).ToList();
-                       
-
-                             RolesToAdd = roleIds.Except(GroupRoles).ToList();
-
-                             RolesToDelete = GroupRoles.Except(roleIds).ToList();
+                            RolesToAdd = roleIds.Except(GroupRoles).ToList();
+                            RolesToDelete = GroupRoles.Except(roleIds).ToList();
                         }
-                       else
-                       {
-                          
-                            var GroupRoles = await _context.TLIgroupRole.AsNoTracking().Where(g => g.groupId.Equals(ChildId)).Select(g => g.roleId).ToListAsync();
+                        else
+                        {
+                            var GroupRoles = await _context.TLIgroupRole
+                                .AsNoTracking()
+                                .Where(g => g.groupId.Equals(ChildId))
+                                .Select(g => g.roleId)
+                                .ToListAsync();
+
                             foreach (var item in GroupRoles)
                             {
-                                var Parent = _context.TLIgroupRole.FirstOrDefault(x => x.groupId == ParentId && x.roleId == item);
+                                // Use AsNoTracking to prevent tracking issues here as well
+                                var Parent = await _context.TLIgroupRole
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.groupId == ParentId && x.roleId == item);
+
                                 if (Parent == null)
                                 {
                                     ChildSp.Add(item);
                                 }
                             }
+
                             var roleId = roles.Select(r => r.Id).ToList();
                             RolesToAdd = roleId.Except(GroupRoles).Union(ChildSp).ToList();
                             RolesToDelete = GroupRoles.Except(ChildSp).Except(roleId).ToList();
+                        }
 
-
-                            
-                       }
-
+                        // Fetch group users ID
                         var groupUsersID = await GetGroupUsersIdByGroupId(ChildId);
+
+                        // Add roles and handle permissions
                         foreach (var Role in RolesToAdd)
                         {
-                            var rolePermissions = await _context.TLIrolePermission.AsNoTracking().Where(r => r.roleId.Equals(Role)).Select(r => r.permissionId).ToListAsync();
+                            var rolePermissions = await _context.TLIrolePermission
+                                .AsNoTracking()
+                                .Where(r => r.roleId.Equals(Role))
+                                .Select(r => r.permissionId)
+                                .ToListAsync();
+
                             foreach (var User in groupUsersID)
                             {
                                 var userPermissions = await GetUserPermissionsByUserId(User);
-                                var PermissionsToAdd = rolePermissions.Except(rolePermissions);
+                                var PermissionsToAdd = rolePermissions.Except(userPermissions).ToList();
                                 await AddUserPermissions(User, PermissionsToAdd);
                             }
-                            await AddGroupRole(ChildId, Role);
+
+                            // Ensure entity is not already tracked
+                            var existingRole = await _context.TLIgroupRole
+                                .FirstOrDefaultAsync(gr => gr.groupId == ChildId && gr.roleId == Role);
+
+                            if (existingRole == null)
+                            {
+                                await AddGroupRole(ChildId, Role);  // Add only if it doesn't already exist
+                            }
                         }
+
+                        // Delete roles
                         await DeleteGroupRoles(ChildId, RolesToDelete);
+
+                        // Update user permissions
                         foreach (var user in groupUsersID)
                         {
-                            var userGroups = await _context.TLIgroupUser.AsNoTracking().Where(u => u.userId.Equals(user)).Select(u => u.groupId).ToListAsync();
+                            var userGroups = await _context.TLIgroupUser
+                                .AsNoTracking()
+                                .Where(u => u.userId.Equals(user))
+                                .Select(u => u.groupId)
+                                .ToListAsync();
+
                             var GroupsRoles = await GetGroupRolesIdByGroupsId(userGroups);
                             var RolesPermissions = await GetRolesPermissionsIdByRolesId(GroupsRoles);
                             var userPermissions = await GetUserPermissionsByUserId(user);
-                            var PermissionToDelete = userPermissions.Except(RolesPermissions);
+                            var PermissionToDelete = userPermissions.Except(RolesPermissions).ToList();
                             await DeleteUserPermissions(user, PermissionToDelete);
                         }
                     }
-                    
+
                     transaction.Complete();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    // Handle exceptions
+                    throw new Exception("Error updating group roles", ex);
                 }
             }
-                
         }
-        
+
+
         public async Task UpdateGroupUsers(List<UserNameViewModel> users, int groupId)
         {
             using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(60)))

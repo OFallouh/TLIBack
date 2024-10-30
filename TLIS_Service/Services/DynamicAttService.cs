@@ -23415,8 +23415,8 @@ namespace TLIS_Service.Services
 
                                     _ when Helpers.Constants.LoadSubType.TLImwDish.ToString() == dependency.DynamicAtt.tablesNames.TableName => attribute.Label.ToLower() switch
                                     {
-                                        "polarityonlocation_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
-                                        "repeatertype_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "polarityonlocation_name" => _unitOfWork.PolarityOnLocationRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
+                                        "repeatertype_name" => _unitOfWork.RepeaterTypeRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                         "itemconnectto_name" => _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                         "owner_name" => _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == rule.Rule.OperationValueDouble).Id,
                                         _ => value
