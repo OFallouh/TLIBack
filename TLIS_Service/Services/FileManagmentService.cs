@@ -1354,7 +1354,7 @@ namespace TLIS_Service.Services
                                 test = float.TryParse(dt.Rows[j]["Height_Designed"].ToString(), out heightdesigned_test_1);
                                 if (test == true)
                                 {
-                                    heightdesigned_test = heightdesigned_test_1;
+                                    heightdesigned_test = (float)Math.Round(heightdesigned_test_1, 1, MidpointRounding.ToEven);
                                 }
                                 else
                                 {
@@ -2361,16 +2361,30 @@ namespace TLIS_Service.Services
                                 WidthVariation_test = Convert.ToString(dt.Rows[j]["WidthVariation"]);
                             }
                         }
+                        
                         float heightdesigned_test = 0;
                         if (dt.Columns.Contains("Height_Designed"))
                         {
-                            test = float.TryParse(dt.Rows[j]["Height_Designed"].ToString(), out heightdesigned_test);
-                            if (test == false)
+                            if (!String.IsNullOrEmpty(dt.Rows[j]["Height_Designed"].ToString()))
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Height_Designed Wrong Input DataType in the row {j + 2}"));
+                                float heightdesigned_test_1;
+                                test = float.TryParse(dt.Rows[j]["Height_Designed"].ToString(), out heightdesigned_test_1);
+                                if (test == true)
+                                {
+                                    heightdesigned_test = (float)Math.Round(heightdesigned_test_1, 1, MidpointRounding.ToEven);
+                                }
+                                else
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Height_Designed Wrong Input DataType in the row {j + 2}"));
+                                    goto ERROR;
+                                }
+                            }
+                            else
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Height_Designed can not to be null must input number in the row  {j + 2}"));
+                                goto ERROR;
                             }
                         }
-
                         float maxloadm2_test = 0;
                         if (dt.Columns.Contains("Max_Load"))
                         {
