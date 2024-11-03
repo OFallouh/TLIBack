@@ -9713,7 +9713,7 @@ namespace TLIS_Service.Services
                         .ToList();
                     var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIcivilWithLegLibrary".ToLower());
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
-                        .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
+                        .GetDynamicLibAtt(TableNameEntityLibrary.Id, CategoryId);
                     item itemCivilWithLegs = new item()
                     {
                         staticAttributes = ListAttributesActivated,
@@ -10444,7 +10444,7 @@ namespace TLIS_Service.Services
 
                     var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIsideArmLibrary".ToLower());
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
-                        .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
+                        .GetDynamicLibAtt(TableNameEntityLibrary.Id, CategoryId);
                     item itemCivilWithLegs = new item()
                     {
                         staticAttributes = ListAttributesActivated,
@@ -10944,7 +10944,7 @@ namespace TLIS_Service.Services
 
                     var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIradioAntennaLibrary".ToLower());
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
-                        .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
+                        .GetDynamicLibAtt(TableNameEntityLibrary.Id, CategoryId);
                     item itemCivilWithLegs = new item()
                     {
                         staticAttributes = ListAttributesActivated,
@@ -14052,7 +14052,7 @@ namespace TLIS_Service.Services
 
                     var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLImwODULibrary".ToLower());
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
-                        .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
+                        .GetDynamicLibAtt(TableNameEntityLibrary.Id, CategoryId);
                     item itemCivilWithLegs = new item()
                     {
                         staticAttributes = ListAttributesActivated,
@@ -14552,7 +14552,7 @@ namespace TLIS_Service.Services
 
                     var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLImwOtherLibrary".ToLower());
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
-                        .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
+                        .GetDynamicLibAtt(TableNameEntityLibrary.Id, CategoryId);
                     item itemCivilWithLegs = new item()
                     {
                         staticAttributes = ListAttributesActivated,
@@ -15053,7 +15053,7 @@ namespace TLIS_Service.Services
 
                     var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIloadOtherLibrary".ToLower());
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
-                        .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
+                        .GetDynamicLibAtt(TableNameEntityLibrary.Id, CategoryId);
                     item itemCivilWithLegs = new item()
                     {
                         staticAttributes = ListAttributesActivated,
@@ -15556,7 +15556,7 @@ namespace TLIS_Service.Services
 
                     var TableNameEntityLibrary = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "TLIpowerLibrary".ToLower());
                     IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValueLibrary = _unitOfWork.DynamicAttRepository
-                        .GetDynamicInstAttInst(TableNameEntityLibrary.Id, CategoryId);
+                        .GetDynamicLibAtt(TableNameEntityLibrary.Id, CategoryId);
                     item itemCivilWithLegs = new item()
                     {
                         staticAttributes = ListAttributesActivated,

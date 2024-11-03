@@ -60,10 +60,10 @@ namespace TLIS_DAL.Models
         public string? PoNo { get; set; }
         public DateTime PoDate { get; set; }
         public bool reinforced { get; set; }
-        [EnumDataType(typeof(LadderSteps))]
+
         public LadderSteps ? ladderSteps { get; set; }
         public bool  availabilityOfWorkPlatforms { get; set; }
-        [EnumDataType(typeof(EquipmentsLocation))]
+
         public EquipmentsLocation ? equipmentsLocation { get; set; }
         public float HeightImplemented { get; set; }
         public float BuildingMaxLoad { get; set; }

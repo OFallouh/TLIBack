@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -134,7 +135,8 @@ namespace TLIS_API.Controllers
        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("getAllSites")]
         [ProducesResponseType(200, Type = typeof(List<SiteViewModelForGetAll>))]
-        public IActionResult GetAllSites([FromQueryAttribute] ParameterPagination parameterPagination, [FromBody] List<FilterObjectList> filters, bool? isRefresh, bool? GetItemsCountOnEachSite)
+        public IActionResult GetAllSites(
+           [FromQuery] bool? isRefresh, [FromQuery] bool? GetItemsCountOnEachSite, [FromBody] FilterRequest request)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 
@@ -157,8 +159,9 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.SiteService.GetSites(userId,null,parameterPagination, isRefresh, GetItemsCountOnEachSite, filters);
+                var response = _unitOfWorkService.SiteService.GetSites(userId,null, isRefresh, GetItemsCountOnEachSite, request);
                 return Ok(response);
+
             }
             else if (authHeader.ToLower().StartsWith("basic "))
             {
@@ -168,7 +171,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.SiteService.GetSites(null,username,parameterPagination, isRefresh, GetItemsCountOnEachSite, filters);
+                var response = _unitOfWorkService.SiteService.GetSites(null, username, isRefresh, GetItemsCountOnEachSite, request);
                 return Ok(response);
             }
             else
@@ -514,6 +517,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetAllsiteonMultiRegion(Region);
             return Ok(response);
         }
+
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllsiteOnMultiArea")]
         [ProducesResponseType(200, Type = typeof(List<GetAllsiteOnMultiAreaViewModel>))]
