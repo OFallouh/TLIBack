@@ -23170,18 +23170,7 @@ namespace TLIS_Service.Services
                                     disable = false,
                                     DefaultValue = null
                                 },
-                                new TLIdynamicAtt
-                                {
-                                    Key = "Short Code",
-                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
-                                    LibraryAtt = false,
-                                    Description = null,
-                                    CivilWithoutLegCategoryId = null,
-                                    tablesNamesId = GeneratorTableNameId,
-                                    Required = false,
-                                    disable = false,
-                                    DefaultValue = null
-                                },
+                               
                                 new TLIdynamicAtt
                                 {
                                     Key = "Capacity",
@@ -23267,6 +23256,18 @@ namespace TLIS_Service.Services
                                     disable = false,
                                     DefaultValue = null
                                 },
+                                   new TLIdynamicAtt
+                                {
+                                    Key = "engineSerialNumber",
+                                    DataTypeId = DataTypes.FirstOrDefault(x => x.Name.ToLower() == "string".ToLower()).Id,
+                                    LibraryAtt = false,
+                                    Description = null,
+                                    CivilWithoutLegCategoryId = null,
+                                    tablesNamesId = GeneratorTableNameId,
+                                    Required = false,
+                                    disable = false,
+                                    DefaultValue = null
+                                },
 
                             };
 
@@ -23309,7 +23310,7 @@ namespace TLIS_Service.Services
                                             TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                             {
                                                 CreatedAt = DateTime.Now,
-                                                ErrMsg = $"(Generator Type) coulumn's value: ({GeneratorLibraryModel}) doesn't exist in TLIS",
+                                                ErrMsg = $"(Generator Library) coulumn's value: ({GeneratorLibraryModel}) doesn't exist in TLIS",
                                                 IsDeleted = false,
                                                 IsLib = true,
                                                 RefTable = Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString(),
@@ -23353,7 +23354,41 @@ namespace TLIS_Service.Services
                                     string Generator_SiteCodeAfterCheck = string.Empty;
                                     string Generator_SiteCode = GeneratorDataTable.Rows[j]["Code"].ToString();
                                     string Generator_SiteName = GeneratorDataTable.Rows[j]["English Name"].ToString();
+                                    string Generator_serialNumber = GeneratorDataTable.Rows[j]["serialNumber"].ToString();
+                                    int? BaseGeneratorTypeId = null;
+                                    string generatorTypeName = GeneratorDataTable.Rows[j]["generator Type"].ToString();
 
+                                    if (!string.IsNullOrEmpty(generatorTypeName))
+                                    {
+                                        TLIbaseGeneratorType BaseTypeForeignKeyEntity = _unitOfWork.BaseGeneratorTypeRepository
+                                            .GetWhereFirst(x => x.Name.ToLower() == generatorTypeName.ToLower() && !x.Deleted);
+
+                                        if (BaseTypeForeignKeyEntity != null)
+                                            BaseGeneratorTypeId = BaseTypeForeignKeyEntity.Id;
+
+                                        else
+                                        {
+                                            TLIbaseGeneratorType NewBaseTypeForeignKeyEntity = new TLIbaseGeneratorType
+                                            {
+                                                Name = generatorTypeName,
+                                                Disable = false,
+                                                Deleted = false
+                                            };
+                                            _unitOfWork.BaseGeneratorTypeRepository.Add(NewBaseTypeForeignKeyEntity);
+                                            _unitOfWork.SaveChanges();
+
+                                            BaseGeneratorTypeId = NewBaseTypeForeignKeyEntity.Id;
+                                        }
+
+                                        
+                                    }
+                                    else
+                                    {
+                                        
+                                         BaseGeneratorTypeId = null;
+                                        
+                                       
+                                    }
                                     if (!string.IsNullOrEmpty(Generator_SiteCode))
                                     {
                                         TLIsite CheckSiteCode = _unitOfWork.SiteRepository
@@ -23499,7 +23534,9 @@ namespace TLIS_Service.Services
                                     {
                                         Name = GeneratorName,
                                         NumberOfFuelTanks = NumOfFuelTanKs,
-                                        GeneratorLibraryId = GeneratorLibraryId
+                                        GeneratorLibraryId = GeneratorLibraryId,
+                                        SerialNumber= Generator_serialNumber,
+                                        BaseGeneratorTypeId= BaseGeneratorTypeId
 
                                     };
 
