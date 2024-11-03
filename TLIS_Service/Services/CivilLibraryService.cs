@@ -130,12 +130,14 @@ namespace TLIS_Service.Services
                                     return new Response<AddCivilWithLegsLibraryObject>(false, null, null, $"Prefix It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                                 }
-                                var model = vendor + ' ' + CivilWithLegEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithLegEntites.Height_Designed+"HE";
+                                var model = $"{vendor} {CivilWithLegEntites.Prefix} {structureTypeName} {Math.Round(CivilWithLegEntites.Height_Designed, 1, MidpointRounding.ToEven)}HE".Trim();
 
+                                // تحقق من وجود السجل
                                 var CheckModel = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW
-                               .FirstOrDefault(x => x.Model != null &&
-                                           x.Model.ToLower() == model.ToLower() &&
-                                           !x.Deleted);
+                                    .FirstOrDefault(x => x.Model != null &&
+                                        string.Equals(x.Model.Trim(), model, StringComparison.OrdinalIgnoreCase) &&
+                                        !x.Deleted);
+
 
 
                                 if (CheckModel != null)
@@ -232,14 +234,16 @@ namespace TLIS_Service.Services
                                 return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, $"Prefix It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
 
                             }
-                            var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegEntites.CivilWithoutLegCategoryId) ?.Name;
-                            var model = CivilCategoryName + ' ' + vendor + ' ' + CivilWithoutLegEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithoutLegEntites.Height_Designed+"HE";
+                            var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegEntites.CivilWithoutLegCategoryId)?.Name;
+                            var model = $"{CivilCategoryName} {vendor} {CivilWithoutLegEntites.Prefix} {structureTypeName} {Math.Round(CivilWithoutLegEntites.Height_Designed, 1, MidpointRounding.ToEven)}HE".Trim();
 
+                           
                             var CheckModel = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW
-                             .FirstOrDefault(x => x.Model != null &&
-                                         x.Model.ToLower() == model.ToLower() &&
-                                         !x.Deleted);
-            
+                                .FirstOrDefault(x => x.Model != null &&
+                                    string.Equals(x.Model.Trim(), model, StringComparison.OrdinalIgnoreCase) &&
+                                    !x.Deleted);
+
+
 
 
                             if (CheckModel != null)
@@ -1850,13 +1854,16 @@ namespace TLIS_Service.Services
                         }
 
                     }
-                    var model = vendor + ' ' + CivilWithLegLibraryEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithLegLibraryEntites.Height_Designed + "HE";
+                    var model = $"{vendor} {CivilWithLegLibraryEntites.Prefix} {structureTypeName} {Math.Round(CivilWithLegLibraryEntites.Height_Designed, 1, MidpointRounding.ToEven)}HE".Trim();
 
+                    // تحقق من وجود السجل
                     var CheckModel = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW
-                    .FirstOrDefault(x => x.Model != null && x.Id != CivilWithLegLibraryEntites.Id &&
-                               x.Model.ToLower() == model.ToLower() &&
-                               !x.Deleted);
-                   
+                        .FirstOrDefault(x => x.Model != null &&
+                                             x.Id != CivilWithLegLibraryEntites.Id &&
+                                             string.Equals(x.Model.Trim(), model, StringComparison.OrdinalIgnoreCase) &&
+                                             !x.Deleted);
+
+
                     if (CheckModel != null)
                         return new Response<EditCivilWithLegsLibraryObject>(false, null, null, $"The name {model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
@@ -2066,13 +2073,16 @@ namespace TLIS_Service.Services
 
                     }
                     var CivilCategoryName = _unitOfWork.CivilWithoutLegCategoryRepository.GetWhereFirst(x => x.Id == CivilWithoutLegLibraryEntites.CivilWithoutLegCategoryId)?.Name;
-                    var model = CivilCategoryName + ' ' + vendor + ' ' + CivilWithoutLegLibraryEntites.Prefix + ' ' + structureTypeName + ' ' + CivilWithoutLegLibraryEntites.Height_Designed + "HE";
+                    var model = $"{CivilCategoryName} {vendor} {CivilWithoutLegLibraryEntites.Prefix} {structureTypeName} {Math.Round(CivilWithoutLegLibraryEntites.Height_Designed, 1, MidpointRounding.ToEven)}HE".Trim();
 
+               
                     var CheckModel = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW
-                    .FirstOrDefault(x => x.Model != null && x.Id != CivilWithoutLegLibraryEntites.Id &&
-                               x.Model.ToLower() == model.ToLower() &&
-                               !x.Deleted);
-       
+                        .FirstOrDefault(x => x.Model != null &&
+                                             x.Id != CivilWithoutLegLibraryEntites.Id &&
+                                             string.Equals(x.Model.Trim(), model, StringComparison.OrdinalIgnoreCase) &&
+                                             !x.Deleted);
+
+
 
 
                     if (CheckModel != null)
