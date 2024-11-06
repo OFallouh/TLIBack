@@ -23140,17 +23140,19 @@ namespace TLIS_Service.Services
                     validation = GetValidation(dynamicAtt.Id, dynamicAtt.DataTypeId),
                     dependency = GetDependency(dynamicAtt.Id)
                 };
-
-                var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIdynamicAtt").Id;
-                TLIhistory tLIhistory = new TLIhistory()
+                if (ExternalSys == true)
                 {
-                    TablesNameId = TabelNameId,
-                    ExternalSysId = UserId,
-                    HistoryTypeId = 4,
-                    RecordId = id.ToString(),
-                };
-                _dbContext.TLIhistory.Add(tLIhistory);
-                _dbContext.SaveChanges();
+                    var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIdynamicAtt").Id;
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        RecordId = id.ToString(),
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
+                }
                 return new Response<AddDynamicObject>(false, addDynamicObject, null, "Success", (int)Constants.ApiReturnCode.success);
             }
             catch (Exception ex)

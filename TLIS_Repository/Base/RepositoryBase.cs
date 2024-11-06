@@ -792,7 +792,7 @@ namespace TLIS_Repository.Base
                 addTablesHistory.HistoryTypeId = historyTypeId;
                 addTablesHistory.RecordId = entityIdString;
                 addTablesHistory.TablesNameId = entityTableNameModel.Id;
-                addTablesHistory.ExternalSysId = UserId.Value;
+                addTablesHistory.UserId = UserId.Value;
                 addTablesHistory.SiteCode = SiteCode;
 
 

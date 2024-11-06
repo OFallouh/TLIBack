@@ -840,7 +840,10 @@ namespace TLIS_Service.Services
                     SitesViewModels = SitesViewModels.Take(filterRequest?.Rows ?? 10); // قم بتحديد العدد المناسب بدلًا من 10
                 }
 
+                int skipCount = filterRequest?.First ?? 0;
+                int takeCount = filterRequest?.Rows ?? int.MaxValue;
 
+                SitesViewModels = SitesViewModels.Skip(skipCount).Take(takeCount);
                 int count = SitesViewModels.Count();
 
                 // التحقق من MultiSortMeta إذا كانت موجودة
@@ -8465,9 +8468,9 @@ namespace TLIS_Service.Services
 
         public class FilterRequest
         {
-            public int First { get; set; } 
-            public int Rows { get; set; } 
-            public int SortOrder { get; set; } 
+            public int? First { get; set; } 
+            public int? Rows { get; set; } 
+            public int? SortOrder { get; set; } 
             public Dictionary<string, Filter> Filters { get; set; }
             public List<SortMeta> MultiSortMeta { get; set; } 
         }
@@ -8481,7 +8484,7 @@ namespace TLIS_Service.Services
         public class SortMeta
         {
             public string Field { get; set; } 
-            public int Order { get; set; } // ترتيب الفرز
+            public int? Order { get; set; } // ترتيب الفرز
         }
         public class FilterMatchMode
         {
