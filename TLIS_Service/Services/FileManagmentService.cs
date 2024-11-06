@@ -1232,14 +1232,260 @@ namespace TLIS_Service.Services
         //}
 
         /* Done*/
-        private void SaveCivilWithLegLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SaveLogisticalItemUsingOracleBulkCopy(List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, int TableNameId, OracleConnection connection)
+        {
+            using (TransactionScope trans = new TransactionScope())
+            {
+                try
+                {
+                    var TabelName = _dbContext.TLItablesNames.FirstOrDefault(x => x.Id == TableNameId);
+                    TLIlogisticalitem addLogisticalitem = new TLIlogisticalitem();
+                    for (int j = 0; j < dt.Rows.Count; j++)
+                    {
+                        string Name = "";
+
+                        if (dt.Columns.Contains("Suppliers"))
+                        {
+                            DropDownListFilters Suppliertest = RelatedTables.FirstOrDefault(x =>
+                                                       x.Key == "Suppliers").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Suppliers"].ToString());
+                            if (Suppliertest != null)
+                            {
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = Suppliertest.Id
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+                            else
+                            {
+
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = null
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+
+                            }
+
+                        }
+
+                        if (dt.Columns.Contains("Designers"))
+                        {
+                            DropDownListFilters Designertest = RelatedTables.FirstOrDefault(x =>
+                                                       x.Key == "Designers").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Designers"].ToString());
+                            if (Designertest != null)
+                            {
+
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = Designertest.Id
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+                            else
+                            {
+                                if (TabelName.TableName == "TLIsolarLibrary")
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Designers can not to be null in the row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = null
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+
+                        }
+
+                        if (dt.Columns.Contains("Manufacturers"))
+                        {
+                            DropDownListFilters Manufacturertest = RelatedTables.FirstOrDefault(x =>
+                                                       x.Key == "Manufacturers").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Manufacturers"].ToString());
+                            if (Manufacturertest != null)
+                            {
+
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = Manufacturertest.Id
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+                            else
+                            {
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = null
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+
+                        }
+
+                        if (dt.Columns.Contains("Vendors"))
+                        {
+                            DropDownListFilters Vendortest = RelatedTables.FirstOrDefault(x =>
+                                                       x.Key == "Vendors").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Vendors"].ToString());
+                            if (Vendortest != null)
+                            {
+
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = Vendortest.Id
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+                            else
+                            {
+
+                                if (TabelName.TableName == "TLIcivilWithLegLibrary" || TabelName.TableName == "TLIcivilWithoutLegLibrary"
+                                   || TabelName.TableName == "TLImwDishLibrary" || TabelName.TableName == "TLImwBULibrary" || TabelName.TableName == "TLImwODULibrary"
+                                   || TabelName.TableName == "TLImwRFULibrary" || TabelName.TableName == "TLIradioAntennaLibrary" || TabelName.TableName == "TLIradioRRULibrary"
+                                   || TabelName.TableName == "TLIpowerLibrary" || TabelName.TableName == "TLIcabinetPowerLibrary" || TabelName.TableName == "TLIcabinetTelecomLibrary"
+                                   || TabelName.TableName == "TLIgeneratorLibrary")
+                                {
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Vendors can not to be null in the row {j + 2}"));
+                                    goto ERROR;
+                                }
+                                else
+                                {
+                                    addLogisticalitem = new TLIlogisticalitem()
+                                    {
+                                        IsLib = true,
+                                        RecordId = RecordId[j],
+                                        tablesNamesId = TableNameId,
+                                        logisticalId = null
+
+                                    };
+                                    _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                                }
+                            }
+
+                        }
+
+                        if (dt.Columns.Contains("Contractors"))
+                        {
+                            DropDownListFilters Contractorstest = RelatedTables.FirstOrDefault(x =>
+                                                       x.Key == "Contractors").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Contractors"].ToString());
+                            if (Contractorstest != null)
+                            {
+
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = Contractorstest.Id
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+                            else
+                            {
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = null
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+
+                        }
+
+                        if (dt.Columns.Contains("Conultants"))
+                        {
+                            DropDownListFilters Conultantstest = RelatedTables.FirstOrDefault(x =>
+                                                       x.Key == "Conultants").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Conultants"].ToString());
+                            if (Conultantstest != null)
+                            {
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = Conultantstest.Id
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+                            else
+                            {
+                                addLogisticalitem = new TLIlogisticalitem()
+                                {
+                                    IsLib = true,
+                                    RecordId = RecordId[j],
+                                    tablesNamesId = TableNameId,
+                                    logisticalId = null
+
+                                };
+                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
+                            }
+
+                        }
+                    ERROR:;
+
+                    }
+                    if (UnsavedRows != null && UnsavedRows.Count != 0)
+                    {
+
+                    ERROR:;
+                    }
+                    else
+                    {
+                        _unitOfWork.SaveChanges();
+                    }
+
+
+                    trans.Complete();
+
+                }
+                catch (Exception err)
+                {
+
+                    throw err;
+                }
+            }
+
+        }
+        private void SaveCivilWithLegLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
 
             try
             {
                 RecordId = new List<int>();
                 //Get list of models for each record 
-                List<string> Models = _dbContext.MV_CIVIL_WITHLEG_LIBRARY_VIEW.Where(x=>!x.Deleted).Where(x=>!x.Deleted).Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_CIVIL_WITHLEG_LIBRARY_VIEW.Where(x => !x.Deleted).Where(x => !x.Deleted).Select(x => x.Model).ToList();
                 //get last id for table i deal with in the database
                 TLIcivilWithLegLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIcivilWithLegLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -1261,7 +1507,7 @@ namespace TLIS_Service.Services
                 List<int> sectionsLegTypeIds = new List<int>();
                 List<int> structureTypeIds = new List<int>();
                 List<int> NumberOfLegss = new List<int>();
-               
+
 
                 //Create list of key and value
                 //key refer to dynamic attribute id
@@ -1291,7 +1537,7 @@ namespace TLIS_Service.Services
                         //Check if model is alredy exists in database then add it to UnsavedRows
                         //check each property in datatable if match the database ex:if model in database is required the value in sheet shouldn't be null or empty
                         //if there is wrong insert or datatype then add it UnsavedRows
-              
+
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
@@ -1303,7 +1549,7 @@ namespace TLIS_Service.Services
                                 {
                                     spacelibrary_test = spacelibrary_test1;
                                 }
-                                else if(test ==true && spacelibrary_test1 == 0)
+                                else if (test == true && spacelibrary_test1 == 0)
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary must to be bigger of zero{j + 2}"));
                                     goto ERROR;
@@ -1442,7 +1688,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                       
+
                         int supporttypedesignedId_test = 0;
 
                         if (dt.Columns.Contains("supportTypeDesignedId"))
@@ -1520,7 +1766,7 @@ namespace TLIS_Service.Services
                                 UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Vendors can not to be null in the row {j + 2}"));
                                 goto ERROR;
                             }
-                           
+
                         }
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         //check if there are dynamic attributes
@@ -1555,7 +1801,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -1575,7 +1821,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -1596,9 +1842,9 @@ namespace TLIS_Service.Services
                                             if (DA.DataType.Name.ToLower() == "string")
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
-                                                
+
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -1619,7 +1865,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -1636,7 +1882,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -1644,7 +1890,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -1670,7 +1916,7 @@ namespace TLIS_Service.Services
                         {
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                         }
-                   
+
 
                     }
                     catch (Exception err)
@@ -1753,7 +1999,7 @@ namespace TLIS_Service.Services
                     cmd.Parameters.Add(WidthVariation != null ? WidthVariation : null);
 
                     cmd.ExecuteNonQuery();
-                  
+
                     //connection.Close();
                     List<int> InsertedIds = new List<int>();
                     //Check if LastId is null then table is empty
@@ -1806,7 +2052,7 @@ namespace TLIS_Service.Services
                             Model = models[i],
                             Note = notes[i],
                             Prefix = prefixes[i],
-                            WidthVariation = WidthVariations[i], 
+                            WidthVariation = WidthVariations[i],
                             Height_Designed = HeightsDesigned[i],
                             Max_load_M2 = maxloadsm2[i],
                             SpaceLibrary = SpaceLibraries[i],
@@ -1814,11 +2060,11 @@ namespace TLIS_Service.Services
                             supportTypeDesignedId = supportTypeDesignedIds[i],
                             sectionsLegTypeId = sectionsLegTypeIds[i],
                             structureTypeId = structureTypeIds[i],
-                            NumberOfLegs = NumberOfLegss[i], 
+                            NumberOfLegs = NumberOfLegss[i],
                         });
                     }
 
-                             
+
                     foreach (int recordId in InsertedIds)
                     {
                         var RecordName = civilWithLegLibraryList.FirstOrDefault(x => x.Id == recordId);
@@ -1836,7 +2082,7 @@ namespace TLIS_Service.Services
 
                             foreach (var propertyInfo in attributeNames)
                             {
-                            
+
                                 var propertyName = propertyInfo.Name;
 
                                 var propertyValue = propertyInfo.GetValue(RecordName)?.ToString().Trim();
@@ -1855,7 +2101,7 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
-      
+
 
                     foreach (var DynamicAtt in DynamicAtts)
                     {
@@ -1868,7 +2114,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilWithLegLibraryList).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -2037,7 +2283,7 @@ namespace TLIS_Service.Services
                         //dalvcmd.ExecuteNonQuery();
 
                     }
-              
+
                     RecordId.AddRange(InsertedIds);
                 }
 
@@ -2053,258 +2299,13 @@ namespace TLIS_Service.Services
         }
 
         /* Done*/
-        private void SaveLogisticalItemUsingOracleBulkCopy(List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, int TableNameId, OracleConnection connection)
-        {
-            using (TransactionScope trans = new TransactionScope())
-            {
-                try
-                {
-                    var TabelName = _dbContext.TLItablesNames.FirstOrDefault(x => x.Id == TableNameId);
-                    TLIlogisticalitem addLogisticalitem = new TLIlogisticalitem();
-                    for (int j = 0; j < dt.Rows.Count; j++)
-                    {
-                        string Name = "";
-   
-                        if (dt.Columns.Contains("Suppliers"))
-                        {
-                            DropDownListFilters Suppliertest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Suppliers").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Suppliers"].ToString());
-                            if (Suppliertest != null)
-                            {
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = Suppliertest.Id
 
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-                            else
-                            {
-                              
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = null
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                                
-                            }
-                            
-                        }
-               
-                        if (dt.Columns.Contains("Designers"))
-                        {
-                            DropDownListFilters Designertest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Designers").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Designers"].ToString());
-                            if (Designertest != null)
-                            {
-                 
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = Designertest.Id
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-                            else
-                            {
-                                if (TabelName.TableName == "TLIsolarLibrary")
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Designers can not to be null in the row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = null
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-                            
-                        }
-                    
-                        if (dt.Columns.Contains("Manufacturers"))
-                        {
-                            DropDownListFilters Manufacturertest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Manufacturers").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Manufacturers"].ToString());
-                            if (Manufacturertest != null)
-                            {
-                         
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = Manufacturertest.Id
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-                            else
-                            {
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = null
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-                            
-                        }
-                     
-                        if (dt.Columns.Contains("Vendors"))
-                        {
-                            DropDownListFilters Vendortest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Vendors").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Vendors"].ToString());
-                            if (Vendortest != null)
-                            {
-                             
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = Vendortest.Id
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-                            else
-                            {
-                                 
-                                if (TabelName.TableName == "TLIcivilWithLegLibrary" || TabelName.TableName == "TLIcivilWithoutLegLibrary"
-                                   || TabelName.TableName == "TLImwDishLibrary"|| TabelName.TableName == "TLImwBULibrary"|| TabelName.TableName == "TLImwODULibrary"
-                                   || TabelName.TableName == "TLImwRFULibrary"|| TabelName.TableName == "TLIradioAntennaLibrary"|| TabelName.TableName == "TLIradioRRULibrary"
-                                   || TabelName.TableName == "TLIpowerLibrary" || TabelName.TableName == "TLIcabinetPowerLibrary" || TabelName.TableName == "TLIcabinetTelecomLibrary"
-                                   || TabelName.TableName == "TLIgeneratorLibrary")
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Vendors can not to be null in the row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    addLogisticalitem = new TLIlogisticalitem()
-                                    {
-                                        IsLib = true,
-                                        RecordId = RecordId[j],
-                                        tablesNamesId = TableNameId,
-                                        logisticalId = null
-
-                                    };
-                                    _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                                }
-                            }
-                            
-                        }
-                     
-                        if (dt.Columns.Contains("Contractors"))
-                        {
-                            DropDownListFilters Contractorstest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Contractors").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Contractors"].ToString());
-                            if (Contractorstest != null)
-                            {
-
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = Contractorstest.Id
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-                            else
-                            {
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = null
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-
-                        }
-                    
-                        if (dt.Columns.Contains("Conultants"))
-                        {
-                            DropDownListFilters Conultantstest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Conultants").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Conultants"].ToString());
-                            if (Conultantstest != null)
-                            {
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = Conultantstest.Id
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-                            else
-                            {
-                                addLogisticalitem = new TLIlogisticalitem()
-                                {
-                                    IsLib = true,
-                                    RecordId = RecordId[j],
-                                    tablesNamesId = TableNameId,
-                                    logisticalId = null
-
-                                };
-                                _unitOfWork.LogisticalitemRepository.Add(addLogisticalitem);
-                            }
-
-                        }
-                    ERROR:;
-
-                    }
-                    if (UnsavedRows != null && UnsavedRows.Count != 0)
-                    {
-
-                    ERROR:;
-                    }
-                    else
-                    {
-                        _unitOfWork.SaveChanges();
-                    }
-
-
-                    trans.Complete();
-
-                }
-                catch (Exception err)
-                {
-
-                    throw err;
-                }
-            }
-
-        }
         private void SaveCivilWithoutLegLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.Where(x => !x.Deleted).Select(x => x.Model).ToList();
 
                 TLIcivilWithoutLegLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIcivilWithoutLegLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -2344,7 +2345,7 @@ namespace TLIS_Service.Services
                 {
                     try
                     {
-                       
+
                         string note_test = null;
                         if (dt.Columns.Contains("Note"))
                         {
@@ -2361,7 +2362,7 @@ namespace TLIS_Service.Services
                                 WidthVariation_test = Convert.ToString(dt.Rows[j]["WidthVariation"]);
                             }
                         }
-                        
+
                         float heightdesigned_test = 0;
                         if (dt.Columns.Contains("Height_Designed"))
                         {
@@ -2416,7 +2417,7 @@ namespace TLIS_Service.Services
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType in the row {j + 2}"));
                                     goto ERROR;
                                 }
-                                if (test==true && spacelibrary_test == 0)
+                                if (test == true && spacelibrary_test == 0)
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary must to be bigger of zero in thr row {j + 2}"));
                                     goto ERROR;
@@ -2456,7 +2457,7 @@ namespace TLIS_Service.Services
                             {
                                 InstCivilwithoutLegsTypeId_test = Convert.ToInt32(InstCivilwithoutLegsType.Id);
                             }
-                           
+
                         }
 
                         int structureTypeId_test = 0;
@@ -2573,7 +2574,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -2593,7 +2594,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -2615,7 +2616,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -2636,7 +2637,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -2653,7 +2654,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -2661,7 +2662,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -2690,7 +2691,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-            
+
 
                     }
                     catch (Exception err)
@@ -2883,7 +2884,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilWithoutLegLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -3063,7 +3064,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_CIVIL_NONSTEEL_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_CIVIL_NONSTEEL_LIBRARY_VIEW.Where(x => !x.Deleted).Select(x => x.Model).ToList();
 
                 TLIcivilNonSteelLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIcivilNonSteelLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -3250,7 +3251,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -3270,7 +3271,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -3292,7 +3293,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -3313,7 +3314,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -3330,7 +3331,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -3338,7 +3339,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -3350,7 +3351,7 @@ namespace TLIS_Service.Services
                         models.Add(model_test != null ? model_test : null);
                         Prefixs.Add(Prefix_test != null ? Prefix_test : null);
                         notes.Add(note_test != null ? model_test : null);
-                        WidthVariations.Add(WidthVariation_test != null ? WidthVariation_test :null);
+                        WidthVariations.Add(WidthVariation_test != null ? WidthVariation_test : null);
                         Heights.Add(height_test != 0 ? height_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
                         VerticalMeasuredList.Add(verticalMeasured_test);
@@ -3361,7 +3362,7 @@ namespace TLIS_Service.Services
                         {
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                         }
-                 
+
 
                     }
                     catch (Exception err)
@@ -3393,7 +3394,7 @@ namespace TLIS_Service.Services
                     SpaceLibrary.Value = SpaceLibraries.ToArray();
 
                     OracleParameter VerticalMeasured = new OracleParameter();
-                    VerticalMeasured.OracleDbType = OracleDbType.Int32; 
+                    VerticalMeasured.OracleDbType = OracleDbType.Int32;
                     VerticalMeasured.Value = VerticalMeasuredList.Select(v => v ? 1 : 0).ToArray();
 
 
@@ -3546,7 +3547,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilNonSteelLibraryList[0]).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -3725,7 +3726,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_LOAD_OTHER_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_LOAD_OTHER_LIBRARY_VIEW.Where(x => !x.Deleted).Select(x => x.Model).ToList();
 
                 TLIloadOtherLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLIloadOtherLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -3908,7 +3909,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -3928,7 +3929,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -3950,7 +3951,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -3971,7 +3972,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -3988,7 +3989,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -3996,7 +3997,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -4015,7 +4016,7 @@ namespace TLIS_Service.Services
                         {
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                         }
-           
+
 
                     }
                     catch (Exception err)
@@ -4112,7 +4113,7 @@ namespace TLIS_Service.Services
                             Height = heights[i],
                             Width = SpaceLibraries[i],
                             SpaceLibrary = SpaceLibraries[i],
-                            
+
                         });
                     }
 
@@ -4165,7 +4166,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, loadOtherLibraryList).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -4344,7 +4345,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_MWBU_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_MWBU_LIBRARY_VIEW.Where(x => !x.Deleted).Select(x => x.Model).ToList();
 
                 TLImwBULibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLImwBULibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -4423,7 +4424,7 @@ namespace TLIS_Service.Services
                                 note_test = Convert.ToString(dt.Rows[j]["Note"]);
                             }
                         }
-                        
+
                         float length_test = 0;
                         if (dt.Columns.Contains("Length"))
                         {
@@ -4596,7 +4597,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -4616,7 +4617,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -4638,7 +4639,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -4659,7 +4660,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -4676,7 +4677,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -4684,7 +4685,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -4706,14 +4707,14 @@ namespace TLIS_Service.Services
                         channelbandwidths.Add(channelbandwidth_test != null ? channelbandwidth_test : 0);
                         NumOfRFUs.Add(NumOfRFUs_test != null ? NumOfRFUs_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != null ? spacelibrary_test : 0);
-                        diversityTypeIds.Add(diversityTypeId_test != null ? diversityTypeId_test :1);
+                        diversityTypeIds.Add(diversityTypeId_test != null ? diversityTypeId_test : 1);
                         for (int f = 0; f < DynamicAttList.Count; f++)
                         {
                             //var h = DynamicAtts[f].Value;
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-               
+
 
                     }
                     catch (Exception err)
@@ -4913,7 +4914,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwBULibraryList).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -5092,7 +5093,7 @@ namespace TLIS_Service.Services
             try
             {
                 RecordId = new List<int>();
-                List<string> Models = _dbContext.MV_MWDISH_LIBRARY_VIEW.Where(x=>!x.Deleted).Select(x => x.Model).ToList();
+                List<string> Models = _dbContext.MV_MWDISH_LIBRARY_VIEW.Where(x => !x.Deleted).Select(x => x.Model).ToList();
 
                 TLImwDishLibrary LastId = _serviceProvider.GetService<ApplicationDbContext>().
                     TLImwDishLibrary.OrderByDescending(a => a.Id).FirstOrDefault();
@@ -5150,7 +5151,7 @@ namespace TLIS_Service.Services
                                 UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Model can not to be null in the row {j + 2}"));
                                 goto ERROR;
                             }
-                            
+
                         }
 
                         string description_test = null;
@@ -5263,7 +5264,7 @@ namespace TLIS_Service.Services
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Diameter can not to be null In The Row {j + 2}"));
                                     goto ERROR;
                                 }
-                               
+
                                 else
                                 {
                                     spacelibrary_test = Convert.ToSingle(3.14) * (float)Math.Pow(diameter_test / 2, 2); ;
@@ -5336,7 +5337,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -5356,7 +5357,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -5378,7 +5379,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -5399,7 +5400,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -5416,7 +5417,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -5424,7 +5425,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -5452,7 +5453,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-            
+
 
                     }
                     catch (Exception err)
@@ -5596,7 +5597,7 @@ namespace TLIS_Service.Services
                             SpaceLibrary = SpaceLibraries[i],
                             polarityTypeId = polarityTypeIds[i],
                             asTypeId = asTypeIds[i],
-                     
+
 
                         });
                     }
@@ -5650,7 +5651,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwDishLibraryList).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -5906,7 +5907,7 @@ namespace TLIS_Service.Services
                                 goto ERROR;
                             }
                         }
-                        
+
 
                         float depth_test = 0;
                         if (dt.Columns.Contains("Depth"))
@@ -6049,7 +6050,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -6069,7 +6070,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -6091,7 +6092,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -6112,7 +6113,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -6129,7 +6130,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -6137,7 +6138,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -6163,7 +6164,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-                
+
 
                     }
                     catch (Exception err)
@@ -6345,7 +6346,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwODULibraryList).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -6519,7 +6520,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SavemwOtherLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SavemwOtherLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -6578,7 +6579,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                       
+
                         string note_test = null;
                         if (dt.Columns.Contains("Note"))
                         {
@@ -6648,7 +6649,8 @@ namespace TLIS_Service.Services
                         float spacelibrary_test = 0;
                         if (dt.Columns.Contains("SpaceLibrary"))
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString())){
+                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
+                            {
                                 test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
                                 if (test == false)
                                 {
@@ -6658,12 +6660,12 @@ namespace TLIS_Service.Services
                             }
                             else
                             {
-                                if(length_test == 0)
+                                if (length_test == 0)
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
                                     goto ERROR;
                                 }
-                                if (width_test ==0)
+                                if (width_test == 0)
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width can not to be null In The Row {j + 2}"));
                                     goto ERROR;
@@ -6672,7 +6674,7 @@ namespace TLIS_Service.Services
                                 {
                                     spacelibrary_test = length_test * width_test;
                                 }
-                                
+
                             }
                         }
 
@@ -6685,7 +6687,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        
+
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)
@@ -6719,7 +6721,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -6739,7 +6741,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -6761,7 +6763,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -6782,7 +6784,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -6799,7 +6801,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -6807,7 +6809,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -6827,7 +6829,7 @@ namespace TLIS_Service.Services
                         {
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                         }
-               
+
 
                     }
                     catch (Exception err)
@@ -6985,7 +6987,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwOtherLibraryList).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -7159,7 +7161,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SavemwRFULibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SavemwRFULibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -7246,7 +7248,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                      
+
                         float length_test = 0;
                         if (dt.Columns.Contains("Length"))
                         {
@@ -7309,7 +7311,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                      
+
 
                         string VenferBoardName_test = null;
                         if (dt.Columns.Contains("VenferBoardName"))
@@ -7463,7 +7465,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -7483,7 +7485,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -7505,7 +7507,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -7526,7 +7528,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -7543,7 +7545,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -7551,7 +7553,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -7567,7 +7569,7 @@ namespace TLIS_Service.Services
                         widths.Add(width_test != 0 ? width_test : 0);
                         heights.Add(height_test != 0 ? height_test : 0);
                         sizes.Add(size_test != null ? size_test : null);
-                        tx_parities.Add(tx_parity_test );
+                        tx_parities.Add(tx_parity_test);
                         frequencybands.Add(frequencyband_test != null ? frequencyband_test : null);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
                         FrequencyRanges.Add(frequencyband_test != null ? frequencyband_test : null);
@@ -7581,7 +7583,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-            
+
 
                     }
                     catch (Exception err)
@@ -7787,7 +7789,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwRFULibraryList).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -7961,7 +7963,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SavepowerLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SavepowerLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -8200,7 +8202,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -8220,7 +8222,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -8242,7 +8244,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -8263,7 +8265,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -8280,7 +8282,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -8288,7 +8290,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -8305,7 +8307,7 @@ namespace TLIS_Service.Services
                         sizes.Add(size_test != 0 ? size_test : 0);
                         depths.Add(depth_test != 0 ? depth_test : 0);
                         SpaceLibraries.Add(spacelibrary_test != 0 ? spacelibrary_test : 0);
-                        FrequencyRanges.Add(FrequencyRange_test != null ? FrequencyRange_test :null);
+                        FrequencyRanges.Add(FrequencyRange_test != null ? FrequencyRange_test : null);
                         Types.Add(Type_test != null ? Type_test : null);
                         BandWidths.Add(BandWidths_test != null ? BandWidths_test : null);
                         ChannelBandWidths.Add(ChannelBandWidths_test != null ? ChannelBandWidths_test : null);
@@ -8316,7 +8318,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-           
+
 
                     }
                     catch (Exception err)
@@ -8510,7 +8512,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, powerLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -8760,7 +8762,7 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(dt.Rows[j]["Weight"].ToString()))
                             {
                                 test = float.TryParse(dt.Rows[j]["Weight"].ToString(), out weight_test_1);
-                                if(test ==false)
+                                if (test == false)
                                 {
                                     UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Weight Wrong Input DataType In The Row {j + 2}"));
                                     goto ERROR;
@@ -8874,7 +8876,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -8894,7 +8896,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -8916,7 +8918,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -8937,7 +8939,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -8954,7 +8956,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -8962,7 +8964,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -8985,7 +8987,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-        
+
 
                     }
                     catch (Exception err)
@@ -9148,7 +9150,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioAntennaLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -9322,7 +9324,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SaveradioOtherLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SaveradioOtherLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -9504,7 +9506,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -9524,7 +9526,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -9546,7 +9548,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -9567,7 +9569,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -9584,7 +9586,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -9592,7 +9594,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -9615,7 +9617,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-            
+
 
                     }
                     catch (Exception err)
@@ -9772,7 +9774,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioOtherLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -9946,7 +9948,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SaveradioRRULibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SaveradioRRULibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -10167,7 +10169,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -10187,7 +10189,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -10209,7 +10211,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -10230,7 +10232,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -10247,7 +10249,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -10255,7 +10257,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -10282,7 +10284,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-               
+
 
                     }
                     catch (Exception err)
@@ -10464,7 +10466,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioRRULibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -10821,7 +10823,7 @@ namespace TLIS_Service.Services
                                 goto ERROR;
                             }
                         }
-                        
+
                         int? IntegratedWith_test = null;
 
                         if (dt.Columns.Contains("IntegratedWith"))
@@ -10856,7 +10858,7 @@ namespace TLIS_Service.Services
                                     goto ERROR;
                                 }
                             }
-                           
+
                         }
                         int CabinetPowerTypeId_test = 0;
                         if (dt.Columns.Contains("CabinetPowerTypeId"))
@@ -10872,7 +10874,7 @@ namespace TLIS_Service.Services
                                 goto ERROR;
                             }
                         }
-                        
+
                         bool PowerIntegrated_test = false;
 
                         if (dt.Columns.Contains("PowerIntegrated"))
@@ -10926,7 +10928,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -10946,7 +10948,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -10968,7 +10970,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -10989,7 +10991,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -11006,7 +11008,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -11014,7 +11016,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -11041,7 +11043,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-             
+
 
                     }
                     catch (Exception err)
@@ -11227,7 +11229,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, cabinetPowerLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -11401,7 +11403,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SavecabinetTelecomLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SavecabinetTelecomLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -11603,7 +11605,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -11623,7 +11625,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -11645,7 +11647,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -11666,7 +11668,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -11683,7 +11685,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -11691,7 +11693,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -11715,7 +11717,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-                 
+
 
                     }
                     catch (Exception err)
@@ -11878,7 +11880,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, cabinetTelecomLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -12052,7 +12054,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SavegeneratorLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SavegeneratorLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -12209,7 +12211,7 @@ namespace TLIS_Service.Services
                             }
                         }
 
-                        
+
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)
@@ -12243,7 +12245,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -12263,7 +12265,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -12285,7 +12287,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -12306,7 +12308,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -12323,7 +12325,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -12331,7 +12333,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -12354,7 +12356,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-                
+
 
                     }
                     catch (Exception err)
@@ -12465,7 +12467,7 @@ namespace TLIS_Service.Services
                             Height = heights[i],
                             SpaceLibrary = SpaceLibraries[i],
                             GeneratorCapaCity = GeneratorCapaCitys[i],
-                           
+
 
                         });
                     }
@@ -12519,7 +12521,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, generatorLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -12693,7 +12695,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SavesolarLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SavesolarLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, List<KeyValuePair<string, List<DropDownListFilters>>> RelatedTables, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -12945,7 +12947,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -12965,7 +12967,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -12987,7 +12989,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -13008,7 +13010,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -13025,7 +13027,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -13033,7 +13035,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -13059,7 +13061,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-                
+
 
                     }
                     catch (Exception err)
@@ -13189,7 +13191,7 @@ namespace TLIS_Service.Services
                             HeightFromBack = HeightFromBack_List[i],
                             BasePlateDimension = BasePlateDimensions[i],
                             SpaceLibrary = SpaceLibraries[i],
-                        
+
                         });
                     }
 
@@ -13242,7 +13244,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, solarLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
@@ -13416,7 +13418,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        private void SavesideArmLibraryUsingOracleBulkCopy(int UserId,out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, TLItablesNames TableNameEntity, OracleConnection connection)
+        private void SavesideArmLibraryUsingOracleBulkCopy(int UserId, out List<int> RecordId, DataTable dt, ref List<KeyValuePair<int, string>> UnsavedRows, int ActColumns, int Columns, ExcelWorksheet sheet, TLItablesNames TableNameEntity, OracleConnection connection)
         {
             try
             {
@@ -13565,7 +13567,7 @@ namespace TLIS_Service.Services
 
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -13585,7 +13587,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 DateTimeDynamicAtt = datetime_Test;
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -13607,7 +13609,7 @@ namespace TLIS_Service.Services
                                             {
                                                 StringDynamicAtt = Convert.ToString(dt.Rows[j][ColName]);
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "double")
+                                            else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                             {
                                                 test = double.TryParse(dt.Rows[j][ColName].ToString(), out double_Test);
                                                 if (test == false)
@@ -13628,7 +13630,7 @@ namespace TLIS_Service.Services
                                                 DateTimeDynamicAtt = datetime_Test;
 
                                             }
-                                            else if (DA.DataType.Name.ToLower() == "boolean")
+                                            else if (DA.DataType.Name.ToLower() == "bool")
                                             {
                                                 test = Boolean.TryParse(dt.Rows[j][ColName].ToString(), out boolean_Test);
                                                 if (test == false)
@@ -13645,7 +13647,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(StringDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "double")
+                                    else if (DA.DataType.Name.ToLower() == "double" || DA.DataType.Name.ToLower() == "int")
                                     {
                                         DynamicAttList.Add(DoubleDynamicAtt);
                                     }
@@ -13653,7 +13655,7 @@ namespace TLIS_Service.Services
                                     {
                                         DynamicAttList.Add(DateTimeDynamicAtt);
                                     }
-                                    else if (DA.DataType.Name.ToLower() == "boolean")
+                                    else if (DA.DataType.Name.ToLower() == "bool")
                                     {
                                         DynamicAttList.Add(BooleanDynamicAtt);
                                     }
@@ -13676,7 +13678,7 @@ namespace TLIS_Service.Services
                             DynamicAtts[f].Item3.Add(DynamicAttList[f]);
                             //h.Add(DynamicAttList[f]);
                         }
-                  
+
 
                     }
                     catch (Exception err)
@@ -13779,7 +13781,7 @@ namespace TLIS_Service.Services
                             Length = lengths[i],
                             Height = heights[i],
                             SpaceLibrary = spaceLibraries[i],
-                        
+
 
                         });
                     }
@@ -13833,7 +13835,7 @@ namespace TLIS_Service.Services
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, sideArmLibraryist).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message +' '+ $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 

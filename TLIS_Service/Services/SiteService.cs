@@ -839,12 +839,12 @@ namespace TLIS_Service.Services
                     // في حالة عدم وجود فلاتر، نعيد فقط عدد محدود من النتائج لتجنب إرجاع كل البيانات
                     SitesViewModels = SitesViewModels.Take(filterRequest?.Rows ?? 10); // قم بتحديد العدد المناسب بدلًا من 10
                 }
-
+                int count = SitesViewModels.Count();
                 int skipCount = filterRequest?.First ?? 0;
                 int takeCount = filterRequest?.Rows ?? int.MaxValue;
 
                 SitesViewModels = SitesViewModels.Skip(skipCount).Take(takeCount);
-                int count = SitesViewModels.Count();
+
 
                 // التحقق من MultiSortMeta إذا كانت موجودة
                 if (filterRequest.MultiSortMeta != null && filterRequest.MultiSortMeta.Count > 0)
